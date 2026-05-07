@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | CartPrime</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #000; --bg: #f8fafc; --white: #fff; --red: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); padding: 20px 5%; }
+        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+        .back-btn { text-decoration: none; color: #000; font-size: 1.2rem; }
+        .order-card { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #eee; position: relative; }
+        .order-status { font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 8px; text-transform: uppercase; float: right; }
+        .status-shipped { background: #dcfce7; color: #15803d; }
+        .status-pending { background: #fef9c3; color: #a16207; }
+        .status-delivered { background: #e0f2fe; color: #0369a1; }
+        .status-cancelled { background: #fee2e2; color: #b91c1c; }
+        .status-confirmed { background: #e0f2fe; color: #0369a1; } /* Confirmed status added */
+        .item-box { display: flex; gap: 15px; align-items: center; margin-top: 10px; }
+        .item-box img { width: 70px; height: 70px; border-radius: 12px; object-fit: contain; background: #f8fafc; border: 1px solid #f1f1f1; }
+        .item-details h3 { font-size: 1rem; color: #1e293b; margin-bottom: 4px; }
+        .item-details p { font-size: 0.85rem; color: #64748b; }
+        .action-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
+        .btn-cancel { background: #fee2e2; color: var(--red); }
+        .btn-return { background: #000; color: #fff; }
+        .empty-state { text-align: center; margin-top: 50px; color: #64748b; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="home.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <h1 style="font-weight: 800; letter-spacing: -1px;">My Orders</h1>
+    </div>
+    
+    <div id="ordersList">
+        <div class="empty-state">Loading your orders...</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+            authDomain: "cartprime-shopping.firebaseapp.com",
+            projectId: "cartprime-shopping",
+            storageBucket: "cartprime-shopping.firebasestorage.app",
+            messagingSenderId: "570068438689",
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+            measurementId: "G-9GREWHMEYL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const userData = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
+        const userPhone = userData ? userData.phone : "";
+
+        if(userPhone) {
+            onValue(ref(db, `orders/${userPhone}`), (snapshot) => {
+                const list = document.getElementById('ordersList');
+                list.innerHTML = "";
+                
+                if (!snapshot.exists()) {
+                    list.innerHTML = `<div class="empty-state">
+                        <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 10px;"></i>
+                        <p>No orders found yet.</p>
+                    </div>`;
+                    return;
+                }
+
+                let ordersArr = [];
+                snapshot.forEach(orderSnap => {
+                    ordersArr.push({ id: orderSnap.key, ...orderSnap.val() });
+                });
+
+                ordersArr.reverse().forEach(order => {
+                    const orderDate = new Date(order.date);
+                    const today = new Date();
+                    const diffInDays = Math.floor((today - orderDate) / (1000 * 60 * 60 * 24));
+
+                    const showCancel = order.status === 'Pending';
+                    const showReturn = order.return === 'true' && order.status === 'Delivered' && diffInDays <= 7;
+                    
+                    // ഡെലിവറി ഡേറ്റ് ഉണ്ടെങ്കിൽ കാണിക്കാനുള്ള ഭാഗം
+                    const deliveryMsg = order.deliveryDate ? 
+                        `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;">
+                            <i class="fa-solid fa-truck-fast"></i> Delivery Date: ${order.deliveryDate}
+                        </p>` : '';
+
+                    list.innerHTML += `
+                        <div class="order-card">
+                            <span class="order-status status-${order.status.toLowerCase()}">${order.status}</span>
+                            <div class="item-box">
+                                <img src="${order.productImage}" alt="">
+                                <div class="item-details">
+                                    <h3>${order.productName}</h3>
+                                    <p>Price: ₹${order.price}</p>
+                                    <p style="font-size: 0.75rem; margin-top: 4px;">Order Date: ${order.date}</p>
+                                    ${deliveryMsg}
+                                </div>
+                            </div>
+                            <div class="action-btns">
+                                ${showCancel ? `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}')">Cancel Order</button>` : ''}
+                                ${showReturn ? `<button class="btn btn-return" onclick="requestReturn()">Request Return</button>` : ''}
+                                ${(!showCancel && !showReturn) ? `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${order.status}</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        } else {
+            document.getElementById('ordersList').innerHTML = `<div class="empty-state">Please place an order first.</div>`;
+        }
+
+        window.cancelOrder = (orderId) => {
+            Swal.fire({
+                title: 'Cancel Order?',
+                text: "Are you sure you want to cancel this order?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#000',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Cancel'
+            }).then((res) => {
+                if(res.isConfirmed) {
+                    update(ref(db, `orders/${userPhone}/${orderId}`), { status: 'Cancelled' })
+                    .then(() => Swal.fire('Cancelled', 'Your order has been cancelled.', 'success'));
+                }
+            });
+        };
+
+        window.requestReturn = () => {
+            Swal.fire('Return Requested', 'Our support team will contact you soon for the return process.', 'success');
+        };
+    </script>
+</body>
+</html>

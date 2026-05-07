@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CartPrime | Discover Luxury</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #000;
+            --accent: #2563eb;
+            --bg: #ffffff;
+            --surface: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- Stylish Navigation --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 6%;
+            position: sticky; top: 0; 
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
+        .logo span { color: var(--text-muted); font-weight: 300; }
+
+        /* Search Bar & Suggestions */
+        .search-container { flex: 1; max-width: 500px; margin: 0 40px; position: relative; }
+        .search-container input {
+            width: 100%; padding: 12px 20px 12px 48px; border-radius: 16px;
+            border: 1px solid #e2e8f0; background: var(--surface); outline: none;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.95rem;
+        }
+        .search-container input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .search-container i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        .search-suggestions-box {
+            position: absolute; top: calc(100% + 10px); left: 0; right: 0;
+            background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-height: 400px; overflow-y: auto; z-index: 2000; display: none; border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* --- Header / Hero --- */
+        .hero { padding: 50px 6% 30px; }
+        .hero h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
+        .hero p { color: var(--text-muted); margin-top: 10px; font-size: 1.1rem; }
+
+        /* --- Product Grid --- */
+        .container { padding: 0 6% 80px; }
+        .grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 35px;
+        }
+
+        /* --- Premium Card Styling --- */
+        .card {
+            background: #fff; border-radius: 32px; padding: 12px;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            position: relative; border: 1px solid transparent;
+            animation: fadeIn 0.8s ease backwards;
+            margin-top: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .card:hover { 
+            transform: translateY(-12px);
+            border-color: #f1f5f9;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.06);
+        }
+        
+        .image-box { 
+            width: 100%; height: 320px; border-radius: 24px; 
+            overflow: hidden; background: #f8fafc; margin-bottom: 20px;
+            position: relative;
+        }
+        .card img { width: 100%; height: 100%; object-fit: contain; transition: 0.6s; }
+        .card:hover img { transform: scale(1.08); }
+
+        .stock-badge {
+            position: absolute; top: 20px; left: 20px; background: rgba(15, 23, 42, 0.9);
+            color: white; padding: 6px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; z-index: 10;
+        }
+        
+        .discount-badge {
+            position: absolute; top: 20px; right: 20px; background: #22c55e;
+            color: white; padding: 6px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; z-index: 10;
+        }
+
+        .card-info { padding: 0 10px 10px; }
+        .card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .price-container { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .price { font-weight: 800; font-size: 1.4rem; color: var(--primary); }
+        .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.95rem; }
+
+        .buy-btn {
+            width: 100%; padding: 16px; background: var(--primary); color: #fff; border: none;
+            border-radius: 18px; font-weight: 700; cursor: pointer; transition: 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .buy-btn:hover { background: #334155; }
+        .buy-btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
+
+        /* --- Footer Style --- */
+        footer { background: #000; color: #fff; padding: 60px 6% 30px; margin-top: 50px; }
+        .footer-content { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; margin-bottom: 40px; }
+        .footer-logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; margin-bottom: 15px; }
+        .footer-logo span { color: #64748b; font-weight: 300; }
+        .footer-info p { color: #94a3b8; font-size: 0.9rem; max-width: 300px; line-height: 1.6; }
+        .footer-contact h4 { font-size: 1.1rem; margin-bottom: 15px; font-weight: 700; }
+        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .footer-contact a:hover { color: var(--accent); }
+        .footer-bottom { border-top: 1px solid #1e293b; padding-top: 30px; text-align: center; color: #475569; font-size: 0.8rem; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Nav Right Buttons */
+        .nav-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+        .icon-btn { font-size: 1.3rem; color: var(--text-main); cursor: pointer; transition: 0.2s; }
+        .icon-btn:hover { color: var(--accent); }
+        .admin-pill { 
+            background: #000; color: #fff; padding: 8px 16px; border-radius: 12px; 
+            font-size: 0.8rem; font-weight: 700; text-decoration: none; display: none;
+        }
+
+        .suggestion-item {
+            display: flex; align-items: center; padding: 15px 20px; gap: 15px;
+            cursor: pointer; transition: 0.2s;
+        }
+        .suggestion-item:hover { background: var(--surface); }
+        .suggestion-item img { width: 50px; height: 50px; object-fit: contain; border-radius: 10px; background: #f1f5f9; }
+        .suggestion-info h4 { font-size: 0.95rem; font-weight: 700; margin: 0; }
+        .suggestion-info p { font-size: 0.85rem; color: #22c55e; font-weight: 700; margin: 0; }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 1024px) {
+            .grid { gap: 20px; }
+            .hero h1 { font-size: 2.4rem; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 12px 4%; }
+            .logo { font-size: 1.2rem; }
+            .search-container { margin: 0 15px; }
+            
+            .hero { 
+                padding: 30px 6% 25px; 
+                background: #fff; 
+                border-radius: 20px; 
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+                width: 92%; 
+                margin: 15px auto; 
+            }
+            .hero h1 { font-size: 1.8rem; }
+            .hero p { font-size: 0.95rem; }
+
+            .container { padding: 0 4% 60px; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            
+            .card { border-radius: 24px; padding: 8px; margin-top: 15px; }
+            .image-box { height: 170px; border-radius: 18px; margin-bottom: 10px; }
+            
+            .card h3 { font-size: 0.9rem; margin-bottom: 4px;  }
+            .price { font-size: 1.1rem; }
+            .mrp { font-size: 0.8rem; }
+            .price-container { gap: 6px; margin-bottom: 12px; }
+            
+            .buy-btn { padding: 12px; font-size: 0.8rem; border-radius: 14px; }
+            
+            .stock-badge, .discount-badge { padding: 4px 8px; font-size: 0.65rem; top: 10px; left: 10px; border-radius: 8px; }
+            .discount-badge { right: 10px; left: auto; }
+
+            footer { padding: 50px 8% }
+            .footer-content { gap: 25px; }
+        }
+
+        @media (max-width: 480px) {
+            .search-container { margin: 0 10px; }
+            .nav-right { gap: 12px; }
+            .icon-btn { font-size: 1.1rem; }
+            .grid { gap: 10px; }
+            .hero h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo" onclick="location.reload()">CART<span>PRIME</span></div>
+        
+        <div class="search-container">
+            <i class="fa fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search..." autocomplete="off">
+            <div id="searchSuggestions" class="search-suggestions-box"></div>
+        </div>
+
+        <div class="nav-right">
+            <a href="orders.html" class="icon-btn"><i class="fa-solid fa-bag-shopping"></i></a>
+            <a href="admin.html" id="adminLink" class="admin-pill">ADMIN</a>
+            <i class="fa-solid fa-arrow-right-from-bracket icon-btn" id="logoutBtn"></i>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>CartPrime<br>Prime Collections.</h1>
+        <p>CartPrime Online Shopping</p>
+    </header>
+
+    <div class="container">
+        <div class="grid" id="productGrid"></div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-logo">CART<span>PRIME</span></div>
+                <p>shopping collections with quality</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <a href="mailto:cartprimeshopping@gmail.com">
+                    <i class="fa-regular fa-envelope"></i>
+                    cartprimeshopping@gmail.com
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 CartPrime. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+       const firebaseConfig = {
+            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+            authDomain: "cartprime-shopping.firebaseapp.com",
+            projectId: "cartprime-shopping",
+            storageBucket: "cartprime-shopping.firebasestorage.app",
+            messagingSenderId: "570068438689",
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+            measurementId: "G-9GREWHMEYL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let allProducts = [];
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (localStorage.getItem("isAdmin") === "true") document.getElementById('adminLink').style.display = 'block';
+            } else { location.href = "index.html"; }
+        });
+
+        onValue(ref(db, 'products'), (snapshot) => {
+            allProducts = [];
+            snapshot.forEach(child => {
+                const data = child.val();
+                data.id = child.key;
+                allProducts.push(data);
+            });
+            renderProducts(allProducts);
+        });
+
+        function renderProducts(products) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = "";
+            
+            products.forEach((p, index) => {
+                if (p.showOnHome === false) return;
+
+                const isOut = p.outOfStock === true;
+                const pr = parseFloat(p.price.toString().replace(/,/g, ''));
+                const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr);
+                let discTag = "";
+                if(mr > pr) {
+                    const disc = Math.round(((mr - pr) / mr) * 100);
+                    discTag = `<div class="discount-badge">${disc}% OFF</div>`;
+                }
+
+                const html = `
+                    <div class="card" style="animation-delay: ${index * 0.05}s">
+                        ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''}
+                        ${!isOut ? discTag : ''}
+                        <div class="image-box">
+                            <img src="${p.images[0]}" alt="${p.name}" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}">
+                        </div>
+                        <div class="card-info">
+                            <h3>${p.name}</h3>
+                            <div class="price-container">
+                                <span class="price">₹${p.price}</span>
+                                ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''}
+                            </div>
+                            <button class="buy-btn" ${isOut ? 'disabled' : ''} onclick="location.href='product-details.html?id=${p.id}'">
+                                ${isOut ? 'Unavailable' : 'View Product'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += html;
+            });
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsBox = document.getElementById('searchSuggestions');
+
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            suggestionsBox.innerHTML = "";
+
+            if (val.length < 1) {
+                suggestionsBox.style.display = 'none';
+                renderProducts(allProducts);
+                return;
+            }
+
+            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(val) && p.showOnHome !== false);
+
+            if (filtered.length > 0) {
+                suggestionsBox.style.display = 'block';
+                filtered.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.innerHTML = `
+                        <img src="${p.images[0]}" alt="">
+                        <div class="suggestion-info">
+                            <h4>${p.name}</h4>
+                            <p>₹${p.price}</p>
+                        </div>
+                    `;
+                    div.onclick = () => window.location.href = `product-details.html?id=${p.id}`;
+                    suggestionsBox.appendChild(div);
+                });
+            } else {
+                suggestionsBox.style.display = 'none';
+            }
+            renderProducts(filtered);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) suggestionsBox.style.display = 'none';
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            signOut(auth).then(() => { localStorage.clear(); location.href = "index.html"; });
+        });
+    </script>
+</body>
+</html>

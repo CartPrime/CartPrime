@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Prime | Sign In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --primary: #000000;
+            --secondary-text: #666666;
+            --border: #e1e1e1;
+            --error: #df2020;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            /* മൊബൈലിൽ വശങ്ങളിൽ ഗ്യാപ്പ് കിട്ടാൻ */
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 20px;
+                /* മൊബൈലിൽ ഉള്ളിലെ പാഡിംഗ് കുറച്ചു */
+            }
+
+            .brand-header h1 {
+                font-size: 1.6rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+
+        .brand-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .brand-header h1 span {
+            font-weight: 400;
+            color: #ccc;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .subtitle {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        #msg-alert {
+            background: #fff5f5;
+            color: var(--error);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: none;
+            text-align: left;
+            border-left: 4px solid var(--error);
+        }
+
+        .field {
+            text-align: left;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+
+        }
+
+        .field input:focus {
+            border-color: var(--primary);
+        }
+
+        .toggle-btn {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            cursor: pointer;
+            color: #999;
+            padding: 5px;
+            /* ക്ലിക്ക് ചെയ്യാൻ എളുപ്പത്തിന് */
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-main:hover {
+            opacity: 0.9;
+        }
+
+        .switch-text {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .switch-text b {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        #loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loader"><b>Please wait...</b></div>
+
+    <div class="login-card">
+        <div class="brand-header">
+            <h1>CART<span>PRIME</span></h1>
+        </div>
+
+        <div id="msg-alert"></div>
+
+        <div id="login-ui">
+            <h2>Sign In</h2>
+            <p class="subtitle">Enter your email and password to continue.</p>
+
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="l-email" placeholder="Email address">
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="l-password" placeholder="Password">
+                <i class="fa-solid fa-eye toggle-btn" onclick="togglePass('l-password', this)"></i>
+            </div>
+
+            <button class="btn-main" id="loginBtn">Sign In</button>
+            <p class="switch-text">New to Cart Prime? <b onclick="toggleUI()">Create an account</b></p>
+        </div>
+
+        <div id="reg-ui" class="hidden">
+            <h2>Create Account</h2>
+            <p class="subtitle">Fill in the details below to register.</p>
+
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="r-email" placeholder="Email address">
+            </div>
+            <div class="field">
+                <label>Create Password</label>
+                <input type="password" id="r-password" placeholder="At least 6 characters">
+                <i class="fa-solid fa-eye toggle-btn" onclick="togglePass('r-password', this)"></i>
+            </div>
+
+            <button class="btn-main" id="regBtn">Sign Up</button>
+            <p class="switch-text">Already have an account? <b onclick="toggleUI()">Sign In</b></p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+            authDomain: "cartprime-shopping.firebaseapp.com",
+            projectId: "cartprime-shopping",
+            storageBucket: "cartprime-shopping.firebasestorage.app",
+            messagingSenderId: "570068438689",
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+            measurementId: "G-9GREWHMEYL"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const alertBox = document.getElementById('msg-alert');
+        const loader = document.getElementById('loader');
+
+        function showAlert(msg) {
+            alertBox.innerText = msg;
+            alertBox.style.display = 'block';
+            loader.style.display = 'none';
+        }
+
+        window.togglePass = (id, icon) => {
+            const input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        };
+
+        window.toggleUI = () => {
+            document.getElementById('login-ui').classList.toggle('hidden');
+            document.getElementById('reg-ui').classList.toggle('hidden');
+            alertBox.style.display = 'none';
+        };
+
+        // --- REGISTER ---
+        document.getElementById('regBtn').addEventListener('click', async () => {
+            const email = document.getElementById('r-email').value;
+            const pass = document.getElementById('r-password').value;
+            if (!email || !pass) return showAlert("Please enter both email and password.");
+
+            loader.style.display = 'flex';
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                await set(ref(db, 'users/' + cred.user.uid), { email, role: "user" });
+                location.href = "home.html";
+            } catch (e) {
+                if (e.code === 'auth/email-already-in-use') showAlert("Email is already registered.");
+                else showAlert("Registration failed. Try again.");
+            }
+        });
+
+        // --- SIGN IN ---
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('l-email').value;
+            const pass = document.getElementById('l-password').value;
+            if (!email || !pass) return showAlert("Please enter your credentials.");
+
+            loader.style.display = 'flex';
+            try {
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                const snapshot = await get(child(ref(db), `users/${cred.user.uid}`));
+
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    localStorage.setItem("isAdmin", userData.role === "admin" ? "true" : "false");
+                    location.href = "home.html";
+                } else {
+                    showAlert("User not found in registry.");
+                    await signOut(auth);
+                }
+            } catch (e) {
+                showAlert("Invalid email or password.");
+            }
+        });
+    </script>
+</body>
+
+</html>
