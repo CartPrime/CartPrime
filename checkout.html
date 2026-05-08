@@ -143,7 +143,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -161,12 +161,9 @@
 
     const orderInfo = JSON.parse(localStorage.getItem('pendingOrder'));
     const myUpiId = "9778722796@fam"; 
-    let currentUserEmailKey = null;
 
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            currentUserEmailKey = user.email.replace(/\./g, ',');
-        } else {
+        if (!user) {
             Swal.fire('Login Required', 'Please login to continue.', 'error')
             .then(() => location.href = 'login.html');
         }
@@ -217,9 +214,6 @@
         if(fields.utr.length < 10) {
             return Swal.fire('UTR Required', 'Please enter a valid 12-digit Transaction ID.', 'error');
         }
-        if(!currentUserEmailKey) {
-            return Swal.fire('Error', 'User account not verified. Please login again.', 'error');
-        }
 
         localStorage.setItem('cartPrime_UserAddr', JSON.stringify(fields));
 
@@ -232,7 +226,7 @@
             confirmButtonColor: '#000'
         }).then((res) => {
             if(res.isConfirmed) {
-                const orderId = Date.now(); // Unique ID for admin panel
+                const orderId = Date.now(); 
                 const finalOrder = {
                     customerName: fields.name,
                     customerPhone: fields.phone,
@@ -248,18 +242,14 @@
                     paymentStatus: "Verifying"
                 };
 
-                // 1. Email-ലേക്ക് സേവ് ചെയ്യുന്നു (യൂസറിന് ഓർഡർ കാണാൻ)
-                const userOrderRef = ref(db, `orders/${currentUserEmailKey}/${orderId}`);
-                
-                // 2. നേരിട്ട് orders പാതയിലേക്ക് സേവ് ചെയ്യുന്നു (Admin Panel-ൽ ഫോൺ നമ്പർ ആയി കാണാൻ)
+                // ഫോൺ നമ്പർ പാതയിലേക്ക് മാത്രം സേവ് ചെയ്യുന്നു
                 const adminOrderRef = ref(db, `orders/${fields.phone}/${orderId}`);
 
-                Promise.all([
-                    set(userOrderRef, finalOrder),
-                    set(adminOrderRef, finalOrder)
-                ]).then(() => {
+                set(adminOrderRef, finalOrder).then(() => {
                     Swal.fire('Success', 'Order Placed Successfully!', 'success')
                     .then(() => location.href = 'orders.html');
+                }).catch((error) => {
+                    Swal.fire('Error', 'Order could not be saved. Try again.', 'error');
                 });
             }
         });
