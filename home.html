@@ -116,6 +116,15 @@
         .buy-btn:hover { background: #334155; }
         .buy-btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
 
+        .loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+        
         /* --- Footer Style --- */
         footer { background: #000; color: #fff; padding: 60px 6% 30px; margin-top: 50px; }
         .footer-content { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; margin-bottom: 40px; }
@@ -199,10 +208,15 @@
             .grid { gap: 10px; }
             .hero h1 { font-size: 1.5rem; }
         }
+                @keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
     </style>
 </head>
+    
 <body>
-
+ <div class="loader"></div>
     <nav>
         <div class="logo" onclick="location.reload()">CART<span>PRIME</span></div>
         
