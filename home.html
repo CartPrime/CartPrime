@@ -81,12 +81,13 @@
             position: relative; border: 1px solid #f1f5f9;
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             display: flex; flex-direction: column;
-            height: 100%; /* ensures same height in a row */
+            height: 100%; /* Ensures all cards in a row have equal height */
         }
         .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
         
         .image-box { 
-            width: 100%; height: 260px; border-radius: 18px; 
+            width: 100%; height: 260px; /* Fixed height for desktop */
+            border-radius: 18px; 
             overflow: hidden; background: #f8fafc; margin-bottom: 15px;
             position: relative;
         }
@@ -102,7 +103,11 @@
         }
 
         .card-info { flex-grow: 1; display: flex; flex-direction: column; }
-        .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card h3 { 
+            font-size: 1rem; font-weight: 700; margin-bottom: 8px; 
+            display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+            overflow: hidden; text-overflow: ellipsis; 
+        }
         .price-container { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
         .price { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
         .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.85rem; }
@@ -112,6 +117,7 @@
             border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;
             font-size: 0.9rem; margin-top: auto;
         }
+        .buy-btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
 
         /* --- Nav Right --- */
         .nav-right { display: flex; align-items: center; gap: 18px; }
@@ -120,19 +126,14 @@
 
         /* --- Footer (Fixed) --- */
         footer { 
-            background: #000; 
-            color: #fff; 
-            padding: 20px 6%; 
-            position: fixed; 
-            bottom: 0; 
-            width: 100%; 
-            z-index: 1000;
+            background: #000; color: #fff; padding: 15px 6%; 
+            position: fixed; bottom: 0; width: 100%; z-index: 1000;
         }
         .footer-content { display: flex; justify-content: space-between; align-items: center; }
         .footer-logo { font-weight: 800; font-size: 1.2rem; }
         .footer-logo span { color: #64748b; }
         .footer-contact a { color: #fff; text-decoration: none; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
-        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 10px; padding-top: 10px; text-align: center; color: #475569; font-size: 0.65rem; }
+        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 8px; padding-top: 8px; text-align: center; color: #475569; font-size: 0.65rem; }
 
         /* --- RESPONSIVE BREAKPOINTS --- */
         @media (max-width: 768px) {
@@ -142,28 +143,25 @@
             .hero { padding: 30px 5% 15px; }
             .hero h1 { font-size: 1.8rem; }
             
-            /* Two products per row with equal height */
+            /* Two products per row */
             .grid { 
                 grid-template-columns: repeat(2, 1fr); 
                 gap: 12px; 
-                display: grid;
             }
-            
-            .image-box { height: 180px; border-radius: 14px; }
+            .image-box { height: 160px; border-radius: 14px; } /* Fixed image height for mobile */
             .card { border-radius: 20px; padding: 10px; height: 100%; }
-            .card h3 { font-size: 0.9rem; }
-            .price { font-size: 1.1rem; }
+            .card h3 { font-size: 0.85rem; }
+            .price { font-size: 1rem; }
             .buy-btn { padding: 12px; font-size: 0.8rem; border-radius: 12px; }
             .nav-right { gap: 12px; }
-            .container { padding-bottom: 140px; }
+            .container { padding-bottom: 150px; } /* Space for fixed footer */
         }
 
         @media (max-width: 480px) {
             .hero h1 { font-size: 1.6rem; }
             .search-container input { padding-left: 35px; font-size: 0.85rem; }
-            .icon-btn { font-size: 1.1rem; }
-            .footer-content { font-size: 0.7rem; }
-            .footer-logo { font-size: 1rem; }
+            .footer-content { flex-direction: row; justify-content: space-between; font-size: 0.7rem; }
+            .footer-contact a { font-size: 0.65rem; }
         }
     </style>
 </head>
@@ -198,7 +196,7 @@
             <div class="footer-contact">
                 <a href="mailto:cartprimeshopping@gmail.com">
                     <i class="fa-regular fa-envelope"></i>
-                    cartprimeshopping@gmail.com
+                    Email Us
                 </a>
             </div>
         </div>
