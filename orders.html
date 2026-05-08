@@ -62,33 +62,42 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // Login check and Email processing
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Email-ile "." replace cheyyunnu (Firebase key restriction karanam)
-                const userEmailKey = user.email.replace(/\./g, ',');
-                loadOrders(userEmailKey);
+                // ലോക്കൽ സ്റ്റോറേജിൽ സേവ് ചെയ്തിട്ടുള്ള യൂസർ അഡ്രസ്സിൽ നിന്നും ഫോൺ നമ്പർ എടുക്കുന്നു
+                const savedAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
+                const userPhone = savedAddr ? savedAddr.phone : null;
+
+                if (userPhone) {
+                    loadOrders(userPhone);
+                } else {
+                    document.getElementById('ordersList').innerHTML = `
+                        <div class="empty-state">
+                            <i class="fa-solid fa-phone-slash" style="font-size: 3rem; margin-bottom: 10px;"></i>
+                            <p>No phone number linked to recent orders.</p>
+                        </div>`;
+                }
             } else {
                 document.getElementById('ordersList').innerHTML = `
                     <div class="login-msg">
                         <i class="fa-solid fa-user-lock" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
                         <h2 style="font-size: 1.2rem; margin-bottom: 10px;">Please Login</h2>
                         <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 20px;">Login with your email to see your orders.</p>
-                        <a href="login.html" class="btn" style="background: black; color: white; padding: 12px 30px; text-decoration: none; border-radius: 12px; display: inline-block;">Login Now</a>
+                        <a href="login.html" class="btn" style="background: black; color: white; padding: 12px 30px; text-decoration: none; border-radius: 12px; display: inline-block; text-align: center;">Login Now</a>
                     </div>`;
             }
         });
 
-        function loadOrders(emailKey) {
-            // Orders node emailKey vech fetch cheyyunnu
-            onValue(ref(db, `orders/${emailKey}`), (snapshot) => {
+        function loadOrders(phone) {
+            // ഇമെയിലിന് പകരം ഫോൺ നമ്പർ പാതയിൽ നിന്നും ഡാറ്റ എടുക്കുന്നു
+            onValue(ref(db, `orders/${phone}`), (snapshot) => {
                 const list = document.getElementById('ordersList');
                 list.innerHTML = "";
                 
                 if (!snapshot.exists()) {
                     list.innerHTML = `<div class="empty-state">
                         <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 10px;"></i>
-                        <p>No orders found for this account.</p>
+                        <p>No orders found for this mobile number (${phone}).</p>
                     </div>`;
                     return;
                 }
@@ -123,7 +132,7 @@
                                 </div>
                             </div>
                             <div class="action-btns">
-                                ${showCancel ? `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${emailKey}')">Cancel Order</button>` : ''}
+                                ${showCancel ? `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>` : ''}
                                 ${showReturn ? `<button class="btn btn-return" onclick="requestReturn()">Request Return</button>` : ''}
                                 ${(!showCancel && !showReturn) ? `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${order.status}</button>` : ''}
                             </div>
@@ -132,7 +141,7 @@
             });
         }
 
-        window.cancelOrder = (orderId, emailKey) => {
+        window.cancelOrder = (orderId, phone) => {
             Swal.fire({
                 title: 'Cancel Order?',
                 text: "Confirm to cancel this order.",
@@ -142,7 +151,7 @@
                 confirmButtonText: 'Yes, Cancel'
             }).then((res) => {
                 if(res.isConfirmed) {
-                    update(ref(db, `orders/${emailKey}/${orderId}`), { status: 'Cancelled' })
+                    update(ref(db, `orders/${phone}/${orderId}`), { status: 'Cancelled' })
                     .then(() => Swal.fire('Cancelled', 'Your order was cancelled.', 'success'));
                 }
             });
