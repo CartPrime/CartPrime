@@ -95,11 +95,10 @@
             transition: 0.3s;
         }
 
-        /* Responsive Fixes */
         @media (max-width: 480px) {
             body { padding: 10px; }
             .checkout-container { padding: 20px 15px; }
-            .input-group { grid-template-columns: 1fr; } /* Mobile-ൽ അഡ്രസ് ഫീൽഡുകൾ ഒന്നൊന്നായി വരും */
+            .input-group { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
             .confirm-btn { padding: 15px; }
         }
@@ -143,23 +142,36 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const firebaseConfig = {
-            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
-            authDomain: "cartprime-shopping.firebaseapp.com",
-            projectId: "cartprime-shopping",
-            storageBucket: "cartprime-shopping.firebasestorage.app",
-            messagingSenderId: "570068438689",
-            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
-            measurementId: "G-9GREWHMEYL"
-        };
+        apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+        authDomain: "cartprime-shopping.firebaseapp.com",
+        projectId: "cartprime-shopping",
+        storageBucket: "cartprime-shopping.firebasestorage.app",
+        messagingSenderId: "570068438689",
+        appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+        measurementId: "G-9GREWHMEYL"
+    };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getDatabase(app);
 
     const orderInfo = JSON.parse(localStorage.getItem('pendingOrder'));
     const myUpiId = "9778722796@fam"; 
+    let currentUserEmailKey = null;
+
+    // Firebase Auth State Check to get Email
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUserEmailKey = user.email.replace(/\./g, ',');
+        } else {
+            Swal.fire('Login Required', 'Please login to continue.', 'error')
+            .then(() => location.href = 'login.html');
+        }
+    });
 
     window.addEventListener('DOMContentLoaded', () => {
         if(orderInfo) {
@@ -206,6 +218,9 @@
         if(fields.utr.length < 10) {
             return Swal.fire('UTR Required', 'Please enter a valid 12-digit Transaction ID.', 'error');
         }
+        if(!currentUserEmailKey) {
+            return Swal.fire('Error', 'User account not verified. Please login again.', 'error');
+        }
 
         localStorage.setItem('cartPrime_UserAddr', JSON.stringify(fields));
 
@@ -221,6 +236,7 @@
                 const finalOrder = {
                     customerName: fields.name,
                     customerPhone: fields.phone,
+                    phone: fields.phone, // Admin panel-il kanikkan vendi
                     address: `${fields.house}, ${fields.area}, ${fields.city} - ${fields.pin}`,
                     productName: orderInfo.productName,
                     price: orderInfo.price,
@@ -232,7 +248,8 @@
                     paymentStatus: "Verifying"
                 };
 
-                const orderRef = ref(db, `orders/${fields.phone}`);
+                // Order path is Email Key
+                const orderRef = ref(db, `orders/${currentUserEmailKey}`);
                 push(orderRef, finalOrder).then(() => {
                     Swal.fire('Success', 'Order Placed Successfully!', 'success')
                     .then(() => location.href = 'orders.html');
