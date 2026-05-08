@@ -24,6 +24,9 @@
             background-color: var(--bg); 
             color: var(--text-main);
             overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* --- Navigation --- */
@@ -61,7 +64,10 @@
         .hero p { color: var(--text-muted); margin-top: 8px; font-size: 1rem; }
 
         /* --- Product Grid --- */
-        .container { padding: 0 6% 60px; }
+        .container { 
+            padding: 0 6% 120px; /* added bottom padding to prevent footer overlap */
+            flex: 1;
+        }
         .grid {
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
@@ -113,35 +119,42 @@
         .icon-btn { font-size: 1.2rem; color: var(--text-main); cursor: pointer; }
         .admin-pill { background: #000; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-decoration: none; display: none; }
 
-        /* --- Suggestion Items --- */
-        .suggestion-item { display: flex; align-items: center; padding: 12px 15px; gap: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
-        .suggestion-item img { width: 45px; height: 45px; object-fit: contain; border-radius: 8px; background: #f8fafc; }
-        .suggestion-info h4 { font-size: 0.85rem; font-weight: 700; margin: 0; }
-        .suggestion-info p { font-size: 0.8rem; color: #22c55e; font-weight: 700; }
-
-        /* --- Footer --- */
-        footer { background: #000; color: #fff; padding: 50px 6% 30px; margin-top: 40px; }
-        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; }
-        .footer-logo { font-weight: 800; font-size: 1.4rem; margin-bottom: 10px; }
+        /* --- Footer (Fixed) --- */
+        footer { 
+            background: #000; 
+            color: #fff; 
+            padding: 20px 6%; 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            z-index: 1000;
+        }
+        .footer-content { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+        .footer-logo { font-weight: 800; font-size: 1.2rem; }
         .footer-logo span { color: #64748b; }
-        .footer-info p { color: #94a3b8; font-size: 0.85rem; max-width: 280px; line-height: 1.5; }
-        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
-        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 30px; padding-top: 20px; text-align: center; color: #475569; font-size: 0.75rem; }
+        .footer-info p { display: none; } /* hidden for compact fixed footer */
+        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
+        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 10px; padding-top: 10px; text-align: center; color: #475569; font-size: 0.65rem; }
 
         /* --- RESPONSIVE BREAKPOINTS --- */
+        @media (max-width: 1024px) {
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } /* Ensures 2 products per row on tablets and mobiles */
+        }
+
         @media (max-width: 768px) {
             nav { padding: 10px 4%; }
             .logo { font-size: 1.1rem; }
             .search-container { margin: 0 10px; }
             .hero { padding: 30px 5% 15px; }
             .hero h1 { font-size: 1.8rem; }
-            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } /* Fixed 2 products per row */
             .image-box { height: 180px; border-radius: 14px; }
             .card { border-radius: 20px; padding: 10px; }
             .card h3 { font-size: 0.9rem; }
             .price { font-size: 1.1rem; }
             .buy-btn { padding: 12px; font-size: 0.8rem; border-radius: 12px; }
             .nav-right { gap: 12px; }
+            .container { padding-bottom: 140px; }
         }
 
         @media (max-width: 480px) {
@@ -149,7 +162,8 @@
             .search-container input { padding-left: 35px; font-size: 0.85rem; }
             .search-container i { left: 12px; }
             .icon-btn { font-size: 1.1rem; }
-            .footer-content { flex-direction: column; }
+            .footer-content { flex-direction: row; font-size: 0.7rem; }
+            .footer-logo { font-size: 1rem; }
         }
     </style>
 </head>
@@ -182,7 +196,6 @@
         <div class="footer-content">
             <div class="footer-info">
                 <div class="footer-logo">CART<span>PRIME</span></div>
-                <p>Curated collections with uncompromised quality and style.</p>
             </div>
             <div class="footer-contact">
                 <a href="mailto:cartprimeshopping@gmail.com">
