@@ -13,47 +13,41 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg-light); display: flex; min-height: 100vh; color: #1e293b; overflow-x: hidden; }
         
-        /* Sidebar Styles */
         .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); color: white; padding: 30px 20px; position: fixed; box-shadow: 4px 0 10px rgba(0,0,0,0.1); z-index: 100; transition: 0.3s; }
         .sidebar h2 { margin-bottom: 40px; text-align: center; font-size: 22px; font-weight: 800; border-bottom: 1px solid #333; padding-bottom: 20px; }
         .sidebar button, .sidebar a { width: 100%; padding: 14px; background: transparent; border: none; color: #94a3b8; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; display: flex; align-items: center; text-decoration: none; transition: 0.3s; }
         .sidebar button:hover, .sidebar button.active, .sidebar a:hover { background: rgba(255,255,255,0.1); color: white; }
         .sidebar i { margin-right: 12px; font-size: 18px; width: 20px; text-align: center; }
         
-        /* Main Content */
         .main-content { margin-left: 260px; padding: 40px; width: calc(100% - 260px); transition: 0.3s; }
         .tab-content { display: none; animation: fadeIn 0.4s ease; }
         .active-tab { display: block !important; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         h2.tab-title { font-weight: 800; font-size: 24px; margin-bottom: 30px; }
-        .admin-card { background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow-x: auto; }
+        .admin-card { background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         input, textarea, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fcfdfe; }
         
-        /* Order UI */
         #orderList { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
-        .order-card { background: white; border: 1px solid var(--border); padding: 24px; border-radius: 20px; position: relative; transition: 0.3s; }
+        .order-card { background: white; border: 1px solid var(--border); padding: 24px; border-radius: 20px; position: relative; }
         
-        .badge-container { position: absolute; top: 20px; right: 20px; display: flex; gap: 6px; align-items: center; }
-        .pay-badge, .status-badge { font-size: 10px; padding: 4px 10px; border-radius: 8px; font-weight: 800; text-transform: uppercase; white-space: nowrap; }
+        .badge-container { position: absolute; top: 20px; right: 20px; display: flex; gap: 6px; }
+        .pay-badge, .status-badge { font-size: 10px; padding: 4px 10px; border-radius: 8px; font-weight: 800; text-transform: uppercase; }
         
         .pay-Verified { background: #dcfce7; color: #166534; }
         .pay-Pending { background: #fef9c3; color: #854d0e; }
         .status-Pending { background: #f1f5f9; color: #64748b; }
-        .status-Confirmed { background: #e0f2fe; color: #0369a1; }
-        .status-Shipped { background: #fef3c7; color: #92400e; }
-        .status-Delivered { background: #dcfce7; color: #166534; }
 
         .cust-box { background: #f8fafc; padding: 16px; border-radius: 15px; margin: 15px 0; border: 1px solid #f1f5f9; }
         .order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
         .order-actions button { padding: 10px; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; color: white; }
 
         .table-responsive { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; min-width: 500px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
         th { color: #64748b; padding: 15px; text-align: left; font-size: 12px; }
-        td { padding: 15px; background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 600; }
+        td { padding: 15px; background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 14px; }
         
-        .btn-add { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; margin: 10px 0; }
+        .btn-add { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; }
         .save-btn { background: var(--primary); color: #fff; width: 100%; padding: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; }
         .stock-badge{ border: none; border-radius: 5px; width: 45px; height: 25px; color: white; font-weight: bold; cursor: pointer; }
         .in-stock { background-color: #2563eb; }
@@ -61,17 +55,11 @@
 
         .spec-row { display: flex; gap: 10px; }
 
-        /* Responsive Mobile Settings */
         @media (max-width: 768px) {
             .sidebar { width: 70px; padding: 20px 10px; }
-            .sidebar h2 { display: none; }
-            .sidebar button span, .sidebar a span { display: none; }
+            .sidebar h2, .sidebar button span, .sidebar a span { display: none; }
             .sidebar i { margin-right: 0; font-size: 20px; width: 100%; }
             .main-content { margin-left: 70px; width: calc(100% - 70px); padding: 20px; }
-            h2.tab-title { font-size: 20px; }
-            .admin-card { padding: 15px; }
-            #orderList { grid-template-columns: 1fr; }
-            .spec-row { flex-direction: column; gap: 0; }
         }
     </style>
 </head>
@@ -87,11 +75,13 @@
 </div>
 
 <div class="main-content">
+    <!-- Orders Tab -->
     <div id="orders" class="tab-content active-tab">
         <h2 class="tab-title">Order Management</h2>
         <div id="orderList"></div>
     </div>
 
+    <!-- Add Product Tab -->
     <div id="addProduct" class="tab-content">
         <h2 class="tab-title" id="formTitle">Add New Item</h2>
         <div class="admin-card" style="max-width: 700px; margin: 0 auto;">
@@ -102,13 +92,18 @@
                 <input type="text" id="pMrp" placeholder="MRP ₹">
                 <input type="text" id="pPrice" placeholder="PRICE ₹">
             </div>
-            <textarea id="pDesc" placeholder="DESCRIPTION (Enter adichaal bullet points aayi maarum)" rows="5"></textarea>
+            
+            <!-- Description with Auto Bullet Point Logic -->
+            <textarea id="pDesc" placeholder="PRODUCT DESCRIPTION" rows="6" onkeydown="handleBullets(event)"></textarea>
+            
             <div id="specInputs">
                 <div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>
             </div>
-            <button class="btn-add" onclick="addSpecField()">+ Add Spec</button>
+            <button class="btn-add" onclick="addSpecField()" style="margin-bottom: 15px;">+ Add Spec</button>
+            
             <div id="imageInputs"><input type="text" class="p-img-link" placeholder="IMAGE URL 1"></div>
-            <button class="btn-add" onclick="addImageField()">+ Add Image</button>
+            <button class="btn-add" onclick="addImageField()" style="margin-bottom: 15px;">+ Add Image</button>
+            
             <select id="pReturn">
                 <option value="true">7 DAYS RETURN</option>
                 <option value="false">NO RETURN</option>
@@ -118,6 +113,7 @@
         </div>
     </div>
 
+    <!-- Inventory Tab -->
     <div id="manageProducts" class="tab-content">
         <h2 class="tab-title">Inventory</h2>
         <div class="admin-card">
@@ -130,6 +126,7 @@
         </div>
     </div>
 
+    <!-- Users Tab -->
     <div id="users" class="tab-content">
         <h2 class="tab-title">Registered Users</h2>
         <div class="admin-card">
@@ -145,26 +142,41 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getDatabase, ref, onValue, update, remove, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
-            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
-            authDomain: "cartprime-shopping.firebaseapp.com",
-            projectId: "cartprime-shopping",
-            storageBucket: "cartprime-shopping.firebasestorage.app",
-            messagingSenderId: "570068438689",
-            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
-            measurementId: "G-9GREWHMEYL"
-        };
+    apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+    authDomain: "cartprime-shopping.firebaseapp.com",
+    projectId: "cartprime-shopping",
+    storageBucket: "cartprime-shopping.firebasestorage.app",
+    messagingSenderId: "570068438689",
+    appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+    measurementId: "G-9GREWHMEYL"
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
+// AUTO BULLET LOGIC
+window.handleBullets = (e) => {
+    const el = e.target;
+    if (el.value === "") el.value = "• ";
+    
+    if (e.key === "Enter") {
+        e.preventDefault();
+        const pos = el.selectionStart;
+        const before = el.value.substring(0, pos);
+        const after = el.value.substring(pos);
+        el.value = before + "\n• " + after;
+        el.selectionStart = el.selectionEnd = pos + 3;
+    }
+};
 
 window.openTab = (tabId) => {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
     document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
     document.getElementById(tabId).classList.add('active-tab');
-    if(event && event.currentTarget && event.currentTarget.classList) event.currentTarget.classList.add('active');
+    if(event) event.currentTarget.classList.add('active');
 };
 
-// --- Orders Section ---
+// --- Orders Logic ---
 onValue(ref(db, 'orders'), snap => {
     const list = document.getElementById('orderList');
     list.innerHTML = ""; 
@@ -175,7 +187,6 @@ onValue(ref(db, 'orders'), snap => {
             const path = `${uSnap.key}/${oSnap.key}`;
             const payStatus = o.paymentStatus || "Pending";
             const currentStatus = o.status || "Pending";
-            const delDate = o.deliveryDate ? `<p style="font-size:11px; color:#2563eb; font-weight:800; margin-top:5px;"><i class="fa fa-truck"></i> Delivery: ${o.deliveryDate}</p>` : '';
             
             list.innerHTML += `
             <div class="order-card">
@@ -183,65 +194,27 @@ onValue(ref(db, 'orders'), snap => {
                     <span class="status-badge status-${currentStatus}">${currentStatus}</span>
                     <span class="pay-badge ${payStatus === 'Paid' ? 'pay-Verified' : 'pay-Pending'}">${payStatus}</span>
                 </div>
-
-                <div style="margin-top:10px;">
-                    <span style="font-size:10px; color:#aaa; font-weight:800;">ID: #${oSnap.key.slice(-6).toUpperCase()}</span>
-                </div>
-
                 <div class="cust-box">
-                    <b style="font-size:15px;">${o.customerName || 'No Name'}</b>
-                    <p style="color:#2563eb; font-weight:800; font-size:12px; margin-top:8px;"><i class="fa fa-phone"></i> ${uSnap.key}</p>
-                    <p style="font-size:11px; margin-top:5px; color:#475569;"><i class="fa fa-map-marker-alt"></i> ${o.address || 'N/A'}</p>
-                    ${delDate}
+                    <b>${o.customerName || 'User'}</b>
+                    <p style="font-size:12px; color:#2563eb;">${uSnap.key}</p>
+                    <p style="font-size:11px;">${o.address || 'N/A'}</p>
                 </div>
-
-                <div style="display:flex; gap:12px; align-items:center; border-top:1px solid #f1f5f9; padding-top:15px;">
-                    <img src="${o.productImage || ''}" style="width:50px; height:50px; object-fit:contain; border-radius:10px; background:#f8fafc;">
-                    <div><p style="font-size:13px; font-weight:800;">${o.productName}</p><p style="font-size:12px; color:#16a34a; font-weight:800;">₹${o.price}</p></div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <img src="${o.productImage}" style="width:40px; border-radius:5px;">
+                    <div><p style="font-size:13px; font-weight:800;">${o.productName}</p><p style="font-size:12px; color:green;">₹${o.price}</p></div>
                 </div>
-
                 <div class="order-actions">
                     <button style="background:#16a34a" onclick="updateStatus('${path}', 'Confirmed')">Confirm</button>
-                    <button style="background:#ca8a04" onclick="updateStatus('${path}', 'Shipped')">Ship</button>
                     <button style="background:#2563eb" onclick="updateStatus('${path}', 'Delivered')">Deliver</button>
-                    <button style="background:#000" onclick="verifyPay('${path}')">Verify Pay</button>
                 </div>
-                <button onclick="deleteItem('orders/${path}')" style="width:100%; margin-top:10px; background:none; border:1px solid #fee2e2; color:#ef4444; padding:8px; font-size:10px; font-weight:800; border-radius:10px; cursor:pointer;">DELETE ORDER</button>
             </div>`;
         });
     });
 });
 
-window.updateStatus = (path, s) => {
-    if (s === 'Confirmed') {
-        Swal.fire({
-            title: 'Set Delivery Date',
-            html: '<input type="date" id="del-date" class="swal2-input">',
-            showCancelButton: true,
-            confirmButtonText: 'Confirm Order',
-            confirmButtonColor: '#16a34a',
-            preConfirm: () => {
-                const date = document.getElementById('del-date').value;
-                if (!date) Swal.showValidationMessage('Please select a date');
-                return date;
-            }
-        }).then((res) => {
-            if (res.isConfirmed) {
-                update(ref(db, 'orders/' + path), { 
-                    status: s,
-                    deliveryDate: res.value 
-                }).then(() => Swal.fire('Confirmed!', 'Delivery date set to ' + res.value, 'success'));
-            }
-        });
-    } else {
-        update(ref(db, 'orders/' + path), { status: s });
-    }
-};
+window.updateStatus = (path, s) => update(ref(db, 'orders/' + path), { status: s });
 
-window.verifyPay = (path) => update(ref(db, 'orders/'+path), { paymentStatus: "Paid" });
-window.deleteItem = (p) => Swal.fire({title:'Delete Order?', icon:'warning', showCancelButton:true, confirmButtonColor:'#000'}).then(r => r.isConfirmed && remove(ref(db,p)));
-
-// --- Inventory Section ---
+// --- Inventory & Product Logic ---
 onValue(ref(db, 'products'), snap => {
     const list = document.getElementById('manageProductList');
     list.innerHTML = "";
@@ -249,13 +222,13 @@ onValue(ref(db, 'products'), snap => {
         const p = child.val();
         const isOut = p.outOfStock === true;
         list.innerHTML += `<tr>
-            <td><img src="${p.images ? p.images[0] : ''}" width="40" style="border-radius:5px;"></td>
-            <td><p style="max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.name}</p></td>
+            <td><img src="${p.images[0]}" width="40" style="border-radius:5px;"></td>
+            <td>${p.name}</td>
             <td>₹${p.price}</td>
             <td><button class="stock-badge ${isOut ? 'out-stock' : 'in-stock'}" onclick="toggleStock('${child.key}', ${isOut})">${isOut ? 'OUT' : 'IN'}</button></td>
             <td>
-                <button style="color:#2563eb; border:none; background:none; cursor:pointer;" onclick="editProduct('${child.key}')"><i class="fa fa-edit"></i></button>
-                <button style="color:#ef4444; border:none; background:none; cursor:pointer; margin-left:10px;" onclick="deleteItem('products/${child.key}')"><i class="fa fa-trash"></i></button>
+                <button style="color:blue; border:none; background:none;" onclick="editProduct('${child.key}')"><i class="fa fa-edit"></i></button>
+                <button style="color:red; border:none; background:none;" onclick="deleteItem('products/${child.key}')"><i class="fa fa-trash"></i></button>
             </td>
         </tr>`;
     });
@@ -271,26 +244,16 @@ window.editProduct = (key) => {
         document.getElementById('pTitle').value = p.title;
         document.getElementById('pMrp').value = p.mrp;
         document.getElementById('pPrice').value = p.price;
-        
-        // Plain text aayi description thirichu kodukkunnu (editing easy aakkan)
-        document.getElementById('pDesc').value = p.desc || "";
-        
-        document.getElementById('pReturn').value = p.return;
+        document.getElementById('pDesc').value = p.desc || "• ";
         
         const sc = document.getElementById('specInputs'); sc.innerHTML = "";
         for(let k in p.specs) {
-            const d = document.createElement('div'); d.className = 'spec-row';
-            d.innerHTML = `<input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}">`;
-            sc.appendChild(d);
+            sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}"></div>`;
         }
         
         const ic = document.getElementById('imageInputs'); ic.innerHTML = "";
-        if(p.images) {
-            p.images.forEach(u => {
-                const i = document.createElement('input'); i.className = 'p-img-link'; i.value = u;
-                ic.appendChild(i);
-            });
-        }
+        p.images.forEach(u => { ic.innerHTML += `<input type="text" class="p-img-link" value="${u}">`; });
+        
         document.getElementById('formTitle').innerText = "Edit Product";
         document.getElementById('saveBtn').innerText = "UPDATE PRODUCT";
         document.getElementById('cancelEdit').style.display = "block";
@@ -298,15 +261,37 @@ window.editProduct = (key) => {
     }, { onlyOnce: true });
 };
 
+window.saveProduct = () => {
+    const key = document.getElementById('editKey').value;
+    const specs = {};
+    document.querySelectorAll('.spec-row').forEach(row => {
+        const k = row.querySelector('.spec-key').value;
+        const v = row.querySelector('.spec-val').value;
+        if(k && v) specs[k] = v;
+    });
+
+    const data = {
+        name: document.getElementById('pName').value,
+        title: document.getElementById('pTitle').value,
+        mrp: document.getElementById('pMrp').value,
+        price: document.getElementById('pPrice').value,
+        desc: document.getElementById('pDesc').value,
+        specs: specs,
+        images: Array.from(document.querySelectorAll('.p-img-link')).map(i => i.value).filter(v => v),
+        return: document.getElementById('pReturn').value,
+        outOfStock: false
+    };
+
+    if(key) {
+        update(ref(db, `products/${key}`), data).then(() => { Swal.fire('Updated!', '', 'success'); resetForm(); openTab('manageProducts'); });
+    } else {
+        push(ref(db, 'products'), data).then(() => { Swal.fire('Saved!', '', 'success'); resetForm(); openTab('manageProducts'); });
+    }
+};
+
 window.resetForm = () => {
     document.getElementById('editKey').value = "";
-    document.getElementById('pName').value = "";
-    document.getElementById('pTitle').value = "";
-    document.getElementById('pMrp').value = "";
-    document.getElementById('pPrice').value = "";
     document.getElementById('pDesc').value = "";
-    document.getElementById('specInputs').innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
-    document.getElementById('imageInputs').innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
     document.getElementById('formTitle').innerText = "Add New Item";
     document.getElementById('saveBtn').innerText = "SAVE PRODUCT";
     document.getElementById('cancelEdit').style.display = "none";
@@ -323,49 +308,12 @@ window.addImageField = () => {
     document.getElementById('imageInputs').appendChild(i);
 };
 
-// --- PRODUCT SAVE ---
-window.saveProduct = () => {
-    const key = document.getElementById('editKey').value;
-    const specs = {};
-    
-    document.querySelectorAll('.spec-row').forEach(row => {
-        const k = row.querySelector('.spec-key').value.trim();
-        const v = row.querySelector('.spec-val').value.trim();
-        if(k && v) specs[k] = v;
-    });
-
-    const data = {
-        name: document.getElementById('pName').value,
-        title: document.getElementById('pTitle').value,
-        mrp: document.getElementById('pMrp').value,
-        price: document.getElementById('pPrice').value,
-        desc: document.getElementById('pDesc').value, // Line breaks include cheyyunnu
-        specs: specs,
-        images: Array.from(document.querySelectorAll('.p-img-link')).map(i => i.value).filter(v => v),
-        return: document.getElementById('pReturn').value,
-        outOfStock: false
-    };
-
-    if(key) {
-        update(ref(db, `products/${key}`), data).then(() => {
-            Swal.fire('Updated!', 'Saved', 'success');
-            resetForm(); openTab('manageProducts');
-        });
-    } else {
-        push(ref(db, 'products'), data).then(() => {
-            Swal.fire('Saved!', 'Added', 'success');
-            resetForm(); openTab('manageProducts');
-        });
-    }
-};
+window.deleteItem = (p) => Swal.fire({title:'Delete?', icon:'warning', showCancelButton:true}).then(r => r.isConfirmed && remove(ref(db,p)));
 
 onValue(ref(db, 'users'), snap => {
     const list = document.getElementById('userList');
     list.innerHTML = "";
-    if(!snap.exists()) return;
-    snap.forEach(u => {
-        list.innerHTML += `<tr><td>${u.val().email || 'N/A'}</td><td>${u.key}</td></tr>`;
-    });
+    snap.forEach(u => { list.innerHTML += `<tr><td>${u.val().email}</td><td>${u.key}</td></tr>`; });
 });
 </script>
 </body>
