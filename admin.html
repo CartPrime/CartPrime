@@ -399,12 +399,17 @@ window.deleteItem = (p) => {
     });
 };
 
+// --- Users Tab Logic ---
 onValue(ref(db, 'users'), snap => {
     const list = document.getElementById('userList');
     list.innerHTML = "";
     if(!snap.exists()) return;
     snap.forEach(u => { 
-        list.innerHTML += `<tr><td>${u.val().email}</td><td>${u.key}</td></tr>`; 
+        const userData = u.val();
+        list.innerHTML += `<tr>
+            <td>${userData.email || 'N/A'}</td>
+            <td>${u.key || 'N/A'}</td>
+        </tr>`; 
     });
 });
 </script>
