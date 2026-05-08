@@ -102,7 +102,7 @@
                 <input type="text" id="pMrp" placeholder="MRP ₹">
                 <input type="text" id="pPrice" placeholder="PRICE ₹">
             </div>
-            <textarea id="pDesc" placeholder="DESCRIPTION" rows="3"></textarea>
+            <textarea id="pDesc" placeholder="DESCRIPTION (Enter adichaal bullet points aayi maarum)" rows="5"></textarea>
             <div id="specInputs">
                 <div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>
             </div>
@@ -161,7 +161,7 @@ window.openTab = (tabId) => {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
     document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
     document.getElementById(tabId).classList.add('active-tab');
-    if(event && event.currentTarget) event.currentTarget.classList.add('active');
+    if(event && event.currentTarget && event.currentTarget.classList) event.currentTarget.classList.add('active');
 };
 
 // --- Orders Section ---
@@ -271,7 +271,10 @@ window.editProduct = (key) => {
         document.getElementById('pTitle').value = p.title;
         document.getElementById('pMrp').value = p.mrp;
         document.getElementById('pPrice').value = p.price;
-        document.getElementById('pDesc').value = p.desc;
+        
+        // Plain text aayi description thirichu kodukkunnu (editing easy aakkan)
+        document.getElementById('pDesc').value = p.desc || "";
+        
         document.getElementById('pReturn').value = p.return;
         
         const sc = document.getElementById('specInputs'); sc.innerHTML = "";
@@ -320,12 +323,11 @@ window.addImageField = () => {
     document.getElementById('imageInputs').appendChild(i);
 };
 
-// --- PRODUCT SAVE CORRECTION ---
+// --- PRODUCT SAVE ---
 window.saveProduct = () => {
     const key = document.getElementById('editKey').value;
     const specs = {};
     
-    // Spec collection fix
     document.querySelectorAll('.spec-row').forEach(row => {
         const k = row.querySelector('.spec-key').value.trim();
         const v = row.querySelector('.spec-val').value.trim();
@@ -337,7 +339,7 @@ window.saveProduct = () => {
         title: document.getElementById('pTitle').value,
         mrp: document.getElementById('pMrp').value,
         price: document.getElementById('pPrice').value,
-        desc: document.getElementById('pDesc').value,
+        desc: document.getElementById('pDesc').value, // Line breaks include cheyyunnu
         specs: specs,
         images: Array.from(document.querySelectorAll('.p-img-link')).map(i => i.value).filter(v => v),
         return: document.getElementById('pReturn').value,
