@@ -167,14 +167,19 @@ window.handleBullets = (e) => {
     }
 };
 
+// FIX: crash avoid cheyyan event check cheyyunnu
 window.openTab = (tabId) => {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
     document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active-tab');
-    if(event) event.currentTarget.classList.add('active');
+    
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) targetTab.classList.add('active-tab');
+
+    if (window.event && window.event.currentTarget && window.event.currentTarget.classList) {
+        window.event.currentTarget.classList.add('active');
+    }
 };
 
-// --- SAVE PRODUCT LOGIC ---
 window.saveProduct = () => {
     const key = document.getElementById('editKey').value;
     
@@ -224,7 +229,6 @@ window.saveProduct = () => {
     }
 };
 
-// --- RENDER FUNCTIONS ---
 onValue(ref(db, 'orders'), snap => {
     const list = document.getElementById('orderList');
     list.innerHTML = ""; 
