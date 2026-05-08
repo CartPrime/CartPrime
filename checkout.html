@@ -234,8 +234,8 @@
             if(res.isConfirmed) {
                 const finalOrder = {
                     customerName: fields.name,
-                    customerPhone: fields.phone,
-                    phone: fields.phone, // Admin panel visibility fix
+                    customerPhone: fields.phone, // Admin-u vendi phone number
+                    phone: fields.phone, // Admin-u vendi phone number (redundant for safety)
                     address: `${fields.house}, ${fields.area}, ${fields.city} - ${fields.pin}`,
                     productName: orderInfo.productName,
                     price: orderInfo.price,
@@ -247,6 +247,7 @@
                     paymentStatus: "Verifying"
                 };
 
+                // Order save aakunnath Email-il thanne
                 const orderRef = ref(db, `orders/${currentUserEmailKey}`);
                 push(orderRef, finalOrder).then(() => {
                     Swal.fire('Success', 'Order Placed Successfully!', 'success')
