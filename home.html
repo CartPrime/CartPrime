@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CartPrime | Discover Luxury</title>
+    <title>CartPrime | Home</title>
     <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -58,6 +58,17 @@
             max-height: 350px; overflow-y: auto; z-index: 2000; display: none; border: 1px solid rgba(0,0,0,0.05);
         }
 
+        /* IVIDE MAATTAM VARUTHI - Search Item Style add cheythu */
+        .suggestion-item {
+            display: flex; align-items: center; padding: 10px 15px; gap: 12px;
+            cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: 0.2s;
+        }
+        .suggestion-item:hover { background: #f8fafc; }
+        .suggestion-item img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; }
+        .suggestion-item h4 { font-size: 0.9rem; font-weight: 600; margin: 0; color: var(--text-main); }
+        .suggestion-item p { font-size: 0.8rem; color: var(--accent); font-weight: 700; margin: 0; }
+        .suggestion-info { display: flex; flex-direction: column; gap: 2px; }
+
         /* --- Header / Hero --- */
         .hero { padding: 40px 6% 20px; text-align: left; }
         .hero h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; }
@@ -65,7 +76,7 @@
 
         /* --- Product Grid --- */
         .container { 
-            padding: 0 6% 180px; /* Adjusted padding for larger footer */
+            padding: 0 6% 180px;
             flex: 1;
         }
         .grid {
@@ -119,58 +130,34 @@
         }
         .buy-btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
 
-        /* --- Nav Right --- */
         .nav-right { display: flex; align-items: center; gap: 18px; }
         .icon-btn { font-size: 1.2rem; color: var(--text-main); cursor: pointer; }
         .admin-pill { background: #000; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-decoration: none; display: none; }
 
-        /* --- Footer (Updated Size) --- */
+        /* --- Footer --- */
         footer { 
-            background: #000; 
-            color: #fff; 
-            padding: 35px 6%; /* Increased padding for more height */
-            position: fixed; 
-            bottom: 0; 
-            width: 100%; 
-            z-index: 1000;
+            background: #000; color: #fff; padding: 35px 6%; position: fixed; bottom: 0; width: 100%; z-index: 1000;
         }
         .footer-content { display: flex; justify-content: space-between; align-items: center; }
-        .footer-logo { font-weight: 800; font-size: 1.5rem; } /* Increased logo size */
+        .footer-logo { font-weight: 800; font-size: 1.5rem; }
         .footer-logo span { color: #64748b; }
-        .footer-contact a { 
-            color: #fff; text-decoration: none; 
-            font-size: 1rem; /* Increased font size */
-            display: flex; align-items: center; gap: 9px; 
-        }
-        .footer-bottom { 
-            border-top: 1px solid #1e293b; 
-            margin-top: 20px; 
-            padding-top: 15px; 
-            text-align: center; 
-            color: #94a3b8; 
-            font-size: 0.85rem; /* Increased text size */
-        }
+        .footer-contact a { color: #fff; text-decoration: none; font-size: 1rem; display: flex; align-items: center; gap: 9px; }
+        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 20px; padding-top: 15px; text-align: center; color: #94a3b8; font-size: 0.85rem; }
 
-        /* --- RESPONSIVE BREAKPOINTS --- */
         @media (max-width: 768px) {
             nav { padding: 10px 4%; }
             .logo { font-size: 1.1rem; }
             .search-container { margin: 0 10px; }
             .hero { padding: 30px 5% 15px; }
             .hero h1 { font-size: 1.8rem; }
-            
-            .grid { 
-                grid-template-columns: repeat(2, 1fr); 
-                gap: 12px; 
-            }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .image-box { height: 160px; border-radius: 14px; }
             .card { border-radius: 20px; padding: 10px; height: 100%; }
             .card h3 { font-size: 0.85rem; }
             .price { font-size: 1rem; }
             .buy-btn { padding: 12px; font-size: 0.8rem; border-radius: 12px; }
             .nav-right { gap: 12px; }
-            .container { padding-bottom: 200px; } /* More space for larger mobile footer */
-            
+            .container { padding-bottom: 200px; }
             footer { padding: 30px 6%; }
             .footer-logo { font-size: 1.3rem; }
             .footer-contact a { font-size: 0.7rem; }
