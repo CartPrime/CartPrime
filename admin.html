@@ -252,7 +252,7 @@ onValue(ref(db, 'products'), snap => {
         const p = child.val();
         const isOut = p.outOfStock === true;
         list.innerHTML += `<tr>
-            <td><img src="${p.images[0]}" width="40" style="border-radius:5px;"></td>
+            <td><img src="${p.images ? p.images[0] : ''}" width="40" style="border-radius:5px;"></td>
             <td>${p.name}</td>
             <td>₹${p.price}</td>
             <td><button class="stock-badge ${isOut ? 'out-stock' : 'in-stock'}" onclick="toggleStock('${child.key}', ${isOut})">${isOut ? 'OUT' : 'IN'}</button></td>
@@ -270,21 +270,25 @@ window.editProduct = (key) => {
     onValue(ref(db, `products/${key}`), snap => {
         const p = snap.val();
         document.getElementById('editKey').value = key;
-        document.getElementById('pName').value = p.name;
-        document.getElementById('pTitle').value = p.title;
-        document.getElementById('pMrp').value = p.mrp;
-        document.getElementById('pPrice').value = p.price;
+        document.getElementById('pName').value = p.name || "";
+        document.getElementById('pTitle').value = p.title || "";
+        document.getElementById('pMrp').value = p.mrp || "";
+        document.getElementById('pPrice').value = p.price || "";
         document.getElementById('pShippedFrom').value = p.shippedFrom || "";
         document.getElementById('pDeliveryDays').value = p.deliveryDays || 7;
         document.getElementById('pDesc').value = p.desc || "• ";
         
         const sc = document.getElementById('specInputs'); sc.innerHTML = "";
-        for(let k in p.specs) {
-            sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}"></div>`;
+        if(p.specs) {
+            for(let k in p.specs) {
+                sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}"></div>`;
+            }
         }
         
         const ic = document.getElementById('imageInputs'); ic.innerHTML = "";
-        p.images.forEach(u => { ic.innerHTML += `<input type="text" class="p-img-link" value="${u}">`; });
+        if(p.images) {
+            p.images.forEach(u => { ic.innerHTML += `<input type="text" class="p-img-link" value="${u}">`; });
+        }
         
         document.getElementById('formTitle').innerText = "Edit Product";
         document.getElementById('saveBtn').innerText = "UPDATE PRODUCT";
@@ -297,29 +301,54 @@ window.saveProduct = () => {
     const key = document.getElementById('editKey').value;
     const specs = {};
     document.querySelectorAll('.spec-row').forEach(row => {
-        const k = row.querySelector('.spec-key').value;
-        const v = row.querySelector('.spec-val').value;
+        const k = row.querySelector('.spec-key').value.trim();
+        const v = row.querySelector('.spec-val').value.trim();
         if(k && v) specs[k] = v;
     });
 
+    const imageLinks = Array.from(document.querySelectorAll('.p-img-link'))
+                            .map(input => input.value.trim())
+                            .filter(val => val !== "");
+
+    const pName = document.getElementById('pName').value.trim();
+    const pPrice = document.getElementById('pPrice').value.trim();
+
+    if(!pName || !pPrice || imageLinks.length === 0) {
+        Swal.fire('Error', 'Please fill Name, Price and at least one Image URL', 'error');
+        return;
+    }
+
     const data = {
-        name: document.getElementById('pName').value,
-        title: document.getElementById('pTitle').value,
-        mrp: document.getElementById('pMrp').value,
-        price: document.getElementById('pPrice').value,
-        shippedFrom: document.getElementById('pShippedFrom').value || "CartPrime Warehouse",
+        name: pName,
+        title: document.getElementById('pTitle').value.trim(),
+        mrp: document.getElementById('pMrp').value.trim(),
+        price: pPrice,
+        shippedFrom: document.getElementById('pShippedFrom').value.trim() || "CartPrime Warehouse",
         deliveryDays: document.getElementById('pDeliveryDays').value || 7,
         desc: document.getElementById('pDesc').value,
         specs: specs,
-        images: Array.from(document.querySelectorAll('.p-img-link')).map(i => i.value).filter(v => v),
-        return: document.getElementById('pReturn').value,
-        outOfStock: false
+        images: imageLinks,
+        return: document.getElementById('pReturn').value === "true",
+        outOfStock: false,
+        showOnHome: true
     };
 
     if(key) {
-        update(ref(db, `products/${key}`), data).then(() => { Swal.fire('Updated!', '', 'success'); resetForm(); openTab('manageProducts'); });
+        update(ref(db, `products/${key}`), data)
+            .then(() => { 
+                Swal.fire('Updated!', '', 'success'); 
+                resetForm(); 
+                openTab('manageProducts'); 
+            })
+            .catch(err => Swal.fire('Error', err.message, 'error'));
     } else {
-        push(ref(db, 'products'), data).then(() => { Swal.fire('Saved!', '', 'success'); resetForm(); openTab('manageProducts'); });
+        push(ref(db, 'products'), data)
+            .then(() => { 
+                Swal.fire('Saved!', '', 'success'); 
+                resetForm(); 
+                openTab('manageProducts'); 
+            })
+            .catch(err => Swal.fire('Error', err.message, 'error'));
     }
 };
 
@@ -350,7 +379,6 @@ window.addImageField = () => {
     document.getElementById('imageInputs').appendChild(i);
 };
 
-// --- Shared Delete Function (Orders & Products) ---
 window.deleteItem = (p) => {
     Swal.fire({
         title: 'Are you sure?',
@@ -371,7 +399,6 @@ window.deleteItem = (p) => {
     });
 };
 
-// --- User Management ---
 onValue(ref(db, 'users'), snap => {
     const list = document.getElementById('userList');
     list.innerHTML = "";
