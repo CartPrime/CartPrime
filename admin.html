@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,13 +75,11 @@
 </div>
 
 <div class="main-content">
-    <!-- Orders Tab -->
     <div id="orders" class="tab-content active-tab">
         <h2 class="tab-title">Order Management</h2>
         <div id="orderList"></div>
     </div>
 
-    <!-- Add Product Tab -->
     <div id="addProduct" class="tab-content">
         <h2 class="tab-title" id="formTitle">Add New Item</h2>
         <div class="admin-card" style="max-width: 700px; margin: 0 auto;">
@@ -95,7 +92,7 @@
             </div>
             
             <div style="display:flex; gap:10px;">
-                <input type="text" id="pShippedFrom" placeholder="SHIPPED FROM (e.g. Kerala)">
+                <input type="text" id="pShippedFrom" placeholder="SHIPPED FROM">
                 <input type="number" id="pDeliveryDays" placeholder="DELIVERY IN (Days)" value="7">
             </div>
 
@@ -118,7 +115,6 @@
         </div>
     </div>
 
-    <!-- Inventory Tab -->
     <div id="manageProducts" class="tab-content">
         <h2 class="tab-title">Inventory</h2>
         <div class="admin-card">
@@ -131,7 +127,6 @@
         </div>
     </div>
 
-    <!-- Users Tab -->
     <div id="users" class="tab-content">
         <h2 class="tab-title">Registered Users</h2>
         <div class="admin-card">
@@ -144,7 +139,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, update, remove, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, onValue, update, remove, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -159,7 +154,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Helper for bullets in textarea
 window.handleBullets = (e) => {
     const el = e.target;
     if (el.value === "") el.value = "• ";
@@ -173,16 +167,64 @@ window.handleBullets = (e) => {
     }
 };
 
-// Tab Switching Logic
 window.openTab = (tabId) => {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
     document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
-    const target = document.getElementById(tabId);
-    if(target) target.classList.add('active-tab');
+    document.getElementById(tabId).classList.add('active-tab');
     if(event) event.currentTarget.classList.add('active');
 };
 
-// --- Order Management ---
+// --- SAVE PRODUCT LOGIC ---
+window.saveProduct = () => {
+    const key = document.getElementById('editKey').value;
+    
+    const specs = {};
+    document.querySelectorAll('.spec-row').forEach(row => {
+        const k = row.querySelector('.spec-key').value.trim();
+        const v = row.querySelector('.spec-val').value.trim();
+        if(k && v) specs[k] = v;
+    });
+
+    const imageLinks = Array.from(document.querySelectorAll('.p-img-link'))
+                            .map(input => input.value.trim())
+                            .filter(val => val !== "");
+
+    const pName = document.getElementById('pName').value.trim();
+    const pPrice = document.getElementById('pPrice').value.trim();
+
+    if(!pName || !pPrice || imageLinks.length === 0) {
+        Swal.fire('Error', 'Please fill Name, Price and provide at least one Image URL', 'error');
+        return;
+    }
+
+    const data = {
+        name: pName,
+        title: document.getElementById('pTitle').value.trim() || pName,
+        mrp: document.getElementById('pMrp').value.trim() || pPrice,
+        price: pPrice,
+        shippedFrom: document.getElementById('pShippedFrom').value.trim() || "CartPrime Warehouse",
+        deliveryDays: document.getElementById('pDeliveryDays').value || 7,
+        desc: document.getElementById('pDesc').value || "No description available.",
+        specs: specs,
+        images: imageLinks,
+        return: document.getElementById('pReturn').value === "true",
+        outOfStock: false,
+        showOnHome: true
+    };
+
+    if(key) {
+        update(ref(db, `products/${key}`), data)
+            .then(() => { Swal.fire('Updated!', '', 'success'); resetForm(); openTab('manageProducts'); })
+            .catch(err => Swal.fire('Error', err.message, 'error'));
+    } else {
+        const newRef = push(ref(db, 'products'));
+        set(newRef, data)
+            .then(() => { Swal.fire('Saved!', '', 'success'); resetForm(); openTab('manageProducts'); })
+            .catch(err => Swal.fire('Error', err.message, 'error'));
+    }
+};
+
+// --- RENDER FUNCTIONS ---
 onValue(ref(db, 'orders'), snap => {
     const list = document.getElementById('orderList');
     list.innerHTML = ""; 
@@ -193,8 +235,6 @@ onValue(ref(db, 'orders'), snap => {
             const path = `${uSnap.key}/${oSnap.key}`;
             const payStatus = o.paymentStatus || "Pending";
             const currentStatus = o.status || "Pending";
-            const delDate = o.deliveryDate ? `<p style="font-size:11px; color:#16a34a;"><b>Delivery:</b> ${o.deliveryDate}</p>` : '';
-            
             list.innerHTML += `
             <div class="order-card">
                 <div class="badge-container">
@@ -206,45 +246,29 @@ onValue(ref(db, 'orders'), snap => {
                     <p style="font-size:12px; color:#2563eb;">${uSnap.key}</p>
                     <p style="font-size:11px;">${o.address || 'N/A'}</p>
                     <p style="font-size:11px;"><b>UTR:</b> ${o.transactionId || 'N/A'}</p>
-                    ${delDate}
                 </div>
                 <div style="display:flex; gap:10px; align-items:center;">
                     <img src="${o.productImage}" style="width:40px; border-radius:5px;">
                     <div><p style="font-size:13px; font-weight:800;">${o.productName}</p><p style="font-size:12px; color:green;">₹${o.price}</p></div>
                 </div>
                 <div class="order-actions">
-                    <button style="background:#ff9900; grid-column: span 2; margin-bottom:5px;" onclick="verifyPayment('${path}')">Verify Payment</button>
+                    <button style="background:#ff9900; grid-column: span 2;" onclick="verifyPayment('${path}')">Verify Payment</button>
                     <button style="background:#16a34a" onclick="confirmOrderWithDate('${path}')">Confirm</button>
                     <button style="background:#2563eb" onclick="updateStatus('${path}', 'Delivered')">Deliver</button>
-                    <button style="background:#ef4444; grid-column: span 2; margin-top:5px;" onclick="deleteItem('orders/${path}')"><i class="fa fa-trash"></i> Delete Order</button>
+                    <button style="background:#ef4444; grid-column: span 2;" onclick="deleteItem('orders/${path}')">Delete Order</button>
                 </div>
             </div>`;
         });
     });
 });
 
+window.verifyPayment = (path) => update(ref(db, 'orders/' + path), { paymentStatus: 'Paid' });
+window.updateStatus = (path, s) => update(ref(db, 'orders/' + path), { status: s });
 window.confirmOrderWithDate = async (path) => {
-    const { value: date } = await Swal.fire({
-        title: 'Select Delivery Date',
-        input: 'date',
-        inputAttributes: {
-            min: new Date().toISOString().split('T')[0]
-        },
-        showCancelButton: true
-    });
-    
-    if (date) {
-        update(ref(db, 'orders/' + path), { 
-            status: 'Confirmed',
-            deliveryDate: date 
-        }).then(() => Swal.fire('Confirmed!', 'Order date set to ' + date, 'success'));
-    }
+    const { value: date } = await Swal.fire({ title: 'Select Delivery Date', input: 'date', showCancelButton: true });
+    if (date) update(ref(db, 'orders/' + path), { status: 'Confirmed', deliveryDate: date });
 };
 
-window.updateStatus = (path, s) => update(ref(db, 'orders/' + path), { status: s });
-window.verifyPayment = (path) => update(ref(db, 'orders/' + path), { paymentStatus: 'Paid' }).then(() => Swal.fire('Payment Verified!', '', 'success'));
-
-// --- Inventory Management ---
 onValue(ref(db, 'products'), snap => {
     const list = document.getElementById('manageProductList');
     list.innerHTML = "";
@@ -280,14 +304,16 @@ window.editProduct = (key) => {
         
         const sc = document.getElementById('specInputs'); sc.innerHTML = "";
         if(p.specs) {
-            for(let k in p.specs) {
-                sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}"></div>`;
-            }
+            for(let k in p.specs) sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}"></div>`;
+        } else {
+            sc.innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
         }
         
         const ic = document.getElementById('imageInputs'); ic.innerHTML = "";
         if(p.images) {
             p.images.forEach(u => { ic.innerHTML += `<input type="text" class="p-img-link" value="${u}">`; });
+        } else {
+            ic.innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
         }
         
         document.getElementById('formTitle').innerText = "Edit Product";
@@ -295,61 +321,6 @@ window.editProduct = (key) => {
         document.getElementById('cancelEdit').style.display = "block";
         openTab('addProduct');
     }, { onlyOnce: true });
-};
-
-window.saveProduct = () => {
-    const key = document.getElementById('editKey').value;
-    const specs = {};
-    document.querySelectorAll('.spec-row').forEach(row => {
-        const k = row.querySelector('.spec-key').value.trim();
-        const v = row.querySelector('.spec-val').value.trim();
-        if(k && v) specs[k] = v;
-    });
-
-    const imageLinks = Array.from(document.querySelectorAll('.p-img-link'))
-                            .map(input => input.value.trim())
-                            .filter(val => val !== "");
-
-    const pName = document.getElementById('pName').value.trim();
-    const pPrice = document.getElementById('pPrice').value.trim();
-
-    if(!pName || !pPrice || imageLinks.length === 0) {
-        Swal.fire('Error', 'Please fill Name, Price and at least one Image URL', 'error');
-        return;
-    }
-
-    const data = {
-        name: pName,
-        title: document.getElementById('pTitle').value.trim(),
-        mrp: document.getElementById('pMrp').value.trim(),
-        price: pPrice,
-        shippedFrom: document.getElementById('pShippedFrom').value.trim() || "CartPrime Warehouse",
-        deliveryDays: document.getElementById('pDeliveryDays').value || 7,
-        desc: document.getElementById('pDesc').value,
-        specs: specs,
-        images: imageLinks,
-        return: document.getElementById('pReturn').value === "true",
-        outOfStock: false,
-        showOnHome: true
-    };
-
-    if(key) {
-        update(ref(db, `products/${key}`), data)
-            .then(() => { 
-                Swal.fire('Updated!', '', 'success'); 
-                resetForm(); 
-                openTab('manageProducts'); 
-            })
-            .catch(err => Swal.fire('Error', err.message, 'error'));
-    } else {
-        push(ref(db, 'products'), data)
-            .then(() => { 
-                Swal.fire('Saved!', '', 'success'); 
-                resetForm(); 
-                openTab('manageProducts'); 
-            })
-            .catch(err => Swal.fire('Error', err.message, 'error'));
-    }
 };
 
 window.resetForm = () => {
@@ -380,36 +351,16 @@ window.addImageField = () => {
 };
 
 window.deleteItem = (p) => {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "This action cannot be undone!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#000',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            remove(ref(db, p)).then(() => {
-                Swal.fire('Deleted!', 'Item has been removed.', 'success');
-            }).catch((err) => {
-                Swal.fire('Error', 'Delete failed: ' + err.message, 'error');
-            });
-        }
-    });
+    Swal.fire({ title: 'Delete?', text: "Cannot undo!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })
+    .then((res) => { if (res.isConfirmed) remove(ref(db, p)); });
 };
 
-// --- Users Tab Logic ---
 onValue(ref(db, 'users'), snap => {
     const list = document.getElementById('userList');
     list.innerHTML = "";
     if(!snap.exists()) return;
     snap.forEach(u => { 
-        const userData = u.val();
-        list.innerHTML += `<tr>
-            <td>${userData.email || 'N/A'}</td>
-            <td>${u.key || 'N/A'}</td>
-        </tr>`; 
+        list.innerHTML += `<tr><td>${u.val().email || 'N/A'}</td><td>${u.key}</td></tr>`; 
     });
 });
 </script>
