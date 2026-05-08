@@ -29,6 +29,8 @@
             background: #fff;
             color: #111;
             overflow-x: hidden;
+            /* Bottom bar-nu vendi space */
+            padding-bottom: 100px;
         }
 
         .nav {
@@ -86,10 +88,10 @@
             margin-top: 15px;
             overflow-x: auto;
             padding: 5px;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
         
-        .thumb-container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        .thumb-container::-webkit-scrollbar { display: none; }
 
         .thumb {
             width: 70px;
@@ -181,15 +183,33 @@
             line-height: 1.7;
             margin-bottom: 30px;
             font-size: 0.95rem;
+            white-space: pre-line; /* Description-il auto bullets varan */
+        }
+
+        /* --- STICKY BUY BUTTON SECTION --- */
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 15px 5%;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            border-top: 1px solid #eee;
         }
 
         .buy-now {
             width: 100%;
-            padding: 20px;
+            max-width: 500px;
+            padding: 18px;
             background: var(--primary);
             color: #fff;
             border: none;
-            border-radius: 18px;
+            border-radius: 14px;
             font-weight: 800;
             font-size: 1.1rem;
             cursor: pointer;
@@ -235,22 +255,12 @@
             .price {
                 font-size: 1.8rem;
             }
-            .spec-key {
-                width: 110px;
+            .bottom-action-bar {
+                padding: 12px 4%;
             }
             .buy-now {
                 padding: 16px;
                 font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .main-img-container {
-                height: 300px;
-            }
-            .thumb {
-                width: 60px;
-                height: 60px;
             }
         }
     </style>
@@ -278,9 +288,13 @@
                 style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #eee; background: #f9f9f9;"
                 placeholder="Write your review here..." rows="3"></textarea>
             <button onclick="submitReview()"
-                style="margin-top: 15px; background: #000; color: #fff; border: none; padding: 12px 25px; border-radius: 10px; font-weight: 700; cursor: pointer;">Post
-                Review</button>
+                style="margin-top: 15px; background: #000; color: #fff; border: none; padding: 12px 25px; border-radius: 10px; font-weight: 700; cursor: pointer;">Post Review</button>
         </div>
+    </div>
+
+    <!-- STICKY BUTTON CONTAINER -->
+    <div class="bottom-action-bar" id="stickyAction">
+        <!-- JS vazhi content varum -->
     </div>
 
     <script type="module">
@@ -331,6 +345,7 @@
             const returnStatus = p.return === 'true' || p.return === true;
             const fullTitle = p.title || p.pTitle || p.name;
 
+            // Main Details
             document.getElementById('productDetail').innerHTML = `
                 <div class="image-section">
                     <div class="main-img-container"><img src="${p.images[0]}" class="main-img" id="mainImg"></div>
@@ -349,11 +364,18 @@
 
                     <div class="specs-box"><h4>Specifications</h4>${specsHTML || '<p>No specifications available.</p>'}</div>
                     <div class="desc-text">${p.desc || ''}</div>
-                    
-                    <button class="buy-now ${isOut ? 'out-btn' : ''}" ${isOut ? 'disabled' : ''} onclick="window.proceedToCheckout('${productId}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.images[0]}', '${returnStatus}')">
-                        ${isOut ? 'PRODUCT OUT OF STOCK' : 'BUY NOW'}
-                    </button>
                 </div>`;
+
+            // Sticky Button logic
+            document.getElementById('stickyAction').innerHTML = `
+                <div style="display: flex; flex-direction: column; line-height: 1;">
+                    <span style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 4px;">Total Price</span>
+                    <span style="font-size: 1.3rem; font-weight: 800;">₹${p.price}</span>
+                </div>
+                <button style="width: 70%;" class="buy-now ${isOut ? 'out-btn' : ''}" ${isOut ? 'disabled' : ''} onclick="window.proceedToCheckout('${productId}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.images[0]}', '${returnStatus}')">
+                    ${isOut ? 'OUT OF STOCK' : 'BUY NOW'}
+                </button>
+            `;
         }
 
         window.proceedToCheckout = (id, name, price, img, ret) => {
@@ -392,5 +414,4 @@
         };
     </script>
 </body>
-
 </html>
