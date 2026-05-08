@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Orders | CartPrime</title>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,7 +20,7 @@
         .status-pending { background: #fef9c3; color: #a16207; }
         .status-delivered { background: #e0f2fe; color: #0369a1; }
         .status-cancelled { background: #fee2e2; color: #b91c1c; }
-        .status-confirmed { background: #e0f2fe; color: #0369a1; } 
+        .status-confirmed { background: #e0f2fe; color: #0369a1; }
         .item-box { display: flex; gap: 15px; align-items: center; margin-top: 10px; }
         .item-box img { width: 70px; height: 70px; border-radius: 12px; object-fit: contain; background: #f8fafc; border: 1px solid #f1f1f1; }
         .item-details h3 { font-size: 1rem; color: #1e293b; margin-bottom: 4px; }
@@ -30,7 +30,7 @@
         .btn-cancel { background: #fee2e2; color: var(--red); }
         .btn-return { background: #000; color: #fff; }
         .empty-state { text-align: center; margin-top: 50px; color: #64748b; }
-        .login-msg { text-align: center; padding: 40px 20px; background: white; border-radius: 20px; border: 1px solid #eee; }
+        .login-msg { text-align: center; padding: 40px 20px; background: white; border-radius: 20px; border: 1px solid #eee; margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -40,11 +40,12 @@
     </div>
     
     <div id="ordersList">
-        <div class="empty-state">Loading your orders...</div>
+        <div class="empty-state">Verifying account...</div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const firebaseConfig = {
@@ -58,21 +59,36 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // User data localStorage-il ninnu edukunnu
-        const userData = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
-        const userPhone = userData ? userData.phone : null;
+        // Login check and Email processing
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Email-ile "." replace cheyyunnu (Firebase key restriction karanam)
+                const userEmailKey = user.email.replace(/\./g, ',');
+                loadOrders(userEmailKey);
+            } else {
+                document.getElementById('ordersList').innerHTML = `
+                    <div class="login-msg">
+                        <i class="fa-solid fa-user-lock" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
+                        <h2 style="font-size: 1.2rem; margin-bottom: 10px;">Please Login</h2>
+                        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 20px;">Login with your email to see your orders.</p>
+                        <a href="login.html" class="btn" style="background: black; color: white; padding: 12px 30px; text-decoration: none; border-radius: 12px; display: inline-block;">Login Now</a>
+                    </div>`;
+            }
+        });
 
-        if(userPhone) {
-            onValue(ref(db, `orders/${userPhone}`), (snapshot) => {
+        function loadOrders(emailKey) {
+            // Orders node emailKey vech fetch cheyyunnu
+            onValue(ref(db, `orders/${emailKey}`), (snapshot) => {
                 const list = document.getElementById('ordersList');
                 list.innerHTML = "";
                 
                 if (!snapshot.exists()) {
                     list.innerHTML = `<div class="empty-state">
                         <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 10px;"></i>
-                        <p>No orders found yet.</p>
+                        <p>No orders found for this account.</p>
                     </div>`;
                     return;
                 }
@@ -86,7 +102,6 @@
                     const orderDate = new Date(order.date);
                     const today = new Date();
                     const diffInDays = Math.floor((today - orderDate) / (1000 * 60 * 60 * 24));
-
                     const showCancel = order.status === 'Pending';
                     const showReturn = order.return === 'true' && order.status === 'Delivered' && diffInDays <= 7;
                     
@@ -108,44 +123,33 @@
                                 </div>
                             </div>
                             <div class="action-btns">
-                                ${showCancel ? `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}')">Cancel Order</button>` : ''}
+                                ${showCancel ? `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${emailKey}')">Cancel Order</button>` : ''}
                                 ${showReturn ? `<button class="btn btn-return" onclick="requestReturn()">Request Return</button>` : ''}
                                 ${(!showCancel && !showReturn) ? `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${order.status}</button>` : ''}
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
             });
-        } else {
-            // Logout aayirikunnu enkil ee message kaanikku
-            document.getElementById('ordersList').innerHTML = `
-                <div class="login-msg">
-                    <i class="fa-solid fa-user-lock" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
-                    <h2 style="font-size: 1.2rem; margin-bottom: 10px;">Please Login First</h2>
-                    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 20px;">You need to login to see your order history.</p>
-                    <a href="index.html" class="btn" style="background: black; color: white; padding: 12px 30px; text-decoration: none; display: inline-block; border-radius: 12px;">Login Now</a>
-                </div>`;
         }
 
-        window.cancelOrder = (orderId) => {
+        window.cancelOrder = (orderId, emailKey) => {
             Swal.fire({
                 title: 'Cancel Order?',
-                text: "Are you sure you want to cancel this order?",
+                text: "Confirm to cancel this order.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#000',
-                cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, Cancel'
             }).then((res) => {
                 if(res.isConfirmed) {
-                    update(ref(db, `orders/${userPhone}/${orderId}`), { status: 'Cancelled' })
-                    .then(() => Swal.fire('Cancelled', 'Your order has been cancelled.', 'success'));
+                    update(ref(db, `orders/${emailKey}/${orderId}`), { status: 'Cancelled' })
+                    .then(() => Swal.fire('Cancelled', 'Your order was cancelled.', 'success'));
                 }
             });
         };
 
         window.requestReturn = () => {
-            Swal.fire('Return Requested', 'Our support team will contact you soon for the return process.', 'success');
+            Swal.fire('Return Requested', 'Support will contact you soon.', 'success');
         };
     </script>
 </body>
