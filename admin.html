@@ -37,6 +37,7 @@
         .pay-Verified { background: #dcfce7; color: #166534; }
         .pay-Pending { background: #fef9c3; color: #854d0e; }
         .status-Pending { background: #f1f5f9; color: #64748b; }
+        .status-Confirmed { background: #dcfce7; color: #166534; }
 
         .cust-box { background: #f8fafc; padding: 16px; border-radius: 15px; margin: 15px 0; border: 1px solid #f1f5f9; }
         .order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
@@ -75,13 +76,11 @@
 </div>
 
 <div class="main-content">
-    <!-- Orders Tab -->
     <div id="orders" class="tab-content active-tab">
         <h2 class="tab-title">Order Management</h2>
         <div id="orderList"></div>
     </div>
 
-    <!-- Add Product Tab -->
     <div id="addProduct" class="tab-content">
         <h2 class="tab-title" id="formTitle">Add New Item</h2>
         <div class="admin-card" style="max-width: 700px; margin: 0 auto;">
@@ -93,7 +92,11 @@
                 <input type="text" id="pPrice" placeholder="PRICE ₹">
             </div>
             
-            <!-- Description with Auto Bullet Point Logic -->
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="pShippedFrom" placeholder="SHIPPED FROM (e.g. Kerala)">
+                <input type="number" id="pDeliveryDays" placeholder="DELIVERY IN (Days)" value="7">
+            </div>
+
             <textarea id="pDesc" placeholder="PRODUCT DESCRIPTION" rows="6" onkeydown="handleBullets(event)"></textarea>
             
             <div id="specInputs">
@@ -113,7 +116,6 @@
         </div>
     </div>
 
-    <!-- Inventory Tab -->
     <div id="manageProducts" class="tab-content">
         <h2 class="tab-title">Inventory</h2>
         <div class="admin-card">
@@ -126,7 +128,6 @@
         </div>
     </div>
 
-    <!-- Users Tab -->
     <div id="users" class="tab-content">
         <h2 class="tab-title">Registered Users</h2>
         <div class="admin-card">
@@ -154,11 +155,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// AUTO BULLET LOGIC
 window.handleBullets = (e) => {
     const el = e.target;
     if (el.value === "") el.value = "• ";
-    
     if (e.key === "Enter") {
         e.preventDefault();
         const pos = el.selectionStart;
@@ -172,11 +171,11 @@ window.handleBullets = (e) => {
 window.openTab = (tabId) => {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
     document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active-tab');
+    const target = document.getElementById(tabId);
+    if(target) target.classList.add('active-tab');
     if(event) event.currentTarget.classList.add('active');
 };
 
-// --- Orders Logic ---
 onValue(ref(db, 'orders'), snap => {
     const list = document.getElementById('orderList');
     list.innerHTML = ""; 
@@ -187,6 +186,7 @@ onValue(ref(db, 'orders'), snap => {
             const path = `${uSnap.key}/${oSnap.key}`;
             const payStatus = o.paymentStatus || "Pending";
             const currentStatus = o.status || "Pending";
+            const delDate = o.deliveryDate ? `<p style="font-size:11px; color:#16a34a;"><b>Delivery:</b> ${o.deliveryDate}</p>` : '';
             
             list.innerHTML += `
             <div class="order-card">
@@ -198,13 +198,15 @@ onValue(ref(db, 'orders'), snap => {
                     <b>${o.customerName || 'User'}</b>
                     <p style="font-size:12px; color:#2563eb;">${uSnap.key}</p>
                     <p style="font-size:11px;">${o.address || 'N/A'}</p>
+                    ${delDate}
                 </div>
                 <div style="display:flex; gap:10px; align-items:center;">
                     <img src="${o.productImage}" style="width:40px; border-radius:5px;">
                     <div><p style="font-size:13px; font-weight:800;">${o.productName}</p><p style="font-size:12px; color:green;">₹${o.price}</p></div>
                 </div>
                 <div class="order-actions">
-                    <button style="background:#16a34a" onclick="updateStatus('${path}', 'Confirmed')">Confirm</button>
+                    <button style="background:#ff9900; grid-column: span 2; margin-bottom:5px;" onclick="verifyPayment('${path}')">Verify Payment</button>
+                    <button style="background:#16a34a" onclick="confirmOrderWithDate('${path}')">Confirm</button>
                     <button style="background:#2563eb" onclick="updateStatus('${path}', 'Delivered')">Deliver</button>
                 </div>
             </div>`;
@@ -212,9 +214,27 @@ onValue(ref(db, 'orders'), snap => {
     });
 });
 
-window.updateStatus = (path, s) => update(ref(db, 'orders/' + path), { status: s });
+window.confirmOrderWithDate = async (path) => {
+    const { value: date } = await Swal.fire({
+        title: 'Select Delivery Date',
+        input: 'date',
+        inputAttributes: {
+            min: new Date().toISOString().split('T')[0]
+        },
+        showCancelButton: true
+    });
+    
+    if (date) {
+        update(ref(db, 'orders/' + path), { 
+            status: 'Confirmed',
+            deliveryDate: date 
+        }).then(() => Swal.fire('Confirmed!', 'Order date set to ' + date, 'success'));
+    }
+};
 
-// --- Inventory & Product Logic ---
+window.updateStatus = (path, s) => update(ref(db, 'orders/' + path), { status: s });
+window.verifyPayment = (path) => update(ref(db, 'orders/' + path), { paymentStatus: 'Paid' }).then(() => Swal.fire('Payment Verified!', '', 'success'));
+
 onValue(ref(db, 'products'), snap => {
     const list = document.getElementById('manageProductList');
     list.innerHTML = "";
@@ -244,6 +264,8 @@ window.editProduct = (key) => {
         document.getElementById('pTitle').value = p.title;
         document.getElementById('pMrp').value = p.mrp;
         document.getElementById('pPrice').value = p.price;
+        document.getElementById('pShippedFrom').value = p.shippedFrom || "";
+        document.getElementById('pDeliveryDays').value = p.deliveryDays || 7;
         document.getElementById('pDesc').value = p.desc || "• ";
         
         const sc = document.getElementById('specInputs'); sc.innerHTML = "";
@@ -275,6 +297,8 @@ window.saveProduct = () => {
         title: document.getElementById('pTitle').value,
         mrp: document.getElementById('pMrp').value,
         price: document.getElementById('pPrice').value,
+        shippedFrom: document.getElementById('pShippedFrom').value || "CartPrime Warehouse",
+        deliveryDays: document.getElementById('pDeliveryDays').value || 7,
         desc: document.getElementById('pDesc').value,
         specs: specs,
         images: Array.from(document.querySelectorAll('.p-img-link')).map(i => i.value).filter(v => v),
@@ -291,7 +315,15 @@ window.saveProduct = () => {
 
 window.resetForm = () => {
     document.getElementById('editKey').value = "";
+    document.getElementById('pName').value = "";
+    document.getElementById('pTitle').value = "";
+    document.getElementById('pMrp').value = "";
+    document.getElementById('pPrice').value = "";
+    document.getElementById('pShippedFrom').value = "";
+    document.getElementById('pDeliveryDays').value = 7;
     document.getElementById('pDesc').value = "";
+    document.getElementById('specInputs').innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
+    document.getElementById('imageInputs').innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
     document.getElementById('formTitle').innerText = "Add New Item";
     document.getElementById('saveBtn').innerText = "SAVE PRODUCT";
     document.getElementById('cancelEdit').style.display = "none";
