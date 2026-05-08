@@ -242,14 +242,15 @@
                     paymentStatus: "Verifying"
                 };
 
-                // ഫോൺ നമ്പർ പാതയിലേക്ക് മാത്രം സേവ് ചെയ്യുന്നു
+                // ഡാറ്റാബേസിൽ orders/PHONE_NUMBER എന്ന പാതയിൽ മാത്രം ഓർഡർ സേവ് ചെയ്യുന്നു.
+                // ഇതിലൂടെ Admin പാനലിൽ ഫോൺ നമ്പർ വെച്ച് സെർച്ച് ചെയ്യുമ്പോൾ ഈ ഡാറ്റ ലഭ്യമാകും.
                 const adminOrderRef = ref(db, `orders/${fields.phone}/${orderId}`);
 
                 set(adminOrderRef, finalOrder).then(() => {
                     Swal.fire('Success', 'Order Placed Successfully!', 'success')
                     .then(() => location.href = 'orders.html');
                 }).catch((error) => {
-                    Swal.fire('Error', 'Order could not be saved. Try again.', 'error');
+                    Swal.fire('Error', 'Order could not be saved. Please check connection.', 'error');
                 });
             }
         });
