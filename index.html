@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart Prime | Sign In</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
-        rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -33,8 +32,44 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            /* മൊബൈലിൽ വശങ്ങളിൽ ഗ്യാപ്പ് കിട്ടാൻ */
         }
+
+        /* --- Updated Loader Design --- */
+        #loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loader p {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        /* -------------------------- */
 
         .login-card {
             background: var(--card-bg);
@@ -44,20 +79,10 @@
             text-align: center;
         }
 
-        /* Responsive Adjustments */
         @media (max-width: 480px) {
-            .login-card {
-                padding: 20px;
-                /* മൊബൈലിൽ ഉള്ളിലെ പാഡിംഗ് കുറച്ചു */
-            }
-
-            .brand-header h1 {
-                font-size: 1.6rem;
-            }
-
-            h2 {
-                font-size: 1.3rem;
-            }
+            .login-card { padding: 20px; }
+            .brand-header h1 { font-size: 1.6rem; }
+            h2 { font-size: 1.3rem; }
         }
 
         .brand-header h1 {
@@ -122,12 +147,9 @@
             font-size: 1rem;
             outline: none;
             transition: 0.2s;
-
         }
 
-        .field input:focus {
-            border-color: var(--primary);
-        }
+        .field input:focus { border-color: var(--primary); }
 
         .toggle-btn {
             position: absolute;
@@ -136,7 +158,6 @@
             cursor: pointer;
             color: #999;
             padding: 5px;
-            /* ക്ലിക്ക് ചെയ്യാൻ എളുപ്പത്തിന് */
         }
 
         .btn-main {
@@ -153,9 +174,7 @@
             margin-top: 10px;
         }
 
-        .btn-main:hover {
-            opacity: 0.9;
-        }
+        .btn-main:hover { opacity: 0.9; }
 
         .switch-text {
             margin-top: 30px;
@@ -171,28 +190,17 @@
             text-decoration: underline;
         }
 
-        #loader {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 
 <body>
 
-    <div id="loader"><b>Please wait...</b></div>
+    <!-- Animated Loader -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Please wait...</p>
+    </div>
 
     <div class="login-card">
         <div class="brand-header">
@@ -252,7 +260,6 @@
             appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
             measurementId: "G-9GREWHMEYL"
         };
-
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -326,5 +333,4 @@
         });
     </script>
 </body>
-
 </html>
