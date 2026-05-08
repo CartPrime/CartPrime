@@ -9,197 +9,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root {
-            --bg: #ffffff;
-            --card-bg: #ffffff;
-            --primary: #000000;
-            --secondary-text: #666666;
-            --border: #e1e1e1;
-            --error: #df2020;
-        }
+        :root { --bg: #ffffff; --card-bg: #ffffff; --primary: #000000; --secondary-text: #666666; --border: #e1e1e1; --error: #df2020; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #loader p { font-size: 0.9rem; font-weight: 600; color: var(--primary); }
 
-        body {
-            background-color: var(--bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* --- Updated Loader Design --- */
-        #loader {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            z-index: 1000;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 12px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        #loader p {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        /* -------------------------- */
-
-        .login-card {
-            background: var(--card-bg);
-            width: 100%;
-            max-width: 400px;
-            padding: 40px;
-            text-align: center;
-        }
-
-        @media (max-width: 480px) {
-            .login-card { padding: 20px; }
-            .brand-header h1 { font-size: 1.6rem; }
-            h2 { font-size: 1.3rem; }
-        }
-
-        .brand-header h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            text-transform: uppercase;
-            margin-bottom: 30px;
-        }
-
-        .brand-header h1 span {
-            font-weight: 400;
-            color: #ccc;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-align: left;
-        }
-
-        .subtitle {
-            color: var(--secondary-text);
-            font-size: 0.9rem;
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        #msg-alert {
-            background: #fff5f5;
-            color: var(--error);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: none;
-            text-align: left;
-            border-left: 4px solid var(--error);
-        }
-
-        .field {
-            text-align: left;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .field label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        .field input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            transition: 0.2s;
-        }
-
+        .login-card { background: var(--card-bg); width: 100%; max-width: 400px; padding: 40px; text-align: center; }
+        .brand-header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1.5px; text-transform: uppercase; margin-bottom: 30px; }
+        .brand-header h1 span { font-weight: 400; color: #ccc; }
+        h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; text-align: left; }
+        .subtitle { color: var(--secondary-text); font-size: 0.9rem; margin-bottom: 25px; text-align: left; }
+        #msg-alert { background: #fff5f5; color: var(--error); padding: 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; display: none; text-align: left; border-left: 4px solid var(--error); }
+        .field { text-align: left; margin-bottom: 20px; position: relative; }
+        .field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: #333; }
+        .field input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 1rem; outline: none; transition: 0.2s; }
         .field input:focus { border-color: var(--primary); }
-
-        .toggle-btn {
-            position: absolute;
-            right: 15px;
-            top: 42px;
-            cursor: pointer;
-            color: #999;
-            padding: 5px;
-        }
-
-        .btn-main {
-            width: 100%;
-            padding: 16px;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn-main:hover { opacity: 0.9; }
-
-        .switch-text {
-            margin-top: 30px;
-            font-size: 0.9rem;
-            color: var(--secondary-text);
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-
-        .switch-text b {
-            color: var(--primary);
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
+        .toggle-btn { position: absolute; right: 15px; top: 42px; cursor: pointer; color: #999; padding: 5px; }
+        .btn-main { width: 100%; padding: 16px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .switch-text { margin-top: 30px; font-size: 0.9rem; color: var(--secondary-text); border-top: 1px solid #eee; padding-top: 20px; }
+        .switch-text b { color: var(--primary); cursor: pointer; text-decoration: underline; }
         .hidden { display: none; }
     </style>
 </head>
-
 <body>
 
-    <!-- Animated Loader -->
     <div id="loader">
         <div class="spinner"></div>
-        <p>Please wait...</p>
+        <p>Authenticating...</p>
     </div>
 
     <div class="login-card">
@@ -209,13 +49,14 @@
 
         <div id="msg-alert"></div>
 
+        <!-- SIGN IN UI -->
         <div id="login-ui">
             <h2>Sign In</h2>
-            <p class="subtitle">Enter your email and password to continue.</p>
+            <p class="subtitle">Enter your phone number and password.</p>
 
             <div class="field">
-                <label>Email</label>
-                <input type="email" id="l-email" placeholder="Email address">
+                <label>Phone Number</label>
+                <input type="tel" id="l-phone" placeholder="10-digit mobile number" maxlength="10">
             </div>
             <div class="field">
                 <label>Password</label>
@@ -227,13 +68,14 @@
             <p class="switch-text">New to Cart Prime? <b onclick="toggleUI()">Create an account</b></p>
         </div>
 
+        <!-- REGISTER UI -->
         <div id="reg-ui" class="hidden">
             <h2>Create Account</h2>
-            <p class="subtitle">Fill in the details below to register.</p>
+            <p class="subtitle">Join us using your mobile number.</p>
 
             <div class="field">
-                <label>Email</label>
-                <input type="email" id="r-email" placeholder="Email address">
+                <label>Phone Number</label>
+                <input type="tel" id="r-phone" placeholder="10-digit mobile number" maxlength="10">
             </div>
             <div class="field">
                 <label>Create Password</label>
@@ -293,42 +135,60 @@
 
         // --- REGISTER ---
         document.getElementById('regBtn').addEventListener('click', async () => {
-            const email = document.getElementById('r-email').value;
+            const phone = document.getElementById('r-phone').value;
             const pass = document.getElementById('r-password').value;
-            if (!email || !pass) return showAlert("Please enter both email and password.");
+            
+            if (phone.length !== 10) return showAlert("Please enter a valid 10-digit number.");
+            if (pass.length < 6) return showAlert("Password must be 6+ characters.");
 
             loader.style.display = 'flex';
+            // Phone number-നെ ഒരു ഇമെയിൽ രൂപത്തിലാക്കുന്നു (Firebase Auth-ന് വേണ്ടി)
+            const pseudoEmail = `${phone}@cartprime.com`;
+
             try {
-                const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                await set(ref(db, 'users/' + cred.user.uid), { email, role: "user" });
+                const cred = await createUserWithEmailAndPassword(auth, pseudoEmail, pass);
+                // Database-ൽ ഫോൺ നമ്പർ പ്രൈമറി ആയി സേവ് ചെയ്യുന്നു
+                await set(ref(db, 'users/' + cred.user.uid), { 
+                    phone: phone, 
+                    role: "user",
+                    createdAt: new Date().toISOString()
+                });
+                
+                // My Orders പേജിന് വേണ്ടി ഫോൺ നമ്പർ ലോക്കൽ സ്റ്റോറേജിൽ വെക്കുന്നു
+                localStorage.setItem('cartPrime_UserAddr', JSON.stringify({ phone: phone }));
                 location.href = "home.html";
             } catch (e) {
-                if (e.code === 'auth/email-already-in-use') showAlert("Email is already registered.");
+                if (e.code === 'auth/email-already-in-use') showAlert("This number is already registered.");
                 else showAlert("Registration failed. Try again.");
             }
         });
 
         // --- SIGN IN ---
         document.getElementById('loginBtn').addEventListener('click', async () => {
-            const email = document.getElementById('l-email').value;
+            const phone = document.getElementById('l-phone').value;
             const pass = document.getElementById('l-password').value;
-            if (!email || !pass) return showAlert("Please enter your credentials.");
+
+            if (phone.length !== 10 || !pass) return showAlert("Enter valid phone number and password.");
 
             loader.style.display = 'flex';
+            const pseudoEmail = `${phone}@cartprime.com`;
+
             try {
-                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                const cred = await signInWithEmailAndPassword(auth, pseudoEmail, pass);
                 const snapshot = await get(child(ref(db), `users/${cred.user.uid}`));
 
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
                     localStorage.setItem("isAdmin", userData.role === "admin" ? "true" : "false");
+                    // ലോഗിൻ ചെയ്യുമ്പോൾ ഫോൺ നമ്പർ ഉറപ്പായും ലോക്കൽ സ്റ്റോറേജിൽ സേവ് ചെയ്യണം
+                    localStorage.setItem('cartPrime_UserAddr', JSON.stringify({ phone: userData.phone }));
                     location.href = "home.html";
                 } else {
-                    showAlert("User not found in registry.");
+                    showAlert("Account details not found.");
                     await signOut(auth);
                 }
             } catch (e) {
-                showAlert("Invalid email or password.");
+                showAlert("Invalid phone number or password.");
             }
         });
     </script>
