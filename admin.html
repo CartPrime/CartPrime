@@ -61,7 +61,6 @@
 
         .spec-row { display: flex; gap: 10px; }
 
-        /* Responsive Mobile Settings */
         @media (max-width: 768px) {
             .sidebar { width: 70px; padding: 20px 10px; }
             .sidebar h2 { display: none; }
@@ -145,14 +144,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getDatabase, ref, onValue, update, remove, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
-            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
-            authDomain: "cartprime-shopping.firebaseapp.com",
-            projectId: "cartprime-shopping",
-            storageBucket: "cartprime-shopping.firebasestorage.app",
-            messagingSenderId: "570068438689",
-            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
-            measurementId: "G-9GREWHMEYL"
-        };
+    apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+    authDomain: "cartprime-shopping.firebaseapp.com",
+    projectId: "cartprime-shopping",
+    storageBucket: "cartprime-shopping.firebasestorage.app",
+    messagingSenderId: "570068438689",
+    appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+    measurementId: "G-9GREWHMEYL"
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -160,11 +159,12 @@ const db = getDatabase(app);
 window.openTab = (tabId) => {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
     document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active-tab');
+    const tab = document.getElementById(tabId);
+    if(tab) tab.classList.add('active-tab');
     if(event && event.currentTarget) event.currentTarget.classList.add('active');
 };
 
-// --- Orders Section ---
+// --- Orders ---
 onValue(ref(db, 'orders'), snap => {
     const list = document.getElementById('orderList');
     list.innerHTML = ""; 
@@ -183,23 +183,17 @@ onValue(ref(db, 'orders'), snap => {
                     <span class="status-badge status-${currentStatus}">${currentStatus}</span>
                     <span class="pay-badge ${payStatus === 'Paid' ? 'pay-Verified' : 'pay-Pending'}">${payStatus}</span>
                 </div>
-
-                <div style="margin-top:10px;">
-                    <span style="font-size:10px; color:#aaa; font-weight:800;">ID: #${oSnap.key.slice(-6).toUpperCase()}</span>
-                </div>
-
+                <div style="margin-top:10px;"><span style="font-size:10px; color:#aaa; font-weight:800;">ID: #${oSnap.key.slice(-6).toUpperCase()}</span></div>
                 <div class="cust-box">
                     <b style="font-size:15px;">${o.customerName || 'No Name'}</b>
                     <p style="color:#2563eb; font-weight:800; font-size:12px; margin-top:8px;"><i class="fa fa-phone"></i> ${uSnap.key}</p>
                     <p style="font-size:11px; margin-top:5px; color:#475569;"><i class="fa fa-map-marker-alt"></i> ${o.address || 'N/A'}</p>
                     ${delDate}
                 </div>
-
                 <div style="display:flex; gap:12px; align-items:center; border-top:1px solid #f1f5f9; padding-top:15px;">
                     <img src="${o.productImage || ''}" style="width:50px; height:50px; object-fit:contain; border-radius:10px; background:#f8fafc;">
                     <div><p style="font-size:13px; font-weight:800;">${o.productName}</p><p style="font-size:12px; color:#16a34a; font-weight:800;">₹${o.price}</p></div>
                 </div>
-
                 <div class="order-actions">
                     <button style="background:#16a34a" onclick="updateStatus('${path}', 'Confirmed')">Confirm</button>
                     <button style="background:#ca8a04" onclick="updateStatus('${path}', 'Shipped')">Ship</button>
@@ -219,7 +213,6 @@ window.updateStatus = (path, s) => {
             html: '<input type="date" id="del-date" class="swal2-input">',
             showCancelButton: true,
             confirmButtonText: 'Confirm Order',
-            confirmButtonColor: '#16a34a',
             preConfirm: () => {
                 const date = document.getElementById('del-date').value;
                 if (!date) Swal.showValidationMessage('Please select a date');
@@ -227,10 +220,8 @@ window.updateStatus = (path, s) => {
             }
         }).then((res) => {
             if (res.isConfirmed) {
-                update(ref(db, 'orders/' + path), { 
-                    status: s,
-                    deliveryDate: res.value 
-                }).then(() => Swal.fire('Confirmed!', 'Delivery date set to ' + res.value, 'success'));
+                update(ref(db, 'orders/' + path), { status: s, deliveryDate: res.value })
+                .then(() => Swal.fire('Confirmed!', 'Delivery date set', 'success'));
             }
         });
     } else {
@@ -239,9 +230,9 @@ window.updateStatus = (path, s) => {
 };
 
 window.verifyPay = (path) => update(ref(db, 'orders/'+path), { paymentStatus: "Paid" });
-window.deleteItem = (p) => Swal.fire({title:'Delete Order?', icon:'warning', showCancelButton:true, confirmButtonColor:'#000'}).then(r => r.isConfirmed && remove(ref(db,p)));
+window.deleteItem = (p) => Swal.fire({title:'Delete?', icon:'warning', showCancelButton:true}).then(r => r.isConfirmed && remove(ref(db,p)));
 
-// --- Inventory Section ---
+// --- Inventory ---
 onValue(ref(db, 'products'), snap => {
     const list = document.getElementById('manageProductList');
     list.innerHTML = "";
@@ -267,18 +258,20 @@ window.editProduct = (key) => {
     onValue(ref(db, `products/${key}`), snap => {
         const p = snap.val();
         document.getElementById('editKey').value = key;
-        document.getElementById('pName').value = p.name;
-        document.getElementById('pTitle').value = p.title;
-        document.getElementById('pMrp').value = p.mrp;
-        document.getElementById('pPrice').value = p.price;
-        document.getElementById('pDesc').value = p.desc;
-        document.getElementById('pReturn').value = p.return;
+        document.getElementById('pName').value = p.name || '';
+        document.getElementById('pTitle').value = p.title || '';
+        document.getElementById('pMrp').value = p.mrp || '';
+        document.getElementById('pPrice').value = p.price || '';
+        document.getElementById('pDesc').value = p.desc || '';
+        document.getElementById('pReturn').value = p.return || 'true';
         
         const sc = document.getElementById('specInputs'); sc.innerHTML = "";
-        for(let k in p.specs) {
-            const d = document.createElement('div'); d.className = 'spec-row';
-            d.innerHTML = `<input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}">`;
-            sc.appendChild(d);
+        if(p.specs) {
+            for(let k in p.specs) {
+                const d = document.createElement('div'); d.className = 'spec-row';
+                d.innerHTML = `<input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}">`;
+                sc.appendChild(d);
+            }
         }
         
         const ic = document.getElementById('imageInputs'); ic.innerHTML = "";
@@ -320,6 +313,7 @@ window.addImageField = () => {
     document.getElementById('imageInputs').appendChild(i);
 };
 
+// FIX: saveProduct window object-il assign cheythu
 window.saveProduct = () => {
     const key = document.getElementById('editKey').value;
     const specs = {};
@@ -343,12 +337,12 @@ window.saveProduct = () => {
 
     if(key) {
         update(ref(db, `products/${key}`), data).then(() => {
-            Swal.fire('Updated!', 'Saved', 'success');
+            Swal.fire('Updated!', 'Product details updated', 'success');
             resetForm(); openTab('manageProducts');
         });
     } else {
         push(ref(db, 'products'), data).then(() => {
-            Swal.fire('Saved!', 'Added', 'success');
+            Swal.fire('Saved!', 'Product added to inventory', 'success');
             resetForm(); openTab('manageProducts');
         });
     }
