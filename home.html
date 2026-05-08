@@ -52,7 +52,7 @@
         .search-container input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .search-container i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
 
-        /* --- Fixed Search Suggestion Box --- */
+        /* --- Compact Search Suggestion Box --- */
         .search-suggestions-box {
             position: absolute; top: calc(100% + 8px); left: 0; right: 0;
             background: white; border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.1);
@@ -60,19 +60,19 @@
         }
 
         .suggestion-item {
-            display: flex; align-items: center; padding: 10px 15px; gap: 12px;
+            display: flex; align-items: center; padding: 8px 12px; gap: 12px;
             cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: 0.2s;
         }
         .suggestion-item:hover { background: #f8fafc; }
         .suggestion-item img { 
-            width: 45px; height: 45px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
+            width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
         }
-        .suggestion-info { display: flex; flex-direction: column; gap: 2px; overflow: hidden; }
+        .suggestion-info { display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
         .suggestion-item h4 { 
-            font-size: 0.9rem; font-weight: 600; margin: 0; color: var(--text-main);
+            font-size: 0.85rem; font-weight: 600; margin: 0; color: var(--text-main);
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .suggestion-item p { font-size: 0.8rem; color: var(--accent); font-weight: 700; margin: 0; }
+        .suggestion-item p { font-size: 0.75rem; color: var(--accent); font-weight: 700; margin: 0; }
 
         /* --- Header / Hero --- */
         .hero { padding: 40px 6% 20px; text-align: left; }
@@ -134,7 +134,7 @@
         .footer-content { display: flex; justify-content: space-between; align-items: center; }
         .footer-logo { font-weight: 800; font-size: 1.5rem; }
         .footer-logo span { color: #64748b; }
-        .footer-contact a { color: #fff; text-decoration: none; font-size: 1rem; display: flex; align-items: center; gap: 9px; }
+        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.8rem; display: flex; align-items: center; gap: 9px; }
         .footer-bottom { border-top: 1px solid #1e293b; margin-top: 20px; padding-top: 15px; text-align: center; color: #94a3b8; font-size: 0.85rem; }
 
         @media (max-width: 768px) {
@@ -151,9 +151,11 @@
             .buy-btn { padding: 12px; font-size: 0.8rem; border-radius: 12px; }
             .container { padding-bottom: 200px; }
             /* Mobile Search Suggestion Adjustment */
-            .suggestion-item { padding: 8px 10px; gap: 8px; }
-            .suggestion-item img { width: 35px; height: 35px; }
+            .search-suggestions-box { max-height: 250px; }
+            .suggestion-item { padding: 6px 10px; gap: 10px; }
+            .suggestion-item img { width: 35px; height: 35px; border-radius: 6px; }
             .suggestion-item h4 { font-size: 0.8rem; }
+            .suggestion-item p { font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -220,7 +222,7 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Admin status check (silently using stored context)
+                // Administrative access is handled by checking a specific flag
                 if (localStorage.getItem("isAdmin") === "true") document.getElementById('adminLink').style.display = 'block';
             } else { location.href = "index.html"; }
         });
