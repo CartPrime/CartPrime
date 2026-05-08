@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CartPrime | Discover Luxury</title>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -26,178 +26,130 @@
             overflow-x: hidden;
         }
 
-        /* --- Stylish Navigation --- */
+        /* --- Navigation --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 6%;
+            padding: 12px 6%;
             position: sticky; top: 0; 
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             z-index: 1000;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
         .logo span { color: var(--text-muted); font-weight: 300; }
 
-        /* Search Bar & Suggestions */
-        .search-container { flex: 1; max-width: 500px; margin: 0 40px; position: relative; }
+        .search-container { flex: 1; max-width: 500px; margin: 0 20px; position: relative; }
         .search-container input {
-            width: 100%; padding: 12px 20px 12px 48px; border-radius: 16px;
+            width: 100%; padding: 10px 15px 10px 40px; border-radius: 12px;
             border: 1px solid #e2e8f0; background: var(--surface); outline: none;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.95rem;
+            transition: 0.3s; font-size: 0.9rem;
         }
-        .search-container input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .search-container i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-container input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .search-container i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
 
         .search-suggestions-box {
-            position: absolute; top: calc(100% + 10px); left: 0; right: 0;
-            background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            max-height: 400px; overflow-y: auto; z-index: 2000; display: none; border: 1px solid rgba(0,0,0,0.05);
+            position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+            background: white; border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            max-height: 350px; overflow-y: auto; z-index: 2000; display: none; border: 1px solid rgba(0,0,0,0.05);
         }
 
         /* --- Header / Hero --- */
-        .hero { padding: 50px 6% 30px; }
-        .hero h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
-        .hero p { color: var(--text-muted); margin-top: 10px; font-size: 1.1rem; }
+        .hero { padding: 40px 6% 20px; text-align: left; }
+        .hero h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; }
+        .hero p { color: var(--text-muted); margin-top: 8px; font-size: 1rem; }
 
         /* --- Product Grid --- */
-        .container { padding: 0 6% 80px; }
+        .container { padding: 0 6% 60px; }
         .grid {
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 35px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 25px;
         }
 
-        /* --- Premium Card Styling --- */
+        /* --- Card Styling --- */
         .card {
-            background: #fff; border-radius: 32px; padding: 12px;
-            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            position: relative; border: 1px solid transparent;
-            animation: fadeIn 0.8s ease backwards;
-            margin-top: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            background: #fff; border-radius: 24px; padding: 12px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative; border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex; flex-direction: column;
         }
-        .card:hover { 
-            transform: translateY(-12px);
-            border-color: #f1f5f9;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.06);
-        }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
         
         .image-box { 
-            width: 100%; height: 320px; border-radius: 24px; 
-            overflow: hidden; background: #f8fafc; margin-bottom: 20px;
+            width: 100%; height: 260px; border-radius: 18px; 
+            overflow: hidden; background: #f8fafc; margin-bottom: 15px;
             position: relative;
         }
-        .card img { width: 100%; height: 100%; object-fit: contain; transition: 0.6s; }
-        .card:hover img { transform: scale(1.08); }
+        .card img { width: 100%; height: 100%; object-fit: contain; transition: 0.5s; }
+        .card:hover img { transform: scale(1.05); }
 
         .stock-badge {
-            position: absolute; top: 20px; left: 20px; background: rgba(15, 23, 42, 0.9);
-            color: white; padding: 6px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; z-index: 10;
+            position: absolute; top: 12px; left: 12px; background: #000;
+            color: white; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; z-index: 10;
         }
-        
         .discount-badge {
-            position: absolute; top: 20px; right: 20px; background: #22c55e;
-            color: white; padding: 6px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; z-index: 10;
+            position: absolute; top: 12px; right: 12px; background: #22c55e;
+            color: white; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; z-index: 10;
         }
 
-        .card-info { padding: 0 10px 10px; }
-        .card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .price-container { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .price { font-weight: 800; font-size: 1.4rem; color: var(--primary); }
-        .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.95rem; }
+        .card-info { flex-grow: 1; display: flex; flex-direction: column; }
+        .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .price-container { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
+        .price { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
+        .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.85rem; }
 
         .buy-btn {
-            width: 100%; padding: 16px; background: var(--primary); color: #fff; border: none;
-            border-radius: 18px; font-weight: 700; cursor: pointer; transition: 0.3s;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
+            width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none;
+            border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;
+            font-size: 0.9rem; margin-top: auto;
         }
-        .buy-btn:hover { background: #334155; }
         .buy-btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
 
-        /* --- Footer Style --- */
-        footer { background: #000; color: #fff; padding: 60px 6% 30px; margin-top: 50px; }
-        .footer-content { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; margin-bottom: 40px; }
-        .footer-logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; margin-bottom: 15px; }
-        .footer-logo span { color: #64748b; font-weight: 300; }
-        .footer-info p { color: #94a3b8; font-size: 0.9rem; max-width: 300px; line-height: 1.6; }
-        .footer-contact h4 { font-size: 1.1rem; margin-bottom: 15px; font-weight: 700; }
-        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-        .footer-contact a:hover { color: var(--accent); }
-        .footer-bottom { border-top: 1px solid #1e293b; padding-top: 30px; text-align: center; color: #475569; font-size: 0.8rem; }
+        /* --- Nav Right --- */
+        .nav-right { display: flex; align-items: center; gap: 18px; }
+        .icon-btn { font-size: 1.2rem; color: var(--text-main); cursor: pointer; }
+        .admin-pill { background: #000; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-decoration: none; display: none; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* --- Suggestion Items --- */
+        .suggestion-item { display: flex; align-items: center; padding: 12px 15px; gap: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
+        .suggestion-item img { width: 45px; height: 45px; object-fit: contain; border-radius: 8px; background: #f8fafc; }
+        .suggestion-info h4 { font-size: 0.85rem; font-weight: 700; margin: 0; }
+        .suggestion-info p { font-size: 0.8rem; color: #22c55e; font-weight: 700; }
 
-        /* Nav Right Buttons */
-        .nav-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
-        .icon-btn { font-size: 1.3rem; color: var(--text-main); cursor: pointer; transition: 0.2s; }
-        .icon-btn:hover { color: var(--accent); }
-        .admin-pill { 
-            background: #000; color: #fff; padding: 8px 16px; border-radius: 12px; 
-            font-size: 0.8rem; font-weight: 700; text-decoration: none; display: none;
-        }
+        /* --- Footer --- */
+        footer { background: #000; color: #fff; padding: 50px 6% 30px; margin-top: 40px; }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; }
+        .footer-logo { font-weight: 800; font-size: 1.4rem; margin-bottom: 10px; }
+        .footer-logo span { color: #64748b; }
+        .footer-info p { color: #94a3b8; font-size: 0.85rem; max-width: 280px; line-height: 1.5; }
+        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 30px; padding-top: 20px; text-align: center; color: #475569; font-size: 0.75rem; }
 
-        .suggestion-item {
-            display: flex; align-items: center; padding: 15px 20px; gap: 15px;
-            cursor: pointer; transition: 0.2s;
-        }
-        .suggestion-item:hover { background: var(--surface); }
-        .suggestion-item img { width: 50px; height: 50px; object-fit: contain; border-radius: 10px; background: #f1f5f9; }
-        .suggestion-info h4 { font-size: 0.95rem; font-weight: 700; margin: 0; }
-        .suggestion-info p { font-size: 0.85rem; color: #22c55e; font-weight: 700; margin: 0; }
-
-        /* --- Responsive Adjustments --- */
-        @media (max-width: 1024px) {
-            .grid { gap: 20px; }
-            .hero h1 { font-size: 2.4rem; }
-        }
-
+        /* --- RESPONSIVE BREAKPOINTS --- */
         @media (max-width: 768px) {
-            nav { padding: 12px 4%; }
-            .logo { font-size: 1.2rem; }
-            .search-container { margin: 0 15px; }
-            
-            .hero { 
-                padding: 30px 6% 25px; 
-                background: #fff; 
-                border-radius: 20px; 
-                box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
-                width: 92%; 
-                margin: 15px auto; 
-            }
+            nav { padding: 10px 4%; }
+            .logo { font-size: 1.1rem; }
+            .search-container { margin: 0 10px; }
+            .hero { padding: 30px 5% 15px; }
             .hero h1 { font-size: 1.8rem; }
-            .hero p { font-size: 0.95rem; }
-
-            .container { padding: 0 4% 60px; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            
-            .card { border-radius: 24px; padding: 8px; margin-top: 15px; }
-            .image-box { height: 170px; border-radius: 18px; margin-bottom: 10px; }
-            
-            .card h3 { font-size: 0.9rem; margin-bottom: 4px;  }
+            .image-box { height: 180px; border-radius: 14px; }
+            .card { border-radius: 20px; padding: 10px; }
+            .card h3 { font-size: 0.9rem; }
             .price { font-size: 1.1rem; }
-            .mrp { font-size: 0.8rem; }
-            .price-container { gap: 6px; margin-bottom: 12px; }
-            
-            .buy-btn { padding: 12px; font-size: 0.8rem; border-radius: 14px; }
-            
-            .stock-badge, .discount-badge { padding: 4px 8px; font-size: 0.65rem; top: 10px; left: 10px; border-radius: 8px; }
-            .discount-badge { right: 10px; left: auto; }
-
-            footer { padding: 50px 8% }
-            .footer-content { gap: 25px; }
+            .buy-btn { padding: 12px; font-size: 0.8rem; border-radius: 12px; }
+            .nav-right { gap: 12px; }
         }
 
         @media (max-width: 480px) {
-            .search-container { margin: 0 10px; }
-            .nav-right { gap: 12px; }
+            .hero h1 { font-size: 1.6rem; }
+            .search-container input { padding-left: 35px; font-size: 0.85rem; }
+            .search-container i { left: 12px; }
             .icon-btn { font-size: 1.1rem; }
-            .grid { gap: 10px; }
-            .hero h1 { font-size: 1.5rem; }
+            .footer-content { flex-direction: column; }
         }
     </style>
 </head>
@@ -205,13 +157,11 @@
 
     <nav>
         <div class="logo" onclick="location.reload()">CART<span>PRIME</span></div>
-        
         <div class="search-container">
             <i class="fa fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Search..." autocomplete="off">
+            <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off">
             <div id="searchSuggestions" class="search-suggestions-box"></div>
         </div>
-
         <div class="nav-right">
             <a href="orders.html" class="icon-btn"><i class="fa-solid fa-bag-shopping"></i></a>
             <a href="admin.html" id="adminLink" class="admin-pill">ADMIN</a>
@@ -221,7 +171,7 @@
 
     <header class="hero">
         <h1>CartPrime<br>Prime Collections.</h1>
-        <p>CartPrime Online Shopping</p>
+        <p>Premium quality shopping experience.</p>
     </header>
 
     <div class="container">
@@ -232,10 +182,9 @@
         <div class="footer-content">
             <div class="footer-info">
                 <div class="footer-logo">CART<span>PRIME</span></div>
-                <p>shopping collections with quality</p>
+                <p>Curated collections with uncompromised quality and style.</p>
             </div>
             <div class="footer-contact">
-                <h4>Contact Us</h4>
                 <a href="mailto:cartprimeshopping@gmail.com">
                     <i class="fa-regular fa-envelope"></i>
                     cartprimeshopping@gmail.com
@@ -252,7 +201,7 @@
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-       const firebaseConfig = {
+        const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
             authDomain: "cartprime-shopping.firebaseapp.com",
             projectId: "cartprime-shopping",
@@ -288,7 +237,7 @@
             const grid = document.getElementById('productGrid');
             grid.innerHTML = "";
             
-            products.forEach((p, index) => {
+            products.forEach((p) => {
                 if (p.showOnHome === false) return;
 
                 const isOut = p.outOfStock === true;
@@ -301,7 +250,7 @@
                 }
 
                 const html = `
-                    <div class="card" style="animation-delay: ${index * 0.05}s">
+                    <div class="card">
                         ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''}
                         ${!isOut ? discTag : ''}
                         <div class="image-box">
