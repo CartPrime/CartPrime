@@ -143,7 +143,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -232,10 +232,11 @@
             confirmButtonColor: '#000'
         }).then((res) => {
             if(res.isConfirmed) {
+                const orderId = Date.now(); // Unique ID for admin panel
                 const finalOrder = {
                     customerName: fields.name,
-                    customerPhone: fields.phone, // Admin-u vendi phone number
-                    phone: fields.phone, // Admin-u vendi phone number (redundant for safety)
+                    customerPhone: fields.phone,
+                    phone: fields.phone,
                     address: `${fields.house}, ${fields.area}, ${fields.city} - ${fields.pin}`,
                     productName: orderInfo.productName,
                     price: orderInfo.price,
@@ -247,9 +248,16 @@
                     paymentStatus: "Verifying"
                 };
 
-                // Order save aakunnath Email-il thanne
-                const orderRef = ref(db, `orders/${currentUserEmailKey}`);
-                push(orderRef, finalOrder).then(() => {
+                // 1. Email-ലേക്ക് സേവ് ചെയ്യുന്നു (യൂസറിന് ഓർഡർ കാണാൻ)
+                const userOrderRef = ref(db, `orders/${currentUserEmailKey}/${orderId}`);
+                
+                // 2. നേരിട്ട് orders പാതയിലേക്ക് സേവ് ചെയ്യുന്നു (Admin Panel-ൽ ഫോൺ നമ്പർ ആയി കാണാൻ)
+                const adminOrderRef = ref(db, `orders/${fields.phone}/${orderId}`);
+
+                Promise.all([
+                    set(userOrderRef, finalOrder),
+                    set(adminOrderRef, finalOrder)
+                ]).then(() => {
                     Swal.fire('Success', 'Order Placed Successfully!', 'success')
                     .then(() => location.href = 'orders.html');
                 });
