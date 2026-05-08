@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CartPrime | Home</title>
+    <title>CartPrime | Discover Luxury</title>
     <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -65,7 +65,7 @@
 
         /* --- Product Grid --- */
         .container { 
-            padding: 0 6% 120px; 
+            padding: 0 6% 180px; /* Adjusted padding for larger footer */
             flex: 1;
         }
         .grid {
@@ -81,12 +81,12 @@
             position: relative; border: 1px solid #f1f5f9;
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             display: flex; flex-direction: column;
-            height: 100%; /* Ensures all cards in a row have equal height */
+            height: 100%;
         }
         .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
         
         .image-box { 
-            width: 100%; height: 260px; /* Fixed height for desktop */
+            width: 100%; height: 260px; 
             border-radius: 18px; 
             overflow: hidden; background: #f8fafc; margin-bottom: 15px;
             position: relative;
@@ -124,16 +124,32 @@
         .icon-btn { font-size: 1.2rem; color: var(--text-main); cursor: pointer; }
         .admin-pill { background: #000; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-decoration: none; display: none; }
 
-        /* --- Footer (Fixed) --- */
+        /* --- Footer (Updated Size) --- */
         footer { 
-            background: #000; color: #fff; padding: 15px 6%; 
-            position: fixed; bottom: 0; width: 100%; z-index: 1000;
+            background: #000; 
+            color: #fff; 
+            padding: 35px 6%; /* Increased padding for more height */
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            z-index: 1000;
         }
         .footer-content { display: flex; justify-content: space-between; align-items: center; }
-        .footer-logo { font-weight: 800; font-size: 1.2rem; }
+        .footer-logo { font-weight: 800; font-size: 1.5rem; } /* Increased logo size */
         .footer-logo span { color: #64748b; }
-        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
-        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 8px; padding-top: 8px; text-align: center; color: #475569; font-size: 0.65rem; }
+        .footer-contact a { 
+            color: #fff; text-decoration: none; 
+            font-size: 1rem; /* Increased font size */
+            display: flex; align-items: center; gap: 10px; 
+        }
+        .footer-bottom { 
+            border-top: 1px solid #1e293b; 
+            margin-top: 20px; 
+            padding-top: 15px; 
+            text-align: center; 
+            color: #94a3b8; 
+            font-size: 0.85rem; /* Increased text size */
+        }
 
         /* --- RESPONSIVE BREAKPOINTS --- */
         @media (max-width: 768px) {
@@ -143,25 +159,21 @@
             .hero { padding: 30px 5% 15px; }
             .hero h1 { font-size: 1.8rem; }
             
-            /* Two products per row */
             .grid { 
                 grid-template-columns: repeat(2, 1fr); 
                 gap: 12px; 
             }
-            .image-box { height: 160px; border-radius: 14px; } /* Fixed image height for mobile */
+            .image-box { height: 160px; border-radius: 14px; }
             .card { border-radius: 20px; padding: 10px; height: 100%; }
             .card h3 { font-size: 0.85rem; }
             .price { font-size: 1rem; }
             .buy-btn { padding: 12px; font-size: 0.8rem; border-radius: 12px; }
             .nav-right { gap: 12px; }
-            .container { padding-bottom: 150px; } /* Space for fixed footer */
-        }
-
-        @media (max-width: 480px) {
-            .hero h1 { font-size: 1.6rem; }
-            .search-container input { padding-left: 35px; font-size: 0.85rem; }
-            .footer-content { flex-direction: row; justify-content: space-between; font-size: 0.7rem; }
-            .footer-contact a { font-size: 0.65rem; }
+            .container { padding-bottom: 200px; } /* More space for larger mobile footer */
+            
+            footer { padding: 30px 6%; }
+            .footer-logo { font-size: 1.3rem; }
+            .footer-contact a { font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -196,7 +208,7 @@
             <div class="footer-contact">
                 <a href="mailto:cartprimeshopping@gmail.com">
                     <i class="fa-regular fa-envelope"></i>
-                    Email Us
+                    cartprimeshopping@gmail.com
                 </a>
             </div>
         </div>
