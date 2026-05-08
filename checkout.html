@@ -163,7 +163,6 @@
     const myUpiId = "9778722796@fam"; 
     let currentUserEmailKey = null;
 
-    // Firebase Auth State Check to get Email
     onAuthStateChanged(auth, (user) => {
         if (user) {
             currentUserEmailKey = user.email.replace(/\./g, ',');
@@ -236,7 +235,7 @@
                 const finalOrder = {
                     customerName: fields.name,
                     customerPhone: fields.phone,
-                    phone: fields.phone, // Admin panel-il kanikkan vendi
+                    phone: fields.phone, // Admin panel visibility fix
                     address: `${fields.house}, ${fields.area}, ${fields.city} - ${fields.pin}`,
                     productName: orderInfo.productName,
                     price: orderInfo.price,
@@ -248,7 +247,6 @@
                     paymentStatus: "Verifying"
                 };
 
-                // Order path is Email Key
                 const orderRef = ref(db, `orders/${currentUserEmailKey}`);
                 push(orderRef, finalOrder).then(() => {
                     Swal.fire('Success', 'Order Placed Successfully!', 'success')
