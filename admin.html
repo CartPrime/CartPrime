@@ -24,7 +24,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         h2.tab-title { font-weight: 800; font-size: 24px; margin-bottom: 30px; }
-        .admin-card { background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .admin-card { background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px;}
         input, textarea, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fcfdfe; }
         
         #orderList { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
@@ -42,13 +42,12 @@
         .order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
         .order-actions button { padding: 10px; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; color: white; }
 
-        .table-responsive { width: 100%; overflow-x: auto; }
+        .table-responsive { width: 100%; overflow-x: auto; background: white; border-radius: 20px; padding: 10px; border: 1px solid var(--border); }
         table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
         th { color: #64748b; padding: 15px; text-align: left; font-size: 12px; }
         td { padding: 15px; background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 14px; }
         
-        .btn-add { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; }
-        .save-btn { background: var(--primary); color: #fff; width: 100%; padding: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; }
+        .save-btn { background: var(--primary); color: #fff; width: 100%; padding: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; margin-top: 10px; }
 
         @media (max-width: 768px) {
             .sidebar { width: 70px; padding: 20px 10px; }
@@ -62,17 +61,57 @@
 
 <div class="sidebar">
     <h2>CartPrime</h2>
-    <button onclick="openTab('orders')" class="tablinks active"><i class="fa fa-shopping-bag"></i> <span>Orders</span></button>
-    <button onclick="openTab('addProduct')" class="tablinks"><i class="fa fa-plus"></i> <span>Add Product</span></button>
-    <button onclick="openTab('manageProducts')" class="tablinks"><i class="fa fa-layer-group"></i> <span>Inventory</span></button>
-    <button onclick="openTab('users')" class="tablinks"><i class="fa fa-user-friends"></i> <span>Users</span></button>
+    <button onclick="openTab('orders')" id="btn-orders" class="tablinks active"><i class="fa fa-shopping-bag"></i> <span>Orders</span></button>
+    <button onclick="openTab('addProduct')" id="btn-addProduct" class="tablinks"><i class="fa fa-plus"></i> <span>Add Product</span></button>
+    <button onclick="openTab('manageProducts')" id="btn-manageProducts" class="tablinks"><i class="fa fa-layer-group"></i> <span>Inventory</span></button>
+    <button onclick="openTab('users')" id="btn-users" class="tablinks"><i class="fa fa-user-friends"></i> <span>Users</span></button>
     <a href="home.html" style="margin-top: 20px; border-top: 1px solid #333; padding-top: 20px;"><i class="fa fa-arrow-left"></i> <span>Back Store</span></a>
 </div>
 
 <div class="main-content">
+    <!-- 1. Orders Tab -->
     <div id="orders" class="tab-content active-tab">
         <h2 class="tab-title">Order Management</h2>
         <div id="orderList"></div>
+    </div>
+
+    <!-- 2. Add Product Tab -->
+    <div id="addProduct" class="tab-content">
+        <h2 class="tab-title">Add New Product</h2>
+        <div class="admin-card">
+            <input type="text" id="pName" placeholder="Product Name">
+            <input type="number" id="pPrice" placeholder="Price (₹)">
+            <input type="text" id="pImg" placeholder="Image URL">
+            <textarea id="pDesc" placeholder="Product Description" rows="4"></textarea>
+            <input type="text" id="pCat" placeholder="Category (e.g. Electronics)">
+            <button class="save-btn" onclick="saveProduct()">Save Product</button>
+        </div>
+    </div>
+
+    <!-- 3. Inventory Tab -->
+    <div id="manageProducts" class="tab-content">
+        <h2 class="tab-title">Inventory Management</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 4. Users Tab -->
+    <div id="users" class="tab-content">
+        <h2 class="tab-title">Registered Users</h2>
+        <div class="admin-card">
+            <div id="userListContainer"></div>
+        </div>
     </div>
 </div>
 
@@ -80,6 +119,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+// Your Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
     authDomain: "cartprime-shopping.firebaseapp.com",
@@ -93,12 +133,77 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- FCM CONFIGURATION (ഇവിടെ നിന്റെ Server Key പേസ്റ്റ് ചെയ്യുക) ---
+// --- FCM CONFIGURATION (Replace with your actual Legacy Server Key) ---
 const FCM_SERVER_KEY = "firebase-adminsdk-fbsvc@cartprime-shopping.iam.gserviceaccount.com"; 
 
-// --- Core Functions ---
+// --- TAB NAVIGATION ---
+window.openTab = (tabId) => {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+    document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active-tab');
+    document.getElementById('btn-' + tabId).classList.add('active');
+};
 
-// 1. ഓർഡർ കൺഫേം ചെയ്യുമ്പോഴുള്ള ഫങ്ക്ഷൻ
+// --- PRODUCT FUNCTIONS ---
+window.saveProduct = () => {
+    const name = document.getElementById('pName').value;
+    const price = document.getElementById('pPrice').value;
+    const img = document.getElementById('pImg').value;
+    const desc = document.getElementById('pDesc').value;
+    const cat = document.getElementById('pCat').value;
+
+    if(name && price && img) {
+        const newProdRef = push(ref(db, 'products'));
+        set(newProdRef, {
+            name, price, img, desc, cat,
+            id: newProdRef.key
+        }).then(() => {
+            Swal.fire('Success', 'Product Added Successfully', 'success');
+            document.querySelectorAll('#addProduct input, #addProduct textarea').forEach(i => i.value = "");
+        }).catch(e => Swal.fire('Error', e.message, 'error'));
+    } else {
+        Swal.fire('Wait', 'Please fill Name, Price and Image URL', 'warning');
+    }
+};
+
+window.deleteProduct = (id) => {
+    Swal.fire({
+        title: 'Delete Product?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            remove(ref(db, 'products/' + id));
+        }
+    });
+};
+
+// Load Inventory
+onValue(ref(db, 'products'), snap => {
+    const invList = document.getElementById('inventoryList');
+    invList.innerHTML = "";
+    if(!snap.exists()) return;
+    snap.forEach(child => {
+        const p = child.val();
+        invList.innerHTML += `
+            <tr>
+                <td><img src="${p.img}" width="40" style="border-radius:5px; object-fit:cover;"></td>
+                <td>${p.name}</td>
+                <td>₹${p.price}</td>
+                <td>
+                    <button onclick="deleteProduct('${child.key}')" style="color:#ef4444; border:none; background:none; cursor:pointer; font-size:16px;">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            </tr>`;
+    });
+});
+
+// --- ORDER FUNCTIONS & NOTIFICATIONS ---
+
 window.confirmOrderWithDate = async (path) => {
     const { value: date } = await Swal.fire({ 
         title: 'Select Delivery Date', 
@@ -111,25 +216,18 @@ window.confirmOrderWithDate = async (path) => {
             status: 'Confirmed', 
             deliveryDate: date 
         }).then(() => {
-            // സ്റ്റാറ്റസ് കൺഫേം ആയാൽ ഉടൻ നോട്ടിഫിക്കേഷൻ ഫങ്ക്ഷൻ വിളിക്കുന്നു
             sendAppNotification(path, date);
-        }).catch(err => {
-            Swal.fire('Error', 'Update failed: ' + err.message, 'error');
-        });
+        }).catch(err => Swal.fire('Error', err.message, 'error'));
     }
 };
 
-// 2. നോട്ടിഫിക്കേഷൻ അയക്കാനുള്ള ഫങ്ക്ഷൻ
 async function sendAppNotification(path, deliveryDate) {
     onValue(ref(db, 'orders/' + path), async (snap) => {
         const order = snap.val();
-        
-        // നിന്റെ കൊഡുലാർ ആപ്പിൽ നിന്ന് ഓർഡർ ഡാറ്റയ്ക്കൊപ്പം സേവ് ചെയ്യുന്ന ടോക്കൺ ഇവിടെ എടുക്കുന്നു
         const userToken = order.userFcmToken; 
 
         if (!userToken) {
-            console.log("No token found for this user/order.");
-            Swal.fire('Confirmed!', 'ഓർഡർ കൺഫേം ആയി, പക്ഷേ ടോക്കൺ ഇല്ലാത്തതിനാൽ നോട്ടിഫിക്കേഷൻ അയക്കാൻ കഴിഞ്ഞില്ല.', 'info');
+            Swal.fire('Confirmed!', 'Order updated. No notification sent (No Token).', 'info');
             return;
         }
 
@@ -137,8 +235,8 @@ async function sendAppNotification(path, deliveryDate) {
             to: userToken,
             notification: {
                 title: "Order Confirmed! ✅",
-                body: `${order.productName} ഓർഡർ കൺഫേം ചെയ്തു. ഡെലിവറി: ${deliveryDate}`,
-                click_action: "FLUTTER_NOTIFICATION_CLICK"
+                body: `${order.productName} has been confirmed. Expected Delivery: ${deliveryDate}`,
+                sound: "default"
             }
         };
 
@@ -151,15 +249,14 @@ async function sendAppNotification(path, deliveryDate) {
                 },
                 body: JSON.stringify(messageData)
             });
-            Swal.fire('Success', 'ഓർഡർ കൺഫേം ആയി, യൂസർക്ക് നോട്ടിഫിക്കേഷൻ അയച്ചു.', 'success');
+            Swal.fire('Success', 'Order confirmed & Customer notified!', 'success');
         } catch (error) {
-            console.error("FCM Error:", error);
-            Swal.fire('Partial Success', 'ഓർഡർ കൺഫേം ആയി, പക്ഷേ നോട്ടിഫിക്കേഷൻ അയക്കുന്നതിൽ പിശക് പറ്റി.', 'warning');
+            Swal.fire('Warning', 'Order updated, but notification failed.', 'warning');
         }
     }, { onlyOnce: true });
 }
 
-// 3. ഓർഡർ ഡിസ്‌പ്ലേ ലോജിക്
+// Load Orders
 onValue(ref(db, 'orders'), snap => {
     const list = document.getElementById('orderList');
     list.innerHTML = ""; 
@@ -184,7 +281,7 @@ onValue(ref(db, 'orders'), snap => {
                     <p style="font-size:11px;">${o.address || 'N/A'}</p>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center;">
-                    <img src="${o.productImage}" style="width:40px; border-radius:5px;">
+                    <img src="${o.productImage}" style="width:40px; height:40px; border-radius:5px; object-fit:cover;">
                     <div>
                         <p style="font-size:13px; font-weight:800;">${o.productName}</p>
                         <p style="font-size:12px; color:green;">₹${o.price}</p>
@@ -201,20 +298,31 @@ onValue(ref(db, 'orders'), snap => {
     });
 });
 
-// വിൻഡോ ഫങ്ക്ഷനുകൾ
 window.verifyPayment = (path) => update(ref(db, 'orders/' + path), { paymentStatus: 'Paid' });
 window.updateStatus = (path, s) => update(ref(db, 'orders/' + path), { status: s });
 window.deleteItem = (path) => {
-    if(confirm("ഈ ഓർഡർ ഡിലീറ്റ് ചെയ്യട്ടെ?")) {
-        remove(ref(db, 'orders/' + path));
-    }
+    Swal.fire({
+        title: 'Delete Order?',
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonText: 'Delete'
+    }).then((r) => { if(r.isConfirmed) remove(ref(db, 'orders/' + path)); });
 };
 
-window.openTab = (tabId) => {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
-    document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active-tab');
-};
+// Load Users
+onValue(ref(db, 'users'), snap => {
+    const userCont = document.getElementById('userListContainer');
+    userCont.innerHTML = "";
+    if(!snap.exists()) { userCont.innerHTML = "No users found"; return; }
+    snap.forEach(child => {
+        const u = child.val();
+        userCont.innerHTML += `
+            <div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
+                <span><b>${u.name || 'N/A'}</b> (${u.phone || child.key})</span>
+                <span style="font-size:11px; color:#666;">${u.email || ''}</span>
+            </div>`;
+    });
+});
 </script>
 </body>
 </html>
