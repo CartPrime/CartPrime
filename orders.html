@@ -1,446 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CartPrime Admin - Ultimate Control</title>
+    <title>My Orders | CartPrime</title>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --sidebar-bg: #000000; --accent: #ff9900; --bg-light: #f8fafc; --border: #e2e8f0; --primary: #000; }
+        :root { --primary: #000; --bg: #f8fafc; --white: #fff; --red: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-light); display: flex; min-height: 100vh; color: #1e293b; overflow-x: hidden; }
+        body { background: var(--bg); padding: 20px 5%; }
+        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+        .back-btn { text-decoration: none; color: #000; font-size: 1.2rem; }
+        .order-card { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #eee; position: relative; }
         
-        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); color: white; padding: 30px 20px; position: fixed; box-shadow: 4px 0 10px rgba(0,0,0,0.1); z-index: 100; transition: 0.3s; }
-        .sidebar h2 { margin-bottom: 40px; text-align: center; font-size: 22px; font-weight: 800; border-bottom: 1px solid #333; padding-bottom: 20px; }
-        .sidebar button, .sidebar a { width: 100%; padding: 14px; background: transparent; border: none; color: #94a3b8; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; display: flex; align-items: center; text-decoration: none; transition: 0.3s; }
-        .sidebar button:hover, .sidebar button.active, .sidebar a:hover { background: rgba(255,255,255,0.1); color: white; }
-        .sidebar i { margin-right: 12px; font-size: 18px; width: 20px; text-align: center; }
-        
-        .main-content { margin-left: 260px; padding: 40px; width: calc(100% - 260px); transition: 0.3s; }
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
-        .active-tab { display: block !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .order-status { font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 8px; text-transform: uppercase; float: right; }
+        .status-shipped { background: #dcfce7; color: #15803d; }
+        .status-pending { background: #fef9c3; color: #a16207; }
+        .status-delivered { background: #e0f2fe; color: #0369a1; }
+        .status-cancelled, .status-rejected { background: #fee2e2; color: #b91c1c; }
+        .status-confirmed { background: #e0f2fe; color: #0369a1; }
 
-        h2.tab-title { font-weight: 800; font-size: 24px; margin-bottom: 30px; }
-        .admin-card { background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        input, textarea, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fcfdfe; }
-        
-        #orderList { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
-        .order-card { background: white; border: 1px solid var(--border); padding: 24px; border-radius: 20px; position: relative; }
-        
-        .badge-container { position: absolute; top: 20px; right: 20px; display: flex; gap: 6px; }
-        .pay-badge, .status-badge { font-size: 10px; padding: 4px 10px; border-radius: 8px; font-weight: 800; text-transform: uppercase; }
-        
-        .pay-Verified, .pay-Paid { background: #dcfce7; color: #166534; }
-        .pay-Rejected { background: #fee2e2; color: #b91c1c; }
-        .pay-Pending { background: #fef9c3; color: #854d0e; }
-        .status-Pending { background: #f1f5f9; color: #64748b; }
-        .status-Confirmed { background: #dcfce7; color: #166534; }
-        .status-Rejected { background: #fee2e2; color: #b91c1c; }
+        .pay-verify-badge { display: inline-block; font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; margin-top: 8px; text-transform: uppercase; }
+        .pay-success { background: #16a34a; color: white; }
+        .pay-failed { background: #ef4444; color: white; }
 
-        .cust-box { background: #f8fafc; padding: 16px; border-radius: 15px; margin: 15px 0; border: 1px solid #f1f5f9; }
-        .order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
-        .order-actions button { padding: 10px; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; color: white; }
-
-        .table-responsive { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-        th { color: #64748b; padding: 15px; text-align: left; font-size: 12px; }
-        td { padding: 15px; background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 14px; }
+        .item-box { display: flex; gap: 15px; align-items: center; margin-top: 10px; }
+        .item-box img { width: 70px; height: 70px; border-radius: 12px; object-fit: contain; background: #f8fafc; border: 1px solid #f1f1f1; }
+        .item-details h3 { font-size: 1rem; color: #1e293b; margin-bottom: 4px; }
+        .item-details p { font-size: 0.85rem; color: #64748b; }
         
-        .btn-add { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; }
-        .save-btn { background: var(--primary); color: #fff; width: 100%; padding: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; }
-        .stock-badge{ border: none; border-radius: 5px; width: 45px; height: 25px; color: white; font-weight: bold; cursor: pointer; }
-        .in-stock { background-color: #2563eb; }
-        .out-stock { background-color: #ef4444; }
-
-        .spec-row { display: flex; gap: 10px; }
-
-        @media (max-width: 768px) {
-            .sidebar { width: 70px; padding: 20px 10px; }
-            .sidebar h2, .sidebar button span, .sidebar a span { display: none; }
-            .sidebar i { margin-right: 0; font-size: 20px; width: 100%; }
-            .main-content { margin-left: 70px; width: calc(100% - 70px); padding: 20px; }
-        }
+        .action-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
+        .btn-cancel { background: #fee2e2; color: var(--red); }
+        .empty-state { text-align: center; margin-top: 50px; color: #64748b; }
+        .login-msg { text-align: center; padding: 40px 20px; background: white; border-radius: 20px; border: 1px solid #eee; margin-top: 50px; }
     </style>
 </head>
 <body>
-
-<div class="sidebar">
-    <h2>CartPrime</h2>
-    <button onclick="openTab('orders')" class="tablinks active"><i class="fa fa-shopping-bag"></i> <span>Orders</span></button>
-    <button onclick="openTab('addProduct')" class="tablinks"><i class="fa fa-plus"></i> <span>Add Product</span></button>
-    <button onclick="openTab('manageProducts')" class="tablinks"><i class="fa fa-layer-group"></i> <span>Inventory</span></button>
-    <button onclick="openTab('users')" class="tablinks"><i class="fa fa-user-friends"></i> <span>Users</span></button>
-    <a href="home.html" style="margin-top: 20px; border-top: 1px solid #333; padding-top: 20px;"><i class="fa fa-arrow-left"></i> <span>Back Store</span></a>
-</div>
-
-<div class="main-content">
-    <div id="orders" class="tab-content active-tab">
-        <h2 class="tab-title">Order Management</h2>
-        <div id="orderList"></div>
+    <div class="header">
+        <a href="home.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <h1 style="font-weight: 800; letter-spacing: -1px;">My Orders</h1>
     </div>
-
-    <div id="addProduct" class="tab-content">
-        <h2 class="tab-title" id="formTitle">Add New Item</h2>
-        <div class="admin-card" style="max-width: 700px; margin: 0 auto;">
-            <input type="hidden" id="editKey">
-            <input type="text" id="pName" placeholder="PRODUCT NAME">
-            <input type="text" id="pTitle" placeholder="FULL TITLE">
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="pMrp" placeholder="MRP ₹">
-                <input type="text" id="pPrice" placeholder="PRICE ₹">
-            </div>
-            
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="pShippedFrom" placeholder="SHIPPED FROM">
-                <input type="number" id="pDeliveryDays" placeholder="DELIVERY IN (Days)" value="7">
-            </div>
-
-            <textarea id="pDesc" placeholder="PRODUCT DESCRIPTION" rows="6" onkeydown="handleBullets(event)"></textarea>
-            
-            <div id="specInputs">
-                <div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>
-            </div>
-            <button class="btn-add" onclick="addSpecField()" style="margin-bottom: 15px;">+ Add Spec</button>
-            
-            <div id="imageInputs"><input type="text" class="p-img-link" placeholder="IMAGE URL 1"></div>
-            <button class="btn-add" onclick="addImageField()" style="margin-bottom: 15px;">+ Add Image</button>
-            
-            <select id="pReturn">
-                <option value="true">7 DAYS RETURN</option>
-                <option value="false">NO RETURN</option>
-            </select>
-            <button onclick="saveProduct()" id="saveBtn" class="save-btn">SAVE PRODUCT</button>
-            <button onclick="resetForm()" id="cancelEdit" style="display:none; color:red; border:none; background:none; width:100%; cursor:pointer; margin-top:10px; font-weight:bold;">Cancel Editing</button>
-        </div>
-    </div>
-
-    <div id="manageProducts" class="tab-content">
-        <h2 class="tab-title">Inventory</h2>
-        <div class="admin-card">
-            <div class="table-responsive">
-                <table>
-                    <thead><tr><th>Img</th><th>Name</th><th>Price</th><th>Stock</th><th>Action</th></tr></thead>
-                    <tbody id="manageProductList"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div id="users" class="tab-content">
-        <h2 class="tab-title">Registered Users</h2>
-        <div class="admin-card">
-            <div class="table-responsive">
-                <table><thead><tr><th>Email</th><th>Mobile</th></tr></thead><tbody id="userList"></tbody></table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
-    authDomain: "cartprime-shopping.firebaseapp.com",
-    projectId: "cartprime-shopping",
-    storageBucket: "cartprime-shopping.firebasestorage.app",
-    messagingSenderId: "570068438689",
-    appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
-    measurementId: "G-9GREWHMEYL"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-const FCM_SERVER_KEY = "firebase-adminsdk-fbsvc@cartprime-shopping.iam.gserviceaccount.com";
-
-window.handleBullets = (e) => {
-    const el = e.target;
-    if (el.value === "") el.value = "• ";
-    if (e.key === "Enter") {
-        e.preventDefault();
-        const pos = el.selectionStart;
-        const before = el.value.substring(0, pos);
-        const after = el.value.substring(pos);
-        el.value = before + "\n• " + after;
-        el.selectionStart = el.selectionEnd = pos + 3;
-    }
-};
-
-window.openTab = (tabId) => {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
-    document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
     
-    const targetTab = document.getElementById(tabId);
-    if (targetTab) targetTab.classList.add('active-tab');
+    <div id="ordersList">
+        <div class="empty-state">Verifying account...</div>
+    </div>
 
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-    }
-};
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-window.saveProduct = () => {
-    const key = document.getElementById('editKey').value;
-    const specs = {};
-    document.querySelectorAll('.spec-row').forEach(row => {
-        const k = row.querySelector('.spec-key').value.trim();
-        const v = row.querySelector('.spec-val').value.trim();
-        if(k && v) specs[k] = v;
-    });
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+            authDomain: "cartprime-shopping.firebaseapp.com",
+            projectId: "cartprime-shopping",
+            storageBucket: "cartprime-shopping.firebasestorage.app",
+            messagingSenderId: "570068438689",
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+            measurementId: "G-9GREWHMEYL"
+        };
 
-    const imageLinks = Array.from(document.querySelectorAll('.p-img-link'))
-                            .map(input => input.value.trim())
-                            .filter(val => val !== "");
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
 
-    const pName = document.getElementById('pName').value.trim();
-    const pPrice = document.getElementById('pPrice').value.trim();
-
-    if(!pName || !pPrice || imageLinks.length === 0) {
-        Swal.fire('Error', 'Please fill Name, Price and provide at least one Image URL', 'error');
-        return;
-    }
-
-    const data = {
-        name: pName,
-        title: document.getElementById('pTitle').value.trim() || pName,
-        mrp: document.getElementById('pMrp').value.trim() || pPrice,
-        price: pPrice,
-        shippedFrom: document.getElementById('pShippedFrom').value.trim() || "CartPrime Warehouse",
-        deliveryDays: document.getElementById('pDeliveryDays').value || 7,
-        desc: document.getElementById('pDesc').value || "No description available.",
-        specs: specs,
-        images: imageLinks,
-        return: document.getElementById('pReturn').value === "true",
-        outOfStock: false,
-        showOnHome: true
-    };
-
-    if(key) {
-        update(ref(db, `products/${key}`), data)
-            .then(() => { Swal.fire('Updated!', '', 'success'); resetForm(); openTab('manageProducts'); })
-            .catch(err => Swal.fire('Error', err.message, 'error'));
-    } else {
-        const newRef = push(ref(db, 'products'));
-        set(newRef, data)
-            .then(() => { Swal.fire('Saved!', '', 'success'); resetForm(); openTab('manageProducts'); })
-            .catch(err => Swal.fire('Error', err.message, 'error'));
-    }
-};
-
-window.viewProof = (imgUrl) => {
-    if(!imgUrl) return Swal.fire('No Proof', 'Customer did not upload a screenshot.', 'info');
-    Swal.fire({
-        imageUrl: imgUrl,
-        imageAlt: 'Payment Proof',
-        title: 'Payment Screenshot',
-        confirmButtonColor: '#000'
-    });
-};
-
-onValue(ref(db, 'orders'), snap => {
-    const list = document.getElementById('orderList');
-    list.innerHTML = ""; 
-    if (!snap.exists()) return;
-    snap.forEach(uSnap => {
-        uSnap.forEach(oSnap => {
-            const o = oSnap.val();
-            const path = `${uSnap.key}/${oSnap.key}`;
-            const payStatus = o.paymentStatus || "Pending";
-            const currentStatus = o.status || "Pending";
-            const proofImg = o.paymentProof || ""; 
-            
-            list.innerHTML += `
-            <div class="order-card">
-                <div class="badge-container">
-                    <span class="status-badge status-${currentStatus}">${currentStatus}</span>
-                    <span class="pay-badge pay-${payStatus}">${payStatus}</span>
-                </div>
-                <div class="cust-box">
-                    <b>${o.customerName || 'User'}</b>
-                    <p style="font-size:12px; color:#2563eb;">${uSnap.key}</p>
-                    <p style="font-size:11px;">${o.address || 'N/A'}</p>
-                    <p style="font-size:11px;"><b>UTR:</b> ${o.transactionId || 'N/A'}</p>
-                    ${proofImg ? `<button onclick="viewProof('${proofImg}')" style="margin-top:5px; background:none; border:1px solid #ddd; padding:2px 8px; border-radius:5px; cursor:pointer; font-size:10px;">View Proof <i class="fa fa-image"></i></button>` : ''}
-                </div>
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <img src="${o.productImage}" style="width:40px; border-radius:5px;">
-                    <div><p style="font-size:13px; font-weight:800;">${o.productName}</p><p style="font-size:12px; color:green;">₹${o.price}</p></div>
-                </div>
-                <div class="order-actions">
-                    <button style="background:#16a34a" onclick="verifyPayment('${path}', 'Paid')">Verify Payment</button>
-                    <button style="background:#ef4444" onclick="verifyPayment('${path}', 'Rejected')">Reject Payment</button>
-                    <button style="background:#16a34a" onclick="confirmOrderWithDate('${path}')">Confirm Order</button>
-                    <button style="background:#2563eb" onclick="updateStatus('${path}', 'Delivered')">Mark Delivered</button>
-                    <button style="background:#333; grid-column: span 2;" onclick="deleteItem('orders/${path}')">Delete Order Data</button>
-                </div>
-            </div>`;
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const savedAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
+                const userPhone = savedAddr ? savedAddr.phone : null;
+                if (userPhone) { loadOrders(userPhone); } 
+                else {
+                    document.getElementById('ordersList').innerHTML = `<div class="empty-state"><p>No phone number linked.</p></div>`;
+                }
+            } else {
+                document.getElementById('ordersList').innerHTML = `<div class="login-msg"><h2>Please Login</h2><a href="login.html" class="btn" style="background:black; color:white; padding:12px 30px; text-decoration:none; display:inline-block; border-radius:12px;">Login Now</a></div>`;
+            }
         });
-    });
-});
 
-window.verifyPayment = (path, status) => {
-    let updateData = {};
-    if(status === 'Paid') {
-        updateData = { 
-            paymentStatus: 'Paid', 
-            status: 'Confirmed' 
-        };
-    } else if(status === 'Rejected') {
-        // റിജക്റ്റ് ചെയ്യുമ്പോൾ പേയ്‌മെന്റ് സ്റ്റാറ്റസും ഓർഡർ സ്റ്റാറ്റസും ഒരുമിച്ച് മാറ്റുന്നു.
-        // ഇത് വഴി പഴയ സക്സസ് ബാഡ്ജ് ഉണ്ടെങ്കിൽ അത് താനേ പോയിക്കോളും.
-        updateData = { 
-            paymentStatus: 'Rejected', 
-            status: 'Rejected',
-            deliveryDate: null // റിജക്റ്റ് ചെയ്യുമ്പോൾ ഡെലിവറി ഡേറ്റ് ഒഴിവാക്കുന്നു.
-        };
-    }
-    
-    update(ref(db, 'orders/' + path), updateData).then(() => {
-        Swal.fire('Updated', `Payment marked as ${status}`, 'success');
-    });
-};
+        function loadOrders(phone) {
+            onValue(ref(db, `orders/${phone}`), (snapshot) => {
+                const list = document.getElementById('ordersList');
+                list.innerHTML = "";
+                
+                if (!snapshot.exists()) {
+                    list.innerHTML = `<div class="empty-state"><p>No orders found.</p></div>`;
+                    return;
+                }
 
-window.updateStatus = (path, s) => update(ref(db, 'orders/' + path), { status: s });
+                let ordersArr = [];
+                snapshot.forEach(orderSnap => {
+                    ordersArr.push({ id: orderSnap.key, ...orderSnap.val() });
+                });
 
-window.confirmOrderWithDate = async (path) => {
-    const { value: date } = await Swal.fire({ title: 'Select Delivery Date', input: 'date', showCancelButton: true });
-    if (date) {
-        update(ref(db, 'orders/' + path), { status: 'Confirmed', deliveryDate: date })
-        .then(() => {
-            get(ref(db, 'orders/' + path)).then((snapshot) => {
-                const orderData = snapshot.val();
-                if (orderData && orderData.userFcmToken) {
-                    sendNotification(orderData.userFcmToken, orderData.productName, date);
+                ordersArr.reverse().forEach(order => {
+                    const isPaid = order.paymentStatus === 'Paid';
+                    const isRejected = order.paymentStatus === 'Rejected' || order.status === 'Rejected';
+                    const displayStatus = order.status || 'Pending';
+
+                    // 1. പേയ്‌മെന്റ് ബാഡ്ജും റിജക്റ്റ് റീസണും (Paid ആയാൽ Rejected മെസ്സേജ് താനേ മാറും)
+                    let payBadge = '';
+                    let rejectReason = '';
+
+                    if (isPaid) {
+                        payBadge = `<div class="pay-verify-badge pay-success"><i class="fa-solid fa-circle-check"></i> Payment Success</div>`;
+                    } else if (isRejected) {
+                        payBadge = `<div class="pay-verify-badge pay-failed"><i class="fa-solid fa-circle-xmark"></i> Payment Not Success</div>`;
+                        rejectReason = `<p style="color:red; font-size:0.75rem; font-weight:800; margin-top:5px;">Reason: Payment Not Success</p>`;
+                    }
+
+                    // 2. ഡെലിവറി ഡേറ്റ് ലോജിക് (Paid ആണെങ്കിൽ മാത്രം കാണിക്കുക, Rejected ആണെങ്കിൽ കാണിക്കില്ല)
+                    const deliveryMsg = (order.deliveryDate && isPaid && !isRejected) ? 
+                        `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;">
+                            <i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}
+                        </p>` : '';
+
+                    list.innerHTML += `
+                        <div class="order-card">
+                            <span class="order-status status-${displayStatus.toLowerCase()}">${displayStatus}</span>
+                            <div class="item-box">
+                                <img src="${order.productImage}" alt="">
+                                <div class="item-details">
+                                    <h3>${order.productName}</h3>
+                                    <p>Price: ₹${order.price}</p>
+                                    <p style="font-size: 0.75rem; margin-top: 4px;">Order Date: ${order.date}</p>
+                                    ${payBadge}
+                                    ${deliveryMsg}
+                                    ${rejectReason}
+                                </div>
+                            </div>
+                            <div class="action-btns">
+                                ${displayStatus === 'Pending' && !isRejected ? 
+                                    `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>` : 
+                                    `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${displayStatus}</button>`
+                                }
+                            </div>
+                        </div>`;
+                });
+            });
+        }
+
+        window.cancelOrder = (orderId, phone) => {
+            Swal.fire({
+                title: 'Cancel Order?',
+                text: "Confirm to cancel this order.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#000',
+                confirmButtonText: 'Yes, Cancel'
+            }).then((res) => {
+                if(res.isConfirmed) {
+                    update(ref(db, `orders/${phone}/${orderId}`), { status: 'Cancelled' })
+                    .then(() => Swal.fire('Cancelled', 'Your order was cancelled.', 'success'));
                 }
             });
-        });
-    }
-};
-
-async function sendNotification(token, pName, dDate) {
-    const message = {
-        to: token,
-        notification: {
-            title: "Order Confirmed! ✅",
-            body: `${pName} confirmed. Expected delivery: ${dDate}`,
-            sound: "default"
-        }
-    };
-
-    try {
-        await fetch("https://fcm.googleapis.com/fcm/send", {
-            method: "POST",
-            headers: {
-                "Authorization": "key=" + FCM_SERVER_KEY,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(message)
-        });
-        console.log("Notification Sent!");
-    } catch (e) {
-        console.error("Notification Error", e);
-    }
-}
-
-onValue(ref(db, 'products'), snap => {
-    const list = document.getElementById('manageProductList');
-    list.innerHTML = "";
-    snap.forEach(child => {
-        const p = child.val();
-        const isOut = p.outOfStock === true;
-        list.innerHTML += `<tr>
-            <td><img src="${p.images ? p.images[0] : ''}" width="40" style="border-radius:5px;"></td>
-            <td>${p.name}</td>
-            <td>₹${p.price}</td>
-            <td><button class="stock-badge ${isOut ? 'out-stock' : 'in-stock'}" onclick="toggleStock('${child.key}', ${isOut})">${isOut ? 'OUT' : 'IN'}</button></td>
-            <td>
-                <button style="color:blue; border:none; background:none;" onclick="editProduct('${child.key}')"><i class="fa fa-edit"></i></button>
-                <button style="color:red; border:none; background:none;" onclick="deleteItem('products/${child.key}')"><i class="fa fa-trash"></i></button>
-            </td>
-        </tr>`;
-    });
-});
-
-window.toggleStock = (key, cur) => update(ref(db, `products/${key}`), { outOfStock: !cur });
-
-window.editProduct = (key) => {
-    onValue(ref(db, `products/${key}`), snap => {
-        const p = snap.val();
-        document.getElementById('editKey').value = key;
-        document.getElementById('pName').value = p.name || "";
-        document.getElementById('pTitle').value = p.title || "";
-        document.getElementById('pMrp').value = p.mrp || "";
-        document.getElementById('pPrice').value = p.price || "";
-        document.getElementById('pShippedFrom').value = p.shippedFrom || "";
-        document.getElementById('pDeliveryDays').value = p.deliveryDays || 7;
-        document.getElementById('pDesc').value = p.desc || "• ";
-        
-        const sc = document.getElementById('specInputs'); sc.innerHTML = "";
-        if(p.specs) {
-            for(let k in p.specs) sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}"></div>`;
-        } else {
-            sc.innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
-        }
-        
-        const ic = document.getElementById('imageInputs'); ic.innerHTML = "";
-        if(p.images) {
-            p.images.forEach(u => { ic.innerHTML += `<input type="text" class="p-img-link" value="${u}">`; });
-        } else {
-            ic.innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
-        }
-        
-        document.getElementById('formTitle').innerText = "Edit Product";
-        document.getElementById('saveBtn').innerText = "UPDATE PRODUCT";
-        document.getElementById('cancelEdit').style.display = "block";
-        openTab('addProduct');
-    }, { onlyOnce: true });
-};
-
-window.resetForm = () => {
-    document.getElementById('editKey').value = "";
-    document.getElementById('pName').value = "";
-    document.getElementById('pTitle').value = "";
-    document.getElementById('pMrp').value = "";
-    document.getElementById('pPrice').value = "";
-    document.getElementById('pShippedFrom').value = "";
-    document.getElementById('pDeliveryDays').value = 7;
-    document.getElementById('pDesc').value = "";
-    document.getElementById('specInputs').innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
-    document.getElementById('imageInputs').innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
-    document.getElementById('formTitle').innerText = "Add New Item";
-    document.getElementById('saveBtn').innerText = "SAVE PRODUCT";
-    document.getElementById('cancelEdit').style.display = "none";
-};
-
-window.addSpecField = () => {
-    const d = document.createElement('div'); d.className = 'spec-row';
-    d.innerHTML = `<input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value">`;
-    document.getElementById('specInputs').appendChild(d);
-};
-
-window.addImageField = () => {
-    const i = document.createElement('input'); i.className = 'p-img-link'; i.placeholder = "Image URL";
-    document.getElementById('imageInputs').appendChild(i);
-};
-
-window.deleteItem = (p) => {
-    Swal.fire({ title: 'Delete?', text: "Cannot undo!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })
-    .then((res) => { if (res.isConfirmed) remove(ref(db, p)); });
-};
-
-onValue(ref(db, 'users'), snap => {
-    const list = document.getElementById('userList');
-    list.innerHTML = "";
-    if(!snap.exists()) return;
-    snap.forEach(u => { 
-        list.innerHTML += `<tr><td>${u.val().email || 'N/A'}</td><td>${u.key}</td></tr>`; 
-    });
-});
-</script>
+        };
+    </script>
 </body>
 </html>
