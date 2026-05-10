@@ -35,10 +35,10 @@
         .action-btns { display: flex; gap: 10px; margin-top: 20px; }
         .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
         .btn-cancel { background: #fee2e2; color: var(--red); }
+        .btn-return { background: #f1f5f9; color: #1e293b; border: 1px solid #e2e8f0; }
         .empty-state { text-align: center; margin-top: 50px; color: #64748b; }
         .login-msg { text-align: center; padding: 40px 20px; background: white; border-radius: 20px; border: 1px solid #eee; margin-top: 50px; }
         
-        /* Return Badge Style */
         .return-policy { font-size: 0.7rem; color: #64748b; margin-top: 5px; display: block; font-weight: 600; }
     </style>
 </head>
@@ -103,8 +103,8 @@
                     const isPaid = order.paymentStatus === 'Paid';
                     const isRejected = order.paymentStatus === 'Rejected' || order.status === 'Rejected';
                     const displayStatus = order.status || 'Pending';
+                    const hasReturnPolicy = order.returnPolicy && order.returnPolicy.toLowerCase().includes("return");
 
-                    // Payment Badge Logic
                     let payBadge = '';
                     let rejectReason = '';
                     if (isPaid) {
@@ -114,13 +114,11 @@
                         rejectReason = `<p style="color:red; font-size:0.75rem; font-weight:800; margin-top:5px;">Reason: Payment Not Success</p>`;
                     }
 
-                    // Delivery Date Message
                     const deliveryMsg = (order.deliveryDate && isPaid && !isRejected) ? 
                         `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;">
                             <i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}
                         </p>` : '';
 
-                    // Return Policy Logic (Added back)
                     const returnPolicyText = order.returnPolicy ? 
                         `<span class="return-policy"><i class="fa-solid fa-rotate-left"></i> ${order.returnPolicy}</span>` : 
                         `<span class="return-policy"><i class="fa-solid fa-shield-halved"></i> No Return Available</span>`;
@@ -143,13 +141,31 @@
                             <div class="action-btns">
                                 ${displayStatus === 'Pending' && !isRejected ? 
                                     `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>` : 
-                                    `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${displayStatus}</button>`
+                                    (displayStatus === 'Delivered' && hasReturnPolicy ? 
+                                        `<button class="btn btn-return" onclick="requestReturn('${order.id}', '${phone}')">Request Return</button>` :
+                                        `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${displayStatus}</button>`)
                                 }
                             </div>
                         </div>`;
                 });
             });
         }
+
+        window.requestReturn = (orderId, phone) => {
+            Swal.fire({
+                title: 'Return Request',
+                text: "Do you want to request a return for this item?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#000',
+                confirmButtonText: 'Submit Request'
+            }).then((res) => {
+                if(res.isConfirmed) {
+                    update(ref(db, `orders/${phone}/${orderId}`), { status: 'Return Requested' })
+                    .then(() => Swal.fire('Submitted', 'Your return request has been sent.', 'success'));
+                }
+            });
+        };
 
         window.cancelOrder = (orderId, phone) => {
             Swal.fire({
