@@ -184,6 +184,7 @@ window.openTab = (tabId) => {
     }
 };
 
+// --- CORRECTED SAVE/UPDATE FUNCTION ---
 window.saveProduct = () => {
     const key = document.getElementById('editKey').value;
     const specs = {};
@@ -221,13 +222,21 @@ window.saveProduct = () => {
     };
 
     if(key) {
-        update(ref(db, `products/${key}`), data)
-            .then(() => { Swal.fire('Updated!', '', 'success'); resetForm(); openTab('manageProducts'); })
+        update(ref(db, 'products/' + key), data)
+            .then(() => { 
+                Swal.fire('Updated!', 'Product updated successfully', 'success'); 
+                resetForm(); 
+                openTab('manageProducts'); 
+            })
             .catch(err => Swal.fire('Error', err.message, 'error'));
     } else {
         const newRef = push(ref(db, 'products'));
         set(newRef, data)
-            .then(() => { Swal.fire('Saved!', '', 'success'); resetForm(); openTab('manageProducts'); })
+            .then(() => { 
+                Swal.fire('Saved!', 'New product added', 'success'); 
+                resetForm(); 
+                openTab('manageProducts'); 
+            })
             .catch(err => Swal.fire('Error', err.message, 'error'));
     }
 };
@@ -253,8 +262,6 @@ onValue(ref(db, 'orders'), snap => {
             const payStatus = o.paymentStatus || "Pending";
             const currentStatus = o.status || "Pending";
             const proofImg = o.paymentProof || ""; 
-            
-            // മൊബൈൽ നമ്പർ uSnap.key-യിൽ നിന്നാണ് ലഭിക്കുന്നത്
             const customerPhone = uSnap.key;
             
             list.innerHTML += `
@@ -289,16 +296,9 @@ onValue(ref(db, 'orders'), snap => {
 window.verifyPayment = (path, status) => {
     let updateData = {};
     if(status === 'Paid') {
-        updateData = { 
-            paymentStatus: 'Paid', 
-            status: 'Confirmed' 
-        };
+        updateData = { paymentStatus: 'Paid', status: 'Confirmed' };
     } else if(status === 'Rejected') {
-        updateData = { 
-            paymentStatus: 'Rejected', 
-            status: 'Rejected',
-            deliveryDate: null 
-        };
+        updateData = { paymentStatus: 'Rejected', status: 'Rejected', deliveryDate: null };
     }
     update(ref(db, 'orders/' + path), updateData).then(() => {
         Swal.fire('Updated', `Payment status marked as ${status}`, 'success');
@@ -331,20 +331,13 @@ async function sendNotification(token, pName, dDate) {
             sound: "default"
         }
     };
-
     try {
         await fetch("https://fcm.googleapis.com/fcm/send", {
             method: "POST",
-            headers: {
-                "Authorization": "key=" + FCM_SERVER_KEY,
-                "Content-Type": "application/json"
-            },
+            headers: { "Authorization": "key=" + FCM_SERVER_KEY, "Content-Type": "application/json" },
             body: JSON.stringify(message)
         });
-        console.log("Notification Sent!");
-    } catch (e) {
-        console.error("Notification Error", e);
-    }
+    } catch (e) { console.error("Notification Error", e); }
 }
 
 onValue(ref(db, 'products'), snap => {
