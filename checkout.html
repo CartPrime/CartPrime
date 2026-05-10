@@ -133,8 +133,8 @@
 
     <div class="proof-box">
         <p style="font-size: 0.8rem; font-weight: 700; color: #856404;">Step 2: Payment Proof</p>
-        <p style="font-size: 0.75rem; color: #666; margin-top: 4px;">Enter UTR and upload payment screenshot.</p>
-        <input type="number" id="utrNumber" class="utr-input" placeholder="12 Digit UTR / Transaction ID">
+        <p style="font-size: 0.75rem; color: #666; margin-top: 4px;">Enter UTR <b>OR</b> upload a payment screenshot.</p>
+        <input type="number" id="utrNumber" class="utr-input" placeholder="Enter 12 Digit UTR (Optional)">
         <input type="file" id="paymentProof" accept="image/*" style="margin-top: 10px; font-size: 0.8rem; width: 100%;">
     </div>
 
@@ -212,14 +212,14 @@
         };
         const proofFile = document.getElementById('paymentProof').files[0];
 
+        // Validation for Address
         if(!fields.name || !fields.phone || !fields.house || !fields.city || !fields.pin) {
             return Swal.fire('Incomplete Details', 'Please fill in all address fields.', 'warning');
         }
-        if(fields.utr.length < 10) {
-            return Swal.fire('UTR Required', 'Please enter a valid Transaction ID.', 'error');
-        }
-        if(!proofFile) {
-            return Swal.fire('Proof Missing', 'Please upload the payment screenshot.', 'warning');
+
+        // Validation for Proof (Either UTR OR Screenshot)
+        if(!fields.utr && !proofFile) {
+            return Swal.fire('Proof Missing', 'Please enter UTR number OR upload a screenshot.', 'warning');
         }
 
         const result = await Swal.fire({
@@ -234,18 +234,22 @@
         if(result.isConfirmed) {
             Swal.fire({
                 title: 'Processing...',
-                text: 'Uploading proof and saving order.',
+                text: 'Saving order details.',
                 allowOutsideClick: false,
                 didOpen: () => { Swal.showLoading(); }
             });
 
             try {
-                // 1. Upload Screenshot to Firebase Storage
-                const storageRef = sRef(storage, `payment_proofs/${Date.now()}_${fields.phone}.jpg`);
-                const uploadTask = await uploadBytes(storageRef, proofFile);
-                const screenshotUrl = await getDownloadURL(uploadTask.ref);
+                let screenshotUrl = "None";
 
-                // 2. Prepare Order Data
+                // Upload screenshot ONLY if it's selected
+                if(proofFile) {
+                    const storageRef = sRef(storage, `payment_proofs/${Date.now()}_${fields.phone}.jpg`);
+                    const uploadTask = await uploadBytes(storageRef, proofFile);
+                    screenshotUrl = await getDownloadURL(uploadTask.ref);
+                }
+
+                // Prepare Data
                 const orderId = Date.now(); 
                 const finalOrder = {
                     customerName: fields.name,
@@ -256,14 +260,13 @@
                     price: orderInfo.price,
                     productImage: orderInfo.productImage,
                     return: orderInfo.return,
-                    transactionId: fields.utr,
+                    transactionId: fields.utr || "N/A",
                     paymentProof: screenshotUrl,
                     date: new Date().toISOString().split('T')[0],
                     status: "Pending",
                     paymentStatus: "Verifying"
                 };
 
-                // 3. Save to Database
                 localStorage.setItem('cartPrime_UserAddr', JSON.stringify(fields));
                 await set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
 
@@ -272,7 +275,7 @@
 
             } catch (error) {
                 console.error(error);
-                Swal.fire('Error', 'Could not complete order. Check your connection.', 'error');
+                Swal.fire('Error', 'Order could not be saved. Check connection.', 'error');
             }
         }
     };
