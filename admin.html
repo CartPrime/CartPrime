@@ -155,7 +155,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- FCM CONFIGURATION (നിന്റെ Server Key ഇവിടെ ഇടുക) ---
 const FCM_SERVER_KEY = "firebase-adminsdk-fbsvc@cartprime-shopping.iam.gserviceaccount.com";
 
 window.handleBullets = (e) => {
@@ -231,6 +230,17 @@ window.saveProduct = () => {
     }
 };
 
+// --- VIEW PROOF FUNCTION ---
+window.viewProof = (imgUrl) => {
+    if(!imgUrl) return Swal.fire('No Proof', 'Customer did not upload a screenshot.', 'info');
+    Swal.fire({
+        imageUrl: imgUrl,
+        imageAlt: 'Payment Proof',
+        title: 'Payment Screenshot',
+        confirmButtonColor: '#000'
+    });
+};
+
 onValue(ref(db, 'orders'), snap => {
     const list = document.getElementById('orderList');
     list.innerHTML = ""; 
@@ -241,6 +251,8 @@ onValue(ref(db, 'orders'), snap => {
             const path = `${uSnap.key}/${oSnap.key}`;
             const payStatus = o.paymentStatus || "Pending";
             const currentStatus = o.status || "Pending";
+            const proofImg = o.paymentProof || ""; // Checkout പേജിൽ നിന്ന് കിട്ടുന്ന ലിങ്ക്
+            
             list.innerHTML += `
             <div class="order-card">
                 <div class="badge-container">
@@ -252,6 +264,7 @@ onValue(ref(db, 'orders'), snap => {
                     <p style="font-size:12px; color:#2563eb;">${uSnap.key}</p>
                     <p style="font-size:11px;">${o.address || 'N/A'}</p>
                     <p style="font-size:11px;"><b>UTR:</b> ${o.transactionId || 'N/A'}</p>
+                    ${proofImg ? `<button onclick="viewProof('${proofImg}')" style="margin-top:5px; background:none; border:1px solid #ddd; padding:2px 8px; border-radius:5px; cursor:pointer; font-size:10px;">View Proof <i class="fa fa-image"></i></button>` : ''}
                 </div>
                 <div style="display:flex; gap:10px; align-items:center;">
                     <img src="${o.productImage}" style="width:40px; border-radius:5px;">
@@ -271,13 +284,11 @@ onValue(ref(db, 'orders'), snap => {
 window.verifyPayment = (path) => update(ref(db, 'orders/' + path), { paymentStatus: 'Paid' });
 window.updateStatus = (path, s) => update(ref(db, 'orders/' + path), { status: s });
 
-// കൺഫേം ചെയ്യുമ്പോൾ നോട്ടിഫിക്കേഷൻ അയക്കാനുള്ള ലോജിക്
 window.confirmOrderWithDate = async (path) => {
     const { value: date } = await Swal.fire({ title: 'Select Delivery Date', input: 'date', showCancelButton: true });
     if (date) {
         update(ref(db, 'orders/' + path), { status: 'Confirmed', deliveryDate: date })
         .then(() => {
-            // ഓർഡർ വിവരങ്ങൾ എടുക്കുന്നു
             get(ref(db, 'orders/' + path)).then((snapshot) => {
                 const orderData = snapshot.val();
                 if (orderData && orderData.userFcmToken) {
@@ -288,7 +299,6 @@ window.confirmOrderWithDate = async (path) => {
     }
 };
 
-// നോട്ടിഫിക്കേഷൻ അയക്കുന്ന ഫങ്ക്ഷൻ
 async function sendNotification(token, pName, dDate) {
     const message = {
         to: token,
