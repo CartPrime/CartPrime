@@ -254,6 +254,9 @@ onValue(ref(db, 'orders'), snap => {
             const currentStatus = o.status || "Pending";
             const proofImg = o.paymentProof || ""; 
             
+            // മൊബൈൽ നമ്പർ uSnap.key-യിൽ നിന്നാണ് ലഭിക്കുന്നത്
+            const customerPhone = uSnap.key;
+            
             list.innerHTML += `
             <div class="order-card">
                 <div class="badge-container">
@@ -262,7 +265,7 @@ onValue(ref(db, 'orders'), snap => {
                 </div>
                 <div class="cust-box">
                     <b>${o.customerName || 'User'}</b>
-                    <p style="font-size:12px; color:#2563eb;">${uSnap.key}</p>
+                    <p style="font-size:12px; color:#2563eb; font-weight:800;"><i class="fa fa-phone"></i> ${customerPhone}</p>
                     <p style="font-size:11px;">${o.address || 'N/A'}</p>
                     <p style="font-size:11px;"><b>UTR:</b> ${o.transactionId || 'N/A'}</p>
                     ${proofImg ? `<button onclick="viewProof('${proofImg}')" style="margin-top:5px; background:none; border:1px solid #ddd; padding:2px 8px; border-radius:5px; cursor:pointer; font-size:10px;">View Proof <i class="fa fa-image"></i></button>` : ''}
@@ -284,9 +287,18 @@ onValue(ref(db, 'orders'), snap => {
 });
 
 window.verifyPayment = (path, status) => {
-    const updateData = { paymentStatus: status };
-    if(status === 'Rejected') {
-        updateData.status = 'Rejected'; // പേയ്‌മെന്റ് റിജക്റ്റ് ആയാൽ ഓർഡർ സ്റ്റാറ്റസും മാറും
+    let updateData = {};
+    if(status === 'Paid') {
+        updateData = { 
+            paymentStatus: 'Paid', 
+            status: 'Confirmed' 
+        };
+    } else if(status === 'Rejected') {
+        updateData = { 
+            paymentStatus: 'Rejected', 
+            status: 'Rejected',
+            deliveryDate: null 
+        };
     }
     update(ref(db, 'orders/' + path), updateData).then(() => {
         Swal.fire('Updated', `Payment status marked as ${status}`, 'success');
