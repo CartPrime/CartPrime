@@ -37,6 +37,9 @@
         .btn-cancel { background: #fee2e2; color: var(--red); }
         .empty-state { text-align: center; margin-top: 50px; color: #64748b; }
         .login-msg { text-align: center; padding: 40px 20px; background: white; border-radius: 20px; border: 1px solid #eee; margin-top: 50px; }
+        
+        /* Return Badge Style */
+        .return-policy { font-size: 0.7rem; color: #64748b; margin-top: 5px; display: block; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -101,10 +104,9 @@
                     const isRejected = order.paymentStatus === 'Rejected' || order.status === 'Rejected';
                     const displayStatus = order.status || 'Pending';
 
-                    // 1. പേയ്‌മെന്റ് ബാഡ്ജും റിജക്റ്റ് റീസണും (Paid ആയാൽ Rejected മെസ്സേജ് താനേ മാറും)
+                    // Payment Badge Logic
                     let payBadge = '';
                     let rejectReason = '';
-
                     if (isPaid) {
                         payBadge = `<div class="pay-verify-badge pay-success"><i class="fa-solid fa-circle-check"></i> Payment Success</div>`;
                     } else if (isRejected) {
@@ -112,11 +114,16 @@
                         rejectReason = `<p style="color:red; font-size:0.75rem; font-weight:800; margin-top:5px;">Reason: Payment Not Success</p>`;
                     }
 
-                    // 2. ഡെലിവറി ഡേറ്റ് ലോജിക് (Paid ആണെങ്കിൽ മാത്രം കാണിക്കുക, Rejected ആണെങ്കിൽ കാണിക്കില്ല)
+                    // Delivery Date Message
                     const deliveryMsg = (order.deliveryDate && isPaid && !isRejected) ? 
                         `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;">
                             <i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}
                         </p>` : '';
+
+                    // Return Policy Logic (Added back)
+                    const returnPolicyText = order.returnPolicy ? 
+                        `<span class="return-policy"><i class="fa-solid fa-rotate-left"></i> ${order.returnPolicy}</span>` : 
+                        `<span class="return-policy"><i class="fa-solid fa-shield-halved"></i> No Return Available</span>`;
 
                     list.innerHTML += `
                         <div class="order-card">
@@ -127,6 +134,7 @@
                                     <h3>${order.productName}</h3>
                                     <p>Price: ₹${order.price}</p>
                                     <p style="font-size: 0.75rem; margin-top: 4px;">Order Date: ${order.date}</p>
+                                    ${returnPolicyText}
                                     ${payBadge}
                                     ${deliveryMsg}
                                     ${rejectReason}
