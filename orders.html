@@ -103,7 +103,9 @@
                     const isPaid = order.paymentStatus === 'Paid';
                     const isRejected = order.paymentStatus === 'Rejected' || order.status === 'Rejected';
                     const displayStatus = order.status || 'Pending';
-                    const hasReturnPolicy = order.returnPolicy && order.returnPolicy.toLowerCase().includes("return");
+                    
+                    // പ്രോഡക്റ്റിന് റിട്ടേൺ ഉണ്ടോ എന്ന് പരിശോധിക്കുന്നു (order.return എന്നത് true ആണെങ്കിൽ മാത്രം)
+                    const canReturn = order.return === true || order.return === "true";
 
                     let payBadge = '';
                     let rejectReason = '';
@@ -119,9 +121,9 @@
                             <i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}
                         </p>` : '';
 
-                    const returnPolicyText = order.returnPolicy ? 
-                        `<span class="return-policy"><i class="fa-solid fa-rotate-left"></i> ${order.returnPolicy}</span>` : 
-                        `<span class="return-policy"><i class="fa-solid fa-shield-halved"></i> No Return Available</span>`;
+                    // റിട്ടേൺ ഉണ്ടെങ്കിൽ മാത്രം ടെക്സ്റ്റ് കാണിക്കുക
+                    const returnPolicyText = canReturn ? 
+                        `<span class="return-policy"><i class="fa-solid fa-rotate-left"></i> 7 Days Return Available</span>` : '';
 
                     list.innerHTML += `
                         <div class="order-card">
@@ -141,7 +143,7 @@
                             <div class="action-btns">
                                 ${displayStatus === 'Pending' && !isRejected ? 
                                     `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>` : 
-                                    (displayStatus === 'Delivered' && hasReturnPolicy ? 
+                                    (displayStatus === 'Delivered' && canReturn ? 
                                         `<button class="btn btn-return" onclick="requestReturn('${order.id}', '${phone}')">Request Return</button>` :
                                         `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${displayStatus}</button>`)
                                 }
