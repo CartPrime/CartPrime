@@ -90,7 +90,7 @@
                 list.innerHTML = "";
                 
                 if (!snapshot.exists()) {
-                    list.innerHTML = `<div class="empty-state"><p>No orders found for (${phone}).</p></div>`;
+                    list.innerHTML = `<div class="empty-state"><p>No orders found.</p></div>`;
                     return;
                 }
 
@@ -100,26 +100,24 @@
                 });
 
                 ordersArr.reverse().forEach(order => {
-                    const orderDate = new Date(order.date);
-                    const today = new Date();
-                    const diffInDays = Math.floor((today - orderDate) / (1000 * 60 * 60 * 24));
+                    const isRejected = order.paymentStatus === 'Rejected' || order.status === 'Rejected';
+                    const isPaid = order.paymentStatus === 'Paid';
                     
-                    // Logic for display
-                    const isRejected = order.status === 'Rejected' || order.paymentStatus === 'Rejected';
-                    const isVerified = order.paymentStatus === 'Verified' || order.paymentStatus === 'Success';
-                    
-                    const showCancel = order.status === 'Pending' && !isRejected;
-                    const showReturn = order.return === 'true' && order.status === 'Delivered' && diffInDays <= 7;
-                    
-                    // Payment Badge Logic
+                    // ഡെലിവറി ഡേറ്റ് മെസ്സേജ്
+                    const deliveryMsg = order.deliveryDate ? 
+                        `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;">
+                            <i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}
+                        </p>` : '';
+
+                    // പേയ്‌മെന്റ് ബാഡ്ജ്
                     let payBadge = '';
-                    if(isVerified) {
+                    if(isPaid) {
                         payBadge = `<div class="pay-verify-badge pay-success"><i class="fa-solid fa-circle-check"></i> Payment Success</div>`;
                     } else if(isRejected) {
                         payBadge = `<div class="pay-verify-badge pay-failed"><i class="fa-solid fa-circle-xmark"></i> Payment Not Success</div>`;
                     }
 
-                    const displayStatus = isRejected ? "Rejected" : order.status;
+                    const displayStatus = order.status || 'Pending';
 
                     list.innerHTML += `
                         <div class="order-card">
@@ -131,13 +129,12 @@
                                     <p>Price: ₹${order.price}</p>
                                     <p style="font-size: 0.75rem; margin-top: 4px;">Order Date: ${order.date}</p>
                                     ${payBadge}
+                                    ${deliveryMsg}
                                     ${isRejected ? `<p style="color:red; font-size:0.75rem; font-weight:800; margin-top:5px;">Reason: Payment Not Success</p>` : ''}
                                 </div>
                             </div>
                             <div class="action-btns">
-                                ${showCancel ? `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>` : ''}
-                                ${showReturn ? `<button class="btn btn-return" onclick="requestReturn()">Request Return</button>` : ''}
-                                ${(!showCancel && !showReturn) ? `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${displayStatus}</button>` : ''}
+                                ${displayStatus === 'Pending' && !isRejected ? `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>` : `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${displayStatus}</button>`}
                             </div>
                         </div>`;
                 });
@@ -158,10 +155,6 @@
                     .then(() => Swal.fire('Cancelled', 'Your order was cancelled.', 'success'));
                 }
             });
-        };
-
-        window.requestReturn = () => {
-            Swal.fire('Return Requested', 'Support will contact you soon.', 'success');
         };
     </script>
 </body>
