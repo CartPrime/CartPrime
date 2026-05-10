@@ -16,7 +16,6 @@
         .back-btn { text-decoration: none; color: #000; font-size: 1.2rem; }
         .order-card { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #eee; position: relative; }
         
-        /* Status Badges */
         .order-status { font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 8px; text-transform: uppercase; float: right; }
         .status-shipped { background: #dcfce7; color: #15803d; }
         .status-pending { background: #fef9c3; color: #a16207; }
@@ -24,7 +23,6 @@
         .status-cancelled, .status-rejected { background: #fee2e2; color: #b91c1c; }
         .status-confirmed { background: #e0f2fe; color: #0369a1; }
 
-        /* Payment Badge */
         .pay-verify-badge { display: inline-block; font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; margin-top: 8px; text-transform: uppercase; }
         .pay-success { background: #16a34a; color: white; }
         .pay-failed { background: #ef4444; color: white; }
@@ -37,7 +35,6 @@
         .action-btns { display: flex; gap: 10px; margin-top: 20px; }
         .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
         .btn-cancel { background: #fee2e2; color: var(--red); }
-        .btn-return { background: #000; color: #fff; }
         .empty-state { text-align: center; margin-top: 50px; color: #64748b; }
         .login-msg { text-align: center; padding: 40px 20px; background: white; border-radius: 20px; border: 1px solid #eee; margin-top: 50px; }
     </style>
@@ -100,24 +97,26 @@
                 });
 
                 ordersArr.reverse().forEach(order => {
-                    const isRejected = order.paymentStatus === 'Rejected' || order.status === 'Rejected';
                     const isPaid = order.paymentStatus === 'Paid';
-                    
-                    // ഡെലിവറി ഡേറ്റ് മെസ്സേജ്
-                    const deliveryMsg = order.deliveryDate ? 
+                    const isRejected = order.paymentStatus === 'Rejected' || order.status === 'Rejected';
+                    const displayStatus = order.status || 'Pending';
+
+                    // 1. പേയ്‌മെന്റ് ബാഡ്ജ് ലോജിക് (സക്സസ് ആയാൽ റിജക്റ്റ് ബാഡ്ജ് താനേ മാറും)
+                    let payBadge = '';
+                    let rejectReason = '';
+
+                    if (isPaid) {
+                        payBadge = `<div class="pay-verify-badge pay-success"><i class="fa-solid fa-circle-check"></i> Payment Success</div>`;
+                    } else if (isRejected) {
+                        payBadge = `<div class="pay-verify-badge pay-failed"><i class="fa-solid fa-circle-xmark"></i> Payment Not Success</div>`;
+                        rejectReason = `<p style="color:red; font-size:0.75rem; font-weight:800; margin-top:5px;">Reason: Payment Not Success</p>`;
+                    }
+
+                    // 2. ഡെലിവറി ഡേറ്റ് (പേയ്മെന്റ് സക്സസ് ആയാൽ മാത്രം കാണിക്കുക)
+                    const deliveryMsg = (order.deliveryDate && isPaid && !isRejected) ? 
                         `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;">
                             <i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}
                         </p>` : '';
-
-                    // പേയ്‌മെന്റ് ബാഡ്ജ്
-                    let payBadge = '';
-                    if(isPaid) {
-                        payBadge = `<div class="pay-verify-badge pay-success"><i class="fa-solid fa-circle-check"></i> Payment Success</div>`;
-                    } else if(isRejected) {
-                        payBadge = `<div class="pay-verify-badge pay-failed"><i class="fa-solid fa-circle-xmark"></i> Payment Not Success</div>`;
-                    }
-
-                    const displayStatus = order.status || 'Pending';
 
                     list.innerHTML += `
                         <div class="order-card">
@@ -130,11 +129,14 @@
                                     <p style="font-size: 0.75rem; margin-top: 4px;">Order Date: ${order.date}</p>
                                     ${payBadge}
                                     ${deliveryMsg}
-                                    ${isRejected ? `<p style="color:red; font-size:0.75rem; font-weight:800; margin-top:5px;">Reason: Payment Not Success</p>` : ''}
+                                    ${rejectReason}
                                 </div>
                             </div>
                             <div class="action-btns">
-                                ${displayStatus === 'Pending' && !isRejected ? `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>` : `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${displayStatus}</button>`}
+                                ${displayStatus === 'Pending' && !isRejected ? 
+                                    `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>` : 
+                                    `<button class="btn" style="background:#f1f5f9; color:#64748b; cursor:default;">Order ${displayStatus}</button>`
+                                }
                             </div>
                         </div>`;
                 });
