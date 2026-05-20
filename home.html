@@ -75,12 +75,43 @@
         .suggestion-item p { font-size: 0.75rem; color: var(--accent); font-weight: 700; margin: 0; }
 
         /* --- Header / Hero --- */
-        .hero { padding: 40px 6% 20px; text-align: left; }
+        .hero { padding: 40px 6% 10px; text-align: left; }
         .hero h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; }
         .hero p { color: var(--text-muted); margin-top: 8px; font-size: 1rem; }
 
+        /* --- Category Bar Styling --- */
+        .category-bar {
+            padding: 15px 6%;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .category-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .category-btn {
+            background: var(--surface);
+            color: var(--text-main);
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+        }
+        .category-btn:hover, .category-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
         /* --- Product Grid --- */
-        .container { padding: 0 6% 180px; flex: 1; }
+        .container { padding: 10px 6% 180px; flex: 1; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
 
         /* --- Card Styling --- */
@@ -141,8 +172,10 @@
             nav { padding: 10px 4%; }
             .logo { font-size: 1.1rem; }
             .search-container { margin: 0 10px; }
-            .hero { padding: 30px 5% 15px; }
+            .hero { padding: 30px 5% 10px; }
             .hero h1 { font-size: 1.8rem; }
+            .category-bar { padding: 10px 5%; }
+            .category-btn { padding: 8px 18px; font-size: 0.75rem; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .image-box { height: 160px; border-radius: 14px; }
             .card { border-radius: 20px; padding: 10px; }
@@ -150,7 +183,6 @@
             .price { font-size: 1rem; }
             .buy-btn { padding: 12px; font-size: 0.8rem; border-radius: 12px; }
             .container { padding-bottom: 200px; }
-            /* Mobile Search Suggestion Adjustment */
             .search-suggestions-box { max-height: 350px; width: 150px; }
             .suggestion-item { padding: 6px 10px; gap: 10px; }
             .suggestion-item img { width: 35px; height: 35px; border-radius: 6px; }
@@ -179,6 +211,8 @@
         <h1>CartPrime<br>Prime Collections.</h1>
         <p>Premium quality shopping experience.</p>
     </header>
+
+    <div class="category-bar" id="categoryBar"></div>
 
     <div class="container">
         <div class="grid" id="productGrid"></div>
@@ -219,10 +253,10 @@
         const db = getDatabase(app);
 
         let allProducts = [];
+        let activeCategory = "All";
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Administrative access is handled by checking a specific flag
                 if (localStorage.getItem("isAdmin") === "true") document.getElementById('adminLink').style.display = 'block';
             } else { location.href = "index.html"; }
         });
@@ -234,8 +268,58 @@
                 data.id = child.key;
                 allProducts.push(data);
             });
-            renderProducts(allProducts);
+            renderCategoryBar(); 
+            filterAndRenderProducts(); 
         });
+
+        // കാറ്റഗറി ബാർ എപ്പോഴും കാണിക്കാൻ പാകത്തിന് സെറ്റ് ചെയ്ത ഫങ്ഷൻ
+        function renderCategoryBar() {
+            const catBar = document.getElementById('categoryBar');
+            
+            // 1. ഡീഫോൾട്ട് ആയി കാണിക്കേണ്ട സ്റ്റാറ്റിക് കാറ്റഗറികൾ ഇവിടെ സെറ്റ് ചെയ്യുന്നു
+            const categories = new Set(["Gadgets", "Fashion", "Watches", "Accessories"]);
+            
+            // 2. ഫയർബേസ് ഡാറ്റയിൽ കാറ്റഗറി ഉണ്ടെങ്കിൽ അതും കൂടി ഇതിലേക്ക് ചേർക്കും
+            allProducts.forEach(p => {
+                if (p.category && p.category.trim() !== "" && p.showOnHome !== false) {
+                    categories.add(p.category.trim());
+                }
+            });
+
+            // 'All' ബട്ടൺ ആദ്യം ആഡ് ചെയ്യുന്നു
+            let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All">All</div>`;
+            
+            // ബാക്കി കാറ്റഗറികൾ ലൂപ്പ് ചെയ്ത് ബട്ടൺ ഉണ്ടാക്കുന്നു
+            categories.forEach(cat => {
+                barHtml += `<div class="category-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`;
+            });
+            catBar.innerHTML = barHtml;
+
+            // ബട്ടൺ ക്ലിക്ക് ഇവന്റുകൾ സെറ്റ് ചെയ്യുന്നു
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    activeCategory = e.target.getAttribute('data-cat');
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    filterAndRenderProducts();
+                });
+            });
+        }
+
+        function filterAndRenderProducts() {
+            const searchVal = searchInput.value.toLowerCase();
+            let filtered = allProducts;
+
+            if (activeCategory !== "All") {
+                filtered = filtered.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
+            }
+
+            if (searchVal.length >= 1) {
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchVal));
+            }
+
+            renderProducts(filtered);
+        }
 
         function renderProducts(products) {
             const grid = document.getElementById('productGrid');
@@ -285,11 +369,14 @@
 
             if (val.length < 1) {
                 suggestionsBox.style.display = 'none';
-                renderProducts(allProducts);
+                filterAndRenderProducts();
                 return;
             }
 
-            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(val) && p.showOnHome !== false);
+            let filtered = allProducts.filter(p => p.name.toLowerCase().includes(val) && p.showOnHome !== false);
+            if (activeCategory !== "All") {
+                filtered = filtered.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
+            }
 
             if (filtered.length > 0) {
                 suggestionsBox.style.display = 'block';
