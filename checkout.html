@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - CartPrime</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+        }
+        .hidden { display: none !important; }
+        
+        /* Custom SweetAlert Styling */
+        .swal-custom-popup {
+            border-radius: 16px !important;
+            padding: 2rem !important;
+            font-family: 'Segoe UI', sans-serif !important;
+        }
+        .swal-custom-title {
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+        }
+        .swal-custom-confirm {
+            background-color: var(--primary) !important;
+            border-radius: 8px !important;
+            padding: 12px 30px !important;
+            font-weight: 600 !important;
+        }
+        .swal-custom-cancel {
+            background-color: #ef4444 !important;
+            border-radius: 8px !important;
+            padding: 12px 30px !important;
+            font-weight: 600 !important;
+        }
+        
+        /* Product Preview Styling */
+        .prod-item-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .prod-item-row:last-child {
+            border-bottom: none;
+        }
+        .prod-item-row img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+        }
+        .total-checkout-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px dashed #e2e8f0;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen pb-12">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 backdrop-blur-md bg-white/90">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="home.html" class="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors font-medium">
+                <i class="fa-solid fa-arrow-left text-lg"></i>
+                <span>Back</span>
+            </a>
+            <h1 class="text-xl font-bold text-slate-800 tracking-tight">Checkout</h1>
+            <div class="w-10"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 mt-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left: Delivery & Payment -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Delivery Address Form -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot text-blue-600"></i> Delivery Address
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Full Name</label>
+                                <input type="text" id="custName" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Phone Number</label>
+                                <input type="tel" id="custPhone" placeholder="10-digit number" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">House No, Building, Street</label>
+                            <input type="text" id="house" placeholder="Flat/House No., Colony" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Area, Colony, Road, Landmark</label>
+                            <input type="text" id="area" placeholder="Nearby landmark, local area" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Town/City</label>
+                                <input type="text" id="city" placeholder="City name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Pincode</label>
+                                <input type="text" id="pincode" placeholder="6-digit PIN" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-credit-card text-blue-600"></i> Payment Method
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <!-- UPI Option -->
+                        <label id="upiLabel" class="relative flex flex-col p-4 bg-slate-50 border-2 border-blue-600 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-all">
+                            <input type="radio" name="paymentMethod" value="UPI" id="upiRadio" checked onchange="togglePaymentFields()" class="absolute top-4 right-4 text-blue-600 focus:ring-blue-500">
+                            <span class="font-bold text-sm text-slate-800 mb-1"><i class="fa-solid fa-qrcode mr-1 text-blue-600"></i> Pay via UPI</span>
+                            <span class="text-xs text-slate-500 font-medium">GPay, PhonePe, QR Code</span>
+                        </label>
+
+                        <!-- COD Option -->
+                        <label id="codLabel" class="relative flex flex-col p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-all">
+                            <input type="radio" name="paymentMethod" value="COD" id="codRadio" onchange="togglePaymentFields()" class="absolute top-4 right-4 text-emerald-600 focus:ring-emerald-500">
+                            <span class="font-bold text-sm text-slate-800 mb-1"><i class="fa-solid fa-truck-ramp-box mr-1 text-emerald-600"></i> Pay on Delivery</span>
+                            <span id="codText" class="text-xs text-slate-500 font-medium">Cash on Delivery</span>
+                        </label>
+                    </div>
+
+                    <!-- UPI Details Section -->
+                    <div id="upiSection" class="space-y-6">
+                        <!-- Fast Checkout Links -->
+                        <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="text-center sm:text-left">
+                                <h4 class="font-bold text-sm text-blue-900">Instant Pay via Apps</h4>
+                                <p class="text-xs text-blue-700 font-medium mt-0.5">Click to open your preferred payment app directly.</p>
+                            </div>
+                            <div class="flex gap-2 w-full sm:w-auto">
+                                <a id="gpayLink" href="#" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs px-4 py-2.5 border border-slate-200 rounded-lg shadow-sm transition-all">
+                                    <img src="https://img.icons8.com/color/48/google-pay.png" class="w-4 h-4"> Google Pay
+                                </a>
+                                <a id="phonepeLink" href="#" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs px-4 py-2.5 border border-slate-200 rounded-lg shadow-sm transition-all">
+                                    <img src="https://img.icons8.com/color/48/phonepe.png" class="w-4 h-4"> PhonePe
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- QR Code Area -->
+                        <div class="flex flex-col items-center justify-center border border-slate-100 bg-slate-50/50 rounded-xl p-6 text-center">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Scan QR Code to Pay</p>
+                            <div id="qrcode" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm"></div>
+                            <p class="text-xs text-slate-500 font-semibold mt-3 bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-2xs">UPI ID: <span class="text-slate-800 font-bold select-all">9778722796@fam</span></p>
+                        </div>
+
+                        <!-- UTR Entry -->
+                        <div class="bg-amber-50/70 border border-amber-100 rounded-xl p-4">
+                            <label class="block text-xs font-bold text-amber-800 uppercase tracking-wider mb-1.5">Enter 12-Digit UPI Transaction ID (UTR)</label>
+                            <input type="text" id="utrNumber" maxlength="12" placeholder="e.g., 4123XXXXXXXX" class="w-full px-4 py-3 bg-white border border-amber-200 rounded-xl focus:outline-none focus:border-amber-500 text-sm font-bold tracking-widest text-slate-800 placeholder:font-normal placeholder:tracking-normal shadow-2xs">
+                            <p class="text-xs text-amber-700 font-medium mt-1.5"><i class="fa-solid fa-circle-info mr-1"></i> Order will be verified only after entering a valid Transaction ID.</p>
+                        </div>
+                    </div>
+
+                    <!-- COD Details Section -->
+                    <div id="codSection" class="hidden bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex items-start gap-3">
+                        <i class="fa-solid fa-circle-check text-emerald-600 mt-0.5 text-sm"></i>
+                        <div>
+                            <h4 class="font-bold text-sm text-emerald-900">Cash on Delivery Selected</h4>
+                            <p class="text-xs text-emerald-700 font-medium mt-0.5">Please keep the exact amount ready at the time of delivery. No extra handling charges apply.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Order Summary & Action -->
+            <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-basket-shopping text-blue-600"></i> Order Summary
+                    </h2>
+                    
+                    <!-- Dynamic Product Preview Container -->
+                    <div id="productPreview" class="space-y-1"></div>
+
+                    <!-- Place Order Button -->
+                    <button onclick="placeOrder()" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base py-4 px-6 rounded-xl shadow-lg shadow-blue-600/20 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-bag-shopping"></i> Complete Order
+                    </button>
+                    
+                    <p class="text-center text-xs text-slate-400 font-medium mt-4"><i class="fa-solid fa-lock mr-1 text-slate-300"></i> Secure 256-bit SSL Encrypted Connection</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Firebase & Custom Script Logical Flow -->
+    <<!-- Firebase & Custom Script Logical Flow -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getDatabase, ref, set, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        const EMAILJS_PUBLIC_KEY = "v9Kubn2pDJOSM8iL8";
+
+        // Initialize EmailJS
+        emailjs.init({
+            publicKey: EMAILJS_PUBLIC_KEY, 
+        });
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+            authDomain: "cartprime-shopping.firebaseapp.com",
+            projectId: "cartprime-shopping",
+            storageBucket: "cartprime-shopping.firebasestorage.app",
+            messagingSenderId: "570068438689",
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+            measurementId: "G-9GREWHMEYL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const orderInfo = JSON.parse(localStorage.getItem('pendingOrder'));
+        const myUpiId = "9778722796@fam"; 
+        let currentUserId = null;
+        let currentUserEmail = null; 
+
+        const showAlert = (title, text, icon) => {
+            Swal.fire({
+                title: title, text: text, icon: icon,
+                customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
+            });
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                Swal.fire({
+                    title: 'Login Required', text: 'Please login to continue.', icon: 'error',
+                    customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
+                }).then(() => location.href = 'index.html');
+            } else {
+                currentUserId = user.uid;
+                currentUserEmail = user.email; 
+            }
+        });
+
+        window.togglePaymentFields = () => {
+            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            const upiSection = document.getElementById('upiSection');
+            const codSection = document.getElementById('codSection');
+            const upiLabel = document.getElementById('upiLabel');
+            const codLabel = document.getElementById('codLabel');
+
+            if (selectedMethod === 'UPI') {
+                if (upiSection) upiSection.classList.remove('hidden');
+                if (codSection) codSection.classList.add('hidden');
+                if (upiLabel) upiLabel.style.border = '2px solid var(--primary)';
+                if (codLabel) {
+                    if (document.getElementById('codRadio').disabled) {
+                        codLabel.style.border = '1px dashed #ef4444';
+                    } else {
+                        codLabel.style.border = '1px solid #16a34a';
+                    }
+                }
+            } else {
+                if (upiSection) upiSection.classList.add('hidden');
+                if (codSection) codSection.classList.remove('hidden');
+                if (upiLabel) upiLabel.style.border = '1px solid var(--border)';
+                if (codLabel) codLabel.style.border = '2px solid #16a34a';
+            }
+        };
+
+        const savedAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
+        if (savedAddr) {
+            if (document.getElementById('custName')) document.getElementById('custName').value = savedAddr.name || '';
+            if (document.getElementById('custPhone')) document.getElementById('custPhone').value = savedAddr.phone || '';
+            if (document.getElementById('house')) document.getElementById('house').value = savedAddr.house || savedAddr.address || '';
+            if (document.getElementById('area')) document.getElementById('area').value = savedAddr.area || savedAddr.landmark || '';
+           if (document.getElementById('city')) document.getElementById('city').value = savedAddr.city || savedAddr.district || '';
+            if (document.getElementById('pincode')) document.getElementById('pincode').value = savedAddr.pin || savedAddr.pincode || '';
+        }
+
+        if(orderInfo) {
+            let previewHtml = "";
+            let finalPriceToPay = 0;
+            let isCodAvailable = false; 
+
+            if (orderInfo.orderType === "Cart" && Array.isArray(orderInfo.items)) {
+                isCodAvailable = orderInfo.items.every(item => item.cod === true || item.cod === "true");
+
+                orderInfo.items.forEach(item => {
+                    let productImg = item.image || (item.images && item.images[0]) || "https://via.placeholder.com/150";
+                    let itemPrice = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
+                    finalPriceToPay += (itemPrice * parseInt(item.quantity));
+                    previewHtml += `<div class="prod-item-row"><img src="${productImg}"><div class="prod-item-details" style="flex: 1;"><p style="font-weight: 700; font-size: 0.95rem; color: #1e293b;">${item.name} (x${item.quantity})</p><p style="color: #64748b; font-size: 0.85rem; font-weight: 600; margin-top: 2px;">₹${itemPrice.toLocaleString('en-IN')}</p></div></div>`;
+                });
+                previewHtml += `<div class="total-checkout-price"><span>Total Payable:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
+            } else {
+                isCodAvailable = orderInfo.cod === true || orderInfo.cod === "true";
+
+                previewHtml = `<div class="prod-item-row"><img src="${orderInfo.productImage}"><div class="prod-item-details" style="flex: 1;"><p style="font-weight: 700; font-size: 0.95rem; color: #1e293b;">${orderInfo.productName}</p><p style="color: #000; font-weight: 800; font-size: 1rem; margin-top: 4px;">₹${orderInfo.price}</p></div></div>`;
+                finalPriceToPay = parseFloat(orderInfo.price.toString().replace(/,/g, '')) || 0;
+            }
+            
+            document.getElementById('productPreview').innerHTML = previewHtml;
+
+            const codRadio = document.getElementById('codRadio');
+            const codLabel = document.getElementById('codLabel');
+            const codText = document.getElementById('codText');
+
+            if(isCodAvailable) {
+                if(codText) {
+                    codText.innerHTML = `<span style="color: #16a34a; font-weight: 600; font-size: 0.85rem;"><i class="fa-solid fa-circle-check"></i> Cash on Delivery Available</span>`;
+                }
+                if(codLabel) {
+                    codLabel.style.border = "1px solid #16a34a";
+                    codLabel.style.background = "#f0fdf4";
+                }
+            } else {
+                if(codRadio) codRadio.disabled = true;
+                if(codText) {
+                    codText.innerHTML = `<span style="color: #ef4444; font-weight: 600; font-size: 0.85rem;"><i class="fa-solid fa-circle-xmark"></i> Cash on Delivery Not Available</span>`;
+                }
+                if(codLabel) {
+                    codLabel.style.pointerEvents = "none";
+                    codLabel.style.background = "#fdf2f2";
+                    codLabel.style.border = "1px dashed #ef4444";
+                }
+            }
+
+            const encodedName = encodeURIComponent("CartPrime");
+            const upiBase = `pa=${myUpiId}&pn=${encodedName}&am=${finalPriceToPay}&cu=INR`;
+
+            if(document.getElementById('gpayLink')) {
+                document.getElementById('gpayLink').href = `upi://pay?${upiBase}&mc=0000&mode=02&purpose=00&orgid=000000`;
+            }
+            if(document.getElementById('phonepeLink')) {
+                document.getElementById('phonepeLink').href = `upi://pay?${upiBase}`;
+            }
+            if(document.getElementById("qrcode")) {
+                document.getElementById("qrcode").innerHTML = "";
+                new QRCode(document.getElementById("qrcode"), { text: `upi://pay?${upiBase}`, width: 180, height: 180 });
+            }
+        } else { 
+            location.href = 'home.html'; 
+        }
+
+        // ആഗോള സ്കോപ്പിലേക്ക് മാറ്റിയ ഫങ്ക്ഷൻ (window.sendOrderEmail)
+        window.sendOrderEmail = function(orderData, userEmail) {
+            console.log("Attempting to send email to:", userEmail);
+            
+            if (!userEmail) {
+                console.error("Email failed: No valid user email target.");
+                return;
+            }
+
+            if (typeof emailjs === 'undefined') {
+                console.error("EmailJS SDK is not loaded properly.");
+                return;
+            }
+
+            let productDetailsText = "";
+            if (orderData.items && Array.isArray(orderData.items)) {
+                orderData.items.forEach((item, index) => {
+                    productDetailsText += `${index + 1}. ${item.name} - Qty: ${item.quantity} - Price: ₹${item.price}\n`;
+                });
+            } else {
+                productDetailsText = `1. ${orderData.productName} - Price: ₹${orderData.price}\n`;
+            }
+
+            const templateParams = {
+                to_email: userEmail,
+                customer_name: orderData.customerName,
+                order_id: orderData.orderId,
+                total_price: orderData.price,
+                payment_method: orderData.paymentMethod,
+                delivery_address: orderData.address,
+                product_details: productDetailsText
+            };
+
+            try {
+                emailjs.send('service_crbmtvy', 'template_rd6d6w6', templateParams, EMAILJS_PUBLIC_KEY)
+                    .then(() => {
+                        console.log('Order status email sent successfully to ' + userEmail);
+                    })
+                    .catch((error) => {
+                        console.error('EmailJS Service Error:', error);
+                    });
+            } catch (networkError) {
+                console.error("Network error inside try-catch:", networkError);
+            }
+        }
+
+        window.placeOrder = () => {
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+            const fields = {
+                name: document.getElementById('custName').value.trim(),
+                phone: document.getElementById('custPhone').value.trim(),
+                house: document.getElementById('house').value.trim(),
+                area: document.getElementById('area').value.trim(),
+                city: document.getElementById('city').value.trim(),
+                pin: document.getElementById('pincode').value.trim(),
+                utr: paymentMethod === 'UPI' ? document.getElementById('utrNumber').value.trim() : 'COD'
+            };
+
+            if(!fields.name || !fields.phone || !fields.house || !fields.city || !fields.pin) {
+                return Swal.fire({
+                    title: 'Address Missing',
+                    text: 'Please fill all required delivery address fields.',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok',
+                    customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
+                });
+            }
+            
+            if(paymentMethod === 'UPI' && fields.utr.length < 10) return showAlert('UTR Required', 'Please enter a valid Transaction ID.', 'error');
+
+            localStorage.setItem('cartPrime_UserAddr', JSON.stringify(fields));
+
+            const alertText = paymentMethod === 'COD' ? "Confirm your order with Cash on Delivery?" : "Have you completed the payment?";
+
+            Swal.fire({
+                title: 'Confirm Order?', text: alertText, icon: 'question',
+                showCancelButton: true, confirmButtonText: 'Yes, Confirm',
+                cancelButtonText: 'Cancel',
+                customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
+            }).then((res) => {
+                if(res.isConfirmed) {
+                    const orderId = Date.now(); 
+                    
+                    let finalOrder = { 
+                        customerName: fields.name, 
+                        customerPhone: fields.phone, 
+                        phone: fields.phone, 
+                        address: `${fields.house}, ${fields.area}, ${fields.city} - ${fields.pin}`, 
+                        transactionId: fields.utr, 
+                        date: new Date().toISOString().split('T')[0], 
+                        status: "Pending", 
+                        paymentStatus: paymentMethod === 'COD' ? "COD" : "Verifying",
+                        paymentMethod: paymentMethod,
+                        orderId: orderId
+                    };
+
+                    if (orderInfo.orderType === "Cart" && orderInfo.items) {
+                        finalOrder.orderType = "Cart";
+                        let calcTotal = 0;
+                        
+                        finalOrder.items = orderInfo.items.map(item => {
+                            let p = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
+                            calcTotal += (p * parseInt(item.quantity));
+                            return { 
+                                id: item.id || "", 
+                                name: item.name || item.title || "Product", 
+                                price: item.price, 
+                                image: item.image || "", 
+                                quantity: item.quantity, 
+                                return: item.return === true || item.return === 'true' 
+                            };
+                        });
+                        
+                        finalOrder.price = calcTotal.toLocaleString('en-IN');
+                        finalOrder.productName = orderInfo.items.map(i => `${i.name || i.title} (x${i.quantity})`).join(', ');
+                    } else {
+                        finalOrder.orderType = "Single";
+                        finalOrder.productName = orderInfo.productName;
+                        finalOrder.price = orderInfo.price.toString();
+                        
+                        finalOrder.items = [{
+                            id: orderInfo.productId || "",
+                            name: orderInfo.productName,
+                            price: orderInfo.price,
+                            image: orderInfo.productImage || "",
+                            quantity: orderInfo.quantity || 1,
+                            return: orderInfo.return === true || orderInfo.return === 'true'
+                        }];
+                    }
+
+                    set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder).then(() => {
+                        const activeUser = auth.currentUser;
+                        const emailToSend = activeUser ? activeUser.email : currentUserEmail;
+
+                        // വാല്യൂ പാസ് ചെയ്ത് ഫങ്ക്ഷൻ റൺ ചെയ്യുന്നു
+                        window.sendOrderEmail(finalOrder, emailToSend);
+
+                        if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
+                        localStorage.removeItem('pendingOrder');
+                        showAlert('Success', 'Order Placed Successfully!', 'success');
+                        setTimeout(() => location.href = 'orders.html', 1500);
+                    }).catch(() => showAlert('Error', 'Order could not be saved.', 'error'));
+                }
+            });
+        };
+    </script>
+</body>
+</html>

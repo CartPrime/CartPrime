@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CartPrime | Discover Luxury</title>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #000;
+            --accent: #2563eb;
+            --bg: #ffffff;
+            --surface: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 12px 6%;
+            position: sticky; top: 0; 
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            gap: 15px;
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
+        .logo span { color: var(--text-muted); font-weight: 300; }
+
+        .search-container { flex: 1; max-width: 500px; position: relative; }
+        .search-container input {
+            width: 100%; padding: 10px 15px 10px 40px; border-radius: 12px;
+            border: 1px solid #e2e8f0; background: var(--surface); outline: none;
+            transition: 0.3s; font-size: 0.9rem;
+        }
+        .search-container input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .search-container i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
+
+        /* --- Compact Search Suggestion Box --- */
+        .search-suggestions-box {
+            position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+            background: white; border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            max-height: 350px; overflow-y: auto; z-index: 2000; display: none; border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .suggestion-item {
+            display: flex; align-items: center; padding: 12px; gap: 15px;
+            cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: 0.2s;
+        }
+        .suggestion-item:hover { background: #f8fafc; }
+        .suggestion-item img { 
+            width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
+        }
+        .suggestion-info { display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
+        .suggestion-item h4 { 
+            font-size: 0.85rem; font-weight: 600; margin: 0; color: var(--text-main);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .suggestion-item p { font-size: 0.75rem; color: var(--accent); font-weight: 700; margin: 0; }
+
+        /* --- Header / Hero --- */
+        .hero { padding: 40px 6% 10px; text-align: left; }
+        .hero h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; }
+        .hero p { color: var(--text-muted); margin-top: 8px; font-size: 1rem; }
+
+        /* --- Category Bar Styling --- */
+        .category-bar {
+            padding: 15px 6% 5px 6%;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .category-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .category-btn {
+            background: var(--surface);
+            color: var(--text-main);
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+        }
+        .category-btn:hover, .category-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* --- Premium Dynamic Banner Slider (Screenshot Style) --- */
+        .banner-section {
+            padding: 15px 6% 10px 6%;
+            position: relative;
+            width: 100%;
+        }
+        .banner-slider {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        .banner-slider::-webkit-scrollbar {
+            display: none;
+        }
+        .banner-item {
+            flex: 0 0 calc(50% - 8px); /* Displays 2 banners in desktop like image */
+            scroll-snap-align: start;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 190px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: transform 0.3s ease;
+        }
+        .banner-item:hover {
+            transform: scale(1.005);
+        }
+        .banner-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+        .banner-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+        }
+        .dot {
+            width: 7px;
+            height: 7px;
+            background: #cbd5e1;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .dot.active {
+            background: var(--primary);
+            width: 18px;
+            border-radius: 4px;
+        }
+
+        /* --- Product Grid --- */
+        .container { padding: 10px 6% 120px; flex: 1; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
+
+        /* --- Card Styling --- */
+        .card {
+            background: #fff; border-radius: 24px; padding: 12px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative; border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; height: 100%;
+        }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        
+        .image-box { 
+            width: 100%; height: 260px; border-radius: 18px; 
+            overflow: hidden; background: #f8fafc; margin-bottom: 15px; position: relative;
+        }
+        .card img { width: 100%; height: 100%; object-fit: contain; transition: 0.5s; }
+
+        .stock-badge {
+            position: absolute; top: 12px; left: 12px; background: #000;
+            color: white; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; z-index: 10;
+        }
+        .discount-badge {
+            position: absolute; top: 12px; right: 12px; background: #22c55e;
+            color: white; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; z-index: 10;
+        }
+
+        .card-info { flex-grow: 1; display: flex; flex-direction: column; }
+        .card h3 { 
+            font-size: 1rem; font-weight: 700; margin-bottom: 4px; 
+            display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+            overflow: hidden; text-overflow: ellipsis; 
+        }
+
+        /* Review Badging on Home Grid Card */
+        .card-rating-ui {
+            display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: #eab308; margin-bottom: 8px;
+        }
+        .card-rating-ui span { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; }
+
+        .price-container { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
+        .price { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
+        .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.85rem; }
+
+        .buy-btn {
+            width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none;
+            border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;
+            font-size: 0.9rem; margin-top: auto;
+        }
+        .buy-btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
+
+        .nav-right { display: flex; align-items: center; gap: 20px; position: relative; flex-shrink: 0; }
+        .icon-btn { position: relative; font-size: 1.25rem; color: var(--text-main); cursor: pointer; text-decoration: none; transition: 0.2s; }
+        .icon-btn:hover { color: var(--accent); }
+        
+        /* Badge Styling */
+        .badge {
+            position: absolute; top: -8px; right: -8px; background: #ef4444; color: white;
+            font-size: 0.6rem; font-weight: 800; border-radius: 50%; min-width: 16px;
+            height: 16px; display: flex; align-items: center; justify-content: center; padding: 2px;
+        }
+        .admin-pill { background: #000; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-decoration: none; display: none; }
+
+        /* --- Profile Navigation Styling --- */
+        .profile-nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: 0.2s;
+        }
+        .profile-nav:hover {
+            color: var(--accent);
+        }
+        .profile-icon {
+            font-size: 1.35rem;
+        }
+        .nav-user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            max-width: 90px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* --- Luxury Pop-up Overlay (Modal) --- */
+        .logout-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);
+            z-index: 3000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: all 0.3s ease;
+        }
+        .logout-modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .logout-modal {
+            background: #ffffff; padding: 30px; border-radius: 24px;
+            width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            transform: scale(0.9); transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .logout-modal-overlay.active .logout-modal { transform: scale(1); }
+        
+        .logout-icon-box {
+            width: 60px; height: 60px; background: #eff6ff; color: #2563eb;
+            border-radius: 50px; display: flex; justify-content: center; align-items: center;
+            margin: 0 auto 18px; font-size: 1.5rem;
+        }
+        .logout-modal h2 { font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.5px; }
+        .logout-modal p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+        
+        /* Password Input Area */
+        .modal-input-box {
+            width: 100%; position: relative; margin-bottom: 12px;
+        }
+        .modal-input-box input {
+            width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0;
+            outline: none; font-size: 0.95rem; background: var(--surface); transition: 0.2s; text-align: center;
+        }
+        .modal-input-box input:focus { border-color: var(--accent); background: #fff; }
+        .error-msg { color: #f43f5e; font-size: 0.8rem; font-weight: 600; display: none; margin-bottom: 16px; }
+
+        .modal-btn-group { display: flex; gap: 12px; }
+        .modal-btn {
+            flex: 1; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 0.9rem;
+            cursor: pointer; transition: 0.2s; border: none;
+        }
+        .btn-cancel { background: var(--surface); color: var(--text-main); border: 1px solid #e2e8f0; }
+        .btn-cancel:hover { background: #f1f5f9; }
+        .btn-confirm { background: #2563eb; color: #fff; }
+        .btn-confirm:hover { background: #1d4ed8; }
+
+        /* --- Footer --- */
+        footer { 
+            background: #000; color: #fff; padding: 30px 6%; 
+            margin-top: auto; width: 100%; border-top: 1px solid #1e293b;
+        }
+        .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .footer-logo { font-weight: 800; font-size: 1.5rem; }
+        .footer-logo span { color: #64748b; }
+        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 9px; }
+        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 20px; padding-top: 15px; text-align: center; color: #94a3b8; font-size: 0.85rem; }
+        /* കേർസർ മിന്നിമറയാൻ വേണ്ടിയുള്ള ആനിമേഷൻ */
+.typewriter-text {
+    animation: blink-cursor 0.75s step-end infinite;
+}
+
+@keyframes blink-cursor {
+    from, to { border-color: transparent }
+    50% { border-color: var(--accent); }
+}
+        /* --- FIXED Responsive Media Query for Mobile --- */
+        @media (max-width: 768px) {
+            nav { padding: 12px 4%; flex-wrap: wrap; justify-content: space-between; }
+            .logo { font-size: 1.2rem; order: 1; }
+            
+            .nav-right { order: 2; gap: 14px; flex-shrink: 0; }
+            .profile-nav { gap: 4px; }
+            .profile-icon { font-size: 1.2rem; }
+            
+            .nav-user-name { display: inline-block; font-size: 0.8rem; max-width: 65px; } 
+            .icon-btn { font-size: 1.15rem; }
+            
+            .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin: 8px 0 2px 0; }
+            
+            .hero { padding: 25px 4% 5px; }
+            .hero h1 { font-size: 1.9rem; }
+            .hero p { font-size: 0.9rem; }
+            
+            .category-bar { padding: 10px 4%; gap: 8px; }
+            .category-btn { padding: 8px 16px; font-size: 0.8rem; }
+
+            /* Mobile Banner Configuration */
+            .banner-section { padding: 8px 4% 8px 4%; }
+            .banner-item { flex: 0 0 100%; height: 135px; border-radius: 12px; }
+            .banner-item img { border-radius: 12px; }
+            .dot { width: 6px; height: 6px; }
+            .dot.active { width: 14px; }
+            
+            .container { padding: 10px 4% 60px; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            
+            .card { border-radius: 16px; padding: 8px; }
+            .image-box { height: 160px; border-radius: 12px; margin-bottom: 10px; }
+            .card h3 { font-size: 0.85rem; margin-bottom: 4px; }
+            .price-container { margin-bottom: 10px; gap: 5px; flex-wrap: wrap; }
+            .price { font-size: 0.95rem; }
+            .mrp { font-size: 0.75rem; }
+            .buy-btn { padding: 10px; font-size: 0.8rem; border-radius: 10px; }
+            
+            .stock-badge, .discount-badge { padding: 3px 8px; font-size: 0.6rem; border-radius: 6px; top: 8px; }
+            .stock-badge { left: 8px; }
+            .discount-badge { right: 8px; }
+            
+            footer { padding: 25px 4%; }
+            .footer-content { flex-direction: column; text-align: center; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div id="navLogo" class="logo">CART<span>PRIME</span></div>
+        <div class="search-container">
+            <i class="fa fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off">
+            <div id="searchSuggestions" class="search-suggestions-box"></div>
+        </div>
+        <div class="nav-right">
+            <div id="profileSection" class="profile-nav" style="display: none;" title="Logout Account">
+                <i class="fa-regular fa-circle-user profile-icon"></i>
+                <span id="navUserName" class="nav-user-name"></span>
+                
+            </div>
+
+            <a href="wishlist.html" class="icon-btn" title="My Wishlist">
+                <i class="fa-regular fa-heart"></i>
+                <span id="wishlistBadge" class="badge" style="display:none;">0</span>
+            </a>
+            
+            <a href="orders.html" class="icon-btn" title="My Orders">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span id="ordersBadge" class="badge" style="display:none;">0</span>
+            </a>
+            <a href="admin.html" id="adminLink" class="admin-pill">ADMIN</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+    <div class="greeting-container" style="display: inline-flex; align-items: center; margin-bottom: 6px; height: 24px;">
+        <p id="userGreeting" class="typewriter-text" style="display: none; font-size: 1rem; font-weight: bold; color: var(--accent); white-space: nowrap; overflow: hidden; border-right: 2px solid var(--accent);"></p>
+    </div>
+    <h1>Welcome To <br> CartPrime </h1>
+    <h1 style="color: rgb(65, 155, 65);">Online Shop</h1>
+    <p>Premium quality shopping experience.</p>
+</header>
+
+    <div class="category-bar" id="categoryBar"></div>
+
+    <div class="banner-section" id="bannerSection" style="display: none;">
+        <div class="banner-slider" id="bannerSlider">
+            </div>
+        <div class="banner-dots" id="bannerDots">
+            </div>
+    </div>
+
+    <div class="container">
+        <div class="grid" id="productGrid"></div>
+    </div>
+
+    <div class="logout-modal-overlay" id="logoutModalOverlay">
+        <div class="logout-modal">
+            <div class="logout-icon-box">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h2>Verify Identity</h2>
+            <p>Please type your password to securely log out from CartPrime.</p>
+            
+            <div class="modal-input-box">
+                <input type="password" id="logoutPasswordInput" placeholder="Enter your password">
+            </div>
+            <div class="error-msg" id="logoutErrorMsg">Incorrect password. Please try again.</div>
+
+            <div class="modal-btn-group">
+                <button class="modal-btn btn-cancel" id="btnCancelLogout">Cancel</button>
+                <button class="modal-btn btn-confirm" id="btnConfirmLogout">Verify & Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">CART<span>PRIME</span></div>
+            <div class="footer-contact">
+                <a href="mailto:cartprimeshopping@gmail.com">
+                    <i class="fa-regular fa-envelope"></i>
+                    cartprimeshopping@gmail.com
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 CartPrime. All Rights Reserved.</p>
+        </div>
+    </footer>
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        // ഇവിടെ deleteUser കൂടി കൂട്ടിച്ചേർത്തിട്ടുണ്ട്
+        import { getAuth, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, child, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+            authDomain: "cartprime-shopping.firebaseapp.com",
+            projectId: "cartprime-shopping",
+            storageBucket: "cartprime-shopping.firebasestorage.app",
+            messagingSenderId: "570068438689",
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+            measurementId: "G-9GREWHMEYL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let allProducts = [];
+        let activeCategory = "All";
+        let autoScrollInterval = null;
+        let selectedAction = ""; // "logout" അല്ലെങ്കിൽ "signout" സൂക്ഷിക്കാൻ
+        let userPhoneNumber = ""; // യൂസറുടെ ഫോൺ നമ്പർ സൂക്ഷിക്കാൻ
+
+        // വിഷ്‌ലിസ്റ്റ്, ഓർഡർ ബാഡ്ജുകൾ അപ്‌ഡേറ്റ് ചെയ്യാനുള്ള ഫങ്ക്ഷൻ
+        function updateBadges(phone) {
+            if (!phone) return;
+
+            const wishlistRef = ref(db, `wishlist/${phone}`);
+            onValue(wishlistRef, (snapshot) => {
+                const badge = document.getElementById('wishlistBadge');
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const count = Object.keys(data).length;
+                    badge.innerText = count;
+                    badge.style.display = count > 0 ? 'flex' : 'none';
+                } else {
+                    badge.innerText = "0";
+                    badge.style.display = 'none';
+                }
+            }, (error) => {
+                console.error("Wishlist fetch error:", error);
+            });
+
+            const ordersRef = ref(db, `orders/${phone}`);
+            onValue(ordersRef, (snapshot) => {
+                const badge = document.getElementById('ordersBadge');
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const count = Object.keys(data).length;
+                    badge.innerText = count;
+                    badge.style.display = count > 0 ? 'flex' : 'none';
+                } else {
+                    badge.innerText = "0";
+                    badge.style.display = 'none';
+                }
+            }, (error) => {
+                console.error("Orders fetch error:", error);
+            });
+        }
+
+        document.getElementById('navLogo').addEventListener('click', () => {
+            location.reload();
+        });
+
+        // LEK ടോക്കൺ ജനറേറ്റ് ചെയ്ത് ലോക്കൽ സ്റ്റോറേജിൽ സൂക്ഷിക്കുന്ന ഫങ്ക്ഷൻ
+        function generateLEK(user, userData) {
+            const lekPayload = {
+                token: user.uid,
+                sessionEmail: user.email,
+                contact: userData.phone || 'N/A',
+                verified: user.emailVerified,
+                createdAt: new Date().toISOString(),
+                appStamp: "CartPrime-Secure"
+            };
+            localStorage.setItem('cartPrime_LEK', btoa(JSON.stringify(lekPayload)));
+        }
+
+        // ടൈപ്പിംഗ് ആനിമേഷൻ ചെയ്യാനുള്ള ഫങ്ക്ഷൻ
+        function startGreetingAnimation(username) {
+            const greetingElement = document.getElementById('userGreeting');
+            if (!greetingElement) return;
+
+            const fullText = `Hi_${username}`;
+            greetingElement.innerText = "";
+            greetingElement.style.display = "inline-block";
+
+            let index = 0;
+            function typeNextChar() {
+                if (index < fullText.length) {
+                    greetingElement.innerText += fullText.charAt(index);
+                    index++;
+                    setTimeout(typeNextChar, 150); 
+                }
+            }
+            typeNextChar();
+        }
+
+        // --- Firebase Auth ലിസണർ ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (localStorage.getItem("isAdmin") === "true") {
+                    document.getElementById('adminLink').style.display = 'block';
+                }
+                
+                const profileSection = document.getElementById('profileSection');
+                const navUserName = document.getElementById('navUserName');
+
+                get(child(ref(db), `users/${user.uid}`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        localStorage.setItem('cartPrime_UserAddr', JSON.stringify(userData));
+                        
+                        if(userData.phone) {
+                            userPhoneNumber = userData.phone; 
+                            updateBadges(userData.phone);
+                        }
+                        
+                        if (userData.name) {
+                            startGreetingAnimation(userData.name);
+                            navUserName.innerText = userData.name;
+                        } else {
+                            startGreetingAnimation("User");
+                            navUserName.innerText = "Set Profile";
+                        }
+                        profileSection.style.display = 'flex';
+                        generateLEK(user, userData);
+                    } else {
+                        startGreetingAnimation("User");
+                        navUserName.innerText = "Set Profile";
+                        profileSection.style.display = 'flex';
+                        generateLEK(user, {});
+                    }
+                }).catch((err) => {
+                    console.error("Database fetch error, falling back to Local Storage:", err);
+                    const savedAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
+                    if(savedAddr && savedAddr.phone) {
+                        userPhoneNumber = savedAddr.phone;
+                        updateBadges(savedAddr.phone);
+                    }
+                    if(savedAddr && savedAddr.name) {
+                        startGreetingAnimation(savedAddr.name);
+                    } else {
+                        startGreetingAnimation("User");
+                    }
+                    generateLEK(user, savedAddr || {});
+                });
+            } else { 
+                location.href = "index.html"; 
+            }
+        });
+        
+        /* --- FETCH PRODUCTS --- */
+        onValue(ref(db, 'products'), (snapshot) => {
+            allProducts = [];
+            snapshot.forEach(child => {
+                const data = child.val();
+                data.id = child.key;
+                allProducts.push(data);
+            });
+            renderCategoryBar(); 
+            renderProducts(allProducts);
+        });
+
+        /* --- DYNAMIC BANNER FETCH FROM FIREBASE --- */
+        const bannerSection = document.getElementById('bannerSection');
+        const bannerSlider = document.getElementById('bannerSlider');
+        const bannerDots = document.getElementById('bannerDots');
+
+        onValue(ref(db, 'banners'), (snapshot) => {
+            if (snapshot.exists()) {
+                bannerSlider.innerHTML = "";
+                bannerDots.innerHTML = "";
+                let index = 0;
+
+                snapshot.forEach(child => {
+                    const bannerData = child.val();
+                    const imgUrl = bannerData.imageUrl || bannerData.image;
+
+                    if (imgUrl) {
+                        const item = document.createElement('div');
+                        item.className = 'banner-item';
+                        item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit;">`;
+
+                        if (bannerData.productId) {
+                            item.addEventListener('click', () => {
+                                window.location.href = `product-details.html?id=${bannerData.productId}`;
+                            });
+                        } else if (bannerData.category) {
+                            item.addEventListener('click', () => {
+                                activeCategory = bannerData.category;
+                                const filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
+                                renderProducts(filtered);
+                                document.querySelectorAll('.category-btn').forEach(b => {
+                                    if(b.getAttribute('data-cat').toLowerCase() === activeCategory.toLowerCase()) b.classList.add('active');
+                                    else b.classList.remove('active');
+                                });
+                            });
+                        }
+
+                        bannerSlider.appendChild(item);
+
+                        const dot = document.createElement('div');
+                        dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                        dot.setAttribute('data-index', index);
+                        bannerDots.appendChild(dot);
+                        index++;
+                    }
+                });
+
+                if (index > 0) {
+                    bannerSection.style.display = 'block';
+                    initializeSliderScroll();
+                } else {
+                    bannerSection.style.display = 'none';
+                }
+            } else {
+                bannerSection.style.display = 'none';
+            }
+        });
+
+        function initializeSliderScroll() {
+            const slider = document.getElementById('bannerSlider');
+            const dots = document.querySelectorAll('.dot');
+            const totalBanners = dots.length;
+            if (totalBanners === 0) return;
+
+            if (autoScrollInterval) clearInterval(autoScrollInterval);
+
+            const startAutoScroll = () => {
+                autoScrollInterval = setInterval(() => {
+                    const width = slider.clientWidth;
+                    const currentScroll = slider.scrollLeft;
+                    let nextIndex = Math.round(currentScroll / width) + 1;
+
+                    if (nextIndex >= totalBanners) {
+                        nextIndex = 0;
+                    }
+
+                    slider.scrollTo({
+                        left: nextIndex * width,
+                        behavior: 'smooth'
+                    });
+                }, 3000);
+            };
+
+            startAutoScroll();
+
+            slider.addEventListener('scroll', () => {
+                const width = slider.clientWidth;
+                const scrollLeft = slider.scrollLeft;
+                const activeIndex = Math.round(scrollLeft / width);
+
+                dots.forEach((dot, idx) => {
+                    if (idx === activeIndex) dot.classList.add('active');
+                    else dot.classList.remove('active');
+                });
+            });
+
+            dots.forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    clearInterval(autoScrollInterval);
+                    const idx = parseInt(e.target.getAttribute('data-index'));
+                    const width = slider.clientWidth;
+                    slider.scrollTo({
+                        left: idx * width,
+                        behavior: 'smooth'
+                    });
+                    startAutoScroll();
+                });
+            });
+
+            slider.addEventListener('touchstart', () => clearInterval(autoScrollInterval));
+            slider.addEventListener('touchend', () => startAutoScroll());
+        }
+
+        function renderCategoryBar() {
+            const catBar = document.getElementById('categoryBar');
+            const categories = new Set(["Gadgets", "Fashion", "Watches", "Accessories"]);
+            
+            allProducts.forEach(p => {
+                if (p.category && p.category.trim() !== "" && p.showOnHome !== false) {
+                    categories.add(p.category.trim());
+                }
+            });
+
+            let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All">All</div>`;
+            
+            categories.forEach(cat => {
+                barHtml += `<div class="category-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`;
+            });
+            catBar.innerHTML = barHtml;
+
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    activeCategory = e.target.getAttribute('data-cat');
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    let filtered = allProducts;
+                    if (activeCategory !== "All") {
+                        filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
+                    }
+                    renderProducts(filtered);
+                });
+            });
+        }
+
+        function renderProducts(products) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = "";
+            
+            products.forEach((p) => {
+                if (p.showOnHome === false) return;
+
+                const isOut = p.outOfStock === true;
+                const pr = parseFloat(p.price.toString().replace(/,/g, ''));
+                const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr);
+                let discTag = "";
+                if(mr > pr) {
+                    const disc = Math.round(((mr - pr) / mr) * 100);
+                    discTag = `<div class="discount-badge">${disc}% OFF</div>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const reviewRef = ref(db, `reviews/${p.id}`);
+                get(reviewRef).then((snapshot) => {
+                    if(snapshot.exists()) {
+                        const reviewsData = snapshot.val();
+                        let totalRating = 0;
+                        let count = 0;
+                        for(let key in reviewsData) {
+                            if(reviewsData[key].rating) {
+                                totalRating += parseFloat(reviewsData[key].rating);
+                                count++;
+                            }
+                        }
+                        if(count > 0) {
+                            const avgRating = (totalRating / count).toFixed(1);
+                            const ratingUi = card.querySelector('.card-rating-ui');
+                            if(ratingUi) {
+                                ratingUi.innerHTML = `<i class="fa-solid fa-star"></i> ${avgRating} <span>(${count} reviews)</span>`;
+                            }
+                        }
+                    }
+                });
+
+                const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150';
+
+                card.innerHTML = `
+                    ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''}
+                    ${!isOut ? discTag : ''}
+                    <div class="image-box">
+                        <img src="${productMainImg}" alt="${p.name || 'Product'}" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}">
+                    </div>
+                    <div class="card-info">
+                        <h3>${p.name || 'No Title'}</h3>
+                        <div class="card-rating-ui"></div>
+                        <div class="price-container">
+                            <span class="price">₹${p.price}</span>
+                            ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''}
+                        </div>
+                        <button class="buy-btn" ${isOut ? 'disabled' : ''}>
+                            ${isOut ? 'Unavailable' : 'View Product'}
+                        </button>
+                    </div>
+                `;
+
+                card.querySelector('.buy-btn').addEventListener('click', () => {
+                    window.location.href = `product-details.html?id=${p.id}`;
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        /* --- SEARCH INPUT LOGIC --- */
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsBox = document.getElementById('searchSuggestions');
+
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase().trim();
+            suggestionsBox.innerHTML = "";
+
+            if (val.length < 1) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            const searchWords = val.split(/\s+/).filter(word => word);
+            
+            let matchedProducts = allProducts.filter(p => {
+                const productName = (p.name || "").toLowerCase();
+                const productCat = (p.category || "").toLowerCase();
+                const productDesc = (p.description || "").toLowerCase();
+                
+                return searchWords.some(word => 
+                    productName.includes(word) || 
+                    productCat.includes(word) || 
+                    productDesc.includes(word)
+                );
+            });
+
+            if (matchedProducts.length > 0) {
+                suggestionsBox.style.display = 'block';
+                
+                matchedProducts.slice(0, 10).forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    
+                    const productImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/50';
+                    
+                    div.innerHTML = `
+                        <img src="${productImg}" alt="${p.name || 'Product'}">
+                        <div class="suggestion-info">
+                            <h4>${p.name || 'No Name'}</h4>
+                            <p>₹${p.price || '0'}</p>
+                        </div>
+                    `;
+                    div.addEventListener('click', () => {
+                        window.location.href = `product-details.html?id=${p.id}`;
+                    });
+                    suggestionsBox.appendChild(div);
+                });
+            } else {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const searchVal = searchInput.value.trim();
+                if (searchVal.length >= 1) {
+                    window.location.href = `search.html?q=${encodeURIComponent(searchVal)}`;
+                }
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) suggestionsBox.style.display = 'none';
+        });
+
+        // =========================================================================
+        // --- ഹെഡറിലെ യൂസർ നെയിം ക്ലിക്ക് ചെയ്യുമ്പോൾ പാസ്‌വേഡ് ചോദിക്കുന്ന ലോജിക് ---
+        // =========================================================================
+        
+        const profileSection = document.getElementById('profileSection');
+        const logoutModalOverlay = document.getElementById('logoutModalOverlay');
+        const btnCancelLogout = document.getElementById('btnCancelLogout');
+        const btnConfirmLogout = document.getElementById('btnConfirmLogout');
+        const logoutPasswordInput = document.getElementById('logoutPasswordInput');
+        const logoutErrorMsg = document.getElementById('logoutErrorMsg');
+        const navUserName = document.getElementById('navUserName');
+
+        // സ്റ്റെപ്പ് 1: യൂസർ നെയിം ക്ലിക്ക് ചെയ്യുമ്പോൾ ഉള്ള ലോജിക്
+        if (profileSection && logoutModalOverlay) {
+            profileSection.addEventListener('click', () => {
+                
+                // --- യൂസർ നെയിം "Set Profile" ആണെങ്കിൽ നേരിട്ട് ലോഗിൻ ഓപ്ഷൻ കാണിക്കുക ---
+                if (navUserName && navUserName.innerText.trim() === "Set Profile") {
+                    logoutModalOverlay.querySelector('h2').innerText = "Login Required";
+                    
+                    const descriptionPara = logoutModalOverlay.querySelector('p');
+                    descriptionPara.innerText = "Please login to your account to unlock all features and manage your profile.";
+                    descriptionPara.style.color = "var(--text-main, #4b5563)";
+
+                    document.querySelector('.modal-input-box').style.display = 'none';
+                    logoutErrorMsg.style.display = 'none';
+                    logoutPasswordInput.value = "";
+
+                    // ബട്ടണുകൾ "Cancel", "Login" ആയി മാറ്റുന്നു
+                    btnCancelLogout.innerText = "Cancel";
+                    btnConfirmLogout.innerText = "Login";
+                    
+                    btnCancelLogout.style.background = "#e2e8f0";
+                    btnCancelLogout.style.color = "#000";
+                    btnConfirmLogout.style.background = "#2563eb"; // ബ്ലൂ കളർ ലോഗിൻ ബട്ടൺ
+                    
+                    selectedAction = "gotologin"; // ആക്ഷൻ ലോഗിൻ പേജിലേക്ക് തിരിച്ചുവിടാൻ സെറ്റ് ചെയ്യുന്നു
+                    logoutModalOverlay.classList.add('active');
+                    return; // ഇവിടെ വെച്ച് ഈ ഫങ്ക്ഷൻ നിർത്തുന്നു
+                }
+
+                // --- അല്ലാത്തപക്ഷം (യൂസർ ലോഗിൻ ചെയ്തിട്ടുണ്ടെങ്കിൽ) സാധാരണ ഓപ്ഷനുകൾ കാണിക്കുക ---
+                logoutModalOverlay.querySelector('h2').innerText = "Account Options";
+                
+                const descriptionPara = logoutModalOverlay.querySelector('p');
+                descriptionPara.innerText = "Choose an action for your CartPrime account.";
+                descriptionPara.style.color = "var(--text-main, #4b5563)"; 
+
+                document.querySelector('.modal-input-box').style.display = 'none';
+                logoutErrorMsg.style.display = 'none';
+                logoutPasswordInput.value = "";
+
+                btnCancelLogout.innerText = "Logout";
+                btnConfirmLogout.innerText = "Sign Out (Clear All)";
+                
+                btnCancelLogout.style.background = "#e2e8f0";
+                btnCancelLogout.style.color = "#000";
+                btnConfirmLogout.style.background = "#ef4444"; 
+
+                selectedAction = ""; // പഴയ ആക്ഷനുകൾ ക്ലിയർ ചെയ്യുന്നു
+                logoutModalOverlay.classList.add('active');
+            });
+        }
+
+        // സ്റ്റെപ്പ് 2: വെരിഫിക്കേഷനിലേക്ക് മാറുന്നു
+        function showPasswordVerification() {
+            logoutModalOverlay.querySelector('h2').innerText = "Verify Identity";
+            const descriptionPara = logoutModalOverlay.querySelector('p');
+            
+            if (selectedAction === "signout") {
+                descriptionPara.innerText = "Warning: Signing out will permanently wipe all your details from our database. You will need to register again to use this account.";
+                descriptionPara.style.color = "#dc2626"; 
+            } else {
+                descriptionPara.innerText = "Please type your password to securely confirm logout.";
+                descriptionPara.style.color = "var(--text-main, #4b5563)"; 
+            }
+            
+            document.querySelector('.modal-input-box').style.display = 'block';
+            logoutPasswordInput.focus();
+
+            btnCancelLogout.innerText = "Cancel";
+            btnCancelLogout.style.background = "#f1f5f9";
+            btnCancelLogout.style.color = "var(--text-main)";
+
+            btnConfirmLogout.innerText = "Verify & Proceed";
+            btnConfirmLogout.style.background = "#2563eb"; 
+        }
+
+        // ഇടതുവശത്തെ ബട്ടൺ ഇവന്റ്
+        btnCancelLogout.addEventListener('click', () => {
+            if (btnCancelLogout.innerText === "Logout") {
+                selectedAction = "logout";
+                showPasswordVerification();
+            } else {
+                logoutModalOverlay.classList.remove('active');
+            }
+        });
+
+        // വലതുവശത്തെ ബട്ടൺ ഇവന്റ്
+        btnConfirmLogout.addEventListener('click', () => {
+            // --- ആക്ഷൻ ലോഗിൻ ആണെങ്കിൽ നേരിട്ട് index.html ലേക്ക് വിടുന്നു ---
+            if (selectedAction === "gotologin" && btnConfirmLogout.innerText === "Login") {
+                logoutModalOverlay.classList.remove('active');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            if (btnConfirmLogout.innerText === "Sign Out (Clear All)") {
+                selectedAction = "signout";
+                
+                if (userPhoneNumber) {
+                    const ordersRef = ref(db, `orders/${userPhoneNumber}`);
+                    get(ordersRef).then((snapshot) => {
+                        let hasActiveOrders = false;
+                        
+                        if (snapshot.exists()) {
+                            snapshot.forEach((childSnapshot) => {
+                                const order = childSnapshot.val();
+                                if (order.status && order.status.toLowerCase() !== 'delivered' && order.status.toLowerCase() !== 'cancelled') {
+                                    hasActiveOrders = true;
+                                }
+                            });
+                        }
+
+                        if (hasActiveOrders) {
+                            logoutErrorMsg.innerText = "Cannot Sign Out! You have active orders that are not yet delivered.";
+                            logoutErrorMsg.style.display = 'block';
+                        } else {
+                            showPasswordVerification();
+                        }
+                    }).catch((err) => {
+                        console.error("Order check error:", err);
+                        showPasswordVerification();
+                    });
+                } else {
+                    showPasswordVerification();
+                }
+
+            } else if (btnConfirmLogout.innerText === "Verify & Proceed") {
+                const password = logoutPasswordInput.value.trim();
+                const user = auth.currentUser;
+
+                if (!password) {
+                    logoutErrorMsg.innerText = "Password cannot be empty!";
+                    logoutErrorMsg.style.display = 'block';
+                    return;
+                }
+
+                if (user && user.email) {
+                    logoutErrorMsg.style.display = 'none';
+                    const credential = EmailAuthProvider.credential(user.email, password);
+
+                    reauthenticateWithCredential(user, credential).then(() => {
+                        if (selectedAction === "logout") {
+                            signOut(auth).then(() => {
+                                logoutModalOverlay.classList.remove('active');
+                                window.location.href = 'index.html';
+                            });
+                        } else if (selectedAction === "signout") {
+                            const userDbRef = ref(db, `users/${user.uid}`);
+                            
+                            // 1. ഡാറ്റാബേസിൽ നിന്ന് യൂസർ വിവരങ്ങൾ പൂർണ്ണമായി നീക്കം ചെയ്യുന്നു
+                            remove(userDbRef).then(() => {
+                                // 2. ഫയർബേസ് ഓഥന്റിക്കേഷനിൽ നിന്നും യൂസറെ പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യുന്നു
+                                deleteUser(user).then(() => {
+                                    localStorage.clear();
+                                    logoutModalOverlay.classList.remove('active');
+                                    window.location.href = 'index.html';
+                                }).catch((authErr) => {
+                                    console.error("Auth deletion failed, signing out instead:", authErr);
+                                    signOut(auth).then(() => {
+                                        localStorage.clear();
+                                        logoutModalOverlay.classList.remove('active');
+                                        window.location.href = 'index.html';
+                                    });
+                                });
+                            }).catch((dbErr) => {
+                                console.error("Database deletion failed:", dbErr);
+                                signOut(auth).then(() => {
+                                    localStorage.clear();
+                                    logoutModalOverlay.classList.remove('active');
+                                    window.location.href = 'index.html';
+                                });
+                            });
+                        }
+                    }).catch((error) => {
+                        console.error("Auth failed:", error);
+                        logoutErrorMsg.innerText = "Incorrect password. Please try again.";
+                        logoutErrorMsg.style.display = 'block';
+                    });
+                }
+            }
+        });
+
+        // പുറത്ത് ക്ലിക്ക് ചെയ്താൽ ക്ലോസ് ആകാൻ
+        logoutModalOverlay.addEventListener('click', (e) => {
+            if (e.target === logoutModalOverlay) {
+                logoutModalOverlay.classList.remove('active');
+            }
+        });
+</script>
+    
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Prime | Sign In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- EmailJS SDK ലൈബ്രറി -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <style>
+        :root { 
+            --bg: #f8f9fa; 
+            --card-bg: #ffffff; 
+            --primary: #000000; 
+            --secondary-text: #666666; 
+            --border: #e1e1e1; 
+            --error: #df2020; 
+            --focus-ring: rgba(0,0,0,0.05);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .login-card { background: var(--card-bg); width: 100%; max-width: 400px; padding: 40px; text-align: center; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.02); }
+        .brand-header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1.5px; text-transform: uppercase; margin-bottom: 30px; }
+        .brand-header h1 span { font-weight: 400; color: #ccc; }
+        h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; text-align: left; letter-spacing: -0.5px; }
+        .subtitle { color: var(--secondary-text); font-size: 0.9rem; margin-bottom: 25px; text-align: left; }
+        #msg-alert { background: #fff5f5; color: var(--error); padding: 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; display: none; text-align: left; border-left: 4px solid var(--error); }
+        
+        .field { text-align: left; margin-bottom: 14px; position: relative; }
+        .field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #333; }
+        .field input, .field select { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 0.95rem; outline: none; background: #fff; transition: all 0.2s ease; }
+        .field input:focus, .field select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--focus-ring); }
+        
+        .btn-main { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; transition: opacity 0.2s ease; }
+        .btn-main:hover { opacity: 0.9; }
+        .hidden { display: none !important; }
+
+        /* Modern & Fully Responsive Delivery Modal */
+        #orderDetailsModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 10000; justify-content: center; align-items: center; padding: 15px; }
+        
+        /* ഒട്ടുമിക്ക സ്ക്രീനുകളിലും ഒതുങ്ങിനിൽക്കാൻ പാഡിംഗും മാക്സ്-വിഡ്ത്തും പുതുക്കി, ഹീഡൻ സ്ക്രോൾ ബാർ */
+        .modal-content { background: #fff; width: 100%; max-width: 480px; padding: 28px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05); animation: modalFadeUp 0.3s ease; overflow: hidden; }
+        @keyframes modalFadeUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-header { margin-bottom: 20px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; }
+        .modal-header h2 { font-size: 1.4rem; color: #000; display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+        .modal-header h2 i { font-size: 1.2rem; color: #333; }
+        
+        /* ഫ്ലെക്സിബിൾ റെസ്പോൺസിവ് ഗ്രിഡ് സിസ്റ്റം */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .full-width { grid-column: span 2; }
+        
+        .field-icon-wrapper { position: relative; }
+        .field-icon-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; font-size: 0.95rem; pointer-events: none; }
+        .field-icon-wrapper input, .field-icon-wrapper select { padding-left: 40px; }
+        
+        .field input:disabled { background: #f5f5f5; color: #888; cursor: not-allowed; border-color: #e8e8e8; }
+
+        /* മൊബൈൽ സ്ക്രീനുകൾക്ക് വേണ്ടിയുള്ള പ്രത്യേക ക്രമീകരണം (Media Query) */
+        @media (max-width: 480px) {
+            .modal-content { padding: 20px; border-radius: 16px; }
+            .form-grid { grid-template-columns: 1fr; gap: 2px; }
+            .full-width { grid-column: span 1; }
+            .modal-header h2 { font-size: 1.25rem; }
+            .field { margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Please wait...</p>
+    </div>
+
+    <div class="login-card">
+        <div class="brand-header">
+            <h1>CART<span>PRIME</span></h1>
+        </div>
+
+        <div id="msg-alert"></div>
+
+        <div>
+            <h2>Sign In / Register</h2>
+            <p class="subtitle" id="form-sub">Enter your details to log in.</p>
+
+            <!-- 1. ഫോൺ നമ്പർ ഏരിയ -->
+            <div class="field" id="phone-area">
+                <label>Phone Number</label>
+                <input type="tel" id="auth-phone" placeholder="10-digit mobile number" maxlength="10">
+            </div>
+
+            <!-- 2. ഇമെയിൽ ഏരിയ -->
+            <div class="field hidden" id="email-area">
+                <label>Email Address</label>
+                <input type="email" id="auth-email" placeholder="Enter your email for registration">
+            </div>
+
+            <!-- 3. പാസ്‌വേഡ് ഏരിയ -->
+            <div class="field hidden" id="password-area">
+                <label id="password-label">Password</label>
+                <input type="password" id="auth-password" placeholder="Enter your password">
+            </div>
+
+            <!-- 4. OTP ഏരിയ -->
+            <div class="field hidden" id="otp-area">
+                <label style="color: green; font-weight: 800;">Enter Code Sent to Email</label>
+                <input type="number" id="auth-otp" placeholder="Enter 6-Digit Code">
+            </div>
+
+            <button class="btn-main" id="actionBtn">Proceed</button>
+        </div>
+    </div>
+
+    <!-- ഡെലിവറി വിവരങ്ങളുടെ മോഡൽ -->
+    <div id="orderDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-truck-ramp-box"></i> Delivery Details</h2>
+                <p class="subtitle" style="margin-bottom: 0; margin-top: 2px; font-size: 0.85rem;">Please provide your accurate address for hassle-free delivery.</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="field full-width">
+                    <label>Full Name</label>
+                    <div class="field-icon-wrapper">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" id="p-name" placeholder="Enter your full name">
+                    </div>
+                </div>
+                
+                <div class="field full-width">
+                    <label>Phone Number</label>
+                    <div class="field-icon-wrapper">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                        <input type="tel" id="p-phone" maxlength="10" disabled>
+                    </div>
+                </div>
+                
+                <div class="field full-width">
+                    <label>Delivery Address</label>
+                    <div class="field-icon-wrapper">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <input type="text" id="p-address" placeholder="House name, Street, Area">
+                    </div>
+                </div>
+                
+                <div class="field full-width">
+                    <label>Landmark</label>
+                    <div class="field-icon-wrapper">
+                        <i class="fa-solid fa-landmark"></i>
+                        <input type="text" id="p-landmark" placeholder="Nearby school, shop, or landmark">
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <label>District</label>
+                    <div class="field-icon-wrapper">
+                        <i class="fa-solid fa-map"></i>
+                        <select id="p-district">
+                            <option value="" disabled selected>Select</option>
+                            <option value="Alappuzha">Alappuzha</option>
+                            <option value="Ernakulam">Ernakulam</option>
+                            <option value="Idukki">Idukki</option>
+                            <option value="Kannur">Kannur</option>
+                            <option value="Kasaragod">Kasaragod</option>
+                            <option value="Kollam">Kollam</option>
+                            <option value="Kottayam">Kottayam</option>
+                            <option value="Kozhikode">Kozhikode</option>
+                            <option value="Malappuram">Malappuram</option>
+                            <option value="Palakkad">Palakkad</option>
+                            <option value="Pathanamthitta">Pathanamthitta</option>
+                            <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                            <option value="Thrissur">Thrissur</option>
+                            <option value="Wayanad">Wayanad</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <label>Pincode</label>
+                    <div class="field-icon-wrapper">
+                        <i class="fa-solid fa-map-pin"></i>
+                        <input type="number" id="p-pincode" placeholder="6-digit">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-main" id="saveDetailsBtn" style="margin-top: 10px; padding: 14px;">Save & Continue <i class="fa-solid fa-arrow-right" style="margin-left: 8px; font-size: 0.85rem;"></i></button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // EmailJS Public Key
+        emailjs.init("_3x3SUGr8sfKhuzv4"); 
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+            authDomain: "cartprime-shopping.firebaseapp.com",
+            projectId: "cartprime-shopping",
+            databaseURL: "https://cartprime-shopping-default-rtdb.firebaseio.com",
+            storageBucket: "cartprime-shopping.firebasestorage.app",
+            messagingSenderId: "570068438689",
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const alertBox = document.getElementById('msg-alert');
+        const loader = document.getElementById('loader');
+        const modal = document.getElementById('orderDetailsModal');
+        const actionBtn = document.getElementById('actionBtn');
+
+        let currentStage = "CHECK_PHONE"; 
+        let generatedOTP = null;
+        let userEmail = "";
+        let userPhone = "";
+        let chosenPassword = ""; 
+        let isNewUser = false;
+
+        function showAlert(msg, isSuccess = false) {
+            alertBox.innerText = msg;
+            alertBox.style.background = isSuccess ? '#e6f4ea' : '#fff5f5';
+            alertBox.style.color = isSuccess ? '#137333' : '#df2020';
+            alertBox.style.borderLeft = isSuccess ? '4px solid #137333' : '4px solid #df2020';
+            alertBox.style.display = 'block';
+            loader.style.display = 'none';
+        }
+
+        function generate6DigitOTP() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        function sendOTPEmail(email, otp) {
+            const cleanEmail = email ? email.trim() : "";
+            console.log("👉 Executing sendOTPEmail for target: '" + cleanEmail + "'");
+
+            if (!cleanEmail || cleanEmail === "" || !cleanEmail.includes("@")) {
+                loader.style.display = 'none';
+                showAlert("Error: Valid email address is missing. Cannot trigger email.");
+                return Promise.reject("Invalid Email Variable");
+            }
+
+            const templateParams = {
+                to_email: cleanEmail, 
+                otp_code: otp,
+                site_name: "Cart Prime"
+            };
+            
+            return emailjs.send('service_m91o44h', 'template_aj90pco', templateParams)
+                .then((response) => {
+                    console.log("✅ EmailJS Send Success Response:", response);
+                    return response;
+                })
+                .catch((error) => {
+                    console.error("❌ EmailJS Rejected Promise Details:", error);
+                    loader.style.display = 'none';
+                    showAlert("EmailJS Error: " + (error.text || "Failed to send email. Check configuration."));
+                    throw error;
+                });
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                loader.style.display = 'flex';
+                try {
+                    const snapshot = await get(child(ref(db), `users/${user.uid}`));
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        if (userData.address && userData.district && userData.pincode) {
+                            location.href = "home.html";
+                        } else {
+                            document.getElementById('p-phone').value = userData.phone || userPhone;
+                            loader.style.display = 'none';
+                            modal.style.display = 'flex';
+                        }
+                    } else {
+                        document.getElementById('p-phone').value = userPhone;
+                        loader.style.display = 'none';
+                        modal.style.display = 'flex';
+                    }
+                } catch(e) {
+                    loader.style.display = 'none';
+                }
+            } else {
+                loader.style.display = 'none';
+            }
+        });
+
+        actionBtn.addEventListener('click', async () => {
+            alertBox.style.display = 'none';
+            
+            if (currentStage === "CHECK_PHONE") {
+                userPhone = document.getElementById('auth-phone').value.trim();
+                if (userPhone.length !== 10 || isNaN(userPhone)) {
+                    return showAlert("Please enter a valid 10-digit phone number.");
+                }
+                
+                loader.style.display = 'flex';
+                
+                try {
+                    const phoneSnapshot = await get(child(ref(db), `phoneToUid/${userPhone}`));
+                    
+                    if (phoneSnapshot.exists()) {
+                        const uid = phoneSnapshot.val();
+                        const userSnapshot = await get(child(ref(db), `users/${uid}`));
+                        const userData = userSnapshot.val();
+                        
+                        if (userData && userData.email) {
+                            userEmail = userData.email; 
+                            isNewUser = false;
+
+                            loader.style.display = 'none';
+                            document.getElementById('phone-area').classList.add('hidden');
+                            document.getElementById('password-label').innerText = "Password";
+                            document.getElementById('auth-password').placeholder = "Enter your password";
+                            document.getElementById('password-area').classList.remove('hidden');
+                            document.getElementById('form-sub').innerText = "Enter your password to log in.";
+                            actionBtn.innerText = "Verify & Login";
+                            currentStage = "LOGIN_WITH_PASSWORD";
+                        } else {
+                            loader.style.display = 'none';
+                            isNewUser = true;
+                            document.getElementById('phone-area').classList.add('hidden');
+                            document.getElementById('email-area').classList.remove('hidden');
+                            document.getElementById('password-label').innerText = "Create Password";
+                            document.getElementById('auth-password').placeholder = "Create a password (min 6 chars)";
+                            document.getElementById('password-area').classList.remove('hidden');
+                            document.getElementById('form-sub').innerText = "New user! Please enter your Email and Password.";
+                            actionBtn.innerText = "Send Code";
+                            currentStage = "REGISTER_EMAIL";
+                        }
+
+                    } else {
+                        loader.style.display = 'none';
+                        isNewUser = true;
+                        document.getElementById('phone-area').classList.add('hidden');
+                        document.getElementById('email-area').classList.remove('hidden');
+                        document.getElementById('password-label').innerText = "Create Password";
+                        document.getElementById('auth-password').placeholder = "Create a password (min 6 chars)";
+                        document.getElementById('password-area').classList.remove('hidden');
+                        document.getElementById('form-sub').innerText = "New user! Please enter your Email and Password.";
+                        actionBtn.innerText = "Send Code";
+                        currentStage = "REGISTER_EMAIL";
+                    }
+                } catch(err) {
+                    showAlert("Database Error: " + err.message);
+                }
+
+            } else if (currentStage === "REGISTER_EMAIL") {
+                const rawEmail = document.getElementById('auth-email').value;
+                userEmail = rawEmail ? rawEmail.trim() : "";
+                chosenPassword = document.getElementById('auth-password').value.trim();
+                
+                if (!userEmail || !userEmail.includes("@")) {
+                    return showAlert("Please enter a valid email address.");
+                }
+                if (chosenPassword.length < 6) {
+                    return showAlert("Password must be at least 6 characters long.");
+                }
+
+                loader.style.display = 'flex';
+                generatedOTP = generate6DigitOTP();
+
+                sendOTPEmail(userEmail, generatedOTP).then(() => {
+                    document.getElementById('email-area').classList.add('hidden');
+                    document.getElementById('password-area').classList.add('hidden');
+                    document.getElementById('otp-area').classList.remove('hidden');
+                    actionBtn.innerText = "Verify & Register";
+                    currentStage = "VERIFY_OTP";
+                    showAlert("Verification code sent to your email!", true);
+                }).catch((e) => {
+                    console.error("Caught error at REGISTER_EMAIL email pipe:", e);
+                });
+
+            } else if (currentStage === "VERIFY_OTP") {
+                const otpInput = document.getElementById('auth-otp').value.trim();
+                if (otpInput !== generatedOTP) return showAlert("Invalid Code. Please check your email again.");
+
+                loader.style.display = 'flex';
+
+                if (isNewUser) {
+                    createUserWithEmailAndPassword(auth, userEmail, chosenPassword)
+                        .then(async (userCredential) => {
+                            const user = userCredential.user;
+                            await set(ref(db, 'users/' + user.uid), { phone: userPhone, email: userEmail, role: "user", createdAt: new Date().toISOString() });
+                            await set(ref(db, 'phoneToUid/' + userPhone), user.uid);
+                            showAlert("Registration Successful!", true);
+                        }).catch(err => showAlert(err.message));
+                }
+
+            } else if (currentStage === "LOGIN_WITH_PASSWORD") {
+                const passwordInput = document.getElementById('auth-password').value.trim();
+                if (!passwordInput) return showAlert("Please enter your password.");
+
+                loader.style.display = 'flex';
+                signInWithEmailAndPassword(auth, userEmail, passwordInput)
+                    .then(() => {
+                        showAlert("Login Successful!", true);
+                    }).catch(err => {
+                        loader.style.display = 'none';
+                        showAlert("Incorrect password. Please try again.");
+                    });
+            }
+        });
+
+        document.getElementById('saveDetailsBtn').addEventListener('click', async () => {
+            const name = document.getElementById('p-name').value.trim();
+            const phone = document.getElementById('p-phone').value.trim();
+            const address = document.getElementById('p-address').value.trim();
+            const landmark = document.getElementById('p-landmark').value.trim();
+            const district = document.getElementById('p-district').value;
+            const pincode = document.getElementById('p-pincode').value.trim();
+            const user = auth.currentUser;
+
+            if (!name || !address || !landmark || !district || !pincode) return alert("Fill all details.");
+
+            loader.style.display = 'flex';
+            try {
+                await update(ref(db, 'users/' + user.uid), { name, phone, address, landmark, district, pincode });
+                location.href = "home.html";
+            } catch (error) {
+                showAlert("Failed to save data.");
+            }
+        });
+    </script>
+</body>
+</html>

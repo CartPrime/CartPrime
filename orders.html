@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | CartPrime</title>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #000; --bg: #f8fafc; --white: #fff; --red: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); padding: 20px 5%; }
+        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+        .back-btn { text-decoration: none; color: #000; font-size: 1.2rem; }
+        .order-card { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #eee; position: relative; }
+        
+        .order-status { font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 8px; text-transform: uppercase; float: right; }
+        .status-shipped { background: #dcfce7; color: #15803d; }
+        .status-pending { background: #fef9c3; color: #a16207; }
+        .status-delivered { background: #e0f2fe; color: #0369a1; }
+        .status-cancelled, .status-rejected { background: #fee2e2; color: #b91c1c; }
+        .status-confirmed { background: #e0f2fe; color: #0369a1; }
+        .status-return, .status-returned { background: #dcfce7; color: #15803d; }
+        .status-returnrequested { background: #fee2e2; color: #b91c1c; }
+
+        .pay-verify-badge { display: inline-block; font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; margin-top: 8px; text-transform: uppercase; }
+        .pay-success { background: #16a34a; color: white; }
+        .pay-failed { background: #ef4444; color: white; }
+
+        .order-items-container { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+        .item-box { display: flex; gap: 15px; align-items: center; border-bottom: 1px dashed #f1f1f1; padding-bottom: 12px; cursor: pointer; transition: 0.2s; }
+        .item-box:hover { opacity: 0.8; }
+        .item-box img { width: 70px; height: 70px; border-radius: 12px; object-fit: contain; background: #f8fafc; border: 1px solid #f1f1f1; }
+        .item-details h3 { font-size: 1rem; color: #1e293b; margin-bottom: 4px; }
+        .item-details h3:hover { color: #000; }
+        .item-details p { font-size: 0.85rem; color: #64748b; }
+        
+        .info-block { background: #f8fafc; border-radius: 12px; padding: 12px; margin-top: 12px; font-size: 0.8rem; border: 1px solid #f1f1f1; }
+        .info-title { font-weight: 800; font-size: 0.65rem; text-transform: uppercase; color: #64748b; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+        .info-text { font-weight: 600; color: #1e293b; line-height: 1.4; }
+
+        .action-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
+        .btn-cancel { background: #fee2e2; color: var(--red); }
+        .btn-return { background: #f1f5f9; color: #1e293b; border: 1px solid #e2e8f0; }
+        .empty-state { text-align: center; margin-top: 50px; color: #64748b; }
+        .login-msg { text-align: center; padding: 40px 20px; background: white; border-radius: 20px; border: 1px solid #eee; margin-top: 50px; }
+        
+        .return-policy { font-size: 0.7rem; color: #64748b; margin-top: 5px; display: block; font-weight: 600; }
+
+        /* Premium Responsive Alert Styles */
+        .swal-custom-popup { border-radius: 24px !important; padding: 1.25rem !important; width: 90% !important; max-width: 450px !important; overflow-x: hidden !important; }
+        .swal-custom-title { font-weight: 800 !important; color: #000 !important; font-size: 1.3rem !important; }
+        .swal-custom-confirm { background-color: #000 !important; border-radius: 12px !important; padding: 10px 24px !important; font-weight: 700 !important; font-size: 0.9rem !important; }
+
+        /* Custom Return Modal Styles (Responsive) */
+        .swal-radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; text-align: left; width: 100%; }
+        .swal-radio-option { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; background: #f8fafc; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .swal-radio-option input { accent-color: #000; width: 15px; height: 15px; min-width: 15px; }
+        .swal-input-field { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 8px; font-size: 0.85rem; font-weight: 600; display: none; outline: none; }
+
+        @media (max-width: 480px) {
+            body { padding: 15px 4%; }
+            .order-card { padding: 15px; border-radius: 16px; }
+            .item-box img { width: 60px; height: 60px; border-radius: 10px; }
+            .item-details h3 { font-size: 0.9rem; }
+            .btn { padding: 10px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="home.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <h1 style="font-weight: 800; letter-spacing: -1px;">My Orders</h1>
+    </div>
+    
+    <div id="ordersList">
+        <div class="empty-state">Verifying account...</div>
+    </div>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+        authDomain: "cartprime-shopping.firebaseapp.com",
+        projectId: "cartprime-shopping",
+        storageBucket: "cartprime-shopping.firebasestorage.app",
+        messagingSenderId: "570068438689",
+        appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+        measurementId: "G-9GREWHMEYL"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const showAlert = (title, text, icon, showConfirm = true) => {
+        Swal.fire({
+            title: title, text: text, icon: icon, showConfirmButton: showConfirm,
+            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
+        });
+    };
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const savedAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
+            const userPhone = savedAddr ? savedAddr.phone : null;
+            if (userPhone) { loadOrders(userPhone); } 
+            else {
+                document.getElementById('ordersList').innerHTML = `<div class="empty-state"><p>No phone number linked.</p></div>`;
+            }
+        } else {
+            document.getElementById('ordersList').innerHTML = `<div class="login-msg"><h2>Please Login</h2><a href="login.html" class="btn" style="background:black; color:white; padding:12px 30px; text-decoration:none; display:inline-block; border-radius:12px; margin-top:20px;">Login Now</a></div>`;
+        }
+    });
+
+    function loadOrders(phone) {
+        onValue(ref(db, `orders/${phone}`), (snapshot) => {
+            const list = document.getElementById('ordersList');
+            list.innerHTML = "";
+            
+            if (!snapshot.exists()) {
+                list.innerHTML = `<div class="empty-state"><p>No orders found.</p></div>`;
+                return;
+            }
+
+            let ordersArr = [];
+            const oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+            snapshot.forEach(orderSnap => { 
+                const orderData = orderSnap.val();
+                
+                let isOlderThanOneMonth = false;
+                if (orderData.date) {
+                    const orderDate = new Date(orderData.date);
+                    if (!isNaN(orderDate.getTime()) && orderDate < oneMonthAgo) {
+                        isOlderThanOneMonth = true;
+                    }
+                }
+
+                if (!isOlderThanOneMonth) {
+                    ordersArr.push({ id: orderSnap.key, ...orderData }); 
+                }
+            });
+
+            if (ordersArr.length === 0) {
+                list.innerHTML = `<div class="empty-state"><p>No recent orders found within 1 month.</p></div>`;
+                return;
+            }
+
+            ordersArr.reverse().forEach(order => {
+                const isPaid = order.paymentStatus === 'Paid';
+                const isRejected = order.paymentStatus === 'Rejected' || order.status === 'Rejected';
+                const displayStatus = order.status || 'Pending';
+                
+                const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
+
+                let payBadge = '', rejectReason = '';
+                if (isPaid) { payBadge = `<div class="pay-verify-badge pay-success"><i class="fa-solid fa-circle-check"></i> Payment Success</div>`; } 
+                else if (isRejected) {
+                    payBadge = `<div class="pay-verify-badge pay-failed"><i class="fa-solid fa-circle-xmark"></i> Payment Not Success</div>`;
+                    rejectReason = `<p style="color:red; font-size:0.75rem; font-weight:800; margin-top:5px;">Reason: Payment Not Success</p>`;
+                }
+
+                let deliveryMsg = '';
+                
+                if (checkStatus === 'returned') {
+                    deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Your Money credited Check your Email</p>`;
+                } else if (checkStatus === 'returnrequested') {
+                    deliveryMsg = `<p style="font-size: 0.8rem; color: #f59e0b; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-clock"></i> Your order is returned</p>`;
+                } else if (isPaid && !isRejected) {
+                    if (checkStatus === 'delivered') {
+                        deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Your product has been delivered</p>`;
+                    } else if (order.deliveryDate) {
+                        deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}</p>`;
+                    }
+                }
+
+                let orderHasReturnableProduct = false;
+                let itemsHtml = "";
+
+                if (Array.isArray(order.items)) {
+                    order.items.forEach(item => {
+                        const itemCanReturn = item.return === true || item.return === "true" || 
+                                              item.returnPolicy === true || item.returnPolicy === "true" ||
+                                              item.isReturnable === true || item.isReturnable === "true";
+                                              
+                        if (itemCanReturn) { orderHasReturnableProduct = true; }
+
+                        const returnPolicyText = itemCanReturn && checkStatus !== 'returned' && checkStatus !== 'returnrequested' ? `<span class="return-policy"><i class="fa-solid fa-rotate-left"></i> 7 Days Return Available</span>` : '';
+                        const itemImg = item.image || "https://via.placeholder.com/150";
+
+                        // പേര് 4 വാക്കുകളിലേക്ക് ചുരുക്കുന്നു
+                        const rawItemName = item.name || 'Product';
+                        const shortItemName = rawItemName.split(' ').slice(0, 4).join(' ') + (rawItemName.split(' ').length > 4 ? '...' : '');
+                        
+                        // ഉൽപ്പന്നത്തിന്റെ ലിങ്ക് (മൾട്ടിപ്പിൾ ഐറ്റംസ് ആണെങ്കിൽ item.id അല്ലെങ്കിൽ മെയിൻ ഓർഡർ ഐഡി ഉപയോഗിക്കാം, ഇവിടെ item.id മുൻഗണന നൽകുന്നു)
+                        const pRedirectId = item.id || item.productId || order.id;
+
+                        itemsHtml += `
+                            <div class="item-box" onclick="location.href='product-details.html?id=${pRedirectId}'">
+                                <img src="${itemImg}">
+                                <div class="item-details">
+                                    <h3>${shortItemName}</h3>
+                                    <p>Price: ₹${item.price} | Qty: ${item.quantity || 1}</p>
+                                    <p style="font-size: 0.75rem; margin-top: 4px;">Order Date: ${order.date || ''}</p>
+                                    ${returnPolicyText}${payBadge}${deliveryMsg}${rejectReason}
+                                </div>
+                            </div>`;
+                    });
+                } else {
+                    const singleCanReturn = order.return === true || order.return === "true" || 
+                                            order.returnPolicy === true || order.returnPolicy === "true" || 
+                                            order.productReturn === true || order.productReturn === "true" ||
+                                            order.isReturnable === true || order.isReturnable === "true";
+                                            
+                    if (singleCanReturn) { orderHasReturnableProduct = true; }
+
+                    const returnPolicyText = singleCanReturn && checkStatus !== 'returned' && checkStatus !== 'returnrequested' ? `<span class="return-policy"><i class="fa-solid fa-rotate-left"></i> 7 Days Return Available</span>` : '';
+                    const fallbackImg = order.productImage || "https://via.placeholder.com/150";
+
+                    // പേര് 4 വാക്കുകളിലേക്ക് ചുരുക്കുന്നു
+                    const rawProdName = order.productName || 'Product';
+                    const shortProdName = rawProdName.split(' ').slice(0, 4).join(' ') + (rawProdName.split(' ').length > 4 ? '...' : '');
+                    
+                    const pRedirectId = order.productId || order.id;
+
+                    itemsHtml = `
+                        <div class="item-box" onclick="location.href='product-details.html?id=${pRedirectId}'">
+                            <img src="${fallbackImg}">
+                            <div class="item-details">
+                                <h3>${shortProdName}</h3>
+                                <p>Price: ₹${order.price}</p>
+                                <p style="font-size: 0.75rem; margin-top: 4px;">Order Date: ${order.date || ''}</p>
+                                ${returnPolicyText}${payBadge}${deliveryMsg}${rejectReason}
+                            </div>
+                        </div>`;
+                }
+
+                let actionButtonsHtml = '';
+
+                if (checkStatus === 'pending' && !isRejected) { 
+                    actionButtonsHtml = `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>`; 
+                } 
+                else if (checkStatus === 'delivered' && orderHasReturnableProduct) { 
+                    actionButtonsHtml = `<button class="btn btn-return" onclick="requestReturn('${order.id}', '${phone}')">Request Return</button>`; 
+                }
+
+                list.innerHTML += `
+                    <div class="order-card">
+                        <span class="order-status status-${displayStatus.toLowerCase().replace(/\s+/g, '')}">${displayStatus}</span>
+                        <p style="font-size: 0.75rem; font-weight:800; color:#64748b; margin-bottom: 5px;">ID: #${order.id}</p>
+                        <div class="order-items-container">${itemsHtml}</div>
+                        <div class="info-block"><div class="info-title"><i class="fa-solid fa-location-dot"></i> Delivery Address</div><div class="info-text"><strong>${order.customerName || 'Customer'}</strong><br>${order.address || 'N/A'}<br>Phone: ${order.customerPhone || order.phone || phone}</div></div>
+                        <div class="info-block"><div class="info-title"><i class="fa-solid fa-receipt"></i> Payment Details</div><div class="info-text" style="display:flex; justify-content:space-between;"><span>Total Price / UTR:</span><span style="font-family:monospace; font-weight:800;">₹${order.price} | ${order.transactionId || 'N/A'}</span></div></div>
+                        <div class="action-btns">${actionButtonsHtml}</div>
+                    </div>`;
+            });
+        });
+    }
+
+    window.requestReturn = (orderId, phone) => {
+        Swal.fire({
+            title: 'Select Refund Method',
+            html: `
+                <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">Where would you like to receive your refund?</p>
+                <div class="swal-radio-group">
+                    <label class="swal-radio-option">
+                        <input type="radio" name="refundMethod" value="Mobile Number" checked onclick="toggleRefundInput('mobile', '${phone}')">
+                        <span><i class="fa-solid fa-mobile-screen"></i> Mobile Number (GPay/PhonePe/Paytm)</span>
+                    </label>
+                    <label class="swal-radio-option">
+                        <input type="radio" name="refundMethod" value="UPI ID" onclick="toggleRefundInput('upi', '')">
+                        <span><i class="fa-solid fa-building-columns"></i> UPI ID</span>
+                    </label>
+                </div>
+                <input type="text" id="refundDetailsInput" class="swal-input-field" placeholder="Enter Mobile Number" value="${phone}" style="display:block;">
+                
+                <div style="margin-top: 20px; text-align: left;">
+                    <label style="font-size: 0.85rem; font-weight: 800; color: #1e293b;">Enter Email ID: Sent Refund Proof</label>
+                    <input type="email" id="refundEmailInput" class="swal-input-field" placeholder="example@gmail.com" style="display:block; margin-top: 5px;">
+                    <p style="font-size:0.75rem; color:#ef4444; margin-top:6px; font-weight: 700; line-height: 1.4;">
+                        <i class="fa-solid fa-circle-info"></i> The payment proof will be sent to this Email ID once the cash refund is processed.
+                    </p>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Submit Request',
+            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' },
+            preConfirm: () => {
+                const selectedMethod = document.querySelector('input[name="refundMethod"]:checked').value;
+                const detailsValue = document.getElementById('refundDetailsInput').value.trim();
+                const emailValue = document.getElementById('refundEmailInput').value.trim();
+                
+                if (!detailsValue) {
+                    Swal.showValidationMessage(`Please enter your ${selectedMethod}`);
+                    return false;
+                }
+                if (!emailValue) {
+                    Swal.showValidationMessage(`Please enter your Email ID`);
+                    return false;
+                }
+                return { method: selectedMethod, details: detailsValue, email: emailValue };
+            }
+        }).then((res) => {
+            if (res.isConfirmed) {
+                update(ref(db, `orders/${phone}/${orderId}`), { 
+                    status: 'Return Requested',
+                    refundMethod: res.value.method,
+                    refundDetails: res.value.details,
+                    refundEmail: res.value.email
+                })
+                .then(() => showAlert('Submitted', 'Your return request has been sent successfully.', 'success'));
+            }
+        });
+    };
+
+    window.toggleRefundInput = (type, phone) => {
+        const inputField = document.getElementById('refundDetailsInput');
+        if (type === 'mobile') {
+            inputField.placeholder = "Enter Mobile Number";
+            inputField.value = phone;
+        } else {
+            inputField.placeholder = "Enter UPI ID Active Upi";
+            inputField.value = "";
+        }
+    };
+
+    window.cancelOrder = (orderId, phone) => {
+        Swal.fire({
+            title: 'Cancel Order?', text: "Confirm to cancel this order.", icon: 'warning',
+            showCancelButton: true, confirmButtonText: 'Yes, Cancel',
+            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
+        }).then((res) => {
+            if(res.isConfirmed) {
+                update(ref(db, `orders/${phone}/${orderId}`), { status: 'Cancelled' })
+                .then(() => showAlert('Cancelled', 'Your order was cancelled.', 'success'));
+            }
+        });
+    };
+</script>
+</body>
+</html>

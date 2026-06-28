@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | CartPrime</title>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --primary: #000; 
+            --bg: #fff; 
+            --grey: #f4f4f4; 
+            --star: #ffcc00; 
+            --red: #ff3b30; 
+            --surface: #f8fafc;
+            --text-muted: #64748b;
+            --flipkart-green: #388e3c;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: #fff; 
+            color: #111; 
+            overflow-x: hidden; 
+            padding-bottom: 100px; 
+            min-height: 100vh;
+        }
+        
+        /* Nav Bar */
+        .nav { 
+            padding: 15px 6%; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            border-bottom: 1px solid rgba(0,0,0,0.05); 
+            position: sticky; 
+            top: 0; 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px);
+            z-index: 100; 
+        }
+        .nav a { 
+            text-decoration: none; 
+            color: #000; 
+            font-weight: 700; 
+            font-size: 0.9rem; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .nav a:hover { color: var(--text-muted); }
+        
+        /* Main Container */
+        .product-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            padding: 30px 6%; 
+            gap: 40px; 
+        }
+        
+        .image-section { flex: 1; min-width: 350px; }
+        
+        .main-img-container { 
+            width: 100%; 
+            height: 500px; 
+            background: var(--surface); 
+            border-radius: 24px; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border: 1px solid #f1f5f9; 
+            position: relative; 
+        }
+        .main-img { max-width: 90%; max-height: 90%; object-fit: contain; transition: 0.3s; }
+        
+        /* Image Slider Modifications */
+        .image-slider {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+        .image-slider::-webkit-scrollbar { display: none; }
+        .image-slide {
+            min-width: 100%;
+            height: 100%;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Wishlist Heart Icon */
+        .wishlist-container { 
+            position: absolute; 
+            top: 70px; 
+            right: 15px; 
+            z-index: 10; 
+            cursor: pointer; 
+            font-size: 1.3rem; 
+            color: #cbd5e1; 
+            background: rgba(255, 255, 255, 0.9); 
+            border-radius: 50%; 
+            transition: 0.3s; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+        }
+        .wishlist-container:hover { background: #fff; color: #000; }
+        .wishlist-container.active { color: #ff3b30; animation: heartBeat 0.5s ease-in-out; }
+        @keyframes heartBeat { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.25); } 
+            100% { transform: scale(1); } 
+        }
+
+        /* Share Button */
+        .share-container {
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            z-index: 10; 
+            cursor: pointer; 
+            font-size: 1.2rem; 
+            color: #fff; 
+            background: var(--primary); 
+            border-radius: 50%; 
+            transition: 0.3s; 
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+        }
+        .share-container:hover { background: #1e293b; transform: scale(1.05); }
+
+        /* Thumbnails */
+        .thumb-container { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px; 
+            overflow-x: auto; 
+            padding: 5px 2px; 
+            scrollbar-width: none; 
+        }
+        .thumb-container::-webkit-scrollbar { display: none; }
+        .thumb { 
+            width: 75px; 
+            height: 75px; 
+            object-fit: contain; 
+            background: var(--surface);
+            border-radius: 14px; 
+            cursor: pointer; 
+            border: 2px solid transparent; 
+            flex-shrink: 0; 
+            padding: 5px;
+            transition: 0.2s;
+        }
+        .thumb.active { border-color: var(--primary); background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        
+        /* Info Section */
+        .info-section { flex: 1; min-width: 350px; }
+        .p-name { font-size: 2rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; line-height: 1.25; color: #000; }
+        
+        /* Price Box */
+        @keyframes priceSlide {
+            0% { transform: translateX(-40px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        .price-box { 
+            display: flex; 
+            align-items: baseline; 
+            gap: 12px; 
+            margin: 15px 0 15px 0; 
+            opacity: 0; 
+            will-change: transform, opacity;
+        }
+        .price-box.animate {
+            animation: priceSlide 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .price { font-size: 2.2rem; font-weight: 800; color: #000; }
+        .mrp { font-size: 1.2rem; font-weight: 600; color: var(--text-muted); text-decoration: line-through; }
+        .discount { font-size: 1.2rem; font-weight: 700; color: var(--flipkart-green); }
+        
+        /* Policy Tag Wrapper & Tags */
+        .policy-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        .policy-tag { font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .policy-yes { color: #22c55e; }
+        .policy-no { color: var(--red); }
+        
+        /* Technical Specifications Box */
+        .specs-box { margin-bottom: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px; }
+        .specs-box h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-muted); }
+        .spec-row { display: flex; padding: 12px 0; border-bottom: 1px solid #f8fafc; font-size: 0.9rem; align-items: center; }
+        .spec-key { width: 140px; color: #64748b; font-weight: 600; flex-shrink: 0; }
+        .spec-val { font-weight: 700; color: #0f172a; }
+        
+        .desc-text { color: #334155; line-height: 1.7; margin-bottom: 30px; font-size: 0.95rem; white-space: pre-line; }
+        
+        /* Bottom Action Sticky Bar */
+        .bottom-action-bar { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: white; padding: 16px 6%; 
+            box-shadow: 0 -8px 30px rgba(0,0,0,0.04); 
+            display: flex; align-items: center; justify-content: space-between; gap: 15px; 
+            z-index: 1000; border-top: 1px solid #f1f5f9; 
+        }
+        .btn-group { display: flex; gap: 10px; width: 75%; max-width: 500px; }
+        .buy-now { 
+            width: 100%; padding: 16px; background: var(--primary); color: #fff; 
+            border: none; border-radius: 16px; font-weight: 800; font-size: 1rem; 
+            cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .buy-now:hover { opacity: 0.9; }
+        .out-btn { background: #cbd5e1 !important; color: #64748b !important; cursor: not-allowed; }
+        
+        /* Reviews Container */
+        .review-section { padding: 50px 6%; border-top: 1px solid #f1f5f9; background: #fdfdfd; }
+        .review-card { background: white; padding: 20px; border-radius: 18px; margin-bottom: 15px; border: 1px solid #f1f5f9; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
+        .rev-name { font-weight: 800; margin-bottom: 4px; font-size: 0.95rem; }
+        .star-rating { color: var(--star); margin-bottom: 10px; font-size: 0.85rem; letter-spacing: 2px; }
+        .review-card p { color: #334155; font-size: 0.9rem; line-height: 1.6; }
+        
+        /* Write Review Form Styling */
+        .write-review-box { margin-top: 40px; background: white; padding: 25px; border-radius: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.02); }
+        .write-review-box p { font-weight: 800; margin-bottom: 12px; font-size: 1rem; }
+        #starInput { color: #e2e8f0; font-size: 1.8rem; cursor: pointer; margin-bottom: 18px; display: flex; gap: 6px; }
+        #revText { width: 100%; padding: 15px; border-radius: 14px; border: 1px solid #e2e8f0; background: var(--surface); outline: none; transition: 0.3s; font-size: 0.95rem; resize: vertical; }
+        #revText:focus { border-color: var(--primary); background: #fff; }
+        .post-rev-btn { margin-top: 15px; background: #000; color: #fff; border: none; padding: 14px 30px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; width: auto; font-size: 0.9rem; }
+        .post-rev-btn:hover { background: #1e293b; }
+
+        /* Cart Drawer Overlays */
+        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1999; display: none; backdrop-filter: blur(4px); }
+        .drawer-overlay.open { display: block; }
+        .cart-drawer { position: fixed; top: 0; right: -450px; width: 100%; max-width: 400px; height: 100%; background: #fff; box-shadow: -10px 0 40px rgba(0,0,0,0.12); z-index: 2000; transition: cubic-bezier(0.16, 1, 0.3, 1) 0.4s; display: flex; flex-direction: column; border-left: 1px solid #eee; }
+        .cart-drawer.open { right: 0; }
+        .drawer-header { padding: 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
+        .drawer-header h3 { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; }
+        .close-drawer { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+        .drawer-content { flex: 1; padding: 24px; overflow-y: auto; }
+        .drawer-footer { padding: 24px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 12px; }
+        .drawer-btn { width: 100%; padding: 16px; font-weight: 800; border-radius: 14px; cursor: pointer; text-align: center; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
+        .drawer-btn-black { background: #000; color: #fff; }
+        .drawer-btn-black:hover { background: #1e293b; }
+        .drawer-btn-outline { background: #fff; color: #000; border: 2px solid #000; }
+        .drawer-btn-outline:hover { background: var(--surface); }
+
+        /* RESPONSIVE MEDIA QUERIES FOR MOBILE DEVICES */
+        @media (max-width: 768px) {
+            .nav { padding: 12px 4%; }
+            .product-container { padding: 15px 4% 30px; gap: 24px; flex-direction: column; }
+            .image-section, .info-section { min-width: 100%; }
+            
+            .main-img-container { height: 350px; border-radius: 18px; }
+            .share-container { top: 12px; right: 12px; width: 40px; height: 40px; font-size: 1.1rem; padding: 0; }
+            .wishlist-container { top: 60px; right: 12px; width: 40px; height: 40px; font-size: 1.15rem; padding: 0; }
+            .thumb { width: 65px; height: 65px; border-radius: 10px; }
+            
+            .p-name { font-size: 1.45rem; margin-bottom: 8px; }
+            .price { font-size: 1.8rem; }
+            .mrp, .discount { font-size: 1rem; }
+            
+            .specs-box { margin-bottom: 20px; padding-top: 15px; }
+            .spec-row { font-size: 0.85rem; padding: 10px 0; }
+            .spec-key { width: 110px; }
+            .desc-text { font-size: 0.9rem; margin-bottom: 20px; }
+            
+            .bottom-action-bar { padding: 12px 4%; background: #fff; }
+            .bottom-action-bar span[style*="font-size: 1.2rem"] { font-size: 1.05rem !important; }
+            .btn-group { width: 70%; }
+            .buy-now { padding: 14px; font-size: 0.85rem; border-radius: 12px; }
+            
+            .review-section { padding: 35px 4%; }
+            .write-review-box { padding: 18px; border-radius: 18px; margin-top: 25px; }
+            .post-rev-btn { width: 100%; text-align: center; padding: 14px; }
+            
+            .cart-drawer { max-width: 85%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="home.html"><i class="fa fa-arrow-left"></i> BACK</a>
+        <div id="adminEditArea" style="margin-left: auto;"></div>
+    </nav>
+    
+    <div class="product-container" id="productDetail"></div>
+    
+    <div class="review-section">
+        <h3 style="margin-bottom: 20px; font-weight: 800; letter-spacing: -0.5px;">Customer Reviews</h3>
+        <div id="reviewList">Loading reviews...</div>
+        
+        <div class="write-review-box">
+            <p>Rate this product</p>
+            <div id="starInput">
+                <i class="fa-solid fa-star" data-val="1"></i>
+                <i class="fa-solid fa-star" data-val="2"></i>
+                <i class="fa-solid fa-star" data-val="3"></i>
+                <i class="fa-solid fa-star" data-val="4"></i>
+                <i class="fa-solid fa-star" data-val="5"></i>
+            </div>
+            <textarea id="revText" placeholder="Write your review here..." rows="3"></textarea>
+            <button onclick="submitReview()" class="post-rev-btn">Post Review</button>
+        </div>
+    </div>
+    
+    <div class="bottom-action-bar" id="stickyAction"></div>
+    
+    <div class="drawer-overlay" id="drawerOverlay" onclick="window.closeCartDrawer()"></div>
+    
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <h3>ADDED TO SHOPPING BAG</h3>
+            <button class="close-drawer" onclick="window.closeCartDrawer()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="drawer-content" id="drawerContent"></div>
+        <div class="drawer-footer">
+            <a href="cart.html" class="drawer-btn drawer-btn-black">VIEW SHOPPING CART</a>
+            <button onclick="window.closeCartDrawer()" class="drawer-btn drawer-btn-outline">CONTINUE SHOPPING</button>
+        </div>
+    </div>
+
+  <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, get, child, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const firebaseConfig = { 
+            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc", 
+            authDomain: "cartprime-shopping.firebaseapp.com", 
+            projectId: "cartprime-shopping", 
+            storageBucket: "cartprime-shopping.firebasestorage.app", 
+            messagingSenderId: "570068438689", 
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0", 
+            measurementId: "G-9GREWHMEYL" 
+        };
+        
+        const app = initializeApp(firebaseConfig); 
+        const db = getDatabase(app); 
+        const auth = getAuth(app);
+        
+        const urlParams = new URLSearchParams(window.location.search); 
+        const productId = urlParams.get('id'); 
+        let selectedRating = 0;
+        let activeUserPhone = null;
+        let globalUser = null; // ലൈവ് യൂസർ സ്റ്റാറ്റസ് സൂക്ഷിക്കാൻ
+
+        // ഫയർബേസ് ലോഗിൻ സ്റ്റാറ്റസ് എപ്പോഴും ട്രാക്ക് ചെയ്യുന്നു
+        onAuthStateChanged(auth, (user) => {
+            globalUser = user;
+            if(user) {
+                if (user.email === "admin@cartprime.com" || user.email === "youradmin@email.com") {
+                    const adminArea = document.getElementById('adminEditArea');
+                    if (adminArea) {
+                        adminArea.innerHTML = `
+                            <a href="admin.html?id=${productId}" style="background: var(--red); color: #fff; padding: 8px 16px; border-radius: 10px; font-size: 0.85rem; font-weight:800; text-decoration:none; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(255,59,48,0.2);">
+                                <i class="fa-solid fa-pen-to-square"></i> EDIT PRODUCT
+                            </a>`;
+                    }
+                }
+
+                get(child(ref(db), `users/${user.uid}`)).then((snapshot) => {
+                    if (snapshot.exists() && snapshot.val().phone) {
+                        activeUserPhone = snapshot.val().phone;
+                    }
+                    const targetKey = activeUserPhone || user.uid;
+                    get(child(ref(db), `wishlist/${targetKey}/${productId}`)).then(snap => { 
+                        if(snap.exists() && document.getElementById('wishlistHeart')) {
+                            document.getElementById('wishlistHeart').classList.add('active'); 
+                        }
+                    });
+                });
+            }
+        });
+
+        const localAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
+        if (localAddr && localAddr.phone) {
+            activeUserPhone = localAddr.phone;
+        }
+
+        if (productId) {
+            get(child(ref(db), `products/${productId}`)).then(snap => { 
+                if (snap.exists()) renderProduct(snap.val()); 
+            });
+            
+            onValue(ref(db, `reviews/${productId}`), snap => {
+                const list = document.getElementById('reviewList'); 
+                list.innerHTML = "";
+                if (snap.exists()) { 
+                    snap.forEach(rSnap => { 
+                        const r = rSnap.val(); 
+                        list.innerHTML += `
+                            <div class="review-card">
+                                <div class="rev-name">${r.userName}</div>
+                                <div class="star-rating">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                                <p>${r.text}</p>
+                            </div>`; 
+                    }); 
+                } else { 
+                    list.innerHTML = "<p style='color: var(--text-muted); font-size: 0.9rem;'>No reviews yet. Be the first to review!</p>"; 
+                }
+            });
+        }
+
+        function renderProduct(p) {
+            let specsHTML = ""; 
+            if (p.specs) Object.entries(p.specs).forEach(([k, v]) => { 
+                specsHTML += `<div class="spec-row"><div class="spec-key">${k}</div><div class="spec-val">${v}</div></div>`; 
+            });
+            
+            const isOut = p.outOfStock === true; 
+            
+            const returnStatus = p.return ? (p.return.toString().toLowerCase().trim() === 'true' || p.return === true || p.return.toString().toLowerCase().trim() === 'available') : false;
+            const codStatus = p.cod ? (p.cod.toString().toLowerCase().trim() === 'yes' || p.cod.toString().toLowerCase().trim() === 'true' || p.cod === true || p.cod.toString().toLowerCase().trim() === 'available') : false;
+
+            const fullTitle = p.title || p.pTitle || p.name; 
+            const cleanPrice = p.price.toString().replace(/,/g, '').replace(/[^\d.]/g, ''); 
+            const displayPrice = parseFloat(cleanPrice) || 0;
+
+            const baseMrp = p.mrp ? parseFloat(p.mrp.toString().replace(/,/g, '').replace(/[^\d.]/g, '')) : Math.round(displayPrice * 1.35);
+            const discountPct = baseMrp > displayPrice ? Math.round(((baseMrp - displayPrice) / baseMrp) * 100) : 0;
+
+            document.getElementById('productDetail').innerHTML = `
+                <div class="image-section">
+                    <div class="main-img-container">
+                        <div class="image-slider" id="mainSlider">
+                            ${p.images.map(img => `<div class="image-slide"><img src="${img}" class="main-img"></div>`).join('')}
+                        </div>
+                        
+                        <div class="share-container" id="productShareBtn">
+                            <i class="fa-solid fa-share"></i>
+                        </div>
+
+                        <div class="wishlist-container" id="wishlistHeart">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                    </div>
+                    <div class="thumb-container">${p.images.map((img, i) => `<img src="${img}" class="thumb ${i === 0 ? 'active' : ''}" onclick="window.changeImg(this, ${i})">`).join('')}</div>
+                </div>
+                <div class="info-section">
+                    <h1 class="p-name">${fullTitle}</h1> 
+                    
+                    <div class="price-box" id="animatedPriceBox">
+                        ${discountPct > 0 ? `<span class="mrp">₹${baseMrp.toLocaleString('en-IN')}</span>` : ''}
+                        <span class="price">₹${displayPrice.toLocaleString('en-IN')}</span>
+                        ${discountPct > 0 ? `<span class="discount">${discountPct}% off</span>` : ''}
+                    </div>
+
+                    <div class="policy-container">
+                        <div class="policy-tag ${returnStatus ? 'policy-yes' : 'policy-no'}">
+                            <i class="fa ${returnStatus ? 'fa-check-circle' : 'fa-times-circle'}"></i> 
+                            ${returnStatus ? '7 Days Return Available' : 'No Return Policy'}
+                        </div>
+                        <div class="policy-tag ${codStatus ? 'policy-yes' : 'policy-no'}">
+                            <i class="fa ${codStatus ? 'fa-check-circle' : 'fa-times-circle'}"></i> 
+                            ${codStatus ? 'Cash on Delivery (COD) Available' : 'Cash on Delivery Not Available'}
+                        </div>
+                    </div>
+
+                    <div class="specs-box"><h4>Specifications</h4>${specsHTML || '<p style="color: var(--text-muted); font-size: 0.9rem;">No specifications available.</p>'}</div>
+                    <div class="desc-text">${p.desc || ''}</div>
+                </div>`;
+                
+            document.getElementById('stickyAction').innerHTML = `
+                <div style="display: flex; flex-direction: column; line-height: 1.2;">
+                    <span style="font-size: 0.75rem; color: #64748b; font-weight: 600; margin-bottom: 2px;">Total Price</span>
+                    <span style="font-size: 1.2rem; font-weight: 800;">₹${displayPrice.toLocaleString('en-IN')}</span>
+                </div>
+                <div class="btn-group">
+                    <button class="buy-now ${isOut ? 'out-btn' : ''}" ${isOut ? 'disabled' : ''} 
+                        onclick="window.proceedToCheckout('${productId}', \`${fullTitle.replace(/'/g, "\\'")}\`, ${displayPrice}, ${baseMrp}, ${discountPct}, '${p.images[0]}', ${returnStatus}, ${codStatus})">
+                        ${isOut ? 'OUT OF STOCK' : 'BUY NOW'}
+                    </button>
+                </div>`;
+            
+            document.getElementById('productShareBtn').addEventListener('click', () => {
+                window.shareProduct(fullTitle);
+            });
+
+            document.getElementById('wishlistHeart').addEventListener('click', () => {
+                window.toggleWishlist(productId, fullTitle, displayPrice, p.images[0]);
+            });
+
+            setTimeout(() => {
+                const slider = document.getElementById('mainSlider');
+                if (slider) {
+                    slider.addEventListener('scroll', () => {
+                        const index = Math.round(slider.scrollLeft / slider.offsetWidth);
+                        const thumbs = document.querySelectorAll('.thumb');
+                        thumbs.forEach((t, i) => t.classList.toggle('active', i === index));
+                    });
+                }
+            }, 50);
+
+            const targetBox = document.getElementById('animatedPriceBox');
+            if (targetBox) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animate');
+                            observer.unobserve(entry.target); 
+                        }
+                    });
+                }, { threshold: 0.1 });
+                observer.observe(targetBox);
+            }
+        }
+
+        window.shareProduct = (title) => {
+            const currentUrl = window.location.href;
+            const shareMessage = `🛒 *Check this out on CartPrime!* \n\n🔥 ${title}\n\n👇 Buy now before stock runs out:`;
+            
+            const shareData = {
+                title: title,
+                text: `${shareMessage} ${currentUrl}`,
+                url: currentUrl
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData)
+                .then(() => console.log('Shared successfully'))
+                .catch((error) => console.log('Error sharing:', error));
+            } else {
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage + " " + currentUrl)}`;
+                window.open(whatsappUrl, '_blank');
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(currentUrl).then(() => {
+                        showSuccessAlert();
+                    }).catch(() => {
+                        oldSchoolCopyFallback(currentUrl);
+                    });
+                } else {
+                    oldSchoolCopyFallback(currentUrl);
+                }
+            }
+        };
+
+        function oldSchoolCopyFallback(text) {
+            const dummyTextArea = document.createElement('textarea');
+            dummyTextArea.value = text;
+            dummyTextArea.style.position = 'fixed';
+            dummyTextArea.style.top = '0';
+            dummyTextArea.style.left = '0';
+            dummyTextArea.style.opacity = '0';
+            document.body.appendChild(dummyTextArea);
+            dummyTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showSuccessAlert();
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+            document.body.removeChild(dummyTextArea);
+        }
+
+        function showSuccessAlert() {
+            Swal.fire({
+                title: 'Link Copied!',
+                text: 'Product link copied to clipboard.',
+                icon: 'success',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+        window.toggleWishlist = (id, name, price, img) => {
+            const user = auth.currentUser; 
+            if (!user) return Swal.fire('Please Login', 'Log in to manage your wishlist items.', 'info');
+            
+            get(child(ref(db), `users/${user.uid}`)).then((snapshot) => {
+                const targetKey = (snapshot.exists() && snapshot.val().phone) ? snapshot.val().phone : user.uid;
+                
+                const heart = document.getElementById('wishlistHeart'); 
+                const wRef = ref(db, `wishlist/${targetKey}/${id}`);
+                
+                get(wRef).then(snap => { 
+                    if (snap.exists()) { 
+                        set(wRef, null).then(() => heart.classList.remove('active')); 
+                    } else { 
+                        set(wRef, { id, name, price, image: img }).then(() => heart.classList.add('active')); 
+                    } 
+                });
+            });
+        };
+        
+        window.changeImg = (el, index) => { 
+            const slider = document.getElementById('mainSlider');
+            if (slider) {
+                slider.scrollTo({ left: slider.offsetWidth * index, behavior: 'smooth' });
+            }
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active')); 
+            el.classList.add('active'); 
+        };
+        
+        window.closeCartDrawer = () => { 
+            document.getElementById('cartDrawer').classList.remove('open'); 
+            document.getElementById('drawerOverlay').classList.remove('open'); 
+        };
+        
+        // --- PROCEED TO CHECKOUT (യൂസർ ലോഗിൻ വാലിഡേഷൻ ഉറപ്പാക്കുന്നു) ---
+        window.proceedToCheckout = (id, name, price, mrp, discount, img, ret, cod) => { 
+            const localUser = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
+            
+            // ഹോം പേജിൽ സെറ്റ് ചെയ്ത പ്രൊഫൈലോ (localUser) അല്ലെങ്കിൽ ഫയർബേസ് ലോഗിൻ സ്റ്റാറ്റസോ (globalUser) ഉണ്ടോ എന്ന് നോക്കുന്നു
+            const hasProfile = localUser && (localUser.phone || localUser.name);
+            const isLoggedIn = globalUser || hasProfile;
+
+            // ലോഗിൻ ചെയ്തിട്ടില്ലെങ്കിൽ അല്ലെങ്കിൽ ഹോം പേജിൽ പ്രൊഫൈൽ സെറ്റ് ചെയ്തിട്ടില്ലെങ്കിൽ തടയുന്നു
+            if (!isLoggedIn) {
+                Swal.fire({
+                    title: 'Login Required',
+                    text: 'Please log in to your account or complete your profile to purchase this product.',
+                    icon: 'warning',
+                    confirmButtonText: 'Go to Login',
+                    confirmButtonColor: '#000000',
+                    showCancelButton: true,
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'index.html'; // ഹോം പേജിലേക്ക് റീഡയറക്ട് ചെയ്യുന്നു
+                    }
+                });
+                return; 
+            }
+
+            // പ്രൊഫൈൽ ഉള്ള വാലിഡ് യൂസർ ആണെങ്കിൽ ഡാറ്റ സേവ് ചെയ്ത് ചെക്കൗട്ടിലേക്ക് വിടുന്നു
+            localStorage.setItem('pendingOrder', JSON.stringify({ 
+                productId: id, 
+                productName: name, 
+                price: parseFloat(price), 
+                mrp: parseFloat(mrp),
+                discount: parseInt(discount),
+                productImage: img, 
+                return: ret,
+                returnPolicy: ret, 
+                isReturnable: ret, 
+                cod: cod
+            })); 
+            location.href = 'checkout.html'; 
+        };
+        
+        const stars = document.querySelectorAll('#starInput i'); 
+        stars.forEach(s => { 
+            s.onclick = () => { 
+                selectedRating = s.dataset.val; 
+                stars.forEach(i => i.style.color = i.dataset.val <= selectedRating ? "#ffcc00" : "#e2e8f0"); 
+            }; 
+        });
+        
+        window.submitReview = () => { 
+            const text = document.getElementById('revText').value.trim(); 
+            const user = auth.currentUser; 
+            if (!user) return Swal.fire('Login Required', 'Please log in to submit a review.', 'warning'); 
+            if (!selectedRating || !text) return Swal.fire('Incomplete fields', 'Please add a rating and your comments.', 'info'); 
+            
+            push(ref(db, `reviews/${productId}`), { 
+                userName: user.email.split('@')[0], 
+                rating: parseInt(selectedRating), 
+                text: text, 
+                timestamp: Date.now() 
+            }).then(() => { 
+                Swal.fire('Thank You!', 'Your review has been posted!', 'success'); 
+                document.getElementById('revText').value = ""; 
+                selectedRating = 0;
+                stars.forEach(i => i.style.color = "#e2e8f0");
+            }); 
+        };
+</script>
+</body>
+</html>
