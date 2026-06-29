@@ -12,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- EmailJS -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- QRCode.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -37,43 +36,48 @@
             border-radius: 16px !important;
             padding: 2rem !important;
             font-family: 'Segoe UI', sans-serif !important;
+            width: 90% !important;
+            max-width: 500px !important;
         }
         .swal-custom-title {
-            font-size: 1.5rem !important;
+            font-size: 1.3rem !important;
             font-weight: 700 !important;
             color: #1e293b !important;
         }
         .swal-custom-confirm {
             background-color: var(--primary) !important;
             border-radius: 8px !important;
-            padding: 12px 30px !important;
+            padding: 12px 24px !important;
             font-weight: 600 !important;
         }
         .swal-custom-cancel {
             background-color: #ef4444 !important;
             border-radius: 8px !important;
-            padding: 12px 30px !important;
+            padding: 12px 24px !important;
             font-weight: 600 !important;
         }
         
-        /* Product Preview Styling */
+        /* Product Preview Responsive Styling */
         .prod-item-row {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             padding: 12px 0;
             border-bottom: 1px solid #f1f5f9;
         }
-        .prod-item-row:last-child {
-            border-bottom: none;
+        @media (max-width: 400px) {
+            .prod-item-row {
+                align-items: flex-start;
+            }
         }
         .prod-item-row img {
-            width: 64px;
-            height: 64px;
+            width: 56px;
+            height: 56px;
             object-fit: cover;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
             background: #fff;
+            flex-shrink: 0;
         }
         .total-checkout-price {
             display: flex;
@@ -95,22 +99,22 @@
         <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
             <a href="home.html" class="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors font-medium">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
-                <span>Back</span>
+                <span class="hidden sm:inline">Back</span>
             </a>
-            <h1 class="text-xl font-bold text-slate-800 tracking-tight">Checkout</h1>
+            <h1 class="text-lg sm:text-xl font-bold text-slate-800 tracking-tight">Checkout</h1>
             <div class="w-10"></div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-5xl mx-auto px-4 mt-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <main class="max-w-5xl mx-auto px-4 mt-6 sm:mt-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
             
             <!-- Left: Delivery & Payment -->
             <div class="lg:col-span-7 space-y-6">
                 <!-- Delivery Address Form -->
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm">
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-location-dot text-blue-600"></i> Delivery Address
                     </h2>
                     <div class="space-y-4">
@@ -132,7 +136,7 @@
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Area, Colony, Road, Landmark</label>
                             <input type="text" id="area" placeholder="Nearby landmark, local area" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Town/City</label>
                                 <input type="text" id="city" placeholder="City name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
@@ -146,12 +150,12 @@
                 </div>
 
                 <!-- Payment Methods -->
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm">
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-credit-card text-blue-600"></i> Payment Method
                     </h2>
                     
-                    <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                         <!-- UPI Option -->
                         <label id="upiLabel" class="relative flex flex-col p-4 bg-slate-50 border-2 border-blue-600 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-all">
                             <input type="radio" name="paymentMethod" value="UPI" id="upiRadio" checked onchange="togglePaymentFields()" class="absolute top-4 right-4 text-blue-600 focus:ring-blue-500">
@@ -170,17 +174,19 @@
                     <!-- UPI Details Section -->
                     <div id="upiSection" class="space-y-6">
                         <!-- Fast Checkout Links -->
-                        <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div class="text-center sm:text-left">
+                        <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                            <div class="text-center md:text-left">
                                 <h4 class="font-bold text-sm text-blue-900">Instant Pay via Apps</h4>
                                 <p class="text-xs text-blue-700 font-medium mt-0.5">Click to open your preferred payment app directly.</p>
                             </div>
-                            <div class="flex gap-2 w-full sm:w-auto">
-                                <a id="gpayLink" href="#" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs px-4 py-2.5 border border-slate-200 rounded-lg shadow-sm transition-all">
-                                    <img src="https://img.icons8.com/color/48/google-pay.png" class="w-4 h-4"> Google Pay
+                            <div class="flex gap-3 w-full md:w-auto">
+                                <!-- Styled GPay Button -->
+                                <a id="gpayLink" href="#" class="flex-1 md:flex-none inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs px-4 py-2.5 border border-slate-200 rounded-xl shadow-xs transition-all whitespace-nowrap">
+                                    <i class="fa-brands fa-google-pay text-lg text-blue-600"></i> Google Pay
                                 </a>
-                                <a id="phonepeLink" href="#" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs px-4 py-2.5 border border-slate-200 rounded-lg shadow-sm transition-all">
-                                    <img src="https://img.icons8.com/color/48/phonepe.png" class="w-4 h-4"> PhonePe
+                                <!-- Premium Styled PhonePe Button -->
+                                <a id="phonepeLink" href="#" class="flex-1 md:flex-none inline-flex items-center justify-center gap-2 bg-white hover:bg-purple-50/50 text-slate-800 font-bold text-xs px-4 py-2.5 border border-slate-200 rounded-xl shadow-xs transition-all whitespace-nowrap">
+                                    <span class="inline-flex items-center justify-center w-5 h-5 bg-[#5f259f] text-white rounded-md shadow-xs"><i class="fa-solid fa-wallet text-[10px]"></i></span> PhonePe
                                 </a>
                             </div>
                         </div>
@@ -188,8 +194,8 @@
                         <!-- QR Code Area -->
                         <div class="flex flex-col items-center justify-center border border-slate-100 bg-slate-50/50 rounded-xl p-6 text-center">
                             <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Scan QR Code to Pay</p>
-                            <div id="qrcode" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm"></div>
-                            <p class="text-xs text-slate-500 font-semibold mt-3 bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-2xs">UPI ID: <span class="text-slate-800 font-bold select-all">9778722796@fam</span></p>
+                            <div id="qrcode" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm max-w-full overflow-hidden"></div>
+                            <p class="text-xs text-slate-500 font-semibold mt-3 bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-2xs max-w-full break-all">UPI ID: <span class="text-slate-800 font-bold select-all">9778722796@fam</span></p>
                         </div>
 
                         <!-- UTR Entry -->
@@ -213,8 +219,8 @@
 
             <!-- Right: Order Summary & Action -->
             <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
-                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm">
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-basket-shopping text-blue-600"></i> Order Summary
                     </h2>
                     
@@ -234,7 +240,6 @@
     </main>
 
     <!-- Firebase & Custom Script Logical Flow -->
-    <<!-- Firebase & Custom Script Logical Flow -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -243,9 +248,11 @@
         const EMAILJS_PUBLIC_KEY = "v9Kubn2pDJOSM8iL8";
 
         // Initialize EmailJS
-        emailjs.init({
-            publicKey: EMAILJS_PUBLIC_KEY, 
-        });
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init({
+                publicKey: EMAILJS_PUBLIC_KEY, 
+            });
+        }
 
         const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -317,7 +324,7 @@
             if (document.getElementById('custPhone')) document.getElementById('custPhone').value = savedAddr.phone || '';
             if (document.getElementById('house')) document.getElementById('house').value = savedAddr.house || savedAddr.address || '';
             if (document.getElementById('area')) document.getElementById('area').value = savedAddr.area || savedAddr.landmark || '';
-           if (document.getElementById('city')) document.getElementById('city').value = savedAddr.city || savedAddr.district || '';
+            if (document.getElementById('city')) document.getElementById('city').value = savedAddr.city || savedAddr.district || '';
             if (document.getElementById('pincode')) document.getElementById('pincode').value = savedAddr.pin || savedAddr.pincode || '';
         }
 
@@ -333,17 +340,18 @@
                     let productImg = item.image || (item.images && item.images[0]) || "https://via.placeholder.com/150";
                     let itemPrice = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
                     finalPriceToPay += (itemPrice * parseInt(item.quantity));
-                    previewHtml += `<div class="prod-item-row"><img src="${productImg}"><div class="prod-item-details" style="flex: 1;"><p style="font-weight: 700; font-size: 0.95rem; color: #1e293b;">${item.name} (x${item.quantity})</p><p style="color: #64748b; font-size: 0.85rem; font-weight: 600; margin-top: 2px;">₹${itemPrice.toLocaleString('en-IN')}</p></div></div>`;
+                    previewHtml += `<div class="prod-item-row"><img src="${productImg}"><div class="prod-item-details" style="flex: 1; min-width: 0;"><p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name} (x${item.quantity})</p><p style="color: #64748b; font-size: 0.85rem; font-weight: 600; margin-top: 2px;">₹${itemPrice.toLocaleString('en-IN')}</p></div></div>`;
                 });
                 previewHtml += `<div class="total-checkout-price"><span>Total Payable:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
             } else {
                 isCodAvailable = orderInfo.cod === true || orderInfo.cod === "true";
 
-                previewHtml = `<div class="prod-item-row"><img src="${orderInfo.productImage}"><div class="prod-item-details" style="flex: 1;"><p style="font-weight: 700; font-size: 0.95rem; color: #1e293b;">${orderInfo.productName}</p><p style="color: #000; font-weight: 800; font-size: 1rem; margin-top: 4px;">₹${orderInfo.price}</p></div></div>`;
+                previewHtml = `<div class="prod-item-row"><img src="${orderInfo.productImage}"><div class="prod-item-details" style="flex: 1; min-width: 0;"><p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${orderInfo.productName}</p><p style="color: #000; font-weight: 800; font-size: 1rem; margin-top: 4px;">₹${orderInfo.price}</p></div></div>`;
                 finalPriceToPay = parseFloat(orderInfo.price.toString().replace(/,/g, '')) || 0;
             }
             
-            document.getElementById('productPreview').innerHTML = previewHtml;
+            const previewContainer = document.getElementById('productPreview');
+            if (previewContainer) previewContainer.innerHTML = previewHtml;
 
             const codRadio = document.getElementById('codRadio');
             const codLabel = document.getElementById('codLabel');
@@ -386,7 +394,6 @@
             location.href = 'home.html'; 
         }
 
-        // ആഗോള സ്കോപ്പിലേക്ക് മാറ്റിയ ഫങ്ക്ഷൻ (window.sendOrderEmail)
         window.sendOrderEmail = function(orderData, userEmail) {
             console.log("Attempting to send email to:", userEmail);
             
@@ -430,7 +437,7 @@
             } catch (networkError) {
                 console.error("Network error inside try-catch:", networkError);
             }
-        }
+        };
 
         window.placeOrder = () => {
             const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
@@ -521,7 +528,6 @@
                         const activeUser = auth.currentUser;
                         const emailToSend = activeUser ? activeUser.email : currentUserEmail;
 
-                        // വാല്യൂ പാസ് ചെയ്ത് ഫങ്ക്ഷൻ റൺ ചെയ്യുന്നു
                         window.sendOrderEmail(finalOrder, emailToSend);
 
                         if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
