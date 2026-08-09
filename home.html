@@ -113,7 +113,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        /* --- Premium Dynamic Banner Slider --- */
+        /* --- Dynamic Banner Slider --- */
         .banner-section {
             padding: 15px 6% 10px 6%;
             position: relative;
@@ -232,7 +232,7 @@
             height: 16px; display: flex; align-items: center; justify-content: center; padding: 2px;
         }
 
-        /* ADMIN BUTTON - STRICTLY HIDDEN BY DEFAULT */
+        /* ADMIN BUTTON (HIDDEN BY DEFAULT) */
         .admin-pill { 
             background: #000; 
             color: #fff; 
@@ -396,16 +396,16 @@
                 <span id="navUserName" class="nav-user-name"></span>
             </div>
 
-            <a href="wishlist.html" class="icon-btn" title="My Wishlist">
+            <a href="/wishlist" class="icon-btn" title="My Wishlist">
                 <i class="fa-regular fa-heart"></i>
                 <span id="wishlistBadge" class="badge" style="display:none;">0</span>
             </a>
             
-            <a href="orders.html" class="icon-btn" title="My Orders">
+            <a href="/orders" class="icon-btn" title="My Orders">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span id="ordersBadge" class="badge" style="display:none;">0</span>
             </a>
-            <a href="admin.html" id="adminLink" class="admin-pill">ADMIN</a>
+            <a href="/admin" id="adminLink" class="admin-pill">ADMIN</a>
         </div>
     </nav>
 
@@ -489,8 +489,15 @@
         let selectedAction = ""; 
         let userPhoneNumber = "";
 
-        // ADMIN EMAIL (കൃത്യമായ അഡ്മിൻ ഇമെയിൽ മാത്രം)
+        // STRICT ADMIN EMAIL
         const ADMIN_EMAIL = "cartprimeshopping@gmail.com";
+
+        // URL Clean Up Logic
+        if (window.location.pathname.endsWith('.html')) {
+            let cleanPath = window.location.pathname.replace('.html', '');
+            if (cleanPath.endsWith('/index')) cleanPath = '/';
+            window.history.replaceState(null, '', cleanPath + window.location.search);
+        }
 
         function updateBadges(phone) {
             if (!phone) return;
@@ -525,7 +532,7 @@
         }
 
         document.getElementById('navLogo').addEventListener('click', () => {
-            location.reload();
+            window.location.href = "/";
         });
 
         function generateLEK(user, userData) {
@@ -559,17 +566,15 @@
             typeNextChar();
         }
 
-        // --- AUTHENTICATION & STRICT ADMIN CHECK ---
+        // --- AUTHENTICATION & ADMIN CHECK ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const profileSection = document.getElementById('profileSection');
                 const navUserName = document.getElementById('navUserName');
                 const adminLink = document.getElementById('adminLink');
 
-                // ആദ്യമേ അഡ്മിൻ ബട്ടൺ ഹൈഡ് ചെയ്തു വെയ്ക്കുന്നു
                 adminLink.style.display = 'none';
 
-                // 1. അഡ്മിൻ ഇമെയിൽ ആണോ എന്ന് പരിശോധിക്കുന്നു
                 const isEmailAdmin = (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
 
                 get(child(ref(db), `users/${user.uid}`)).then((snapshot) => {
@@ -577,7 +582,6 @@
                         const userData = snapshot.val();
                         localStorage.setItem('cartPrime_UserAddr', JSON.stringify(userData));
                         
-                        // 2. Database-ൽ കൃത്യമായി isAdmin === true അല്ലെങ്കിൽ role === 'admin' എന്ന് ഉള്ളവർക്ക് മാത്രം കാണിക്കുക
                         const isDbAdmin = (userData.isAdmin === true || userData.role === 'admin');
 
                         if (isEmailAdmin || isDbAdmin) {
@@ -624,7 +628,7 @@
                     generateLEK(user, savedAddr || {});
                 });
             } else { 
-                location.href = "index.html"; 
+                window.location.href = "/"; 
             }
         });
         
@@ -660,7 +664,7 @@
 
                         if (bannerData.productId) {
                             item.addEventListener('click', () => {
-                                window.location.href = `product-details.html?id=${bannerData.productId}`;
+                                window.location.href = `/product-details?id=${bannerData.productId}`;
                             });
                         } else if (bannerData.category) {
                             item.addEventListener('click', () => {
@@ -845,7 +849,7 @@
                 `;
 
                 card.querySelector('.buy-btn').addEventListener('click', () => {
-                    window.location.href = `product-details.html?id=${p.id}`;
+                    window.location.href = `/product-details?id=${p.id}`;
                 });
 
                 grid.appendChild(card);
@@ -895,7 +899,7 @@
                         </div>
                     `;
                     div.addEventListener('click', () => {
-                        window.location.href = `product-details.html?id=${p.id}`;
+                        window.location.href = `/product-details?id=${p.id}`;
                     });
                     suggestionsBox.appendChild(div);
                 });
@@ -908,7 +912,7 @@
             if (e.key === 'Enter') {
                 const searchVal = searchInput.value.trim();
                 if (searchVal.length >= 1) {
-                    window.location.href = `search.html?q=${encodeURIComponent(searchVal)}`;
+                    window.location.href = `/search?q=${encodeURIComponent(searchVal)}`;
                 }
             }
         });
@@ -1007,7 +1011,7 @@
         btnConfirmLogout.addEventListener('click', () => {
             if (selectedAction === "gotologin" && btnConfirmLogout.innerText === "Login") {
                 logoutModalOverlay.classList.remove('active');
-                window.location.href = 'index.html';
+                window.location.href = '/';
                 return;
             }
 
@@ -1059,7 +1063,7 @@
                         if (selectedAction === "logout") {
                             signOut(auth).then(() => {
                                 logoutModalOverlay.classList.remove('active');
-                                window.location.href = 'index.html';
+                                window.location.href = '/';
                             });
                         } else if (selectedAction === "signout") {
                             const userDbRef = ref(db, `users/${user.uid}`);
@@ -1068,19 +1072,19 @@
                                 deleteUser(user).then(() => {
                                     localStorage.clear();
                                     logoutModalOverlay.classList.remove('active');
-                                    window.location.href = 'index.html';
+                                    window.location.href = '/';
                                 }).catch((authErr) => {
                                     signOut(auth).then(() => {
                                         localStorage.clear();
                                         logoutModalOverlay.classList.remove('active');
-                                        window.location.href = 'index.html';
+                                        window.location.href = '/';
                                     });
                                 });
                             }).catch((dbErr) => {
                                 signOut(auth).then(() => {
                                     localStorage.clear();
                                     logoutModalOverlay.classList.remove('active');
-                                    window.location.href = 'index.html';
+                                    window.location.href = '/';
                                 });
                             });
                         }
