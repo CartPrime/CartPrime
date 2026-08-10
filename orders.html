@@ -72,17 +72,16 @@
 </head>
 <body>
     <div class="header">
-        <a href="home.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
         <h1 style="font-weight: 800; letter-spacing: -1px;">My Orders</h1>
     </div>
     
     <div id="ordersList">
-        <div class="empty-state">Verifying account...</div>
+        <div class="empty-state">Loading your orders...</div>
     </div>
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const firebaseConfig = {
@@ -96,7 +95,6 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getDatabase(app);
 
     const showAlert = (title, text, icon, showConfirm = true) => {
@@ -106,18 +104,15 @@
         });
     };
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            const savedAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
-            const userPhone = savedAddr ? savedAddr.phone : null;
-            if (userPhone) { loadOrders(userPhone); } 
-            else {
-                document.getElementById('ordersList').innerHTML = `<div class="empty-state"><p>No phone number linked.</p></div>`;
-            }
-        } else {
-            document.getElementById('ordersList').innerHTML = `<div class="login-msg"><h2>Please Login</h2><a href="login.html" class="btn" style="background:black; color:white; padding:12px 30px; text-decoration:none; display:inline-block; border-radius:12px; margin-top:20px;">Login Now</a></div>`;
-        }
-    });
+    // ലോഗിൻ ഇല്ലാതെ LocalStorage-ൽ നിന്നും ഉപയോക്താവിന്റെ ഫോൺ നമ്പർ എടുക്കുന്നു
+    const savedAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
+    const userPhone = savedAddr ? savedAddr.phone : null;
+
+    if (userPhone) { 
+        loadOrders(userPhone); 
+    } else {
+        document.getElementById('ordersList').innerHTML = `<div class="empty-state"><p>No recent orders found.</p></div>`;
+    }
 
     function loadOrders(phone) {
         onValue(ref(db, `orders/${phone}`), (snapshot) => {
@@ -196,11 +191,9 @@
                         const returnPolicyText = itemCanReturn && checkStatus !== 'returned' && checkStatus !== 'returnrequested' ? `<span class="return-policy"><i class="fa-solid fa-rotate-left"></i> 7 Days Return Available</span>` : '';
                         const itemImg = item.image || "https://via.placeholder.com/150";
 
-                        // പേര് 4 വാക്കുകളിലേക്ക് ചുരുക്കുന്നു
                         const rawItemName = item.name || 'Product';
                         const shortItemName = rawItemName.split(' ').slice(0, 4).join(' ') + (rawItemName.split(' ').length > 4 ? '...' : '');
                         
-                        // ഉൽപ്പന്നത്തിന്റെ ലിങ്ക് (മൾട്ടിപ്പിൾ ഐറ്റംസ് ആണെങ്കിൽ item.id അല്ലെങ്കിൽ മെയിൻ ഓർഡർ ഐഡി ഉപയോഗിക്കാം, ഇവിടെ item.id മുൻഗണന നൽകുന്നു)
                         const pRedirectId = item.id || item.productId || order.id;
 
                         itemsHtml += `
@@ -225,7 +218,6 @@
                     const returnPolicyText = singleCanReturn && checkStatus !== 'returned' && checkStatus !== 'returnrequested' ? `<span class="return-policy"><i class="fa-solid fa-rotate-left"></i> 7 Days Return Available</span>` : '';
                     const fallbackImg = order.productImage || "https://via.placeholder.com/150";
 
-                    // പേര് 4 വാക്കുകളിലേക്ക് ചുരുക്കുന്നു
                     const rawProdName = order.productName || 'Product';
                     const shortProdName = rawProdName.split(' ').slice(0, 4).join(' ') + (rawProdName.split(' ').length > 4 ? '...' : '');
                     
