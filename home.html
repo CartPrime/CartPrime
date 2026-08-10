@@ -232,7 +232,6 @@
             height: 16px; display: flex; align-items: center; justify-content: center; padding: 2px;
         }
 
-        /* ADMIN BUTTON (HIDDEN BY DEFAULT) */
         .admin-pill { 
             background: #000; 
             color: #fff; 
@@ -241,79 +240,11 @@
             font-size: 0.75rem; 
             font-weight: 700; 
             text-decoration: none; 
-            display: none; 
+            display: inline-flex; 
             align-items: center;
             justify-content: center;
             white-space: nowrap;
         }
-
-        .profile-nav {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            color: var(--text-main);
-            transition: 0.2s;
-        }
-        .profile-nav:hover {
-            color: var(--accent);
-        }
-        .profile-icon {
-            font-size: 1.35rem;
-        }
-        .nav-user-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-            max-width: 90px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .logout-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);
-            z-index: 3000; display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: all 0.3s ease;
-        }
-        .logout-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        
-        .logout-modal {
-            background: #ffffff; padding: 30px; border-radius: 24px;
-            width: 90%; max-width: 400px; text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
-            transform: scale(0.9); transition: all 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        .logout-modal-overlay.active .logout-modal { transform: scale(1); }
-        
-        .logout-icon-box {
-            width: 60px; height: 60px; background: #eff6ff; color: #2563eb;
-            border-radius: 50px; display: flex; justify-content: center; align-items: center;
-            margin: 0 auto 18px; font-size: 1.5rem;
-        }
-        .logout-modal h2 { font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.5px; }
-        .logout-modal p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
-        
-        .modal-input-box {
-            width: 100%; position: relative; margin-bottom: 12px;
-        }
-        .modal-input-box input {
-            width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0;
-            outline: none; font-size: 0.95rem; background: var(--surface); transition: 0.2s; text-align: center;
-        }
-        .modal-input-box input:focus { border-color: var(--accent); background: #fff; }
-        .error-msg { color: #f43f5e; font-size: 0.8rem; font-weight: 600; display: none; margin-bottom: 16px; }
-
-        .modal-btn-group { display: flex; gap: 12px; }
-        .modal-btn {
-            flex: 1; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 0.9rem;
-            cursor: pointer; transition: 0.2s; border: none;
-        }
-        .btn-cancel { background: var(--surface); color: var(--text-main); border: 1px solid #e2e8f0; }
-        .btn-cancel:hover { background: #f1f5f9; }
-        .btn-confirm { background: #2563eb; color: #fff; }
-        .btn-confirm:hover { background: #1d4ed8; }
 
         footer { 
             background: #000; color: #fff; padding: 30px 6%; 
@@ -325,25 +256,12 @@
         .footer-contact a { color: #fff; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 9px; }
         .footer-bottom { border-top: 1px solid #1e293b; margin-top: 20px; padding-top: 15px; text-align: center; color: #94a3b8; font-size: 0.85rem; }
 
-        .typewriter-text {
-            animation: blink-cursor 0.75s step-end infinite;
-        }
-
-        @keyframes blink-cursor {
-            from, to { border-color: transparent }
-            50% { border-color: var(--accent); }
-        }
-
         @media (max-width: 768px) {
             nav { padding: 12px 4%; flex-wrap: wrap; justify-content: space-between; }
             .logo { font-size: 1.2rem; order: 1; }
             
             .nav-right { order: 2; gap: 8px; flex-shrink: 0; }
             .admin-pill { padding: 5px 8px; font-size: 0.7rem; }
-            .profile-nav { gap: 4px; }
-            .profile-icon { font-size: 1.2rem; }
-            
-            .nav-user-name { display: inline-block; font-size: 0.8rem; max-width: 55px; } 
             .icon-btn { font-size: 1.15rem; }
             
             .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin: 8px 0 2px 0; }
@@ -391,11 +309,6 @@
             <div id="searchSuggestions" class="search-suggestions-box"></div>
         </div>
         <div class="nav-right">
-            <div id="profileSection" class="profile-nav" style="display: none;" title="Logout Account">
-                <i class="fa-regular fa-circle-user profile-icon"></i>
-                <span id="navUserName" class="nav-user-name"></span>
-            </div>
-
             <a href="/wishlist" class="icon-btn" title="My Wishlist">
                 <i class="fa-regular fa-heart"></i>
                 <span id="wishlistBadge" class="badge" style="display:none;">0</span>
@@ -410,9 +323,6 @@
     </nav>
 
     <header class="hero">
-        <div class="greeting-container" style="display: inline-flex; align-items: center; margin-bottom: 6px; height: 24px;">
-            <p id="userGreeting" class="typewriter-text" style="display: none; font-size: 1rem; font-weight: bold; color: var(--accent); white-space: nowrap; overflow: hidden; border-right: 2px solid var(--accent);"></p>
-        </div>
         <h1>Welcome To <br> CartPrime </h1>
         <h1 style="color: rgb(65, 155, 65);">Online Shop</h1>
         <p>Premium quality shopping experience.</p>
@@ -427,26 +337,6 @@
 
     <div class="container">
         <div class="grid" id="productGrid"></div>
-    </div>
-
-    <div class="logout-modal-overlay" id="logoutModalOverlay">
-        <div class="logout-modal">
-            <div class="logout-icon-box">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <h2>Verify Identity</h2>
-            <p>Please type your password to securely log out from CartPrime.</p>
-            
-            <div class="modal-input-box">
-                <input type="password" id="logoutPasswordInput" placeholder="Enter your password">
-            </div>
-            <div class="error-msg" id="logoutErrorMsg">Incorrect password. Please try again.</div>
-
-            <div class="modal-btn-group">
-                <button class="modal-btn btn-cancel" id="btnCancelLogout">Cancel</button>
-                <button class="modal-btn btn-confirm" id="btnConfirmLogout">Verify & Logout</button>
-            </div>
-        </div>
     </div>
 
     <footer>
@@ -466,8 +356,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, get, child, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -480,17 +369,11 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getDatabase(app);
 
         let allProducts = [];
         let activeCategory = "All";
         let autoScrollInterval = null;
-        let selectedAction = ""; 
-        let userPhoneNumber = "";
-
-        // STRICT ADMIN EMAIL
-        const ADMIN_EMAIL = "cartprimeshopping@gmail.com";
 
         // URL Clean Up Logic
         if (window.location.pathname.endsWith('.html')) {
@@ -499,139 +382,11 @@
             window.history.replaceState(null, '', cleanPath + window.location.search);
         }
 
-        function updateBadges(phone) {
-            if (!phone) return;
-
-            const wishlistRef = ref(db, `wishlist/${phone}`);
-            onValue(wishlistRef, (snapshot) => {
-                const badge = document.getElementById('wishlistBadge');
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const count = Object.keys(data).length;
-                    badge.innerText = count;
-                    badge.style.display = count > 0 ? 'flex' : 'none';
-                } else {
-                    badge.innerText = "0";
-                    badge.style.display = 'none';
-                }
-            });
-
-            const ordersRef = ref(db, `orders/${phone}`);
-            onValue(ordersRef, (snapshot) => {
-                const badge = document.getElementById('ordersBadge');
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const count = Object.keys(data).length;
-                    badge.innerText = count;
-                    badge.style.display = count > 0 ? 'flex' : 'none';
-                } else {
-                    badge.innerText = "0";
-                    badge.style.display = 'none';
-                }
-            });
-        }
-
         document.getElementById('navLogo').addEventListener('click', () => {
             window.location.href = "/";
         });
-
-        function generateLEK(user, userData) {
-            const lekPayload = {
-                token: user.uid,
-                sessionEmail: user.email,
-                contact: userData.phone || 'N/A',
-                verified: user.emailVerified,
-                createdAt: new Date().toISOString(),
-                appStamp: "CartPrime-Secure"
-            };
-            localStorage.setItem('cartPrime_LEK', btoa(JSON.stringify(lekPayload)));
-        }
-
-        function startGreetingAnimation(username) {
-            const greetingElement = document.getElementById('userGreeting');
-            if (!greetingElement) return;
-
-            const fullText = `Hi_${username}`;
-            greetingElement.innerText = "";
-            greetingElement.style.display = "inline-block";
-
-            let index = 0;
-            function typeNextChar() {
-                if (index < fullText.length) {
-                    greetingElement.innerText += fullText.charAt(index);
-                    index++;
-                    setTimeout(typeNextChar, 150); 
-                }
-            }
-            typeNextChar();
-        }
-
-        // --- AUTHENTICATION & ADMIN CHECK ---
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const profileSection = document.getElementById('profileSection');
-                const navUserName = document.getElementById('navUserName');
-                const adminLink = document.getElementById('adminLink');
-
-                adminLink.style.display = 'none';
-
-                const isEmailAdmin = (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
-
-                get(child(ref(db), `users/${user.uid}`)).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const userData = snapshot.val();
-                        localStorage.setItem('cartPrime_UserAddr', JSON.stringify(userData));
-                        
-                        const isDbAdmin = (userData.isAdmin === true || userData.role === 'admin');
-
-                        if (isEmailAdmin || isDbAdmin) {
-                            adminLink.style.display = 'inline-flex';
-                        }
-                        
-                        if(userData.phone) {
-                            userPhoneNumber = userData.phone; 
-                            updateBadges(userData.phone);
-                        }
-                        
-                        if (userData.name) {
-                            startGreetingAnimation(userData.name);
-                            navUserName.innerText = userData.name;
-                        } else {
-                            startGreetingAnimation("User");
-                            navUserName.innerText = "Set Profile";
-                        }
-                        profileSection.style.display = 'flex';
-                        generateLEK(user, userData);
-                    } else {
-                        if (isEmailAdmin) {
-                            adminLink.style.display = 'inline-flex';
-                        }
-                        startGreetingAnimation("User");
-                        navUserName.innerText = "Set Profile";
-                        profileSection.style.display = 'flex';
-                        generateLEK(user, {});
-                    }
-                }).catch((err) => {
-                    if (isEmailAdmin) {
-                        adminLink.style.display = 'inline-flex';
-                    }
-                    const savedAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
-                    if(savedAddr && savedAddr.phone) {
-                        userPhoneNumber = savedAddr.phone;
-                        updateBadges(savedAddr.phone);
-                    }
-                    if(savedAddr && savedAddr.name) {
-                        startGreetingAnimation(savedAddr.name);
-                    } else {
-                        startGreetingAnimation("User");
-                    }
-                    generateLEK(user, savedAddr || {});
-                });
-            } else { 
-                window.location.href = "/"; 
-            }
-        });
         
+        // Fetch products
         onValue(ref(db, 'products'), (snapshot) => {
             allProducts = [];
             snapshot.forEach(child => {
@@ -919,187 +674,6 @@
 
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.search-container')) suggestionsBox.style.display = 'none';
-        });
-
-        const profileSection = document.getElementById('profileSection');
-        const logoutModalOverlay = document.getElementById('logoutModalOverlay');
-        const btnCancelLogout = document.getElementById('btnCancelLogout');
-        const btnConfirmLogout = document.getElementById('btnConfirmLogout');
-        const logoutPasswordInput = document.getElementById('logoutPasswordInput');
-        const logoutErrorMsg = document.getElementById('logoutErrorMsg');
-        const navUserName = document.getElementById('navUserName');
-
-        if (profileSection && logoutModalOverlay) {
-            profileSection.addEventListener('click', () => {
-                if (navUserName && navUserName.innerText.trim() === "Set Profile") {
-                    logoutModalOverlay.querySelector('h2').innerText = "Login Required";
-                    
-                    const descriptionPara = logoutModalOverlay.querySelector('p');
-                    descriptionPara.innerText = "Please login to your account to unlock all features and manage your profile.";
-                    descriptionPara.style.color = "var(--text-main, #4b5563)";
-
-                    document.querySelector('.modal-input-box').style.display = 'none';
-                    logoutErrorMsg.style.display = 'none';
-                    logoutPasswordInput.value = "";
-
-                    btnCancelLogout.innerText = "Cancel";
-                    btnConfirmLogout.innerText = "Login";
-                    
-                    btnCancelLogout.style.background = "#e2e8f0";
-                    btnCancelLogout.style.color = "#000";
-                    btnConfirmLogout.style.background = "#2563eb";
-                    
-                    selectedAction = "gotologin";
-                    logoutModalOverlay.classList.add('active');
-                    return;
-                }
-
-                logoutModalOverlay.querySelector('h2').innerText = "Account Options";
-                
-                const descriptionPara = logoutModalOverlay.querySelector('p');
-                descriptionPara.innerText = "Choose an action for your CartPrime account.";
-                descriptionPara.style.color = "var(--text-main, #4b5563)"; 
-
-                document.querySelector('.modal-input-box').style.display = 'none';
-                logoutErrorMsg.style.display = 'none';
-                logoutPasswordInput.value = "";
-
-                btnCancelLogout.innerText = "Logout";
-                btnConfirmLogout.innerText = "Sign Out (Clear All)";
-                
-                btnCancelLogout.style.background = "#e2e8f0";
-                btnCancelLogout.style.color = "#000";
-                btnConfirmLogout.style.background = "#ef4444"; 
-
-                selectedAction = "";
-                logoutModalOverlay.classList.add('active');
-            });
-        }
-
-        function showPasswordVerification() {
-            logoutModalOverlay.querySelector('h2').innerText = "Verify Identity";
-            const descriptionPara = logoutModalOverlay.querySelector('p');
-            
-            if (selectedAction === "signout") {
-                descriptionPara.innerText = "Warning: Signing out will permanently wipe all your details from our database. You will need to register again to use this account.";
-                descriptionPara.style.color = "#dc2626"; 
-            } else {
-                descriptionPara.innerText = "Please type your password to securely confirm logout.";
-                descriptionPara.style.color = "var(--text-main, #4b5563)"; 
-            }
-            
-            document.querySelector('.modal-input-box').style.display = 'block';
-            logoutPasswordInput.focus();
-
-            btnCancelLogout.innerText = "Cancel";
-            btnCancelLogout.style.background = "#f1f5f9";
-            btnCancelLogout.style.color = "var(--text-main)";
-
-            btnConfirmLogout.innerText = "Verify & Proceed";
-            btnConfirmLogout.style.background = "#2563eb"; 
-        }
-
-        btnCancelLogout.addEventListener('click', () => {
-            if (btnCancelLogout.innerText === "Logout") {
-                selectedAction = "logout";
-                showPasswordVerification();
-            } else {
-                logoutModalOverlay.classList.remove('active');
-            }
-        });
-
-        btnConfirmLogout.addEventListener('click', () => {
-            if (selectedAction === "gotologin" && btnConfirmLogout.innerText === "Login") {
-                logoutModalOverlay.classList.remove('active');
-                window.location.href = '/';
-                return;
-            }
-
-            if (btnConfirmLogout.innerText === "Sign Out (Clear All)") {
-                selectedAction = "signout";
-                
-                if (userPhoneNumber) {
-                    const ordersRef = ref(db, `orders/${userPhoneNumber}`);
-                    get(ordersRef).then((snapshot) => {
-                        let hasActiveOrders = false;
-                        
-                        if (snapshot.exists()) {
-                            snapshot.forEach((childSnapshot) => {
-                                const order = childSnapshot.val();
-                                if (order.status && order.status.toLowerCase() !== 'delivered' && order.status.toLowerCase() !== 'cancelled') {
-                                    hasActiveOrders = true;
-                                }
-                            });
-                        }
-
-                        if (hasActiveOrders) {
-                            logoutErrorMsg.innerText = "Cannot Sign Out! You have active orders that are not yet delivered.";
-                            logoutErrorMsg.style.display = 'block';
-                        } else {
-                            showPasswordVerification();
-                        }
-                    }).catch((err) => {
-                        showPasswordVerification();
-                    });
-                } else {
-                    showPasswordVerification();
-                }
-
-            } else if (btnConfirmLogout.innerText === "Verify & Proceed") {
-                const password = logoutPasswordInput.value.trim();
-                const user = auth.currentUser;
-
-                if (!password) {
-                    logoutErrorMsg.innerText = "Password cannot be empty!";
-                    logoutErrorMsg.style.display = 'block';
-                    return;
-                }
-
-                if (user && user.email) {
-                    logoutErrorMsg.style.display = 'none';
-                    const credential = EmailAuthProvider.credential(user.email, password);
-
-                    reauthenticateWithCredential(user, credential).then(() => {
-                        if (selectedAction === "logout") {
-                            signOut(auth).then(() => {
-                                logoutModalOverlay.classList.remove('active');
-                                window.location.href = '/';
-                            });
-                        } else if (selectedAction === "signout") {
-                            const userDbRef = ref(db, `users/${user.uid}`);
-                            
-                            remove(userDbRef).then(() => {
-                                deleteUser(user).then(() => {
-                                    localStorage.clear();
-                                    logoutModalOverlay.classList.remove('active');
-                                    window.location.href = '/';
-                                }).catch((authErr) => {
-                                    signOut(auth).then(() => {
-                                        localStorage.clear();
-                                        logoutModalOverlay.classList.remove('active');
-                                        window.location.href = '/';
-                                    });
-                                });
-                            }).catch((dbErr) => {
-                                signOut(auth).then(() => {
-                                    localStorage.clear();
-                                    logoutModalOverlay.classList.remove('active');
-                                    window.location.href = '/';
-                                });
-                            });
-                        }
-                    }).catch((error) => {
-                        logoutErrorMsg.innerText = "Incorrect password. Please try again.";
-                        logoutErrorMsg.style.display = 'block';
-                    });
-                }
-            }
-        });
-
-        logoutModalOverlay.addEventListener('click', (e) => {
-            if (e.target === logoutModalOverlay) {
-                logoutModalOverlay.classList.remove('active');
-            }
         });
     </script>
 </body>
