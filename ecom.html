@@ -14,7 +14,7 @@
     <style>
         :root { --sidebar-bg: #000000; --accent: #ff9900; --bg-light: #f8fafc; --border: #e2e8f0; --primary: #000; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-light); display: flex; min-height: 100vh; color: #1e293b; overflow-x: hidden; }
+        body { background: var(--bg-light); display: none; min-height: 100vh; color: #1e293b; overflow-x: hidden; }
         
         .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); color: white; padding: 30px 20px; position: fixed; box-shadow: 4px 0 10px rgba(0,0,0,0.1); z-index: 100; transition: 0.3s; }
         .sidebar h2 { margin-bottom: 40px; text-align: center; font-size: 22px; font-weight: 800; border-bottom: 1px solid #333; padding-bottom: 20px; }
@@ -179,7 +179,7 @@
         <div class="admin-card" style="max-width: 700px; margin: 0 auto;">
             
             <div class="auto-fill-box" style="display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0;">
-                <input type="text" id="meeshoUrl" placeholder="Paste Meesho Product Link here..." style="margin: 0; background: white;">
+                <input type="text" id="meeshoUrl" placeholder="Paste Meesho / Flipkart Product Link here..." style="margin: 0; background: white;">
                 <button onclick="fetchMeeshoDetails()" style="background: #ff9900; color: white; border: none; padding: 0 20px; border-radius: 12px; font-weight: bold; cursor: pointer; white-space: nowrap;">
                     <i class="fa fa-wand-magic-sparkles"></i> Auto Fill
                 </button>
@@ -289,6 +289,29 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+// --- ADMIN SECURITY PASSCODE ---
+const ADMIN_PASSCODE = "73569778"; // ഇവിടെ നിങ്ങൾക്ക് ഇഷ്ടമുള്ള പാസ്‌കോഡ് മാറ്റാം
+
+window.addEventListener('DOMContentLoaded', async () => {
+    const { value: passcode } = await Swal.fire({
+        title: 'Admin Access Required',
+        input: 'password',
+        inputLabel: 'Enter Security Passcode',
+        inputPlaceholder: 'Enter code...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        confirmButtonText: 'Login'
+    });
+
+    if (passcode === ADMIN_PASSCODE) {
+        document.body.style.display = 'flex';
+        Swal.fire({ icon: 'success', title: 'Access Granted', timer: 1000, showConfirmButton: false });
+    } else {
+        await Swal.fire({ icon: 'error', title: 'Access Denied', text: 'Wrong passcode!' });
+        window.location.href = "index.html"; 
+    }
+});
+
 const firebaseConfig = {
     apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
     authDomain: "cartprime-shopping.firebaseapp.com",
@@ -307,11 +330,11 @@ const FCM_SERVER_KEY = "firebase-adminsdk-fbsvc@cartprime-shopping.iam.gservicea
 let ordersChartInstance = null;
 let earningsChartInstance = null;
 
-// Meesho Link Auto-Fill Functionality
+// Improved Link Auto-Fill Functionality
 window.fetchMeeshoDetails = async () => {
-    const urlInput = document.getElementById('meeshoUrl').value.trim();
+    let urlInput = document.getElementById('meeshoUrl').value.trim();
     if (!urlInput) {
-        Swal.fire('Error', 'Please enter a Meesho product link', 'error');
+        Swal.fire('Error', 'Please enter a valid product link', 'error');
         return;
     }
 
@@ -332,40 +355,51 @@ window.fetchMeeshoDetails = async () => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(data.contents, 'text/html');
 
-        const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
-        let productData = null;
+        let name = "", price = "", desc = "", images = [];
 
+        // Try extracting using Schema.org JSON-LD
+        const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
         jsonLdScripts.forEach(script => {
             try {
                 const json = JSON.parse(script.textContent);
-                if (json['@type'] === 'Product' || (Array.isArray(json) && json[0]['@type'] === 'Product')) {
-                    productData = Array.isArray(json) ? json[0] : json;
+                const p = Array.isArray(json) ? json.find(i => i['@type'] === 'Product') : (json['@type'] === 'Product' ? json : null);
+                if (p) {
+                    name = p.name || name;
+                    if (p.offers) {
+                        price = p.offers.price || p.offers.lowPrice || price;
+                    }
+                    desc = p.description || desc;
+                    if (p.image) {
+                        images = Array.isArray(p.image) ? p.image : [p.image];
+                    }
                 }
             } catch (e) {}
         });
 
-        if (productData) {
-            document.getElementById('pName').value = productData.name || '';
-            document.getElementById('pTitle').value = productData.name || '';
+        // Fallback to Meta Tags if JSON-LD fails
+        if (!name) name = doc.querySelector('meta[property="og:title"]')?.content || doc.title || '';
+        if (!desc) desc = doc.querySelector('meta[property="og:description"]')?.content || '';
+        if (images.length === 0) {
+            const ogImg = doc.querySelector('meta[property="og:image"]')?.content;
+            if (ogImg) images.push(ogImg);
+        }
+
+        if (name) {
+            document.getElementById('pName').value = name;
+            document.getElementById('pTitle').value = name;
             
-            if (productData.offers) {
-                const price = productData.offers.price || productData.offers.lowPrice || '';
+            if (price) {
                 document.getElementById('pPrice').value = price;
-                document.getElementById('pMrp').value = price ? Math.round(price * 1.25) : '';
+                document.getElementById('pMrp').value = Math.round(price * 1.3);
             }
 
-            document.getElementById('pDesc').value = productData.description ? '• ' + productData.description : '';
+            if (desc) {
+                document.getElementById('pDesc').value = '• ' + desc.replace(/\n/g, '\n• ');
+            }
 
             const imageContainer = document.getElementById('imageInputs');
             imageContainer.innerHTML = '';
             
-            let images = [];
-            if (Array.isArray(productData.image)) {
-                images = productData.image;
-            } else if (typeof productData.image === 'string') {
-                images = [productData.image];
-            }
-
             if (images.length > 0) {
                 images.forEach(imgUrl => {
                     const input = document.createElement('input');
@@ -379,27 +413,11 @@ window.fetchMeeshoDetails = async () => {
 
             Swal.fire('Success!', 'Product details fetched successfully!', 'success');
         } else {
-            const ogTitle = doc.querySelector('meta[property="og:title"]')?.content || '';
-            const ogImage = doc.querySelector('meta[property="og:image"]')?.content || '';
-            const ogDesc = doc.querySelector('meta[property="og:description"]')?.content || '';
-
-            if (ogTitle) {
-                document.getElementById('pName').value = ogTitle;
-                document.getElementById('pTitle').value = ogTitle;
-                document.getElementById('pDesc').value = ogDesc ? '• ' + ogDesc : '';
-                
-                if (ogImage) {
-                    const imageContainer = document.getElementById('imageInputs');
-                    imageContainer.innerHTML = `<input type="text" class="p-img-link" value="${ogImage}">`;
-                }
-                Swal.fire('Partial Success', 'Basic details fetched. Please verify price & specs manually.', 'warning');
-            } else {
-                throw new Error("Could not extract product details. Link might be blocked or invalid.");
-            }
+            throw new Error("Could not extract details automatically. Please enter manually.");
         }
     } catch (err) {
         console.error(err);
-        Swal.fire('Error', 'Failed to auto-fill details: ' + err.message, 'error');
+        Swal.fire('Fetch Failed', 'Could not auto-fill: ' + err.message, 'warning');
     }
 };
 
@@ -1071,5 +1089,5 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-</body>
+</body> 
 </html>
