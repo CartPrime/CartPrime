@@ -29,8 +29,7 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, onValue, remove, get, child } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -43,55 +42,44 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const auth = getAuth(app);
 
-    let activeUserPhone = null;
+    // ലോഗിൻ ഇല്ലാതെ ഉപയോഗിക്കാൻ LocalStorage വഴി ഗസ്റ്റ് കീ (Guest Key) ഉണ്ടാക്കുന്നു
+    const guestKey = localStorage.getItem('guestUserId') || 'guest_' + Math.random().toString(36).substring(2, 9);
+    localStorage.setItem('guestUserId', guestKey);
 
-    onAuthStateChanged(auth, (user) => {
-        const container = document.getElementById('wishlistContainer');
-        if (user) {
-            get(child(ref(db), `users/${user.uid}`)).then((snapshot) => {
-                const targetKey = (snapshot.exists() && snapshot.val().phone) ? snapshot.val().phone : user.uid;
-                activeUserPhone = targetKey;
+    const container = document.getElementById('wishlistContainer');
+    const wRef = ref(db, `wishlist/${guestKey}`);
 
-                const wRef = ref(db, `wishlist/${targetKey}`);
-                onValue(wRef, (snapshot) => {
-                    container.innerHTML = "";
-                    if (snapshot.exists()) {
-                        snapshot.forEach((child) => {
-                            const p = child.val();
-                            const pId = child.key;
-                            
-                            // ഫുൾ ടൈറ്റിൽ മാറ്റി ആദ്യത്തെ 4 വാക്കുകൾ മാത്രം എടുക്കുന്നു
-                            const rawName = p.name || 'Product';
-                            const shortName = rawName.split(' ').slice(0, 4).join(' ') + (rawName.split(' ').length > 4 ? '...' : '');
+    onValue(wRef, (snapshot) => {
+        container.innerHTML = "";
+        if (snapshot.exists()) {
+            snapshot.forEach((child) => {
+                const p = child.val();
+                const pId = child.key;
+                
+                // ഫുൾ ടൈറ്റിൽ മാറ്റി ആദ്യത്തെ 4 വാക്കുകൾ മാത്രം എടുക്കുന്നു
+                const rawName = p.name || 'Product';
+                const shortName = rawName.split(' ').slice(0, 4).join(' ') + (rawName.split(' ').length > 4 ? '...' : '');
 
-                            container.innerHTML += `
-                                <div class="wishlist-card">
-                                    <div style="display:flex; align-items:center; gap:15px; flex-grow:1;" onclick="location.href='product-details.html?id=${pId}'">
-                                        <img src="${p.image}">
-                                        <div class="item-info">
-                                            <h3>${shortName}</h3>
-                                            <p>₹${parseFloat(p.price).toLocaleString('en-IN')}</p>
-                                        </div>
-                                    </div>
-                                    <i class="fa-solid fa-trash remove-btn" onclick="event.stopPropagation(); window.removeItem('${pId}')"></i>
-                                </div>`;
-                        });
-                    } else {
-                        container.innerHTML = "<p>Your wishlist is empty.</p>";
-                    }
-                });
+                container.innerHTML += `
+                    <div class="wishlist-card">
+                        <div style="display:flex; align-items:center; gap:15px; flex-grow:1;" onclick="location.href='product-details.html?id=${pId}'">
+                            <img src="${p.image}">
+                            <div class="item-info">
+                                <h3>${shortName}</h3>
+                                <p>₹${parseFloat(p.price).toLocaleString('en-IN')}</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-trash remove-btn" onclick="event.stopPropagation(); window.removeItem('${pId}')"></i>
+                    </div>`;
             });
         } else {
-            container.innerHTML = "<p>Please <a href='login.html'>login</a> to see your wishlist.</p>";
+            container.innerHTML = "<p>Your wishlist is empty.</p>";
         }
     });
 
     window.removeItem = (id) => {
-        if(activeUserPhone) {
-            remove(ref(db, `wishlist/${activeUserPhone}/${id}`));
-        }
+        remove(ref(db, `wishlist/${guestKey}/${id}`));
     };
 </script>
 </body>
