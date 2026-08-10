@@ -14,7 +14,7 @@
     <style>
         :root { --sidebar-bg: #000000; --accent: #ff9900; --bg-light: #f8fafc; --border: #e2e8f0; --primary: #000; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-light); display: none; min-height: 100vh; color: #1e293b; overflow-x: hidden; }
+        body { background: var(--bg-light); display: flex; min-height: 100vh; color: #1e293b; overflow-x: hidden; }
         
         .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); color: white; padding: 30px 20px; position: fixed; box-shadow: 4px 0 10px rgba(0,0,0,0.1); z-index: 100; transition: 0.3s; }
         .sidebar h2 { margin-bottom: 40px; text-align: center; font-size: 22px; font-weight: 800; border-bottom: 1px solid #333; padding-bottom: 20px; }
@@ -81,7 +81,6 @@
 
         .spec-row { display: flex; gap: 10px; margin-bottom: 8px; }
 
-        /* Responsive Breakpoints */
         @media (max-width: 768px) {
             .sidebar { width: 65px; padding: 20px 10px; }
             .sidebar h2, .sidebar button span, .sidebar a span { display: none; }
@@ -289,27 +288,32 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// --- ADMIN SECURITY PASSCODE ---
-const ADMIN_PASSCODE = "73569778"; // ഇവിടെ നിങ്ങൾക്ക് ഇഷ്ടമുള്ള പാസ്‌കോഡ് മാറ്റാം
+// --- ADMIN SECURITY PASSCODE CONFIG ---
+const ADMIN_PASSCODE = "73569778"; // ഇവിടെ നിങ്ങൾക്ക് വേണമെങ്കിൽ നിങ്ങളുടെ പാസ്‌കോഡ് മാറ്റാം
 
-window.addEventListener('DOMContentLoaded', async () => {
+async function checkAdminPasscode() {
     const { value: passcode } = await Swal.fire({
-        title: 'Admin Access Required',
+        title: 'Admin Security Verification',
         input: 'password',
-        inputLabel: 'Enter Security Passcode',
+        inputLabel: 'Enter Admin Passcode',
         inputPlaceholder: 'Enter code...',
         allowOutsideClick: false,
         allowEscapeKey: false,
-        confirmButtonText: 'Login'
+        confirmButtonText: 'Access Dashboard',
+        confirmButtonColor: '#000'
     });
 
     if (passcode === ADMIN_PASSCODE) {
-        document.body.style.display = 'flex';
         Swal.fire({ icon: 'success', title: 'Access Granted', timer: 1000, showConfirmButton: false });
     } else {
-        await Swal.fire({ icon: 'error', title: 'Access Denied', text: 'Wrong passcode!' });
-        window.location.href = "index.html"; 
+        await Swal.fire({ icon: 'error', title: 'Incorrect Passcode!', text: 'You do not have access.' });
+        window.location.href = "index.html";
     }
+}
+
+// Page load ചെയ്യുമ്പോൾ അഡ്മിൻ പാസ്‌കോഡ് ചോദിക്കും
+window.addEventListener('load', () => {
+    checkAdminPasscode();
 });
 
 const firebaseConfig = {
@@ -357,7 +361,6 @@ window.fetchMeeshoDetails = async () => {
 
         let name = "", price = "", desc = "", images = [];
 
-        // Try extracting using Schema.org JSON-LD
         const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
         jsonLdScripts.forEach(script => {
             try {
@@ -376,7 +379,6 @@ window.fetchMeeshoDetails = async () => {
             } catch (e) {}
         });
 
-        // Fallback to Meta Tags if JSON-LD fails
         if (!name) name = doc.querySelector('meta[property="og:title"]')?.content || doc.title || '';
         if (!desc) desc = doc.querySelector('meta[property="og:description"]')?.content || '';
         if (images.length === 0) {
