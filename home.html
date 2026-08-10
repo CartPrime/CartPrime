@@ -232,20 +232,6 @@
             height: 16px; display: flex; align-items: center; justify-content: center; padding: 2px;
         }
 
-        .admin-pill { 
-            background: #000; 
-            color: #fff; 
-            padding: 6px 12px; 
-            border-radius: 8px; 
-            font-size: 0.75rem; 
-            font-weight: 700; 
-            text-decoration: none; 
-            display: inline-flex; 
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-        }
-
         footer { 
             background: #000; color: #fff; padding: 30px 6%; 
             margin-top: auto; width: 100%; border-top: 1px solid #1e293b;
@@ -261,7 +247,6 @@
             .logo { font-size: 1.2rem; order: 1; }
             
             .nav-right { order: 2; gap: 8px; flex-shrink: 0; }
-            .admin-pill { padding: 5px 8px; font-size: 0.7rem; }
             .icon-btn { font-size: 1.15rem; }
             
             .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin: 8px 0 2px 0; }
@@ -318,7 +303,6 @@
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span id="ordersBadge" class="badge" style="display:none;">0</span>
             </a>
-            <a href="/admin" id="adminLink" class="admin-pill">ADMIN</a>
         </div>
     </nav>
 
@@ -356,7 +340,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
