@@ -344,7 +344,6 @@
   <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, get, child, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc", 
@@ -358,46 +357,20 @@
         
         const app = initializeApp(firebaseConfig); 
         const db = getDatabase(app); 
-        const auth = getAuth(app);
         
         const urlParams = new URLSearchParams(window.location.search); 
         const productId = urlParams.get('id'); 
         let selectedRating = 0;
-        let activeUserPhone = null;
-        let globalUser = null; // ലൈവ് യൂസർ സ്റ്റാറ്റസ് സൂക്ഷിക്കാൻ
 
-        // ഫയർബേസ് ലോഗിൻ സ്റ്റാറ്റസ് എപ്പോഴും ട്രാക്ക് ചെയ്യുന്നു
-        onAuthStateChanged(auth, (user) => {
-            globalUser = user;
-            if(user) {
-                if (user.email === "admin@cartprime.com" || user.email === "youradmin@email.com") {
-                    const adminArea = document.getElementById('adminEditArea');
-                    if (adminArea) {
-                        adminArea.innerHTML = `
-                            <a href="admin.html?id=${productId}" style="background: var(--red); color: #fff; padding: 8px 16px; border-radius: 10px; font-size: 0.85rem; font-weight:800; text-decoration:none; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(255,59,48,0.2);">
-                                <i class="fa-solid fa-pen-to-square"></i> EDIT PRODUCT
-                            </a>`;
-                    }
-                }
+        // വിഷ്‌ലിസ്റ്റ് ചെക്കിംഗ് (ലോഗിൻ ഇല്ലാതെ ഗസ്റ്റ് ഐഡി ഉപയോഗിക്കുന്നു)
+        const guestKey = localStorage.getItem('guestUserId') || 'guest_' + Math.random().toString(36).substring(2, 9);
+        localStorage.setItem('guestUserId', guestKey);
 
-                get(child(ref(db), `users/${user.uid}`)).then((snapshot) => {
-                    if (snapshot.exists() && snapshot.val().phone) {
-                        activeUserPhone = snapshot.val().phone;
-                    }
-                    const targetKey = activeUserPhone || user.uid;
-                    get(child(ref(db), `wishlist/${targetKey}/${productId}`)).then(snap => { 
-                        if(snap.exists() && document.getElementById('wishlistHeart')) {
-                            document.getElementById('wishlistHeart').classList.add('active'); 
-                        }
-                    });
-                });
+        get(child(ref(db), `wishlist/${guestKey}/${productId}`)).then(snap => { 
+            if(snap.exists() && document.getElementById('wishlistHeart')) {
+                document.getElementById('wishlistHeart').classList.add('active'); 
             }
         });
-
-        const localAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
-        if (localAddr && localAddr.phone) {
-            activeUserPhone = localAddr.phone;
-        }
 
         if (productId) {
             get(child(ref(db), `products/${productId}`)).then(snap => { 
@@ -589,22 +562,15 @@
         }
 
         window.toggleWishlist = (id, name, price, img) => {
-            const user = auth.currentUser; 
-            if (!user) return Swal.fire('Please Login', 'Log in to manage your wishlist items.', 'info');
+            const heart = document.getElementById('wishlistHeart'); 
+            const wRef = ref(db, `wishlist/${guestKey}/${id}`);
             
-            get(child(ref(db), `users/${user.uid}`)).then((snapshot) => {
-                const targetKey = (snapshot.exists() && snapshot.val().phone) ? snapshot.val().phone : user.uid;
-                
-                const heart = document.getElementById('wishlistHeart'); 
-                const wRef = ref(db, `wishlist/${targetKey}/${id}`);
-                
-                get(wRef).then(snap => { 
-                    if (snap.exists()) { 
-                        set(wRef, null).then(() => heart.classList.remove('active')); 
-                    } else { 
-                        set(wRef, { id, name, price, image: img }).then(() => heart.classList.add('active')); 
-                    } 
-                });
+            get(wRef).then(snap => { 
+                if (snap.exists()) { 
+                    set(wRef, null).then(() => heart.classList.remove('active')); 
+                } else { 
+                    set(wRef, { id, name, price, image: img }).then(() => heart.classList.add('active')); 
+                } 
             });
         };
         
@@ -622,33 +588,8 @@
             document.getElementById('drawerOverlay').classList.remove('open'); 
         };
         
-        // --- PROCEED TO CHECKOUT (യൂസർ ലോഗിൻ വാലിഡേഷൻ ഉറപ്പാക്കുന്നു) ---
+        // --- PROCEED TO CHECKOUT (ലോഗിൻ ചെക്കിംഗ് ഇല്ലാതെ ഡയറക്ട് ചെക്കൗട്ടിലേക്ക് പോകുന്നു) ---
         window.proceedToCheckout = (id, name, price, mrp, discount, img, ret, cod) => { 
-            const localUser = JSON.parse(localStorage.getItem('cartPrime_UserAddr'));
-            
-            // ഹോം പേജിൽ സെറ്റ് ചെയ്ത പ്രൊഫൈലോ (localUser) അല്ലെങ്കിൽ ഫയർബേസ് ലോഗിൻ സ്റ്റാറ്റസോ (globalUser) ഉണ്ടോ എന്ന് നോക്കുന്നു
-            const hasProfile = localUser && (localUser.phone || localUser.name);
-            const isLoggedIn = globalUser || hasProfile;
-
-            // ലോഗിൻ ചെയ്തിട്ടില്ലെങ്കിൽ അല്ലെങ്കിൽ ഹോം പേജിൽ പ്രൊഫൈൽ സെറ്റ് ചെയ്തിട്ടില്ലെങ്കിൽ തടയുന്നു
-            if (!isLoggedIn) {
-                Swal.fire({
-                    title: 'Login Required',
-                    text: 'Please log in to your account or complete your profile to purchase this product.',
-                    icon: 'warning',
-                    confirmButtonText: 'Go to Login',
-                    confirmButtonColor: '#000000',
-                    showCancelButton: true,
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = 'index.html'; // ഹോം പേജിലേക്ക് റീഡയറക്ട് ചെയ്യുന്നു
-                    }
-                });
-                return; 
-            }
-
-            // പ്രൊഫൈൽ ഉള്ള വാലിഡ് യൂസർ ആണെങ്കിൽ ഡാറ്റ സേവ് ചെയ്ത് ചെക്കൗട്ടിലേക്ക് വിടുന്നു
             localStorage.setItem('pendingOrder', JSON.stringify({ 
                 productId: id, 
                 productName: name, 
@@ -674,12 +615,10 @@
         
         window.submitReview = () => { 
             const text = document.getElementById('revText').value.trim(); 
-            const user = auth.currentUser; 
-            if (!user) return Swal.fire('Login Required', 'Please log in to submit a review.', 'warning'); 
             if (!selectedRating || !text) return Swal.fire('Incomplete fields', 'Please add a rating and your comments.', 'info'); 
             
             push(ref(db, `reviews/${productId}`), { 
-                userName: user.email.split('@')[0], 
+                userName: "Verified Customer", 
                 rating: parseInt(selectedRating), 
                 text: text, 
                 timestamp: Date.now() 
