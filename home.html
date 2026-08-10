@@ -340,6 +340,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const firebaseConfig = {
@@ -353,6 +354,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getDatabase(app);
 
         let allProducts = [];
@@ -368,6 +370,53 @@
 
         document.getElementById('navLogo').addEventListener('click', () => {
             window.location.href = "/";
+        });
+
+        // --- Fetch Wishlist & Orders Badges ---
+        onAuthStateChanged(auth, (user) => {
+            const wishlistBadge = document.getElementById('wishlistBadge');
+            const ordersBadge = document.getElementById('ordersBadge');
+
+            if (user) {
+                // 1. Fetch Wishlist Count
+                onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => {
+                    const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
+                    if (count > 0) {
+                        wishlistBadge.textContent = count;
+                        wishlistBadge.style.display = 'flex';
+                    } else {
+                        wishlistBadge.style.display = 'none';
+                    }
+                });
+
+                // 2. Fetch Orders Count (User Phone or User ID based)
+                // If user metadata has phone or fetching directly from orders tree:
+                const userPhone = user.phoneNumber || localStorage.getItem('userPhone');
+                if (userPhone) {
+                    onValue(ref(db, `orders/${userPhone}`), (snapshot) => {
+                        const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
+                        if (count > 0) {
+                            ordersBadge.textContent = count;
+                            ordersBadge.style.display = 'flex';
+                        } else {
+                            ordersBadge.style.display = 'none';
+                        }
+                    });
+                } else {
+                    onValue(ref(db, `orders/${user.uid}`), (snapshot) => {
+                        const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
+                        if (count > 0) {
+                            ordersBadge.textContent = count;
+                            ordersBadge.style.display = 'flex';
+                        } else {
+                            ordersBadge.style.display = 'none';
+                        }
+                    });
+                }
+            } else {
+                wishlistBadge.style.display = 'none';
+                ordersBadge.style.display = 'none';
+            }
         });
         
         // Fetch products
