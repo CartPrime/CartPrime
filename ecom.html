@@ -289,7 +289,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 // --- ADMIN SECURITY PASSCODE CONFIG ---
-const ADMIN_PASSCODE = "73569778"; // ഇവിടെ നിങ്ങൾക്ക് വേണമെങ്കിൽ നിങ്ങളുടെ പാസ്‌കോഡ് മാറ്റാം
+const ADMIN_PASSCODE = "73569778";
 
 async function checkAdminPasscode() {
     const { value: passcode } = await Swal.fire({
@@ -311,7 +311,6 @@ async function checkAdminPasscode() {
     }
 }
 
-// Page load ചെയ്യുമ്പോൾ അഡ്മിൻ പാസ്‌കോഡ് ചോദിക്കും
 window.addEventListener('load', () => {
     checkAdminPasscode();
 });
@@ -334,7 +333,7 @@ const FCM_SERVER_KEY = "firebase-adminsdk-fbsvc@cartprime-shopping.iam.gservicea
 let ordersChartInstance = null;
 let earningsChartInstance = null;
 
-// Improved Link Auto-Fill Functionality
+// Improved Link Auto-Fill Functionality (Updated with Reliable CORS Proxy)
 window.fetchMeeshoDetails = async () => {
     let urlInput = document.getElementById('meeshoUrl').value.trim();
     if (!urlInput) {
@@ -350,14 +349,14 @@ window.fetchMeeshoDetails = async () => {
     });
 
     try {
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(urlInput)}`;
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(urlInput)}`;
         const response = await fetch(proxyUrl);
-        const data = await response.json();
-        
-        if (!data.contents) throw new Error("Could not fetch page data");
 
+        if (!response.ok) throw new Error("Failed to reach website");
+
+        const htmlText = await response.text();
         const parser = new DOMParser();
-        const doc = parser.parseFromString(data.contents, 'text/html');
+        const doc = parser.parseFromString(htmlText, 'text/html');
 
         let name = "", price = "", desc = "", images = [];
 
@@ -365,7 +364,10 @@ window.fetchMeeshoDetails = async () => {
         jsonLdScripts.forEach(script => {
             try {
                 const json = JSON.parse(script.textContent);
-                const p = Array.isArray(json) ? json.find(i => i['@type'] === 'Product') : (json['@type'] === 'Product' ? json : null);
+                const p = Array.isArray(json) 
+                    ? json.find(i => i['@type'] === 'Product') 
+                    : (json['@type'] === 'Product' ? json : null);
+                    
                 if (p) {
                     name = p.name || name;
                     if (p.offers) {
@@ -415,11 +417,11 @@ window.fetchMeeshoDetails = async () => {
 
             Swal.fire('Success!', 'Product details fetched successfully!', 'success');
         } else {
-            throw new Error("Could not extract details automatically. Please enter manually.");
+            throw new Error("Product data not found in link.");
         }
     } catch (err) {
         console.error(err);
-        Swal.fire('Fetch Failed', 'Could not auto-fill: ' + err.message, 'warning');
+        Swal.fire('Fetch Failed', 'Could not auto-fill directly from client side. Please check the URL or try manually.', 'warning');
     }
 };
 
