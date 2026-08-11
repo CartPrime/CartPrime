@@ -374,7 +374,7 @@ const db = getDatabase(app);
 let ordersChartInstance = null;
 let earningsChartInstance = null;
 
-// --- AUTO-FILL FUNCTION VIA BACKEND API ROUTE ---
+// --- SECURE AUTO-FILL VIA BACKEND SERVERLESS API ---
 window.fetchMeeshoDetails = async () => {
     let urlInput = document.getElementById('meeshoUrl').value.trim();
     if (!urlInput) {
@@ -390,16 +390,20 @@ window.fetchMeeshoDetails = async () => {
     });
 
     try {
-        // Backend API Route വഴി മാത്രം വിക്കഴിക്കുക (CORS & Key leak തടയാൻ)
         const response = await fetch("/api/autofill", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ url: urlInput })
         });
 
-        if (!response.ok) throw new Error("Could not process request safely.");
+        if (!response.ok) {
+            throw new Error("Server response error");
+        }
 
-        const extracted = await response.json();
+        const data = await response.json();
+        
+        // AI തിരിച്ചുനൽകുന്ന അല്ലെങ്കിൽ ബായ്ക്ക്എൻഡ് നൽകുന്ന JSON
+        const extracted = data.choices ? JSON.parse(data.choices[0].message.content) : data;
 
         if (extracted.name) document.getElementById('pName').value = extracted.name;
         if (extracted.title) document.getElementById('pTitle').value = extracted.title || extracted.name;
@@ -423,8 +427,8 @@ window.fetchMeeshoDetails = async () => {
         Swal.fire('AI Success!', 'Product details auto-filled successfully!', 'success');
 
     } catch (err) {
-        console.error(err);
-        Swal.fire('Fetch Failed', 'Set up backend serverless API route (/api/autofill) to process links securely.', 'info');
+        console.error("Auto Fill Error:", err);
+        Swal.fire('Fetch Failed', 'Make sure /api/autofill route is set up in Vercel backend.', 'error');
     }
 };
 
