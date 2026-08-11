@@ -81,6 +81,27 @@
 
         .spec-row { display: flex; gap: 10px; margin-bottom: 8px; }
 
+        /* Custom SweetAlert Verification Modal Styling */
+        .custom-verify-modal {
+            border-radius: 24px !important;
+            padding: 25px !important;
+            background: #ffffff !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        }
+        .custom-verify-input {
+            border-radius: 12px !important;
+            padding: 14px !important;
+            font-size: 16px !important;
+            text-align: center !important;
+            letter-spacing: 2px !important;
+            border: 2px solid #e2e8f0 !important;
+            background: #f8fafc !important;
+        }
+        .custom-verify-input:focus {
+            border-color: #000000 !important;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.1) !important;
+        }
+
         @media (max-width: 768px) {
             .sidebar { width: 65px; padding: 20px 10px; }
             .sidebar h2, .sidebar button span, .sidebar a span { display: none; }
@@ -288,29 +309,47 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// --- GROQ AI CONFIGURATION ---
-// ⚠️ പുതിയ API Key ഇവിടെ ചേര്‍ക്കുക!
-const GROQ_API_KEY = "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"; 
-
 // --- ADMIN SECURITY PASSCODE CONFIG ---
 const ADMIN_PASSCODE = "73569778";
 
+// NEW MODERN ADMIN VERIFICATION ALERT DESIGN
 async function checkAdminPasscode() {
     const { value: passcode } = await Swal.fire({
-        title: 'Admin Security Verification',
+        title: '<div style="font-size: 22px; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-shield-halved" style="color: #ff9900; margin-right: 8px;"></i> Security Check</div>',
+        html: '<p style="color: #64748b; font-size: 14px; margin-top: 5px;">Enter your admin passcode to access CartPrime Panel.</p>',
         input: 'password',
-        inputLabel: 'Enter Admin Passcode',
-        inputPlaceholder: 'Enter code...',
+        inputPlaceholder: '••••••••',
+        customClass: {
+            popup: 'custom-verify-modal',
+            input: 'custom-verify-input'
+        },
         allowOutsideClick: false,
         allowEscapeKey: false,
-        confirmButtonText: 'Access Dashboard',
-        confirmButtonColor: '#000'
+        confirmButtonText: 'Verify Access <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>',
+        confirmButtonColor: '#000000',
+        buttonsStyling: true,
+        showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+        }
     });
 
     if (passcode === ADMIN_PASSCODE) {
-        Swal.fire({ icon: 'success', title: 'Access Granted', timer: 1000, showConfirmButton: false });
+        Swal.fire({ 
+            icon: 'success', 
+            title: 'Welcome Back, Admin!', 
+            text: 'Access Granted Successfully',
+            timer: 1200, 
+            showConfirmButton: false,
+            customClass: { popup: 'custom-verify-modal' }
+        });
     } else {
-        await Swal.fire({ icon: 'error', title: 'Incorrect Passcode!', text: 'You do not have access.' });
+        await Swal.fire({ 
+            icon: 'error', 
+            title: 'Access Denied', 
+            text: 'Incorrect passcode provided!',
+            confirmButtonColor: '#000',
+            customClass: { popup: 'custom-verify-modal' }
+        });
         window.location.href = "index.html";
     }
 }
@@ -332,12 +371,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const FCM_SERVER_KEY = "firebase-adminsdk-fbsvc@cartprime-shopping.iam.gserviceaccount.com";
-
 let ordersChartInstance = null;
 let earningsChartInstance = null;
 
-// --- GROQ AI POWERED AUTO-FILL FUNCTION ---
+// --- AUTO-FILL FUNCTION VIA BACKEND API ROUTE ---
 window.fetchMeeshoDetails = async () => {
     let urlInput = document.getElementById('meeshoUrl').value.trim();
     if (!urlInput) {
@@ -345,73 +382,25 @@ window.fetchMeeshoDetails = async () => {
         return;
     }
 
-    if (GROQ_API_KEY === "YOUR_NEW_GROQ_API_KEY_HERE" || !GROQ_API_KEY) {
-        Swal.fire('API Key Missing', 'Please add your new Groq API key in the JavaScript code!', 'warning');
-        return;
-    }
-
     Swal.fire({
         title: 'AI Processing Product...',
-        text: 'Extracting details using Groq AI...',
+        text: 'Fetching product details safely...',
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); }
     });
 
     try {
-        // 1. Fetch HTML using CORS Proxy
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(urlInput)}`;
-        const response = await fetch(proxyUrl);
-
-        if (!response.ok) throw new Error("Could not fetch the product page.");
-
-        const resData = await response.json();
-        let rawHtml = resData.contents || "";
-
-        if (!rawHtml) throw new Error("Empty HTML content received.");
-
-        // Clean useless tags to fit token limit
-        let cleanedHtml = rawHtml
-            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-            .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
-            .substring(0, 15000); 
-
-        // 2. Call Groq AI API
-        const aiResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        // Backend API Route വഴി മാത്രം വിക്കഴിക്കുക (CORS & Key leak തടയാൻ)
+        const response = await fetch("/api/autofill", {
             method: "POST",
-            headers: {
-                "Authorization": `Bearer ${GROQ_API_KEY}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                model: "llama-3.1-8b-instant",
-                messages: [{
-                    role: "user",
-                    content: `Analyze this ecommerce webpage HTML and extract product information.
-                    
-                    Return ONLY a JSON object with this exact structure:
-                    {
-                      "name": "Short 3-5 word product title",
-                      "title": "Full product title/description title",
-                      "price": numeric_price_only_number,
-                      "mrp": estimated_mrp_higher_than_price,
-                      "shippedFrom": "Seller name or website name like Meesho/Amazon/Flipkart",
-                      "description": "Short description of product",
-                      "image": "Main product image URL if found"
-                    }
-
-                    HTML: ${cleanedHtml}`
-                }],
-                response_format: { type: "json_object" }
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: urlInput })
         });
 
-        const aiData = await aiResponse.json();
-        
-        if (aiData.error) throw new Error(aiData.error.message);
+        if (!response.ok) throw new Error("Could not process request safely.");
 
-        const extracted = JSON.parse(aiData.choices[0].message.content);
+        const extracted = await response.json();
 
-        // 3. Fill Form Fields
         if (extracted.name) document.getElementById('pName').value = extracted.name;
         if (extracted.title) document.getElementById('pTitle').value = extracted.title || extracted.name;
         if (extracted.price) {
@@ -435,7 +424,7 @@ window.fetchMeeshoDetails = async () => {
 
     } catch (err) {
         console.error(err);
-        Swal.fire('AI Fetch Failed', err.message || 'Could not parse link with AI. Try entering details manually.', 'error');
+        Swal.fire('Fetch Failed', 'Set up backend serverless API route (/api/autofill) to process links securely.', 'info');
     }
 };
 
@@ -903,35 +892,9 @@ window.updateStatus = (path, s) => {
 window.confirmOrderWithDate = async (path) => {
     const { value: date } = await Swal.fire({ title: 'Select Delivery Date', input: 'date', showCancelButton: true });
     if (date) {
-        update(ref(db, 'orders/' + path), { status: 'Confirmed', deliveryDate: date })
-        .then(() => {
-            get(ref(db, 'orders/' + path)).then((snapshot) => {
-                const orderData = snapshot.val();
-                if (orderData && orderData.userFcmToken) {
-                    sendNotification(orderData.userFcmToken, orderData.productName, date);
-                }
-            });
-        });
+        update(ref(db, 'orders/' + path), { status: 'Confirmed', deliveryDate: date });
     }
 };
-
-async function sendNotification(token, pName, dDate) {
-    const message = {
-        to: token,
-        notification: {
-            title: "Order Confirmed! ✅",
-            body: `${pName} confirmed. Expected delivery: ${dDate}`,
-            sound: "default"
-        }
-    };
-    try {
-        await fetch("https://fcm.googleapis.com/fcm/send", {
-            method: "POST",
-            headers: { "Authorization": "key=" + FCM_SERVER_KEY, "Content-Type": "application/json" },
-            body: JSON.stringify(message)
-        });
-    } catch (e) { console.error("Notification Error", e); }
-}
 
 onValue(ref(db, 'products'), snap => {
     const list = document.getElementById('manageProductList');
