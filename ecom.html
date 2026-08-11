@@ -289,7 +289,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 // --- GROQ AI CONFIGURATION ---
-const GROQ_API_evn = "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"; // console.groq.com-il ninnu kittiya FREE key iduk!
+// ⚠️ പുതിയ API Key ഇവിടെ ചേര്‍ക്കുക!
+const GROQ_API_KEY = "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"; 
 
 // --- ADMIN SECURITY PASSCODE CONFIG ---
 const ADMIN_PASSCODE = "73569778";
@@ -344,8 +345,8 @@ window.fetchMeeshoDetails = async () => {
         return;
     }
 
-    if (GROQ_API_KEY === "YOUR_GROQ_API_KEY_HERE") {
-        Swal.fire('API Key Missing', 'Please add your Groq API key in the JavaScript code!', 'warning');
+    if (GROQ_API_KEY === "YOUR_NEW_GROQ_API_KEY_HERE" || !GROQ_API_KEY) {
+        Swal.fire('API Key Missing', 'Please add your new Groq API key in the JavaScript code!', 'warning');
         return;
     }
 
