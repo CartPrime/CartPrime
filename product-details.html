@@ -21,7 +21,18 @@
             --flipkart-green: #388e3c;
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            outline: none !important; /* Removes default blue outline on click */
+        }
+
+        *:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
         
         body { 
             background: #fff; 
@@ -29,6 +40,7 @@
             overflow-x: hidden; 
             padding-bottom: 100px; 
             min-height: 100vh;
+            -webkit-tap-highlight-color: transparent; /* Removes mobile tap highlight color */
         }
         
         /* Nav Bar */
@@ -53,6 +65,7 @@
             align-items: center;
             gap: 8px;
             transition: 0.2s;
+            user-select: none;
         }
         .nav a:hover { color: var(--text-muted); }
         
@@ -118,6 +131,7 @@
             justify-content: center;
             width: 44px;
             height: 44px;
+            user-select: none;
         }
         .wishlist-container:hover { background: #fff; color: #000; }
         .wishlist-container.active { color: #ff3b30; animation: heartBeat 0.5s ease-in-out; }
@@ -145,6 +159,7 @@
             justify-content: center;
             width: 44px;
             height: 44px;
+            user-select: none;
         }
         .share-container:hover { background: #1e293b; transform: scale(1.05); }
 
@@ -169,6 +184,7 @@
             flex-shrink: 0; 
             padding: 5px;
             transition: 0.2s;
+            user-select: none;
         }
         .thumb.active { border-color: var(--primary); background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
@@ -229,6 +245,7 @@
             transition: all 0.2s ease;
             min-width: 48px;
             text-align: center;
+            user-select: none;
         }
         .size-btn:hover {
             border-color: #000;
@@ -287,7 +304,7 @@
         /* Write Review Form Styling */
         .write-review-box { margin-top: 40px; background: white; padding: 25px; border-radius: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.02); }
         .write-review-box p { font-weight: 800; margin-bottom: 12px; font-size: 1rem; }
-        #starInput { color: #e2e8f0; font-size: 1.8rem; cursor: pointer; margin-bottom: 18px; display: flex; gap: 6px; }
+        #starInput { color: #e2e8f0; font-size: 1.8rem; cursor: pointer; margin-bottom: 18px; display: flex; gap: 6px; user-select: none; }
         #revText { width: 100%; padding: 15px; border-radius: 14px; border: 1px solid #e2e8f0; background: var(--surface); outline: none; transition: 0.3s; font-size: 0.95rem; resize: vertical; }
         #revText:focus { border-color: var(--primary); background: #fff; }
         .post-rev-btn { margin-top: 15px; background: #000; color: #fff; border: none; padding: 14px 30px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; width: auto; font-size: 0.9rem; }
@@ -405,9 +422,8 @@
         const urlParams = new URLSearchParams(window.location.search); 
         const productId = urlParams.get('id'); 
         let selectedRating = 0;
-        let selectedProductSize = null; // തിരഞ്ഞെടുക്കുന്ന സൈസ് സൂക്ഷിക്കാൻ
+        let selectedProductSize = null;
 
-        // വിഷ്‌ലിസ്റ്റ് ചെക്കിംഗ് (ലോഗിൻ ഇല്ലാതെ ഗസ്റ്റ് ഐഡി ഉപയോഗിക്കുന്നു)
         const guestKey = localStorage.getItem('guestUserId') || 'guest_' + Math.random().toString(36).substring(2, 9);
         localStorage.setItem('guestUserId', guestKey);
 
@@ -459,7 +475,6 @@
             const baseMrp = p.mrp ? parseFloat(p.mrp.toString().replace(/,/g, '').replace(/[^\d.]/g, '')) : Math.round(displayPrice * 1.35);
             const discountPct = baseMrp > displayPrice ? Math.round(((baseMrp - displayPrice) / baseMrp) * 100) : 0;
 
-            // SIZES RENDER LOGIC
             const availableSizes = p.sizes || [];
             let sizeHTML = "";
             if (availableSizes.length > 0) {
@@ -563,7 +578,6 @@
             }
         }
 
-        // SIZE SELECT FUNCTION
         window.selectSize = (btn, size) => {
             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -660,7 +674,6 @@
             document.getElementById('drawerOverlay').classList.remove('open'); 
         };
         
-        // --- PROCEED TO CHECKOUT WITH SIZE ---
         window.proceedToCheckout = (id, name, price, mrp, discount, img, ret, cod, hasSizes) => { 
             if (hasSizes && !selectedProductSize) {
                 Swal.fire({
@@ -683,7 +696,7 @@
                 returnPolicy: ret, 
                 isReturnable: ret, 
                 cod: cod,
-                selectedSize: selectedProductSize || 'N/A' // Selected Size ഇവിടെ ചേർക്കുന്നു
+                selectedSize: selectedProductSize || 'N/A'
             })); 
             location.href = 'checkout.html'; 
         };
