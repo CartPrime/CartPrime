@@ -50,7 +50,7 @@
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
         .search-box input { padding-left: 45px; margin: 0; background: #f8fafc; border: 1px solid #e2e8f0; }
 
-        #orderList { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        #orderList { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
         .order-card { background: white; border: 1px solid var(--border); padding: 20px; border-radius: 20px; position: relative; }
         
         .badge-container { position: absolute; top: 20px; right: 20px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
@@ -67,6 +67,49 @@
         .cust-box { background: #f8fafc; padding: 16px; border-radius: 15px; margin: 15px 0; border: 1px solid #f1f5f9; word-break: break-word; }
         .order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
         .order-actions button { padding: 10px; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; color: white; }
+
+        /* Highlight Badges for Admin Products */
+        .admin-prod-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        .admin-prod-img {
+            width: 65px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .highlight-size {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+        .highlight-qty {
+            display: inline-block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-left: 4px;
+        }
 
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 10px; min-width: 500px; }
@@ -499,7 +542,6 @@ window.saveProduct = () => {
         if(k && v) specs[k] = v;
     });
 
-    // Select ചെയ്ത Sizes എടുക്കുന്നു
     const selectedSizes = Array.from(document.querySelectorAll('.p-size:checked'))
                                .map(cb => cb.value);
 
@@ -528,7 +570,7 @@ window.saveProduct = () => {
         deliveryDays: document.getElementById('pDeliveryDays').value || 7,
         desc: document.getElementById('pDesc').value || "No description available.",
         specs: specs,
-        sizes: selectedSizes, // Firebase-ലേക്ക് SIZES നൽകുന്നു
+        sizes: selectedSizes,
         images: imageLinks,
         return: document.getElementById('pReturn').value === "true",
         outOfStock: false,
@@ -788,12 +830,52 @@ onValue(ref(db, 'orders'), snap => {
     }
 });
 
+// Render Product Items with Large Image, Highlighted Size & Highlighted Quantity
 function renderOrderCard(container, o, path, customerPhone) {
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
     const proofImg = o.paymentProof || ""; 
-    const sizeInfo = o.selectedSize ? `<span style="font-size:11px; background:#e2e8f0; padding:2px 6px; border-radius:4px; margin-left:5px;">Size: ${o.selectedSize}</span>` : '';
     
+    let productsListHtml = "";
+
+    if (o.items && Array.isArray(o.items) && o.items.length > 0) {
+        o.items.forEach(item => {
+            let pImg = item.image || item.productImage || "https://via.placeholder.com/150";
+            let pSize = item.size || item.selectedSize || "N/A";
+            let pQty = item.quantity || 1;
+
+            productsListHtml += `
+            <div class="admin-prod-item">
+                <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 13px; font-weight: 800; color: #1e293b; overflow: hidden; text-overflow: ellipsis; whitespace: nowrap;">${item.name || item.title || 'Product'}</p>
+                    <div style="margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                        <span class="highlight-size"><i class="fa-solid fa-ruler-horizontal"></i> Size: ${pSize}</span>
+                        <span class="highlight-qty"><i class="fa-solid fa-cubes"></i> Qty: ${pQty}</span>
+                    </div>
+                    <p style="font-size: 12px; color: #16a34a; font-weight: 800; margin-top: 4px;">₹${item.price || '0'}</p>
+                </div>
+            </div>`;
+        });
+    } else {
+        let pImg = o.productImage || "https://via.placeholder.com/150";
+        let pSize = o.selectedSize || "N/A";
+        let pQty = o.quantity || 1;
+
+        productsListHtml = `
+        <div class="admin-prod-item">
+            <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
+            <div style="flex: 1; min-width: 0;">
+                <p style="font-size: 13px; font-weight: 800; color: #1e293b; overflow: hidden; text-overflow: ellipsis; whitespace: nowrap;">${o.productName || 'Product'}</p>
+                <div style="margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                    <span class="highlight-size"><i class="fa-solid fa-ruler-horizontal"></i> Size: ${pSize}</span>
+                    <span class="highlight-qty"><i class="fa-solid fa-cubes"></i> Qty: ${pQty}</span>
+                </div>
+                <p style="font-size: 12px; color: #16a34a; font-weight: 800; margin-top: 4px;">₹${o.price || '0'}</p>
+            </div>
+        </div>`;
+    }
+
     container.innerHTML += `
     <div class="order-card">
         <div class="badge-container">
@@ -803,14 +885,20 @@ function renderOrderCard(container, o, path, customerPhone) {
         <div class="cust-box">
             <b>${o.customerName || 'User'}</b>
             <p style="font-size:12px; color:#2563eb; font-weight:800;"><i class="fa fa-phone"></i> ${customerPhone}</p>
-            <p style="font-size:11px;">${o.address || 'N/A'}</p>
-            <p style="font-size:11px;"><b>UTR:</b> ${o.transactionId || 'N/A'}</p>
-            ${proofImg ? `<button onclick="viewProof('${proofImg}')" style="margin-top:5px; background:none; border:1px solid #ddd; padding:2px 8px; border-radius:5px; cursor:pointer; font-size:10px;">View Proof <i class="fa fa-image"></i></button>` : ''}
+            <p style="font-size:11px; margin-top:2px;">${o.address || 'N/A'}</p>
+            <p style="font-size:11px; margin-top:2px;"><b>UTR / Payment ID:</b> ${o.transactionId || 'N/A'}</p>
+            ${proofImg ? `<button onclick="viewProof('${proofImg}')" style="margin-top:6px; background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:700;">View Payment Proof <i class="fa fa-image"></i></button>` : ''}
         </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-            <img src="${o.productImage || ''}" style="width:40px; height:40px; object-fit:cover; border-radius:5px;">
-            <div><p style="font-size:13px; font-weight:800;">${o.productName || 'Product'} ${sizeInfo}</p><p style="font-size:12px; color:green;">₹${o.price || '0'}</p></div>
+        
+        <div style="margin-bottom: 10px;">
+            <p style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Ordered Items:</p>
+            ${productsListHtml}
+            <div style="display:flex; justify-content:space-between; align-items:center; padding-top:6px; font-weight:800; font-size:13px;">
+                <span>Total Amount:</span>
+                <span style="color:#16a34a;">₹${o.price || '0'}</span>
+            </div>
         </div>
+
         <div class="order-actions">
             <button style="background:#16a34a" onclick="verifyPayment('${path}', 'Paid')">Verify Payment</button>
             <button style="background:#ef4444" onclick="verifyPayment('${path}', 'Rejected')">Reject Payment</button>
@@ -842,7 +930,7 @@ function renderReturnCard(container, o, path, customerPhone) {
             </span>
         </div>
         <div style="display:flex; gap:10px; align-items:center;">
-            <img src="${o.productImage || ''}" style="width:40px; height:40px; object-fit:cover; border-radius:5px;">
+            <img src="${o.productImage || (o.items && o.items[0] ? o.items[0].image : '') || ''}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
             <div><p style="font-size:13px; font-weight:800;">${o.productName || 'Product'}</p></div>
         </div>
         <div style="background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 12px; font-size: 0.85rem;">
@@ -994,7 +1082,6 @@ window.editProduct = (key) => {
             document.getElementById('pCod').value = p.cod === true ? "true" : "false"; 
         }
 
-        // Sizes load ചെയ്യാനുള്ള ഭാഗം
         const savedSizes = p.sizes || [];
         document.querySelectorAll('.p-size').forEach(cb => {
             cb.checked = savedSizes.includes(cb.value);
@@ -1041,7 +1128,6 @@ window.resetForm = () => {
     document.getElementById('pShowOnHome').value = "false"; 
     if (document.getElementById('pCod')) document.getElementById('pCod').value = "false"; 
     
-    // Size ഫീൽഡുകൾ റീസെറ്റ് ചെയ്യുന്നു
     document.querySelectorAll('.p-size').forEach(cb => cb.checked = false);
 
     if (document.getElementById('specInputs')) document.getElementById('specInputs').innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
