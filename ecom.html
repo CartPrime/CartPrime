@@ -217,6 +217,18 @@
                 <option value="Accessories">Accessories</option>
             </select>
 
+            <div style="margin: 15px 0;">
+                <label style="font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 8px; display: block;">AVAILABLE SIZES (OPTIONAL):</label>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; background: #fcfdfe; padding: 12px; border: 1px solid var(--border); border-radius: 12px;">
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="S"> S</label>
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="M"> M</label>
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="L"> L</label>
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="XL"> XL</label>
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="XXL"> XXL</label>
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="Free Size"> Free Size</label>
+                </div>
+            </div>
+
             <div class="form-row">
                 <input type="text" id="pMrp" placeholder="MRP ₹">
                 <input type="text" id="pPrice" placeholder="PRICE ₹">
@@ -402,7 +414,6 @@ window.fetchMeeshoDetails = async () => {
 
         const data = await response.json();
         
-        // AI തിരിച്ചുനൽകുന്ന അല്ലെങ്കിൽ ബായ്ക്ക്എൻഡ് നൽകുന്ന JSON
         const extracted = data.choices ? JSON.parse(data.choices[0].message.content) : data;
 
         if (extracted.name) document.getElementById('pName').value = extracted.name;
@@ -488,6 +499,10 @@ window.saveProduct = () => {
         if(k && v) specs[k] = v;
     });
 
+    // Select ചെയ്ത Sizes എടുക്കുന്നു
+    const selectedSizes = Array.from(document.querySelectorAll('.p-size:checked'))
+                               .map(cb => cb.value);
+
     const imageLinks = Array.from(document.querySelectorAll('.p-img-link'))
                             .map(input => input.value.trim())
                             .filter(val => val !== "");
@@ -513,6 +528,7 @@ window.saveProduct = () => {
         deliveryDays: document.getElementById('pDeliveryDays').value || 7,
         desc: document.getElementById('pDesc').value || "No description available.",
         specs: specs,
+        sizes: selectedSizes, // Firebase-ലേക്ക് SIZES നൽകുന്നു
         images: imageLinks,
         return: document.getElementById('pReturn').value === "true",
         outOfStock: false,
@@ -776,6 +792,7 @@ function renderOrderCard(container, o, path, customerPhone) {
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
     const proofImg = o.paymentProof || ""; 
+    const sizeInfo = o.selectedSize ? `<span style="font-size:11px; background:#e2e8f0; padding:2px 6px; border-radius:4px; margin-left:5px;">Size: ${o.selectedSize}</span>` : '';
     
     container.innerHTML += `
     <div class="order-card">
@@ -792,7 +809,7 @@ function renderOrderCard(container, o, path, customerPhone) {
         </div>
         <div style="display:flex; gap:10px; align-items:center;">
             <img src="${o.productImage || ''}" style="width:40px; height:40px; object-fit:cover; border-radius:5px;">
-            <div><p style="font-size:13px; font-weight:800;">${o.productName || 'Product'}</p><p style="font-size:12px; color:green;">₹${o.price || '0'}</p></div>
+            <div><p style="font-size:13px; font-weight:800;">${o.productName || 'Product'} ${sizeInfo}</p><p style="font-size:12px; color:green;">₹${o.price || '0'}</p></div>
         </div>
         <div class="order-actions">
             <button style="background:#16a34a" onclick="verifyPayment('${path}', 'Paid')">Verify Payment</button>
@@ -976,6 +993,12 @@ window.editProduct = (key) => {
         if (document.getElementById('pCod')) {
             document.getElementById('pCod').value = p.cod === true ? "true" : "false"; 
         }
+
+        // Sizes load ചെയ്യാനുള്ള ഭാഗം
+        const savedSizes = p.sizes || [];
+        document.querySelectorAll('.p-size').forEach(cb => {
+            cb.checked = savedSizes.includes(cb.value);
+        });
         
         const sc = document.getElementById('specInputs'); 
         if (sc) {
@@ -1018,6 +1041,9 @@ window.resetForm = () => {
     document.getElementById('pShowOnHome').value = "false"; 
     if (document.getElementById('pCod')) document.getElementById('pCod').value = "false"; 
     
+    // Size ഫീൽഡുകൾ റീസെറ്റ് ചെയ്യുന്നു
+    document.querySelectorAll('.p-size').forEach(cb => cb.checked = false);
+
     if (document.getElementById('specInputs')) document.getElementById('specInputs').innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
     if (document.getElementById('imageInputs')) document.getElementById('imageInputs').innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
     if (document.getElementById('formTitle')) document.getElementById('formTitle').innerText = "Add New Item";
