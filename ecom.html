@@ -14,42 +14,50 @@
     <style>
         :root { --sidebar-bg: #000000; --accent: #ff9900; --bg-light: #f8fafc; --border: #e2e8f0; --primary: #000; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-light); display: flex; min-height: 100vh; color: #1e293b; overflow-x: hidden; }
+        body { background: var(--bg-light); display: flex; min-height: 100vh; color: #1e293b; overflow-x: hidden; flex-direction: row; }
         
-        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); color: white; padding: 30px 20px; position: fixed; box-shadow: 4px 0 10px rgba(0,0,0,0.1); z-index: 100; transition: 0.3s; }
-        .sidebar h2 { margin-bottom: 40px; text-align: center; font-size: 22px; font-weight: 800; border-bottom: 1px solid #333; padding-bottom: 20px; }
+        /* Sidebar Styling */
+        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); color: white; padding: 30px 20px; position: fixed; box-shadow: 4px 0 10px rgba(0,0,0,0.1); z-index: 100; transition: all 0.3s ease; display: flex; flex-direction: column; }
+        .sidebar h2 { margin-bottom: 30px; text-align: center; font-size: 22px; font-weight: 800; border-bottom: 1px solid #333; padding-bottom: 20px; }
         .sidebar button, .sidebar a { width: 100%; padding: 14px; background: transparent; border: none; color: #94a3b8; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; display: flex; align-items: center; text-decoration: none; transition: 0.3s; }
         .sidebar button:hover, .sidebar button.active, .sidebar a:hover { background: rgba(255,255,255,0.1); color: white; }
         .sidebar i { margin-right: 12px; font-size: 18px; width: 20px; text-align: center; }
         
-        .main-content { margin-left: 260px; padding: 40px; width: calc(100% - 260px); transition: 0.3s; }
+        /* Main Layout */
+        .main-content { margin-left: 260px; padding: 30px; width: calc(100% - 260px); transition: all 0.3s ease; flex: 1; }
         .tab-content { display: none; animation: fadeIn 0.4s ease; }
         .active-tab { display: block !important; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2.tab-title { font-weight: 800; font-size: 24px; margin-bottom: 30px; }
-        .admin-card { background: white; padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        h2.tab-title { font-weight: 800; font-size: 24px; margin-bottom: 25px; }
+        .admin-card { background: white; padding: 25px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); width: 100%; }
         
-        /* Dashboard Stats Styles */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        /* Dashboard Stats Grid - Responsive */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: white; padding: 20px; border-radius: 20px; border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .stat-card i { font-size: 24px; color: var(--primary); margin-bottom: 10px; }
-        .stat-card h3 { color: #64748b; font-size: 13px; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
-        .stat-card p { font-size: 26px; font-weight: 800; color: #0f172a; }
+        .stat-card h3 { color: #64748b; font-size: 12px; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
+        .stat-card p { font-size: 24px; font-weight: 800; color: #0f172a; word-break: break-all; }
         
-        /* Charts Grid Layout */
-        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .chart-container { background: white; padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); height: 320px; display: flex; flex-direction: column; justify-content: center; }
+        /* Charts Grid Layout - Responsive */
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .chart-container { background: white; padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); height: 320px; display: flex; flex-direction: column; justify-content: center; position: relative; }
 
+        /* Form Controls */
         input, textarea, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fcfdfe; }
         
-        .form-row { display: flex; gap: 10px; flex-wrap: wrap; }
-        .form-row > * { flex: 1; min-width: 140px; }
+        .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .form-row > * { flex: 1 1 200px; }
 
-        .search-box { position: relative; margin-bottom: 20px; }
+        .auto-fill-box { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; flex-wrap: wrap; }
+        .auto-fill-box input { flex: 1 1 250px; margin: 0; background: white; }
+        .auto-fill-box button { background: #ff9900; color: white; border: none; padding: 14px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; flex: 0 1 auto; }
+
+        .search-box { position: relative; margin-bottom: 20px; width: 100%; }
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
         .search-box input { padding-left: 45px; margin: 0; background: #f8fafc; border: 1px solid #e2e8f0; }
         
+        /* Badges & Tables */
         .pay-badge, .status-badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; display: inline-block; }
         
         .pay-Verified, .pay-Paid { background: #dcfce7; color: #166534; }
@@ -60,9 +68,9 @@
         .status-Delivered { background: #dbeafe; color: #1e40af; }
         .status-Rejected { background: #fee2e2; color: #b91c1c; }
 
-        /* ORDER ACTION BUTTONS STYLES */
-        .order-actions-btn { display: flex; gap: 4px; flex-wrap: wrap; }
-        .order-actions-btn button { padding: 6px 8px; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; color: white; transition: 0.2s; }
+        /* Order Actions Buttons */
+        .order-actions-btn { display: flex; gap: 6px; flex-wrap: wrap; }
+        .order-actions-btn button { padding: 8px 10px; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; color: white; transition: 0.2s; }
         .order-actions-btn button:hover { opacity: 0.85; }
 
         .admin-prod-item {
@@ -85,47 +93,32 @@
             flex-shrink: 0;
             cursor: pointer;
         }
-        .highlight-size {
-            display: inline-block;
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #93c5fd;
-            padding: 1px 6px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 800;
-        }
-        .highlight-qty {
-            display: inline-block;
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #86efac;
-            padding: 1px 6px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 800;
-        }
+        .highlight-size { display: inline-block; background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
+        .highlight-qty { display: inline-block; background: #dcfce7; color: #166534; border: 1px solid #86efac; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
 
+        /* Tables & Responsiveness */
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 10px; min-width: 650px; }
         th { color: #64748b; padding: 12px 15px; text-align: left; font-size: 12px; }
-        td { padding: 12px 15px; background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+        td { padding: 12px 15px; background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
         td:first-child { border-left: 1px solid var(--border); border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
         td:last-child { border-right: 1px solid var(--border); border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
 
         .btn-add { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; }
         .save-btn { background: var(--primary); color: #fff; width: 100%; padding: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; }
-        .stock-badge{ border: none; border-radius: 5px; width: 45px; height: 25px; color: white; font-weight: bold; cursor: pointer; }
+        .stock-badge { border: none; border-radius: 5px; width: 45px; height: 25px; color: white; font-weight: bold; cursor: pointer; }
         .in-stock { background-color: #2563eb; }
         .out-stock { background-color: #ef4444; }
 
-        .spec-row { display: flex; gap: 10px; margin-bottom: 8px; }
+        .spec-row { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+        .spec-row input { flex: 1 1 130px; }
 
         .custom-verify-modal {
             border-radius: 24px !important;
             padding: 25px !important;
             background: #ffffff !important;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+            max-width: 90vw !important;
         }
         .custom-verify-input {
             border-radius: 12px !important;
@@ -137,21 +130,51 @@
             background: #f8fafc !important;
         }
 
-        @media (max-width: 768px) {
-            .sidebar { width: 65px; padding: 20px 10px; }
+        /* -------------------------------------------------------------
+           RESPONSIVE BREAKPOINTS (Tablet & Mobile Optimized)
+        ------------------------------------------------------------- */
+        @media (max-width: 992px) {
+            .sidebar { width: 80px; padding: 20px 10px; }
             .sidebar h2, .sidebar button span, .sidebar a span { display: none; }
-            .sidebar button, .sidebar a { justify-content: center; padding: 14px 0; }
+            .sidebar button, .sidebar a { justify-content: center; padding: 16px 0; margin-bottom: 12px; }
             .sidebar i { margin-right: 0; font-size: 20px; width: auto; }
-            .main-content { margin-left: 65px; width: calc(100% - 65px); padding: 20px 15px; }
-            .admin-card { padding: 20px; }
-            .auto-fill-box { flex-direction: column; }
-            .auto-fill-box button { width: 100%; padding: 12px !important; }
+            .main-content { margin-left: 80px; width: calc(100% - 80px); padding: 20px; }
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                position: relative; 
+                flex-direction: row; 
+                justify-content: space-around; 
+                align-items: center; 
+                padding: 10px 5px; 
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            }
+            .sidebar h2 { display: none; }
+            .sidebar button, .sidebar a { width: auto; margin-bottom: 0; padding: 10px; }
+            .sidebar a { margin-top: 0 !important; border-top: none !important; padding-top: 10px !important; }
+            
+            .main-content { margin-left: 0; width: 100%; padding: 15px; }
+            .admin-card { padding: 15px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .stat-card { padding: 15px 10px; }
+            .stat-card p { font-size: 20px; }
+            .charts-grid { grid-template-columns: 1fr; }
+            .chart-container { height: 280px; }
+            .auto-fill-box button { width: 100%; }
         }
 
         @media (max-width: 480px) {
-            h2.tab-title { font-size: 20px; margin-bottom: 20px; }
-            .stat-card p { font-size: 22px; }
+            h2.tab-title { font-size: 18px; margin-bottom: 15px; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
+            .stat-card p { font-size: 18px; }
+            .stat-card h3 { font-size: 10px; }
+            .form-row > * { flex: 1 1 100%; }
+            .order-actions-btn { gap: 4px; }
+            .order-actions-btn button { padding: 6px 8px; font-size: 11px; }
         }
     </style>
 </head>
@@ -159,13 +182,13 @@
 
 <div class="sidebar">
     <h2>CartPrime</h2>
-    <button onclick="openTab('dashboard', this)" class="tablinks active" id="btn-dashboard"><i class="fa fa-chart-pie"></i> <span>Dashboard</span></button>
-    <button onclick="openTab('orders', this)" class="tablinks" id="btn-orders"><i class="fa fa-shopping-bag"></i> <span>Orders</span></button>
-    <button onclick="openTab('addProduct', this)" class="tablinks" id="btn-addProduct"><i class="fa fa-plus"></i> <span>Add Product</span></button>
-    <button onclick="openTab('manageProducts', this)" class="tablinks" id="btn-manageProducts"><i class="fa fa-layer-group"></i> <span>Inventory</span></button>
-    <button onclick="openTab('banners', this)" class="tablinks" id="btn-banners"><i class="fa fa-images"></i> <span>Banners</span></button>
-    <button onclick="openTab('users', this)" class="tablinks" id="btn-users"><i class="fa fa-user-friends"></i> <span>Users</span></button>
-    <a href="index.html" style="margin-top: 20px; border-top: 1px solid #333; padding-top: 20px;"><i class="fa fa-arrow-left"></i> <span>Back Store</span></a>
+    <button onclick="openTab('dashboard', this)" class="tablinks active" id="btn-dashboard" title="Dashboard"><i class="fa fa-chart-pie"></i> <span>Dashboard</span></button>
+    <button onclick="openTab('orders', this)" class="tablinks" id="btn-orders" title="Orders"><i class="fa fa-shopping-bag"></i> <span>Orders</span></button>
+    <button onclick="openTab('addProduct', this)" class="tablinks" id="btn-addProduct" title="Add Product"><i class="fa fa-plus"></i> <span>Add Product</span></button>
+    <button onclick="openTab('manageProducts', this)" class="tablinks" id="btn-manageProducts" title="Inventory"><i class="fa fa-layer-group"></i> <span>Inventory</span></button>
+    <button onclick="openTab('banners', this)" class="tablinks" id="btn-banners" title="Banners"><i class="fa fa-images"></i> <span>Banners</span></button>
+    <button onclick="openTab('users', this)" class="tablinks" id="btn-users" title="Users"><i class="fa fa-user-friends"></i> <span>Users</span></button>
+    <a href="index.html" title="Back to Store"><i class="fa fa-arrow-left"></i> <span>Back Store</span></a>
 </div>
 
 <div class="main-content">
@@ -203,17 +226,17 @@
 
         <div class="charts-grid">
             <div class="chart-container">
-                <h3 style="font-size: 14px; color:#64748b; margin-bottom: 10px; font-weight:800; text-transform: uppercase;">Order Analysis</h3>
-                <div style="position: relative; height: 100%;"><canvas id="ordersChart"></canvas></div>
+                <h3 style="font-size: 13px; color:#64748b; margin-bottom: 10px; font-weight:800; text-transform: uppercase;">Order Analysis</h3>
+                <div style="position: relative; height: 100%; width: 100%;"><canvas id="ordersChart"></canvas></div>
             </div>
             <div class="chart-container">
-                <h3 style="font-size: 14px; color:#64748b; margin-bottom: 10px; font-weight:800; text-transform: uppercase;">Daily Money Earnings (7 Days)</h3>
-                <div style="position: relative; height: 100%;"><canvas id="earningsChart"></canvas></div>
+                <h3 style="font-size: 13px; color:#64748b; margin-bottom: 10px; font-weight:800; text-transform: uppercase;">Daily Money Earnings (7 Days)</h3>
+                <div style="position: relative; height: 100%; width: 100%;"><canvas id="earningsChart"></canvas></div>
             </div>
         </div>
 
         <div id="returnRefundSection" style="margin-top: 30px; background: white; padding: 20px; border-radius: 20px; border: 1px solid #eee;">
-            <h2 style="font-weight: 800; letter-spacing: -1px; margin-bottom: 20px; font-size: 18px;">
+            <h2 style="font-weight: 800; letter-spacing: -0.5px; margin-bottom: 20px; font-size: 18px;">
                 <i class="fa-solid fa-rotate-left" style="margin-right: 10px;"></i>Return & Refund Requests
             </h2>
             <div id="returnOrdersContainer" style="display: flex; flex-direction: column; gap: 15px;">
@@ -248,11 +271,11 @@
 
     <div id="addProduct" class="tab-content">
         <h2 class="tab-title" id="formTitle">Add New Item</h2>
-        <div class="admin-card" style="max-width: 700px; margin: 0 auto;">
+        <div class="admin-card" style="max-width: 800px; margin: 0 auto;">
             
-            <div class="auto-fill-box" style="display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0;">
-                <input type="text" id="meeshoUrl" placeholder="Paste Meesho / Amazon / Flipkart Product Link here..." style="margin: 0; background: white;">
-                <button onclick="fetchMeeshoDetails()" style="background: #ff9900; color: white; border: none; padding: 0 20px; border-radius: 12px; font-weight: bold; cursor: pointer; white-space: nowrap;">
+            <div class="auto-fill-box">
+                <input type="text" id="meeshoUrl" placeholder="Paste Meesho / Amazon / Flipkart Product Link here...">
+                <button onclick="fetchMeeshoDetails()">
                     <i class="fa fa-wand-magic-sparkles"></i> AI Auto Fill
                 </button>
             </div>
@@ -313,7 +336,7 @@
             </div>
 
             <div style="margin-top: 10px;">
-                <h5 style="margin-bottom: 5px;">Cash On Delivery :-</h5>
+                <h5 style="margin-bottom: 5px; font-size: 13px;">Cash On Delivery :-</h5>
                 <select id="pCod">
                     <option value="true">Yes</option>
                     <option value="false">No</option>
@@ -343,7 +366,7 @@
     
     <div id="banners" class="tab-content">
         <h2 class="tab-title">Home Banner Management</h2>
-        <div class="admin-card" style="max-width: 700px; margin-bottom: 30px;">
+        <div class="admin-card" style="max-width: 800px; margin-bottom: 30px;">
             <input type="text" id="bImgUrl" placeholder="BANNER IMAGE URL (LINK)">
             <input type="text" id="bRedirectLink" placeholder="REDIRECT CLICK URL / PRODUCT ID (OPTIONAL)">
             <button onclick="saveBanner()" class="save-btn" style="margin-top: 10px;">ADD BANNER</button>
@@ -377,8 +400,8 @@ const ADMIN_PASSCODE = "73569778";
 
 async function checkAdminPasscode() {
     const { value: passcode } = await Swal.fire({
-        title: '<div style="font-size: 22px; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-shield-halved" style="color: #ff9900; margin-right: 8px;"></i> Security Check</div>',
-        html: '<p style="color: #64748b; font-size: 14px; margin-top: 5px;">Enter your admin passcode to access CartPrime Panel.</p>',
+        title: '<div style="font-size: 20px; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-shield-halved" style="color: #ff9900; margin-right: 8px;"></i> Security Check</div>',
+        html: '<p style="color: #64748b; font-size: 13px; margin-top: 5px;">Enter your admin passcode to access CartPrime Panel.</p>',
         input: 'password',
         inputPlaceholder: '••••••••',
         customClass: { popup: 'custom-verify-modal', input: 'custom-verify-input' },
@@ -766,7 +789,6 @@ onValue(ref(db, 'orders'), snap => {
     }
 });
 
-// TABULAR ORDER DISPLAY IN ORDERS TAB
 function renderOrderRow(container, o, path, customerPhone) {
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
@@ -818,7 +840,7 @@ function renderOrderRow(container, o, path, customerPhone) {
             <span style="color:#2563eb; font-weight:700; font-size:11px;"><i class="fa fa-phone"></i> ${customerPhone}</span><br>
             <span style="color:#64748b; font-size:11px;"><i class="fa fa-location-dot"></i> ${o.address || 'N/A'}</span>
         </td>
-        <td style="min-width: 200px;">
+        <td style="min-width: 180px;">
             ${productsListHtml}
         </td>
         <td>
@@ -982,7 +1004,7 @@ onValue(ref(db, 'banners'), snap => {
     snap.forEach(child => {
         const b = child.val();
         bannerTable.innerHTML += `<tr>
-            <td><img src="${b.imageUrl}" style="max-width:200px; max-height:80px; border-radius:10px; object-fit:cover;"></td>
+            <td><img src="${b.imageUrl}" style="max-width:200px; max-height:80px; border-radius:10px; object-fit:cover; width:100%;"></td>
             <td>
                 <button style="color:red; border:none; background:none; cursor:pointer; font-size:16px;" onclick="deleteItem('banners/${child.key}')">
                     <i class="fa fa-trash"></i>
