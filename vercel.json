@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "CartPrime/api/autofill",
-      "destination": "CartPrime/api/autofill.js"
-    }
-  ]
-}
