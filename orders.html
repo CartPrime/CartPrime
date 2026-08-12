@@ -45,7 +45,7 @@
         .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
         .btn-cancel { background: #fee2e2; color: var(--red); }
         .btn-return { background: #f1f5f9; color: #1e293b; border: 1px solid #e2e8f0; }
-        .empty-state { text-align: center; margin-top: 30px; color: #64748b; }
+        .empty-state { text-align: center; margin-top: 30px; color: #64748b; font-weight: 700; }
         
         .return-policy { font-size: 0.7rem; color: #64748b; margin-top: 5px; display: block; font-weight: 600; }
 
@@ -109,7 +109,6 @@
         });
     };
 
-    // 1. ഓർഡർ ചെയ്യുമ്പോൾ സേവ് ആയ അഡ്രസ്സിൽ നിന്നോ യു.ആർ.എല്ലിൽ (URL Parameter) നിന്നോ താനെ നമ്പർ കണ്ടെത്തുന്നു
     function getSavedPhone() {
         const urlParams = new URLSearchParams(window.location.search);
         const urlPhone = urlParams.get('phone');
@@ -152,7 +151,6 @@
         loadOrders(phone);
     };
 
-    // 2. നമ്പർ മാറ്റാൻ ഉള്ള (Change) ഫങ്ഷൻ
     window.changePhoneNumber = () => {
         localStorage.removeItem('userPhone');
         localStorage.removeItem('cartPrime_LastOrderPhone');
@@ -166,7 +164,6 @@
         onValue(activeRef, (snapshot) => {
             const list = document.getElementById('ordersList');
             
-            // ഹെഡറിൽ നിലവിലുള്ള ഫോൺ നമ്പറും, അത് മാറ്റാനുള്ള Change ബട്ടണും
             const activePhoneHeader = `
                 <div style="background:#fff; border:1px solid #e2e8f0; padding:12px 15px; border-radius:12px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
                     <span style="font-size:0.85rem; font-weight:700; color:#1e293b;">
@@ -178,10 +175,11 @@
                 </div>
             `;
 
+            // മാറ്റം 1: ഓർഡർ ലഭിച്ചില്ലെങ്കിൽ "Check your order number" എന്ന് കാണിക്കും
             if (!snapshot.exists()) {
                 list.innerHTML = activePhoneHeader + `
                     <div class="empty-state">
-                        <p>No orders found for <strong>${phone}</strong>.</p>
+                        <p>Check your order number</p>
                     </div>`;
                 return;
             }
@@ -207,7 +205,7 @@
             });
 
             if (ordersArr.length === 0) {
-                list.innerHTML = activePhoneHeader + `<div class="empty-state"><p>No recent orders found within 1 month.</p></div>`;
+                list.innerHTML = activePhoneHeader + `<div class="empty-state"><p>Check your order number</p></div>`;
                 return;
             }
 
@@ -354,6 +352,9 @@
                 const detailsValue = document.getElementById('refundDetailsInput').value.trim();
                 const emailValue = document.getElementById('refundEmailInput').value.trim();
                 
+                // മാറ്റം 2: ശരിയായ ഇമെയിൽ ആണോ എന്ന് അറിയാനുള്ള റഗുലർ എക്സ്പ്രഷൻ (Regex)
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
                 if (!detailsValue) {
                     Swal.showValidationMessage(`Please enter your ${selectedMethod}`);
                     return false;
@@ -362,6 +363,11 @@
                     Swal.showValidationMessage(`Please enter your Email ID`);
                     return false;
                 }
+                if (!emailRegex.test(emailValue)) {
+                    Swal.showValidationMessage(`Please enter a valid Email ID (e.g., example@gmail.com)`);
+                    return false;
+                }
+                
                 return { method: selectedMethod, details: detailsValue, email: emailValue };
             }
         }).then((res) => {
