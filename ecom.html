@@ -152,9 +152,11 @@
                 align-items: center; 
                 padding: 10px 5px; 
                 box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
             .sidebar h2 { display: none; }
-            .sidebar button, .sidebar a { width: auto; margin-bottom: 0; padding: 10px; }
+            .sidebar button, .sidebar a { width: auto; margin-bottom: 0; padding: 10px 14px; flex-shrink: 0; }
             .sidebar a { margin-top: 0 !important; border-top: none !important; padding-top: 10px !important; }
             
             .main-content { margin-left: 0; width: 100%; padding: 15px; }
@@ -166,26 +168,14 @@
             .chart-container { height: 280px; }
             .auto-fill-box button { width: 100%; }
 
-            /* ORDERS TABLE NO SIDE SCROLL (CARD LAYOUT) */
-            .table-responsive {
-                overflow-x: visible !important;
-            }
+            /* ALL TABLES CONVERTED TO MOBILE CARD LAYOUT */
+            .table-responsive { overflow-x: visible !important; }
 
-            #orders table {
-                min-width: 100% !important;
-                display: block;
-            }
+            table { min-width: 100% !important; display: block; }
+            thead { display: none; }
+            tbody { display: block; width: 100%; }
 
-            #orders thead {
-                display: none;
-            }
-
-            #orders tbody {
-                display: block;
-                width: 100%;
-            }
-
-            #orders tr {
+            tr {
                 display: block;
                 background: #ffffff;
                 border: 1px solid var(--border);
@@ -195,17 +185,34 @@
                 box-shadow: 0 2px 5px rgba(0,0,0,0.03);
             }
 
-            #orders td {
-                display: block;
+            td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
                 width: 100%;
                 padding: 8px 0;
                 border: none !important;
                 text-align: left;
+                border-bottom: 1px dashed #f1f5f9 !important;
             }
 
-            #orders td:first-child,
-            #orders td:last-child {
+            td:last-child {
+                border-bottom: none !important;
+            }
+
+            td:first-child, td:last-child {
                 border-radius: 0;
+            }
+
+            /* Custom adjustments for Orders Mobile view */
+            #orders td {
+                display: block;
+            }
+
+            /* Inventory & Banners mobile card specifics */
+            #manageProducts td img, #banners td img {
+                max-width: 60px;
+                height: 60px;
             }
 
             .order-actions-btn {
@@ -216,9 +223,17 @@
             }
 
             .order-actions-btn button {
-                flex: 1 1 calc(20% - 8px);
+                flex: 1 1 calc(33.33% - 8px);
                 padding: 10px;
                 font-size: 13px;
+            }
+
+            .spec-row input {
+                flex: 1 1 100%;
+            }
+
+            #returnRefundSection {
+                padding: 15px !important;
             }
         }
 
@@ -228,7 +243,8 @@
             .stat-card p { font-size: 18px; }
             .stat-card h3 { font-size: 10px; }
             .form-row > * { flex: 1 1 100%; }
-            .order-actions-btn button { padding: 8px; font-size: 12px; }
+            .order-actions-btn button { flex: 1 1 calc(50% - 8px); padding: 8px; font-size: 12px; }
+            .auto-fill-box input { flex: 1 1 100%; }
         }
     </style>
 </head>
