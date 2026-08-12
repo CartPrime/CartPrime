@@ -66,12 +66,11 @@
 
         .cust-box { background: #f8fafc; padding: 16px; border-radius: 15px; margin: 15px 0; border: 1px solid #f1f5f9; word-break: break-word; }
         
-        /* UPDATED SMALL ORDER ACTION BUTTONS STYLES */
+        /* ORDER ACTION BUTTONS STYLES */
         .order-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-        .order-actions button { padding: 6px 10px !important; border: none; border-radius: 6px; font-size: 10px !important; font-weight: 700; cursor: pointer; color: white; flex: 1 1 calc(50% - 6px); transition: 0.2s; }
+        .order-actions button { padding: 8px 10px !important; border: none; border-radius: 8px; font-size: 11px !important; font-weight: 700; cursor: pointer; color: white; flex: 1 1 calc(50% - 6px); transition: 0.2s; }
         .order-actions button:hover { opacity: 0.85; }
 
-        /* Highlight Badges for Admin Products */
         .admin-prod-item {
             display: flex;
             gap: 12px;
@@ -127,7 +126,6 @@
 
         .spec-row { display: flex; gap: 10px; margin-bottom: 8px; }
 
-        /* Custom SweetAlert Verification Modal Styling */
         .custom-verify-modal {
             border-radius: 24px !important;
             padding: 25px !important;
@@ -142,10 +140,6 @@
             letter-spacing: 2px !important;
             border: 2px solid #e2e8f0 !important;
             background: #f8fafc !important;
-        }
-        .custom-verify-input:focus {
-            border-color: #000000 !important;
-            box-shadow: 0 0 0 3px rgba(0,0,0,0.1) !important;
         }
 
         @media (max-width: 768px) {
@@ -366,28 +360,20 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// --- ADMIN SECURITY PASSCODE CONFIG ---
 const ADMIN_PASSCODE = "73569778";
 
-// NEW MODERN ADMIN VERIFICATION ALERT DESIGN
 async function checkAdminPasscode() {
     const { value: passcode } = await Swal.fire({
         title: '<div style="font-size: 22px; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-shield-halved" style="color: #ff9900; margin-right: 8px;"></i> Security Check</div>',
         html: '<p style="color: #64748b; font-size: 14px; margin-top: 5px;">Enter your admin passcode to access CartPrime Panel.</p>',
         input: 'password',
         inputPlaceholder: '••••••••',
-        customClass: {
-            popup: 'custom-verify-modal',
-            input: 'custom-verify-input'
-        },
+        customClass: { popup: 'custom-verify-modal', input: 'custom-verify-input' },
         allowOutsideClick: false,
         allowEscapeKey: false,
         confirmButtonText: 'Verify Access <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>',
         confirmButtonColor: '#000000',
-        buttonsStyling: true,
-        showClass: {
-            popup: 'animate__animated animate__fadeInDown'
-        }
+        buttonsStyling: true
     });
 
     if (passcode === ADMIN_PASSCODE) {
@@ -431,7 +417,6 @@ const db = getDatabase(app);
 let ordersChartInstance = null;
 let earningsChartInstance = null;
 
-// --- SECURE AUTO-FILL VIA BACKEND SERVERLESS API ---
 window.fetchMeeshoDetails = async () => {
     let urlInput = document.getElementById('meeshoUrl').value.trim();
     if (!urlInput) {
@@ -453,12 +438,9 @@ window.fetchMeeshoDetails = async () => {
             body: JSON.stringify({ url: urlInput })
         });
 
-        if (!response.ok) {
-            throw new Error("Server response error");
-        }
+        if (!response.ok) throw new Error("Server response error");
 
         const data = await response.json();
-        
         const extracted = data.choices ? JSON.parse(data.choices[0].message.content) : data;
 
         if (extracted.name) document.getElementById('pName').value = extracted.name;
@@ -544,12 +526,8 @@ window.saveProduct = () => {
         if(k && v) specs[k] = v;
     });
 
-    const selectedSizes = Array.from(document.querySelectorAll('.p-size:checked'))
-                               .map(cb => cb.value);
-
-    const imageLinks = Array.from(document.querySelectorAll('.p-img-link'))
-                            .map(input => input.value.trim())
-                            .filter(val => val !== "");
+    const selectedSizes = Array.from(document.querySelectorAll('.p-size:checked')).map(cb => cb.value);
+    const imageLinks = Array.from(document.querySelectorAll('.p-img-link')).map(input => input.value.trim()).filter(val => val !== "");
 
     const pName = document.getElementById('pName').value.trim();
     const pPrice = document.getElementById('pPrice').value.trim();
@@ -582,20 +560,12 @@ window.saveProduct = () => {
 
     if(key) {
         update(ref(db, 'products/' + key), data)
-            .then(() => { 
-                Swal.fire('Updated!', 'Product updated successfully', 'success'); 
-                resetForm(); 
-                openTab('manageProducts'); 
-            })
+            .then(() => { Swal.fire('Updated!', 'Product updated successfully', 'success'); resetForm(); openTab('manageProducts'); })
             .catch(err => Swal.fire('Error', err.message, 'error'));
     } else {
         const newRef = push(ref(db, 'products'));
         set(newRef, data)
-            .then(() => { 
-                Swal.fire('Saved!', 'New product added', 'success'); 
-                resetForm(); 
-                openTab('manageProducts'); 
-            })
+            .then(() => { Swal.fire('Saved!', 'New product added', 'success'); resetForm(); openTab('manageProducts'); })
             .catch(err => Swal.fire('Error', err.message, 'error'));
     }
 };
@@ -604,16 +574,10 @@ window.saveBanner = () => {
     const imgUrl = document.getElementById('bImgUrl').value.trim();
     const link = document.getElementById('bRedirectLink').value.trim();
 
-    if(!imgUrl) {
-        Swal.fire('Error', 'Please provide a Banner Image URL', 'error');
-        return;
-    }
+    if(!imgUrl) { Swal.fire('Error', 'Please provide a Banner Image URL', 'error'); return; }
 
     const newBannerRef = push(ref(db, 'banners'));
-    set(newBannerRef, {
-        imageUrl: imgUrl,
-        redirectLink: link || "#"
-    }).then(() => {
+    set(newBannerRef, { imageUrl: imgUrl, redirectLink: link || "#" }).then(() => {
         Swal.fire('Saved!', 'Banner uploaded successfully', 'success');
         document.getElementById('bImgUrl').value = "";
         document.getElementById('bRedirectLink').value = "";
@@ -622,12 +586,7 @@ window.saveBanner = () => {
 
 window.viewProof = (imgUrl) => {
     if(!imgUrl) return Swal.fire('No Proof', 'Customer did not upload a screenshot.', 'info');
-    Swal.fire({
-        imageUrl: imgUrl,
-        imageAlt: 'Payment Proof',
-        title: 'Payment Screenshot',
-        confirmButtonColor: '#000'
-    });
+    Swal.fire({ imageUrl: imgUrl, imageAlt: 'Payment Proof', title: 'Payment Screenshot', confirmButtonColor: '#000' });
 };
 
 function updateOrdersChart(statusData) {
@@ -635,9 +594,7 @@ function updateOrdersChart(statusData) {
     if (!chartEl) return;
     const ctx = chartEl.getContext('2d');
     
-    if(ordersChartInstance) {
-        ordersChartInstance.destroy();
-    }
+    if(ordersChartInstance) ordersChartInstance.destroy();
     
     ordersChartInstance = new Chart(ctx, {
         type: 'bar',
@@ -645,37 +602,13 @@ function updateOrdersChart(statusData) {
             labels: ['Pending', 'Confirmed', 'Delivered', 'Rejected', 'Returned'],
             datasets: [{
                 label: 'Orders',
-                data: [
-                    statusData.Pending || 0, 
-                    statusData.Confirmed || 0, 
-                    statusData.Delivered || 0, 
-                    statusData.Rejected || 0,
-                    statusData.Returned || 0
-                ],
-                backgroundColor: [
-                    'rgba(239, 68, 68, 0.8)',
-                    'rgba(34, 197, 94, 0.8)',
-                    'rgba(21, 128, 61, 0.9)',
-                    'rgba(185, 28, 28, 0.9)',
-                    'rgba(239, 68, 68, 0.9)'
-                ],
-                borderColor: [
-                    '#dc2626',
-                    '#16a34a',
-                    '#15803d',
-                    '#b91c1c',
-                    '#ef4444'
-                ],
-                borderWidth: 2,
-                borderRadius: 8
+                data: [statusData.Pending || 0, statusData.Confirmed || 0, statusData.Delivered || 0, statusData.Rejected || 0, statusData.Returned || 0],
+                backgroundColor: ['rgba(239, 68, 68, 0.8)','rgba(34, 197, 94, 0.8)','rgba(21, 128, 61, 0.9)','rgba(185, 28, 28, 0.9)','rgba(239, 68, 68, 0.9)'],
+                borderColor: ['#dc2626','#16a34a','#15803d','#b91c1c','#ef4444'],
+                borderWidth: 2, borderRadius: 8
             }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
     });
 }
 
@@ -687,9 +620,7 @@ function updateEarningsChart(dailyEarningsMap) {
     const sortedDates = Object.keys(dailyEarningsMap).sort().slice(-7);
     const earningsData = sortedDates.map(date => dailyEarningsMap[date]);
 
-    if(earningsChartInstance) {
-        earningsChartInstance.destroy();
-    }
+    if(earningsChartInstance) earningsChartInstance.destroy();
 
     earningsChartInstance = new Chart(ctx, {
         type: 'line',
@@ -699,22 +630,10 @@ function updateEarningsChart(dailyEarningsMap) {
                 label: 'Daily Revenue (₹)',
                 data: earningsData,
                 backgroundColor: 'rgba(34, 197, 94, 0.1)', 
-                borderColor: '#22c55e',                                    
-                borderWidth: 3,
-                tension: 0.3,
-                fill: true,
-                pointBackgroundColor: '#16a34a',
-                pointRadius: 5
+                borderColor: '#22c55e', borderWidth: 3, tension: 0.3, fill: true, pointBackgroundColor: '#16a34a', pointRadius: 5
             }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { 
-                y: { beginAtZero: true, ticks: { callback: value => '₹' + value } } 
-            }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: value => '₹' + value } } } }
     });
 }
 
@@ -728,10 +647,7 @@ onValue(ref(db, 'orders'), snap => {
     let totalOrderCount = 0;
     let statusCounts = { Pending: 0, Confirmed: 0, Delivered: 0, Rejected: 0, Returned: 0, 'Return Requested': 0 };
     let hasReturns = false;
-    
-    let totalEarnings = 0;
-    let todayEarnings = 0;
-    let totalLoss = 0; 
+    let totalEarnings = 0, todayEarnings = 0, totalLoss = 0; 
     let dailyEarningsMap = {};
 
     const todayDateStr = new Date().toISOString().split('T')[0];
@@ -746,26 +662,18 @@ onValue(ref(db, 'orders'), snap => {
         let orderDate = orderData.date ? orderData.date.split(' ')[0] : todayDateStr; 
         if(orderDate.includes(',')) orderDate = orderDate.replace(',','');
 
-        if (orderData.status === 'Rejected' || orderData.status === 'Returned' || orderData.status === 'Return Requested') {
-            totalLoss += price;
-        }
+        if (orderData.status === 'Rejected' || orderData.status === 'Returned' || orderData.status === 'Return Requested') totalLoss += price;
 
         if (orderData.paymentStatus === 'Paid' || orderData.status === 'Confirmed' || orderData.status === 'Delivered') {
             totalEarnings += price;
             dailyEarningsMap[orderDate] = (dailyEarningsMap[orderDate] || 0) + price;
-
-            if (orderDate === todayDateStr) {
-                todayEarnings += price;
-            }
+            if (orderDate === todayDateStr) todayEarnings += price;
         }
         
         if (orderData.status === 'Returned') {
             totalEarnings -= price;
             dailyEarningsMap[orderDate] = (dailyEarningsMap[orderDate] || 0) - price;
-
-            if (orderDate === todayDateStr) {
-                todayEarnings -= price;
-            }
+            if (orderDate === todayDateStr) todayEarnings -= price;
         }
     }
 
@@ -785,9 +693,7 @@ onValue(ref(db, 'orders'), snap => {
         if (data.productName || data.customerName) {
             totalOrderCount++;
             let st = data.status || "Pending";
-            if (statusCounts[st] !== undefined) {
-                statusCounts[st] = (statusCounts[st] || 0) + 1;
-            }
+            if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
             if (list) renderOrderCard(list, data, childSnap.key, data.customerPhone || "N/A");
             
             processOrderEarnings(data);
@@ -803,9 +709,7 @@ onValue(ref(db, 'orders'), snap => {
                 if (nestedData.productName || nestedData.customerName) {
                     totalOrderCount++;
                     let st = nestedData.status || "Pending";
-                    if (statusCounts[st] !== undefined) {
-                        statusCounts[st] = (statusCounts[st] || 0) + 1;
-                    }
+                    if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
                     if (list) renderOrderCard(list, nestedData, `${childSnap.key}/${nestedSnap.key}`, nestedData.customerPhone || childSnap.key);
                     
                     processOrderEarnings(nestedData);
@@ -832,11 +736,12 @@ onValue(ref(db, 'orders'), snap => {
     }
 });
 
-// Render Order Cards with Small Dynamic Compact Buttons
+// DETAILED CUSTOMER & ORDER DISPLAY IN ORDERS TAB
 function renderOrderCard(container, o, path, customerPhone) {
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
     const proofImg = o.paymentProof || ""; 
+    const payMethod = o.paymentMethod || (o.transactionId ? "UPI Payment" : "Cash On Delivery");
     
     let productsListHtml = "";
 
@@ -844,36 +749,36 @@ function renderOrderCard(container, o, path, customerPhone) {
         o.items.forEach(item => {
             let pImg = item.image || item.productImage || "https://via.placeholder.com/150";
             let pSize = item.size || item.selectedSize || "N/A";
-            let pQty = item.quantity || 1;
+            let pQty = item.quantity || item.qty || 1;
 
             productsListHtml += `
             <div class="admin-prod-item">
                 <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
                 <div style="flex: 1; min-width: 0;">
-                    <p style="font-size: 13px; font-weight: 800; color: #1e293b; overflow: hidden; text-overflow: ellipsis; whitespace: nowrap;">${item.name || item.title || 'Product'}</p>
-                    <div style="margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                    <p style="font-size: 13px; font-weight: 800; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.name || item.title || 'Product'}</p>
+                    <div style="margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px;">
                         <span class="highlight-size"><i class="fa-solid fa-ruler-horizontal"></i> Size: ${pSize}</span>
                         <span class="highlight-qty"><i class="fa-solid fa-cubes"></i> Qty: ${pQty}</span>
                     </div>
-                    <p style="font-size: 12px; color: #16a34a; font-weight: 800; margin-top: 4px;">₹${item.price || '0'}</p>
+                    <p style="font-size: 12px; color: #16a34a; font-weight: 800; margin-top: 4px;">Price: ₹${item.price || '0'}</p>
                 </div>
             </div>`;
         });
     } else {
         let pImg = o.productImage || "https://via.placeholder.com/150";
         let pSize = o.selectedSize || "N/A";
-        let pQty = o.quantity || 1;
+        let pQty = o.quantity || o.qty || 1;
 
         productsListHtml = `
         <div class="admin-prod-item">
             <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
             <div style="flex: 1; min-width: 0;">
-                <p style="font-size: 13px; font-weight: 800; color: #1e293b; overflow: hidden; text-overflow: ellipsis; whitespace: nowrap;">${o.productName || 'Product'}</p>
-                <div style="margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                <p style="font-size: 13px; font-weight: 800; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${o.productName || 'Product'}</p>
+                <div style="margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px;">
                     <span class="highlight-size"><i class="fa-solid fa-ruler-horizontal"></i> Size: ${pSize}</span>
                     <span class="highlight-qty"><i class="fa-solid fa-cubes"></i> Qty: ${pQty}</span>
                 </div>
-                <p style="font-size: 12px; color: #16a34a; font-weight: 800; margin-top: 4px;">₹${o.price || '0'}</p>
+                <p style="font-size: 12px; color: #16a34a; font-weight: 800; margin-top: 4px;">Price: ₹${o.price || '0'}</p>
             </div>
         </div>`;
     }
@@ -884,29 +789,31 @@ function renderOrderCard(container, o, path, customerPhone) {
             <span class="status-badge status-${currentStatus}">${currentStatus}</span>
             <span class="pay-badge pay-${payStatus}">${payStatus}</span>
         </div>
+        
         <div class="cust-box">
-            <b>${o.customerName || 'User'}</b>
+            <p style="font-size:14px; font-weight:800; color:#0f172a; margin-bottom:4px;"><i class="fa fa-user"></i> ${o.customerName || 'Customer'}</p>
             <p style="font-size:12px; color:#2563eb; font-weight:800;"><i class="fa fa-phone"></i> ${customerPhone}</p>
-            <p style="font-size:11px; margin-top:2px;">${o.address || 'N/A'}</p>
-            <p style="font-size:11px; margin-top:2px;"><b>UTR / Payment ID:</b> ${o.transactionId || 'N/A'}</p>
-            ${proofImg ? `<button onclick="viewProof('${proofImg}')" style="margin-top:6px; background:#fff; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:700;">View Payment Proof <i class="fa fa-image"></i></button>` : ''}
+            <p style="font-size:12px; color:#475569; margin-top:4px;"><i class="fa fa-location-dot"></i> <b>Address:</b> ${o.address || 'N/A'}</p>
+            <p style="font-size:12px; color:#0284c7; font-weight:800; margin-top:6px;"><i class="fa fa-credit-card"></i> <b>Method:</b> ${payMethod}</p>
+            <p style="font-size:11px; color:#64748b; margin-top:2px;"><b>UTR / Trans ID:</b> ${o.transactionId || 'N/A'}</p>
+            ${proofImg ? `<button onclick="viewProof('${proofImg}')" style="margin-top:8px; background:#fff; border:1px solid #cbd5e1; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:700;">View Payment Proof <i class="fa fa-image"></i></button>` : ''}
         </div>
         
         <div style="margin-bottom: 10px;">
-            <p style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Ordered Items:</p>
+            <p style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Order Details & Items:</p>
             ${productsListHtml}
-            <div style="display:flex; justify-content:space-between; align-items:center; padding-top:6px; font-weight:800; font-size:13px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding-top:8px; font-weight:800; font-size:14px; border-top:1px dashed #e2e8f0; margin-top:8px;">
                 <span>Total Amount:</span>
                 <span style="color:#16a34a;">₹${o.price || '0'}</span>
             </div>
         </div>
 
         <div class="order-actions">
-            <button style="background:#16a34a" onclick="verifyPayment('${path}', 'Paid')">Verify Pay</button>
-            <button style="background:#ef4444" onclick="verifyPayment('${path}', 'Rejected')">Reject Pay</button>
-            <button style="background:#16a34a" onclick="confirmOrderWithDate('${path}')">Confirm</button>
-            <button style="background:#2563eb" onclick="updateStatus('${path}', 'Delivered')">Delivered</button>
-            <button style="background:#333; flex: 1 1 100%;" onclick="deleteItem('orders/${path}')">Delete Order</button>
+            <button style="background:#16a34a" onclick="verifyPayment('${path}', 'Paid')"><i class="fa fa-check"></i> Verify Pay</button>
+            <button style="background:#ef4444" onclick="verifyPayment('${path}', 'Rejected')"><i class="fa fa-xmark"></i> Reject Pay</button>
+            <button style="background:#0284c7" onclick="confirmOrderWithDate('${path}')"><i class="fa fa-truck-fast"></i> Confirm</button>
+            <button style="background:#2563eb" onclick="updateStatus('${path}', 'Delivered')"><i class="fa fa-box"></i> Delivered</button>
+            <button style="background:#333; flex: 1 1 100%; margin-top:2px;" onclick="deleteItem('orders/${path}')"><i class="fa fa-trash"></i> Delete Order</button>
         </div>
     </div>`;
 }
@@ -972,12 +879,8 @@ window.approveRefund = (path) => {
     }).then((res) => {
         if (res.isConfirmed) {
             update(ref(db, 'orders/' + path), { status: 'Returned' })
-            .then(() => {
-                Swal.fire('Success', 'Order status updated to Returned.', 'success');
-            })
-            .catch((err) => {
-                Swal.fire('Error', 'Failed to update: ' + err.message, 'error');
-            });
+            .then(() => { Swal.fire('Success', 'Order status updated to Returned.', 'success'); })
+            .catch((err) => { Swal.fire('Error', 'Failed to update: ' + err.message, 'error'); });
         }
     });
 };
