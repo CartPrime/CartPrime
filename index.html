@@ -18,7 +18,18 @@
             --text-muted: #64748b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            outline: none !important; /* Removes default blue outlines/focus rings on click across all elements */
+        }
+
+        *:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
         
         body { 
             background-color: var(--bg); 
@@ -27,6 +38,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            -webkit-tap-highlight-color: transparent; /* Removes mobile tap highlight */
         }
 
         /* --- Navigation --- */
@@ -43,7 +55,7 @@
             gap: 15px;
         }
 
-        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; user-select: none; }
         .logo span { color: var(--text-muted); font-weight: 300; }
 
         .search-container { flex: 1; max-width: 500px; position: relative; }
@@ -105,6 +117,7 @@
             border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
             text-transform: capitalize;
+            user-select: none;
         }
         .category-btn:hover, .category-btn.active {
             background: var(--primary);
@@ -361,7 +374,6 @@
         let activeCategory = "All";
         let autoScrollInterval = null;
 
-        // URL Clean Up Logic
         if (window.location.pathname.endsWith('.html')) {
             let cleanPath = window.location.pathname.replace('.html', '');
             if (cleanPath.endsWith('/index')) cleanPath = '/';
@@ -372,13 +384,11 @@
             window.location.href = "/";
         });
 
-        // --- Fetch Wishlist & Orders Badges ---
         onAuthStateChanged(auth, (user) => {
             const wishlistBadge = document.getElementById('wishlistBadge');
             const ordersBadge = document.getElementById('ordersBadge');
 
             if (user) {
-                // 1. Fetch Wishlist Count
                 onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => {
                     const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
                     if (count > 0) {
@@ -389,8 +399,6 @@
                     }
                 });
 
-                // 2. Fetch Orders Count (User Phone or User ID based)
-                // If user metadata has phone or fetching directly from orders tree:
                 const userPhone = user.phoneNumber || localStorage.getItem('userPhone');
                 if (userPhone) {
                     onValue(ref(db, `orders/${userPhone}`), (snapshot) => {
@@ -419,7 +427,6 @@
             }
         });
         
-        // Fetch products
         onValue(ref(db, 'products'), (snapshot) => {
             allProducts = [];
             snapshot.forEach(child => {
