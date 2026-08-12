@@ -257,7 +257,7 @@
             });
         };
 
-        // Firebase Auth listener (Only used to retrieve logged-in user details if available, no forced login check)
+        // Firebase Auth listener
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserId = user.uid;
@@ -302,14 +302,37 @@
                 orderInfo.items.forEach(item => {
                     let productImg = item.image || (item.images && item.images[0]) || "https://via.placeholder.com/150";
                     let itemPrice = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
+                    let itemSize = item.selectedSize || item.size || 'N/A';
                     finalPriceToPay += (itemPrice * parseInt(item.quantity));
-                    previewHtml += `<div class="prod-item-row"><img src="${productImg}"><div class="prod-item-details" style="flex: 1; min-width: 0;"><p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name} (x${item.quantity})</p><p style="color: #64748b; font-size: 0.85rem; font-weight: 600; margin-top: 2px;">₹${itemPrice.toLocaleString('en-IN')}</p></div></div>`;
+                    
+                    previewHtml += `
+                    <div class="prod-item-row">
+                        <img src="${productImg}">
+                        <div class="prod-item-details" style="flex: 1; min-width: 0;">
+                            <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name} (x${item.quantity})</p>
+                            <p style="color: #64748b; font-size: 0.82rem; font-weight: 600; margin-top: 2px;">
+                                Size: <span style="color: #000; font-weight: 800;">${itemSize}</span>
+                            </p>
+                            <p style="color: #64748b; font-size: 0.85rem; font-weight: 600; margin-top: 2px;">₹${itemPrice.toLocaleString('en-IN')}</p>
+                        </div>
+                    </div>`;
                 });
                 previewHtml += `<div class="total-checkout-price"><span>Total Payable:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
             } else {
                 isCodAvailable = orderInfo.cod === true || orderInfo.cod === "true";
+                let itemSize = orderInfo.selectedSize || 'N/A';
 
-                previewHtml = `<div class="prod-item-row"><img src="${orderInfo.productImage}"><div class="prod-item-details" style="flex: 1; min-width: 0;"><p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${orderInfo.productName}</p><p style="color: #000; font-weight: 800; font-size: 1rem; margin-top: 4px;">₹${orderInfo.price}</p></div></div>`;
+                previewHtml = `
+                <div class="prod-item-row">
+                    <img src="${orderInfo.productImage}">
+                    <div class="prod-item-details" style="flex: 1; min-width: 0;">
+                        <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${orderInfo.productName}</p>
+                        <p style="color: #64748b; font-size: 0.82rem; font-weight: 600; margin-top: 2px;">
+                            Size: <span style="color: #000; font-weight: 800;">${itemSize}</span>
+                        </p>
+                        <p style="color: #000; font-weight: 800; font-size: 1rem; margin-top: 4px;">₹${orderInfo.price}</p>
+                    </div>
+                </div>`;
                 finalPriceToPay = parseFloat(orderInfo.price.toString().replace(/,/g, '')) || 0;
             }
             
@@ -373,10 +396,10 @@
             let productDetailsText = "";
             if (orderData.items && Array.isArray(orderData.items)) {
                 orderData.items.forEach((item, index) => {
-                    productDetailsText += `${index + 1}. ${item.name} - Qty: ${item.quantity} - Price: ₹${item.price}\n`;
+                    productDetailsText += `${index + 1}. ${item.name} (Size: ${item.size || 'N/A'}) - Qty: ${item.quantity} - Price: ₹${item.price}\n`;
                 });
             } else {
-                productDetailsText = `1. ${orderData.productName} - Price: ₹${orderData.price}\n`;
+                productDetailsText = `1. ${orderData.productName} (Size: ${orderData.selectedSize || 'N/A'}) - Price: ₹${orderData.price}\n`;
             }
 
             const templateParams = {
@@ -464,16 +487,18 @@
                                 price: item.price, 
                                 image: item.image || "", 
                                 quantity: item.quantity, 
+                                size: item.selectedSize || item.size || "N/A", // size ചേർക്കുന്നു
                                 return: item.return === true || item.return === 'true' 
                             };
                         });
                         
                         finalOrder.price = calcTotal.toLocaleString('en-IN');
-                        finalOrder.productName = orderInfo.items.map(i => `${i.name || i.title} (x${i.quantity})`).join(', ');
+                        finalOrder.productName = orderInfo.items.map(i => `${i.name || i.title} (Size: ${i.selectedSize || i.size || 'N/A'}, x${i.quantity})`).join(', ');
                     } else {
                         finalOrder.orderType = "Single";
                         finalOrder.productName = orderInfo.productName;
                         finalOrder.price = orderInfo.price.toString();
+                        finalOrder.selectedSize = orderInfo.selectedSize || "N/A";
                         
                         finalOrder.items = [{
                             id: orderInfo.productId || "",
@@ -481,6 +506,7 @@
                             price: orderInfo.price,
                             image: orderInfo.productImage || "",
                             quantity: orderInfo.quantity || 1,
+                            size: orderInfo.selectedSize || "N/A", // size ചേർക്കുന്നു
                             return: orderInfo.return === true || orderInfo.return === 'true'
                         }];
                     }
