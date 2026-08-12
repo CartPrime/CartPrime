@@ -531,48 +531,80 @@ window.fetchMeeshoDetails = async () => {
     }
 
     Swal.fire({
-        title: 'AI Processing Product...',
-        text: 'Fetching product details safely...',
+        title: 'Fetching Product...',
+        text: 'Extracting details from Meesho link...',
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); }
     });
 
     try {
-        const response = await fetch("/api/autofill", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url: urlInput })
-        });
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(urlInput)}`;
+        const response = await fetch(proxyUrl);
 
-        if (!response.ok) throw new Error("Server response error");
+        if (!response.ok) throw new Error("Fetch failed");
 
         const data = await response.json();
-        const extracted = data.choices ? JSON.parse(data.choices[0].message.content) : data;
+        const html = data.contents;
 
-        if (extracted.name) document.getElementById('pName').value = extracted.name;
-        if (extracted.title) document.getElementById('pTitle').value = extracted.title || extracted.name;
-        if (extracted.price) {
-            document.getElementById('pPrice').value = extracted.price;
-            document.getElementById('pMrp').value = extracted.mrp || Math.round(extracted.price * 1.3);
+        const getMeta = (prop) => {
+            const regex = new RegExp(`<meta\\s+(?:property|name)=["']${prop}["']\\s+content=["']([^"']*)["']`, 'i');
+            const match = html.match(regex);
+            return match ? match[1] : '';
+        };
+
+        let title = getMeta('og:title') || getMeta('twitter:title');
+        if (!title) {
+            const titleMatch = html.match(/<title>([^<]*)<\/title>/i);
+            if (titleMatch) title = titleMatch[1].replace('| Meesho', '').trim();
         }
-        if (extracted.shippedFrom) document.getElementById('pShippedFrom').value = extracted.shippedFrom;
 
-        if (extracted.description) {
-            document.getElementById('pDesc').value = "• " + extracted.description.replace(/\n/g, "\n• ");
-        }
+        let image = getMeta('og:image') || getMeta('twitter:image');
+        let description = getMeta('og:description') || getMeta('description');
 
-        const imageContainer = document.getElementById('imageInputs');
-        if (extracted.image) {
-            imageContainer.innerHTML = `<input type="text" class="p-img-link" value="${extracted.image}">`;
+        let price = '';
+        const jsonLdMatch = html.match(/"price"\s*:\s*"?(\d+)"?/i);
+        if (jsonLdMatch) {
+            price = jsonLdMatch[1];
         } else {
-            imageContainer.innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
+            const priceRegex = /₹\s?(\d{2,6})/;
+            const priceMatch = html.match(priceRegex);
+            if (priceMatch) price = priceMatch[1];
         }
 
-        Swal.fire('AI Success!', 'Product details auto-filled successfully!', 'success');
+        let foundAny = false;
+
+        if (title) {
+            document.getElementById('pName').value = title;
+            document.getElementById('pTitle').value = title;
+            foundAny = true;
+        }
+
+        if (price) {
+            const priceNum = parseInt(price);
+            document.getElementById('pPrice').value = priceNum;
+            document.getElementById('pMrp').value = Math.round(priceNum * 1.3);
+            foundAny = true;
+        }
+
+        if (description) {
+            document.getElementById('pDesc').value = "• " + description.replace(/\n/g, "\n• ");
+        }
+
+        if (image) {
+            const imageContainer = document.getElementById('imageInputs');
+            imageContainer.innerHTML = `<input type="text" class="p-img-link" value="${image}">`;
+            foundAny = true;
+        }
+
+        if (foundAny) {
+            Swal.fire('Success!', 'Product details auto-filled successfully!', 'success');
+        } else {
+            Swal.fire('Warning', 'Link loaded, but could not auto-extract details. Please fill manually.', 'warning');
+        }
 
     } catch (err) {
         console.error("Auto Fill Error:", err);
-        Swal.fire('Fetch Failed', 'Make sure /api/autofill route is set up in Vercel backend.', 'error');
+        Swal.fire('Fetch Failed', 'Could not load details from this link. Make sure link is valid.', 'error');
     }
 };
 
