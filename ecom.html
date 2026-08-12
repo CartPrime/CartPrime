@@ -65,8 +65,11 @@
         .status-Rejected { background: #fee2e2; color: #b91c1c; }
 
         .cust-box { background: #f8fafc; padding: 16px; border-radius: 15px; margin: 15px 0; border: 1px solid #f1f5f9; word-break: break-word; }
-        .order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
-        .order-actions button { padding: 10px; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; color: white; }
+        
+        /* UPDATED SMALL ORDER ACTION BUTTONS STYLES */
+        .order-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+        .order-actions button { padding: 6px 10px !important; border: none; border-radius: 6px; font-size: 10px !important; font-weight: 700; cursor: pointer; color: white; flex: 1 1 calc(50% - 6px); transition: 0.2s; }
+        .order-actions button:hover { opacity: 0.85; }
 
         /* Highlight Badges for Admin Products */
         .admin-prod-item {
@@ -152,8 +155,7 @@
             .sidebar i { margin-right: 0; font-size: 20px; width: auto; }
             .main-content { margin-left: 65px; width: calc(100% - 65px); padding: 20px 15px; }
             .admin-card { padding: 20px; }
-            .order-actions { grid-template-columns: 1fr; }
-            .order-actions button { grid-column: span 1 !important; }
+            .order-actions button { flex: 1 1 calc(50% - 6px) !important; }
             .auto-fill-box { flex-direction: column; }
             .auto-fill-box button { width: 100%; padding: 12px !important; }
         }
@@ -830,7 +832,7 @@ onValue(ref(db, 'orders'), snap => {
     }
 });
 
-// Render Product Items with Large Image, Highlighted Size & Highlighted Quantity
+// Render Order Cards with Small Dynamic Compact Buttons
 function renderOrderCard(container, o, path, customerPhone) {
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
@@ -900,11 +902,11 @@ function renderOrderCard(container, o, path, customerPhone) {
         </div>
 
         <div class="order-actions">
-            <button style="background:#16a34a" onclick="verifyPayment('${path}', 'Paid')">Verify Payment</button>
-            <button style="background:#ef4444" onclick="verifyPayment('${path}', 'Rejected')">Reject Payment</button>
-            <button style="background:#16a34a" onclick="confirmOrderWithDate('${path}')">Confirm Order</button>
-            <button style="background:#2563eb" onclick="updateStatus('${path}', 'Delivered')">Mark Delivered</button>
-            <button style="background:#333; grid-column: span 2;" onclick="deleteItem('orders/${path}')">Delete Order Data</button>
+            <button style="background:#16a34a" onclick="verifyPayment('${path}', 'Paid')">Verify Pay</button>
+            <button style="background:#ef4444" onclick="verifyPayment('${path}', 'Rejected')">Reject Pay</button>
+            <button style="background:#16a34a" onclick="confirmOrderWithDate('${path}')">Confirm</button>
+            <button style="background:#2563eb" onclick="updateStatus('${path}', 'Delivered')">Delivered</button>
+            <button style="background:#333; flex: 1 1 100%;" onclick="deleteItem('orders/${path}')">Delete Order</button>
         </div>
     </div>`;
 }
