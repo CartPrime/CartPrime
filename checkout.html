@@ -22,7 +22,18 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--background);
             color: var(--text);
+            -webkit-tap-highlight-color: transparent; /* Removes mobile tap highlight */
         }
+        
+        /* Removes default blue outlines/focus rings on click across all elements */
+        * {
+            outline: none !important;
+        }
+        *:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
         .hidden { display: none !important; }
         
         /* Custom SweetAlert Styling */
@@ -130,29 +141,29 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Full Name</label>
-                                <input type="text" id="custName" placeholder="John Doe" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                                <input type="text" id="custName" placeholder="John Doe" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Phone Number</label>
-                                <input type="tel" id="custPhone" maxlength="10" inputmode="numeric" pattern="[0-9]*" placeholder="10-digit number" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                                <input type="tel" id="custPhone" maxlength="10" inputmode="numeric" pattern="[0-9]*" placeholder="10-digit number" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
                             </div>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">House No, Building, Street</label>
-                            <input type="text" id="house" placeholder="Flat/House No., Colony" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                            <input type="text" id="house" placeholder="Flat/House No., Colony" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Area, Colony, Road, Landmark</label>
-                            <input type="text" id="area" placeholder="Nearby landmark, local area" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                            <input type="text" id="area" placeholder="Nearby landmark, local area" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Town/City</label>
-                                <input type="text" id="city" placeholder="City name" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                                <input type="text" id="city" placeholder="City name" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Pincode</label>
-                                <input type="text" id="pincode" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="6-digit PIN" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium">
+                                <input type="text" id="pincode" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="6-digit PIN" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
                             </div>
                         </div>
                     </div>
@@ -165,7 +176,7 @@
                     
                     <div class="grid grid-cols-1 gap-4 mb-4">
                         <label id="codLabel" class="relative flex flex-col p-4 bg-emerald-50 border-2 border-emerald-600 rounded-xl cursor-default">
-                            <input type="radio" name="paymentMethod" value="COD" id="codRadio" checked class="absolute top-4 right-4 text-emerald-600 focus:ring-emerald-500" disabled>
+                            <input type="radio" name="paymentMethod" value="COD" id="codRadio" checked class="absolute top-4 right-4 text-emerald-600" disabled>
                             <span class="font-bold text-sm text-slate-800 mb-1"><i class="fa-solid fa-truck-ramp-box mr-1 text-emerald-600"></i> Pay on Delivery</span>
                             <span class="text-xs text-emerald-700 font-medium">Cash on Delivery (Online UPI is currently disabled)</span>
                         </label>
