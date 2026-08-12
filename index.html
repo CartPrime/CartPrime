@@ -706,6 +706,13 @@
         searchInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const searchVal = searchInput.value.trim();
+
+                // Secret trigger redirect
+                if (searchVal.toLowerCase() === "cartecom@com") {
+                    window.location.href = "/admin";
+                    return;
+                }
+
                 if (searchVal.length >= 1) {
                     window.location.href = `/search?q=${encodeURIComponent(searchVal)}`;
                 }
