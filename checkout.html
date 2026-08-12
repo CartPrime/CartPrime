@@ -66,13 +66,32 @@
             }
         }
         .prod-item-row img {
-            width: 56px;
-            height: 56px;
+            width: 60px;
+            height: 60px;
             object-fit: cover;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
             background: #fff;
             flex-shrink: 0;
+        }
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .qty-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
         }
         .total-checkout-price {
             display: flex;
@@ -224,11 +243,8 @@
 
         const EMAILJS_PUBLIC_KEY = "v9Kubn2pDJOSM8iL8";
 
-        // Initialize EmailJS
         if (typeof emailjs !== 'undefined') {
-            emailjs.init({
-                publicKey: EMAILJS_PUBLIC_KEY, 
-            });
+            emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
         }
 
         const firebaseConfig = {
@@ -245,7 +261,7 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        const orderInfo = JSON.parse(localStorage.getItem('pendingOrder'));
+        let orderInfo = JSON.parse(localStorage.getItem('pendingOrder'));
         const myUpiId = "9778722796@fam"; 
         let currentUserId = null;
         let currentUserEmail = null; 
@@ -257,7 +273,6 @@
             });
         };
 
-        // Firebase Auth listener
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserId = user.uid;
@@ -291,36 +306,73 @@
             }
         };
 
-        if(orderInfo) {
+        // Quantity + / - Function
+        window.changeQuantity = (index, delta) => {
+            if (!orderInfo) return;
+
+            if (orderInfo.orderType === "Cart" && Array.isArray(orderInfo.items)) {
+                let currentQty = parseInt(orderInfo.items[index].quantity) || 1;
+                let newQty = currentQty + delta;
+                if (newQty < 1) newQty = 1;
+                orderInfo.items[index].quantity = newQty;
+            } else {
+                let currentQty = parseInt(orderInfo.quantity) || 1;
+                let newQty = currentQty + delta;
+                if (newQty < 1) newQty = 1;
+                orderInfo.quantity = newQty;
+            }
+
+            localStorage.setItem('pendingOrder', JSON.stringify(orderInfo));
+            renderOrderPreview();
+        };
+
+        // Render Summary & Recalculate Payment QR
+        function renderOrderPreview() {
+            if (!orderInfo) {
+                location.href = 'index.html';
+                return;
+            }
+
             let previewHtml = "";
             let finalPriceToPay = 0;
-            let isCodAvailable = false; 
+            let isCodAvailable = false;
 
             if (orderInfo.orderType === "Cart" && Array.isArray(orderInfo.items)) {
                 isCodAvailable = orderInfo.items.every(item => item.cod === true || item.cod === "true");
 
-                orderInfo.items.forEach(item => {
+                orderInfo.items.forEach((item, idx) => {
                     let productImg = item.image || (item.images && item.images[0]) || "https://via.placeholder.com/150";
-                    let itemPrice = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
+                    let unitPrice = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
+                    let qty = parseInt(item.quantity) || 1;
+                    let itemTotal = unitPrice * qty;
                     let itemSize = item.selectedSize || item.size || 'N/A';
-                    finalPriceToPay += (itemPrice * parseInt(item.quantity));
                     
+                    finalPriceToPay += itemTotal;
+
                     previewHtml += `
                     <div class="prod-item-row">
                         <img src="${productImg}">
                         <div class="prod-item-details" style="flex: 1; min-width: 0;">
-                            <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name} (x${item.quantity})</p>
+                            <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name || item.title}</p>
                             <p style="color: #64748b; font-size: 0.82rem; font-weight: 600; margin-top: 2px;">
                                 Size: <span style="color: #000; font-weight: 800;">${itemSize}</span>
                             </p>
-                            <p style="color: #64748b; font-size: 0.85rem; font-weight: 600; margin-top: 2px;">₹${itemPrice.toLocaleString('en-IN')}</p>
+                            <p style="color: #000; font-weight: 800; font-size: 0.9rem; margin-top: 2px;">₹${itemTotal.toLocaleString('en-IN')}</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                            <button onclick="changeQuantity(${idx}, -1)" class="qty-btn">-</button>
+                            <span class="font-bold text-sm px-1 text-slate-800">${qty}</span>
+                            <button onclick="changeQuantity(${idx}, 1)" class="qty-btn">+</button>
                         </div>
                     </div>`;
                 });
                 previewHtml += `<div class="total-checkout-price"><span>Total Payable:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
             } else {
                 isCodAvailable = orderInfo.cod === true || orderInfo.cod === "true";
+                let unitPrice = parseFloat(orderInfo.price.toString().replace(/,/g, '')) || 0;
+                let qty = parseInt(orderInfo.quantity) || 1;
                 let itemSize = orderInfo.selectedSize || 'N/A';
+                finalPriceToPay = unitPrice * qty;
 
                 previewHtml = `
                 <div class="prod-item-row">
@@ -330,76 +382,56 @@
                         <p style="color: #64748b; font-size: 0.82rem; font-weight: 600; margin-top: 2px;">
                             Size: <span style="color: #000; font-weight: 800;">${itemSize}</span>
                         </p>
-                        <p style="color: #000; font-weight: 800; font-size: 1rem; margin-top: 4px;">₹${orderInfo.price}</p>
+                        <p style="color: #000; font-weight: 800; font-size: 0.95rem; margin-top: 4px;">₹${finalPriceToPay.toLocaleString('en-IN')}</p>
                     </div>
-                </div>`;
-                finalPriceToPay = parseFloat(orderInfo.price.toString().replace(/,/g, '')) || 0;
+                    <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                        <button onclick="changeQuantity(0, -1)" class="qty-btn">-</button>
+                        <span class="font-bold text-sm px-1 text-slate-800">${qty}</span>
+                        <button onclick="changeQuantity(0, 1)" class="qty-btn">+</button>
+                    </div>
+                </div>
+                <div class="total-checkout-price"><span>Total Payable:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
             }
             
             const previewContainer = document.getElementById('productPreview');
             if (previewContainer) previewContainer.innerHTML = previewHtml;
 
+            // Handle COD status
             const codRadio = document.getElementById('codRadio');
             const codLabel = document.getElementById('codLabel');
             const codText = document.getElementById('codText');
 
             if(isCodAvailable) {
-                if(codText) {
-                    codText.innerHTML = `<span style="color: #16a34a; font-weight: 600; font-size: 0.85rem;"><i class="fa-solid fa-circle-check"></i> Cash on Delivery Available</span>`;
-                }
-                if(codLabel) {
-                    codLabel.style.border = "1px solid #16a34a";
-                    codLabel.style.background = "#f0fdf4";
-                }
+                if(codText) codText.innerHTML = `<span style="color: #16a34a; font-weight: 600; font-size: 0.85rem;"><i class="fa-solid fa-circle-check"></i> Cash on Delivery Available</span>`;
+                if(codLabel) { codLabel.style.border = "1px solid #16a34a"; codLabel.style.background = "#f0fdf4"; }
             } else {
                 if(codRadio) codRadio.disabled = true;
-                if(codText) {
-                    codText.innerHTML = `<span style="color: #ef4444; font-weight: 600; font-size: 0.85rem;"><i class="fa-solid fa-circle-xmark"></i> Cash on Delivery Not Available</span>`;
-                }
-                if(codLabel) {
-                    codLabel.style.pointerEvents = "none";
-                    codLabel.style.background = "#fdf2f2";
-                    codLabel.style.border = "1px dashed #ef4444";
-                }
+                if(codText) codText.innerHTML = `<span style="color: #ef4444; font-weight: 600; font-size: 0.85rem;"><i class="fa-solid fa-circle-xmark"></i> Cash on Delivery Not Available</span>`;
+                if(codLabel) { codLabel.style.pointerEvents = "none"; codLabel.style.background = "#fdf2f2"; codLabel.style.border = "1px dashed #ef4444"; }
             }
 
+            // Update UPI App & QR Code Links
             const encodedName = encodeURIComponent("CartPrime");
             const upiBase = `pa=${myUpiId}&pn=${encodedName}&am=${finalPriceToPay}&cu=INR`;
 
-            if(document.getElementById('gpayLink')) {
-                document.getElementById('gpayLink').href = `upi://pay?${upiBase}&mc=0000&mode=02&purpose=00&orgid=000000`;
-            }
-            if(document.getElementById('phonepeLink')) {
-                document.getElementById('phonepeLink').href = `upi://pay?${upiBase}`;
-            }
+            if(document.getElementById('gpayLink')) document.getElementById('gpayLink').href = `upi://pay?${upiBase}&mc=0000&mode=02&purpose=00&orgid=000000`;
+            if(document.getElementById('phonepeLink')) document.getElementById('phonepeLink').href = `upi://pay?${upiBase}`;
             if(document.getElementById("qrcode")) {
                 document.getElementById("qrcode").innerHTML = "";
                 new QRCode(document.getElementById("qrcode"), { text: `upi://pay?${upiBase}`, width: 180, height: 180 });
             }
-        } else { 
-            location.href = 'index.html'; 
         }
 
-        window.sendOrderEmail = function(orderData, userEmail) {
-            console.log("Attempting to send email to:", userEmail);
-            
-            if (!userEmail) {
-                console.error("Email failed: No valid user email target.");
-                return;
-            }
+        renderOrderPreview();
 
-            if (typeof emailjs === 'undefined') {
-                console.error("EmailJS SDK is not loaded properly.");
-                return;
-            }
+        window.sendOrderEmail = function(orderData, userEmail) {
+            if (!userEmail || typeof emailjs === 'undefined') return;
 
             let productDetailsText = "";
             if (orderData.items && Array.isArray(orderData.items)) {
                 orderData.items.forEach((item, index) => {
-                    productDetailsText += `${index + 1}. ${item.name} (Size: ${item.size || 'N/A'}) - Qty: ${item.quantity} - Price: ₹${item.price}\n`;
+                    productDetailsText += `${index + 1}. ${item.name} (Size: ${item.size || 'N/A'}, Qty: ${item.quantity}) - ₹${item.price}\n`;
                 });
-            } else {
-                productDetailsText = `1. ${orderData.productName} (Size: ${orderData.selectedSize || 'N/A'}) - Price: ₹${orderData.price}\n`;
             }
 
             const templateParams = {
@@ -413,16 +445,8 @@
             };
 
             try {
-                emailjs.send('service_crbmtvy', 'template_rd6d6w6', templateParams, EMAILJS_PUBLIC_KEY)
-                    .then(() => {
-                        console.log('Order status email sent successfully to ' + userEmail);
-                    })
-                    .catch((error) => {
-                        console.error('EmailJS Service Error:', error);
-                    });
-            } catch (networkError) {
-                console.error("Network error inside try-catch:", networkError);
-            }
+                emailjs.send('service_crbmtvy', 'template_rd6d6w6', templateParams, EMAILJS_PUBLIC_KEY);
+            } catch (e) { console.error(e); }
         };
 
         window.placeOrder = () => {
@@ -480,24 +504,29 @@
                         
                         finalOrder.items = orderInfo.items.map(item => {
                             let p = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
-                            calcTotal += (p * parseInt(item.quantity));
+                            let q = parseInt(item.quantity) || 1;
+                            calcTotal += (p * q);
                             return { 
                                 id: item.id || "", 
                                 name: item.name || item.title || "Product", 
                                 price: item.price, 
                                 image: item.image || "", 
-                                quantity: item.quantity, 
-                                size: item.selectedSize || item.size || "N/A", // size ചേർക്കുന്നു
+                                quantity: q, 
+                                size: item.selectedSize || item.size || "N/A", 
                                 return: item.return === true || item.return === 'true' 
                             };
                         });
                         
                         finalOrder.price = calcTotal.toLocaleString('en-IN');
-                        finalOrder.productName = orderInfo.items.map(i => `${i.name || i.title} (Size: ${i.selectedSize || i.size || 'N/A'}, x${i.quantity})`).join(', ');
+                        finalOrder.productName = orderInfo.items.map(i => `${i.name || i.title} (Size: ${i.selectedSize || i.size || 'N/A'}, Qty: ${i.quantity})`).join(', ');
                     } else {
+                        let unitPrice = parseFloat(orderInfo.price.toString().replace(/,/g, '')) || 0;
+                        let q = parseInt(orderInfo.quantity) || 1;
+                        let calcTotal = unitPrice * q;
+
                         finalOrder.orderType = "Single";
-                        finalOrder.productName = orderInfo.productName;
-                        finalOrder.price = orderInfo.price.toString();
+                        finalOrder.productName = `${orderInfo.productName} (Size: ${orderInfo.selectedSize || 'N/A'}, Qty: ${q})`;
+                        finalOrder.price = calcTotal.toLocaleString('en-IN');
                         finalOrder.selectedSize = orderInfo.selectedSize || "N/A";
                         
                         finalOrder.items = [{
@@ -505,8 +534,8 @@
                             name: orderInfo.productName,
                             price: orderInfo.price,
                             image: orderInfo.productImage || "",
-                            quantity: orderInfo.quantity || 1,
-                            size: orderInfo.selectedSize || "N/A", // size ചേർക്കുന്നു
+                            quantity: q,
+                            size: orderInfo.selectedSize || "N/A",
                             return: orderInfo.return === true || orderInfo.return === 'true'
                         }];
                     }
@@ -515,9 +544,7 @@
                         const activeUser = auth.currentUser;
                         const emailToSend = activeUser ? activeUser.email : currentUserEmail;
 
-                        if (emailToSend) {
-                            window.sendOrderEmail(finalOrder, emailToSend);
-                        }
+                        if (emailToSend) window.sendOrderEmail(finalOrder, emailToSend);
 
                         if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
                         localStorage.removeItem('pendingOrder');
