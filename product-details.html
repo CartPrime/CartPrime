@@ -482,16 +482,28 @@
             const discountPct = baseMrp > displayPrice ? Math.round(((baseMrp - displayPrice) / baseMrp) * 100) : 0;
 
             const availableSizes = p.sizes || [];
+            
+            // Checking for Free Size auto-selection
+            const freeSizeFound = availableSizes.find(sz => sz.toString().toLowerCase().trim() === 'free size');
+            if (freeSizeFound) {
+                selectedProductSize = freeSizeFound;
+            } else {
+                selectedProductSize = null;
+            }
+
             let sizeHTML = "";
             if (availableSizes.length > 0) {
                 sizeHTML = `
                 <div class="size-box-wrapper">
                     <div class="size-title">
                         <span>Select Size:</span>
-                        <span id="selectedSizeLabel" style="color: #64748b; font-weight: 600;">None</span>
+                        <span id="selectedSizeLabel" style="color: #64748b; font-weight: 600;">${selectedProductSize ? selectedProductSize : 'None'}</span>
                     </div>
                     <div class="size-container">
-                        ${availableSizes.map(sz => `<button class="size-btn" onclick="window.selectSize(this, '${sz}')">${sz}</button>`).join('')}
+                        ${availableSizes.map(sz => {
+                            const isFree = sz.toString().toLowerCase().trim() === 'free size';
+                            return `<button class="size-btn ${isFree ? 'active' : ''}" onclick="window.selectSize(this, '${sz}')">${sz}</button>`;
+                        }).join('')}
                     </div>
                 </div>`;
             }
@@ -707,5 +719,5 @@
             location.href = 'checkout.html'; 
         };
     </script>
-</body>
+</body> 
 </html>
