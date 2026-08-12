@@ -130,9 +130,7 @@
             background: #f8fafc !important;
         }
 
-        /* -------------------------------------------------------------
-           RESPONSIVE BREAKPOINTS (Tablet & Mobile Optimized)
-        ------------------------------------------------------------- */
+        /* RESPONSIVE BREAKPOINTS */
         @media (max-width: 992px) {
             .sidebar { width: 80px; padding: 20px 10px; }
             .sidebar h2, .sidebar button span, .sidebar a span { display: none; }
@@ -168,7 +166,6 @@
             .chart-container { height: 280px; }
             .auto-fill-box button { width: 100%; }
 
-            /* ALL TABLES CONVERTED TO MOBILE CARD LAYOUT */
             .table-responsive { overflow-x: visible !important; }
 
             table { min-width: 100% !important; display: block; }
@@ -204,12 +201,10 @@
                 border-radius: 0;
             }
 
-            /* Custom adjustments for Orders Mobile view */
             #orders td {
                 display: block;
             }
 
-            /* Inventory & Banners mobile card specifics */
             #manageProducts td img, #banners td img {
                 max-width: 60px;
                 height: 60px;
@@ -259,6 +254,7 @@
     <button onclick="openTab('banners', this)" class="tablinks" id="btn-banners" title="Banners"><i class="fa fa-images"></i> <span>Banners</span></button>
     <button onclick="openTab('users', this)" class="tablinks" id="btn-users" title="Users"><i class="fa fa-user-friends"></i> <span>Users</span></button>
     <a href="index.html" title="Back to Store"><i class="fa fa-arrow-left"></i> <span>Back Store</span></a>
+    <button onclick="logoutAdmin()" style="color: #ef4444; margin-top: auto;" title="Logout"><i class="fa fa-right-from-bracket"></i> <span>Logout</span></button>
 </div>
 
 <div class="main-content">
@@ -469,6 +465,12 @@ import { getDatabase, ref, onValue, update, remove, push, set, get } from "https
 const ADMIN_PASSCODE = "73569778";
 
 async function checkAdminPasscode() {
+    const isAuthenticated = localStorage.getItem("cartprime_admin_logged_in");
+
+    if (isAuthenticated === "true") {
+        return; 
+    }
+
     const { value: passcode } = await Swal.fire({
         title: '<div style="font-size: 20px; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-shield-halved" style="color: #ff9900; margin-right: 8px;"></i> Security Check</div>',
         html: '<p style="color: #64748b; font-size: 13px; margin-top: 5px;">Enter your admin passcode to access CartPrime Panel.</p>',
@@ -483,6 +485,7 @@ async function checkAdminPasscode() {
     });
 
     if (passcode === ADMIN_PASSCODE) {
+        localStorage.setItem("cartprime_admin_logged_in", "true");
         Swal.fire({ 
             icon: 'success', 
             title: 'Welcome Back, Admin!', 
@@ -502,6 +505,11 @@ async function checkAdminPasscode() {
         window.location.href = "index.html";
     }
 }
+
+window.logoutAdmin = () => {
+    localStorage.removeItem("cartprime_admin_logged_in");
+    window.location.href = "index.html";
+};
 
 window.addEventListener('load', () => {
     checkAdminPasscode();
