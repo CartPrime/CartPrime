@@ -45,7 +45,7 @@
         .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
         .btn-cancel { background: #fee2e2; color: var(--red); }
         .btn-return { background: #f1f5f9; color: #1e293b; border: 1px solid #e2e8f0; }
-        .empty-state { text-align: center; margin-top: 50px; color: #64748b; }
+        .empty-state { text-align: center; margin-top: 30px; color: #64748b; }
         
         .return-policy { font-size: 0.7rem; color: #64748b; margin-top: 5px; display: block; font-weight: 600; }
 
@@ -85,7 +85,7 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getDatabase, ref, onValue, update, off } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -100,6 +100,8 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    let activeRef = null;
+
     const showAlert = (title, text, icon, showConfirm = true) => {
         Swal.fire({
             title: title, text: text, icon: icon, showConfirmButton: showConfirm,
@@ -107,10 +109,9 @@
         });
     };
 
-    // ഫോൺ നമ്പർ പല വിധത്തിൽ സൂക്ഷിച്ചിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുന്നു
     function getSavedPhone() {
         const savedAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr') || '{}');
-        return savedAddr.phone || localStorage.getItem('userPhone') || localStorage.getItem('cartPrime_Phone');
+        return localStorage.getItem('userPhone') || savedAddr.phone || localStorage.getItem('cartPrime_Phone');
     }
 
     const userPhone = getSavedPhone();
@@ -122,6 +123,7 @@
     }
 
     function renderPhoneInput() {
+        if (activeRef) off(activeRef);
         document.getElementById('ordersList').innerHTML = `
             <div class="phone-input-box">
                 <h3 style="font-weight:800; font-size:1.1rem; margin-bottom:5px;">Find Your Orders</h3>
@@ -142,16 +144,33 @@
         loadOrders(phone);
     };
 
+    window.changePhoneNumber = () => {
+        localStorage.removeItem('userPhone');
+        renderPhoneInput();
+    };
+
     function loadOrders(phone) {
-        onValue(ref(db, `orders/${phone}`), (snapshot) => {
+        if (activeRef) off(activeRef);
+        activeRef = ref(db, `orders/${phone}`);
+
+        onValue(activeRef, (snapshot) => {
             const list = document.getElementById('ordersList');
-            list.innerHTML = "";
             
+            const activePhoneHeader = `
+                <div style="background:#fff; border:1px solid #e2e8f0; padding:12px 15px; border-radius:12px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.85rem; font-weight:700; color:#1e293b;">
+                        Showing orders for: <strong>${phone}</strong>
+                    </span>
+                    <button onclick="window.changePhoneNumber()" style="background:#fee2e2; color:#ef4444; border:none; padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.75rem; cursor:pointer;">
+                        <i class="fa-solid fa-pen-to-square"></i> Change
+                    </button>
+                </div>
+            `;
+
             if (!snapshot.exists()) {
-                list.innerHTML = `
+                list.innerHTML = activePhoneHeader + `
                     <div class="empty-state">
                         <p>No orders found for <strong>${phone}</strong>.</p>
-                        <button onclick="localStorage.removeItem('userPhone'); location.reload();" style="margin-top:15px; padding:8px 16px; border-radius:8px; border:1px solid #ccc; background:#fff; font-weight:700; cursor:pointer;">Try Another Phone Number</button>
                     </div>`;
                 return;
             }
@@ -177,9 +196,11 @@
             });
 
             if (ordersArr.length === 0) {
-                list.innerHTML = `<div class="empty-state"><p>No recent orders found within 1 month.</p></div>`;
+                list.innerHTML = activePhoneHeader + `<div class="empty-state"><p>No recent orders found within 1 month.</p></div>`;
                 return;
             }
+
+            list.innerHTML = activePhoneHeader;
 
             ordersArr.reverse().forEach(order => {
                 const isPaid = order.paymentStatus === 'Paid';
