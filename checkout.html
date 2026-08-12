@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         :root {
@@ -164,55 +163,15 @@
                         <i class="fa-solid fa-credit-card text-blue-600"></i> Payment Method
                     </h2>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                        <label id="upiLabel" class="relative flex flex-col p-4 bg-slate-50 border-2 border-blue-600 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-all">
-                            <input type="radio" name="paymentMethod" value="UPI" id="upiRadio" checked onchange="togglePaymentFields()" class="absolute top-4 right-4 text-blue-600 focus:ring-blue-500">
-                            <span class="font-bold text-sm text-slate-800 mb-1"><i class="fa-solid fa-qrcode mr-1 text-blue-600"></i> Pay via UPI</span>
-                            <span class="text-xs text-slate-500 font-medium">GPay, PhonePe, QR Code</span>
-                        </label>
-
-                        <label id="codLabel" class="relative flex flex-col p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-all">
-                            <input type="radio" name="paymentMethod" value="COD" id="codRadio" onchange="togglePaymentFields()" class="absolute top-4 right-4 text-emerald-600 focus:ring-emerald-500">
+                    <div class="grid grid-cols-1 gap-4 mb-4">
+                        <label id="codLabel" class="relative flex flex-col p-4 bg-emerald-50 border-2 border-emerald-600 rounded-xl cursor-default">
+                            <input type="radio" name="paymentMethod" value="COD" id="codRadio" checked class="absolute top-4 right-4 text-emerald-600 focus:ring-emerald-500" disabled>
                             <span class="font-bold text-sm text-slate-800 mb-1"><i class="fa-solid fa-truck-ramp-box mr-1 text-emerald-600"></i> Pay on Delivery</span>
-                            <span id="codText" class="text-xs text-slate-500 font-medium">Cash on Delivery</span>
+                            <span class="text-xs text-emerald-700 font-medium">Cash on Delivery (Online UPI is currently disabled)</span>
                         </label>
                     </div>
 
-                    <div id="upiSection" class="space-y-6">
-                        <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex flex-col items-center justify-between gap-4">
-                            <div class="text-center w-full">
-                                <h4 class="font-bold text-sm text-blue-900">Instant Pay via Apps</h4>
-                                <p class="text-xs text-blue-700 font-medium mt-0.5">Click any app below to complete payment directly.</p>
-                            </div>
-                            
-                            <div class="flex flex-col sm:flex-row gap-3 w-full">
-                                <a id="gpayLink" href="#" class="flex-1 inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs px-4 py-3 border border-slate-200 rounded-xl shadow-xs transition-all">
-                                    <i class="fa-brands fa-google-pay text-xl text-blue-600"></i> Direct Pay Google Pay
-                                </a>
-                                <a id="phonepeLink" href="#" class="flex-1 inline-flex items-center justify-center gap-2 bg-white hover:bg-purple-50/50 text-slate-800 font-bold text-xs px-4 py-3 border border-slate-200 rounded-xl shadow-xs transition-all">
-                                    <span class="inline-flex items-center justify-center w-5 h-5 bg-[#5f259f] text-white rounded-md shadow-xs"><i class="fa-solid fa-wallet text-[10px]"></i></span> Direct Pay PhonePe
-                                </a>
-                            </div>
-
-                            <a id="directUpiLink" href="#" class="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-3 rounded-xl shadow-md transition-all">
-                                <i class="fa-solid fa-bolt"></i> Pay via Any UPI App (Paytm / CRED / Others)
-                            </a>
-                        </div>
-
-                        <div class="flex flex-col items-center justify-center border border-slate-100 bg-slate-50/50 rounded-xl p-6 text-center">
-                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Scan QR Code to Pay</p>
-                            <div id="qrcode" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm max-w-full overflow-hidden"></div>
-                            <p class="text-xs text-slate-500 font-semibold mt-3 bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-2xs max-w-full break-all">UPI ID: <span class="text-slate-800 font-bold select-all">9778722796@fam</span></p>
-                        </div>
-
-                        <div class="bg-amber-50/70 border border-amber-100 rounded-xl p-4">
-                            <label class="block text-xs font-bold text-amber-800 uppercase tracking-wider mb-1.5">Enter 12-Digit UPI Transaction ID (UTR)</label>
-                            <input type="text" id="utrNumber" maxlength="12" placeholder="e.g., 4123XXXXXXXX" autocomplete="off" class="w-full px-4 py-3 bg-white border border-amber-200 rounded-xl focus:outline-none focus:border-amber-500 text-sm font-bold tracking-widest text-slate-800 placeholder:font-normal placeholder:tracking-normal shadow-2xs">
-                            <p class="text-xs text-amber-700 font-medium mt-1.5"><i class="fa-solid fa-circle-info mr-1"></i> Order will be verified only after entering a valid Transaction ID.</p>
-                        </div>
-                    </div>
-
-                    <div id="codSection" class="hidden bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex items-start gap-3">
+                    <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex items-start gap-3">
                         <i class="fa-solid fa-circle-check text-emerald-600 mt-0.5 text-sm"></i>
                         <div>
                             <h4 class="font-bold text-sm text-emerald-900">Cash on Delivery Selected</h4>
@@ -267,7 +226,6 @@
         const db = getDatabase(app);
 
         let orderInfo = JSON.parse(localStorage.getItem('pendingOrder'));
-        const myUpiId = "9778722796@fam"; 
         let currentUserId = null;
         let currentUserEmail = null; 
 
@@ -284,32 +242,6 @@
                 currentUserEmail = user.email; 
             }
         });
-
-        window.togglePaymentFields = () => {
-            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-            const upiSection = document.getElementById('upiSection');
-            const codSection = document.getElementById('codSection');
-            const upiLabel = document.getElementById('upiLabel');
-            const codLabel = document.getElementById('codLabel');
-
-            if (selectedMethod === 'UPI') {
-                if (upiSection) upiSection.classList.remove('hidden');
-                if (codSection) codSection.classList.add('hidden');
-                if (upiLabel) upiLabel.style.border = '2px solid var(--primary)';
-                if (codLabel) {
-                    if (document.getElementById('codRadio').disabled) {
-                        codLabel.style.border = '1px dashed #ef4444';
-                    } else {
-                        codLabel.style.border = '1px solid #16a34a';
-                    }
-                }
-            } else {
-                if (upiSection) upiSection.classList.add('hidden');
-                if (codSection) codSection.classList.remove('hidden');
-                if (upiLabel) upiLabel.style.border = '1px solid var(--border)';
-                if (codLabel) codLabel.style.border = '2px solid #16a34a';
-            }
-        };
 
         window.changeQuantity = (index, delta) => {
             if (!orderInfo) return;
@@ -338,11 +270,8 @@
 
             let previewHtml = "";
             let finalPriceToPay = 0;
-            let isCodAvailable = false;
 
             if (orderInfo.orderType === "Cart" && Array.isArray(orderInfo.items)) {
-                isCodAvailable = orderInfo.items.every(item => item.cod === true || item.cod === "true");
-
                 orderInfo.items.forEach((item, idx) => {
                     let productImg = item.image || (item.images && item.images[0]) || "https://via.placeholder.com/150";
                     let unitPrice = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
@@ -371,7 +300,6 @@
                 });
                 previewHtml += `<div class="total-checkout-price"><span>Total Payable:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
             } else {
-                isCodAvailable = orderInfo.cod === true || orderInfo.cod === "true";
                 let unitPrice = parseFloat(orderInfo.price.toString().replace(/,/g, '')) || 0;
                 let qty = parseInt(orderInfo.quantity) || 1;
                 let itemSize = orderInfo.selectedSize || 'N/A';
@@ -398,39 +326,6 @@
             
             const previewContainer = document.getElementById('productPreview');
             if (previewContainer) previewContainer.innerHTML = previewHtml;
-
-            const codRadio = document.getElementById('codRadio');
-            const codLabel = document.getElementById('codLabel');
-            const codText = document.getElementById('codText');
-
-            if(isCodAvailable) {
-                if(codText) codText.innerHTML = `<span style="color: #16a34a; font-weight: 600; font-size: 0.85rem;"><i class="fa-solid fa-circle-check"></i> Cash on Delivery Available</span>`;
-                if(codLabel) { codLabel.style.border = "1px solid #16a34a"; codLabel.style.background = "#f0fdf4"; }
-            } else {
-                if(codRadio) codRadio.disabled = true;
-                if(codText) codText.innerHTML = `<span style="color: #ef4444; font-weight: 600; font-size: 0.85rem;"><i class="fa-solid fa-circle-xmark"></i> Cash on Delivery Not Available</span>`;
-                if(codLabel) { codLabel.style.pointerEvents = "none"; codLabel.style.background = "#fdf2f2"; codLabel.style.border = "1px dashed #ef4444"; }
-            }
-
-            // Direct Pay Intent Deep-links Configuration
-            const siteName = encodeURIComponent("CartPrime");
-            const upiDirectUri = `upi://pay?pa=${myUpiId}&pn=${siteName}&am=${finalPriceToPay}&cu=INR`;
-
-            if(document.getElementById('gpayLink')) {
-                document.getElementById('gpayLink').href = `${upiDirectUri}&mc=0000&mode=02&purpose=00&orgid=000000`;
-            }
-            if(document.getElementById('phonepeLink')) {
-                document.getElementById('phonepeLink').href = upiDirectUri;
-            }
-            if(document.getElementById('directUpiLink')) {
-                document.getElementById('directUpiLink').href = upiDirectUri;
-            }
-
-            // Generate Dynamic QR Code
-            if(document.getElementById("qrcode")) {
-                document.getElementById("qrcode").innerHTML = "";
-                new QRCode(document.getElementById("qrcode"), { text: upiDirectUri, width: 180, height: 180 });
-            }
         }
 
         renderOrderPreview();
@@ -461,8 +356,6 @@
         };
 
         window.placeOrder = () => {
-            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-
             const fields = {
                 name: document.getElementById('custName').value.trim(),
                 phone: document.getElementById('custPhone').value.trim(),
@@ -470,7 +363,7 @@
                 area: document.getElementById('area').value.trim(),
                 city: document.getElementById('city').value.trim(),
                 pin: document.getElementById('pincode').value.trim(),
-                utr: paymentMethod === 'UPI' ? document.getElementById('utrNumber').value.trim() : 'COD'
+                utr: 'COD'
             };
 
             if(!fields.name || !fields.phone || !fields.house || !fields.city || !fields.pin) {
@@ -482,13 +375,9 @@
                     customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
                 });
             }
-            
-            if(paymentMethod === 'UPI' && fields.utr.length < 10) return showAlert('UTR Required', 'Please enter a valid Transaction ID.', 'error');
-
-            const alertText = paymentMethod === 'COD' ? "Confirm your order with Cash on Delivery?" : "Have you completed the payment?";
 
             Swal.fire({
-                title: 'Confirm Order?', text: alertText, icon: 'question',
+                title: 'Confirm Order?', text: "Confirm your order with Cash on Delivery?", icon: 'question',
                 showCancelButton: true, confirmButtonText: 'Yes, Confirm',
                 cancelButtonText: 'Cancel',
                 customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
@@ -501,11 +390,11 @@
                         customerPhone: fields.phone, 
                         phone: fields.phone, 
                         address: `${fields.house}, ${fields.area}, ${fields.city} - ${fields.pin}`, 
-                        transactionId: fields.utr, 
+                        transactionId: 'COD', 
                         date: new Date().toISOString().split('T')[0], 
                         status: "Pending", 
-                        paymentStatus: paymentMethod === 'COD' ? "COD" : "Verifying",
-                        paymentMethod: paymentMethod,
+                        paymentStatus: "COD",
+                        paymentMethod: "COD",
                         orderId: orderId
                     };
 
