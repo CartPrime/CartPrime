@@ -109,15 +109,23 @@
         });
     };
 
+    // 1. ഓർഡർ ചെയ്യുമ്പോൾ സേവ് ആയ അഡ്രസ്സിൽ നിന്നോ യു.ആർ.എല്ലിൽ (URL Parameter) നിന്നോ താനെ നമ്പർ കണ്ടെത്തുന്നു
     function getSavedPhone() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlPhone = urlParams.get('phone');
+        
         const savedAddr = JSON.parse(localStorage.getItem('cartPrime_UserAddr') || '{}');
-        return localStorage.getItem('userPhone') || savedAddr.phone || localStorage.getItem('cartPrime_Phone');
+        const lastOrderPhone = localStorage.getItem('cartPrime_LastOrderPhone');
+        const savedUserPhone = localStorage.getItem('userPhone');
+        const cartPrimePhone = localStorage.getItem('cartPrime_Phone');
+
+        return urlPhone || lastOrderPhone || savedUserPhone || savedAddr.phone || cartPrimePhone;
     }
 
-    const userPhone = getSavedPhone();
+    const initialPhone = getSavedPhone();
 
-    if (userPhone) { 
-        loadOrders(userPhone); 
+    if (initialPhone) { 
+        loadOrders(initialPhone); 
     } else {
         renderPhoneInput();
     }
@@ -144,8 +152,10 @@
         loadOrders(phone);
     };
 
+    // 2. നമ്പർ മാറ്റാൻ ഉള്ള (Change) ഫങ്ഷൻ
     window.changePhoneNumber = () => {
         localStorage.removeItem('userPhone');
+        localStorage.removeItem('cartPrime_LastOrderPhone');
         renderPhoneInput();
     };
 
@@ -156,6 +166,7 @@
         onValue(activeRef, (snapshot) => {
             const list = document.getElementById('ordersList');
             
+            // ഹെഡറിൽ നിലവിലുള്ള ഫോൺ നമ്പറും, അത് മാറ്റാനുള്ള Change ബട്ടണും
             const activePhoneHeader = `
                 <div style="background:#fff; border:1px solid #e2e8f0; padding:12px 15px; border-radius:12px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
                     <span style="font-size:0.85rem; font-weight:700; color:#1e293b;">
