@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // CORS Headers
+  // CORS ഹെഡറുകൾ സെറ്റ് ചെയ്യുക (ബ്രൗസർ ബ്ലോക്ക് ചെയ്യാതിരിക്കാൻ)
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -9,7 +9,8 @@ export default async function handler(req, res) {
   );
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    res.status(200).end();
+    return;
   }
 
   if (req.method !== 'POST') {
@@ -17,59 +18,33 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { url } = req.body || {};
+    const { url } = req.body;
 
     if (!url) {
       return res.status(400).json({ error: "URL is required" });
     }
 
-    // Fetch page HTML
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
-      }
-    });
-
-    const html = await response.text();
-
-    // Extract Basic Info from Meta Tags
-    const getMeta = (prop) => {
-      const match = html.match(new RegExp(`<meta\\s+(?:property|name)="${prop}"\\s+content="([^"]*)"`, 'i'));
-      return match ? match[1] : '';
-    };
-
-    const title = getMeta('og:title') || getMeta('twitter:title') || 'Product Name';
-    const image = getMeta('og:image') || getMeta('twitter:image') || '';
-    const description = getMeta('og:description') || getMeta('description') || '';
-
-    // Extract Price
-    let price = '499';
-    const priceMatch = html.match(/₹\s?(\d+)/) || html.match(/"price":\s?(\d+)/);
-    if (priceMatch) {
-      price = priceMatch[1];
-    }
-
-    const mrp = Math.round(parseFloat(price) * 1.3).toString();
-
-    const resultData = {
-      name: title,
-      title: title,
-      price: price,
-      mrp: mrp,
+    // തൽക്കാലത്തേക്ക് ടെസ്റ്റ് ചെയ്യാൻ ഡമ്മി ഡാറ്റ നൽകിയിരിക്കുന്നു.
+    // നിങ്ങൾക്ക് വേണമെങ്കിൽ ഇവിടെ വെബ് സ്ക്രാപ്പിംഗ് ലോജിക് അല്ലെങ്കിൽ AI API കോഡ് എഴുതാം.
+    const mockExtractedData = {
+      name: "Sample Product from Link",
+      title: "Extracted Product Title",
+      price: "499",
+      mrp: "999",
       shippedFrom: "India",
-      description: description || "Product details extracted.",
-      image: image
+      description: "• High quality product\n• Durable material",
+      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30"
     };
 
     return res.status(200).json({
       choices: [{
         message: {
-          content: JSON.stringify(resultData)
+          content: JSON.stringify(mockExtractedData)
         }
       }]
     });
 
   } catch (error) {
-    return res.status(500).json({ error: error.message || "Failed to process URL" });
+    return res.status(500).json({ error: error.message });
   }
 }
