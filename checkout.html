@@ -118,6 +118,17 @@
 </head>
 <body class="bg-slate-50 min-h-screen pb-12">
 
+    <!-- Object Loading Animation Screen -->
+    <div id="pageLoader" class="fixed inset-0 z-[100] bg-slate-50 flex flex-col items-center justify-center gap-4 transition-opacity duration-500">
+        <div class="relative w-16 h-16">
+            <div class="w-16 h-16 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center text-blue-600">
+                <i class="fa-solid fa-cart-shopping text-lg animate-pulse"></i>
+            </div>
+        </div>
+        <p class="text-sm font-semibold text-slate-600 tracking-wide animate-pulse">Loading Checkout...</p>
+    </div>
+
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 backdrop-blur-md bg-white/90">
         <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors font-medium">
@@ -339,7 +350,17 @@
             if (previewContainer) previewContainer.innerHTML = previewHtml;
         }
 
+        // Hide loader animation safely
+        function hideLoader() {
+            const loader = document.getElementById('pageLoader');
+            if (loader) {
+                loader.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => loader.remove(), 500);
+            }
+        }
+
         renderOrderPreview();
+        hideLoader();
 
         window.sendOrderEmail = function(orderData, userEmail) {
             if (!userEmail || typeof emailjs === 'undefined') return;
@@ -486,5 +507,5 @@
             });
         };
     </script>
-</body> 
+</body>  
 </html>
