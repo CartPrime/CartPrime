@@ -16,6 +16,7 @@
             --surface: #f8fafc;
             --text-main: #0f172a;
             --text-muted: #64748b;
+            --border: #e2e8f0;
         }
 
         * { 
@@ -187,13 +188,30 @@
         .container { padding: 10px 6% 120px; flex: 1; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
 
+        /* --- Slide Up Animation --- */
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* --- Card Styling --- */
         .card {
             background: #fff; border-radius: 24px; padding: 12px;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             position: relative; border: 1px solid #f1f5f9;
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             display: flex; flex-direction: column; height: 100%;
+            cursor: pointer;
+            
+            /* Slide Animation Included */
+            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
         
@@ -221,6 +239,7 @@
 
         .card-rating-ui {
             display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: #eab308; margin-bottom: 8px;
+            min-height: 18px;
         }
         .card-rating-ui span { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; }
 
@@ -243,6 +262,47 @@
             position: absolute; top: -8px; right: -8px; background: #ef4444; color: white;
             font-size: 0.6rem; font-weight: 800; border-radius: 50%; min-width: 16px;
             height: 16px; display: flex; align-items: center; justify-content: center; padding: 2px;
+        }
+
+        /* --- Skeleton Loading Placeholder Cards --- */
+        .skeleton-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 12px;
+            border: 1px solid #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            height: 380px;
+        }
+
+        .skeleton-img {
+            width: 100%;
+            height: 220px;
+            border-radius: 18px;
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            margin-bottom: 15px;
+        }
+
+        .skeleton-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .skeleton-line {
+            height: 14px;
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            border-radius: 6px;
+        }
+
+        @keyframes skeletonLoading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         footer { 
@@ -291,6 +351,9 @@
             .stock-badge, .discount-badge { padding: 3px 8px; font-size: 0.6rem; border-radius: 6px; top: 8px; }
             .stock-badge { left: 8px; }
             .discount-badge { right: 8px; }
+
+            .skeleton-card { border-radius: 16px; padding: 8px; height: 280px; }
+            .skeleton-img { height: 140px; border-radius: 12px; }
             
             footer { padding: 25px 4%; }
             .footer-content { flex-direction: column; text-align: center; gap: 10px; }
@@ -374,19 +437,37 @@
         let activeCategory = "All";
         let autoScrollInterval = null;
 
+        // Display Skeleton Cards on first load
+        showSkeletons();
+
+        function showSkeletons() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = "";
+            for (let i = 0; i < 8; i++) {
+                grid.innerHTML += `
+                    <div class="skeleton-card">
+                        <div class="skeleton-img"></div>
+                        <div class="skeleton-info">
+                            <div class="skeleton-line" style="width: 80%;"></div>
+                            <div class="skeleton-line" style="width: 40%;"></div>
+                            <div class="skeleton-line" style="width: 60%; margin-top: auto;"></div>
+                            <div class="skeleton-line" style="height: 40px; border-radius: 12px;"></div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
         // --- 5 PRODUCTS VIEW LOGIC FOR ADMIN VISITS COUNT ---
         function trackProductClickAndRedirect(productId) {
-            // LocalStorage-ൽ നിന്ന് ഇതുവരെ കണ്ട പ്രോഡക്റ്റ് ID-കൾ എടുക്കുന്നു
             let viewedProducts = JSON.parse(localStorage.getItem('viewedProductIds') || "[]");
             let visitCounted = localStorage.getItem('visitCounted') === 'true';
 
-            // യൂസർ ഇതുവരെ ഈ പ്രോഡക്റ്റ് കണ്ടിട്ടില്ലെങ്കിൽ Array-ലേക്ക് ആഡ് ചെയ്യും
             if (!viewedProducts.includes(productId)) {
                 viewedProducts.push(productId);
                 localStorage.setItem('viewedProductIds', JSON.stringify(viewedProducts));
             }
 
-            // യൂസർ 5 അല്ലെങ്കിൽ അതിൽ കൂടുതൽ പ്രോഡക്റ്റ് കാണുകയും, ഇതുവരെ Count ആയിട്ടില്ലെങ്കിൽ
             if (viewedProducts.length >= 5 && !visitCounted) {
                 const visitsRef = ref(db, 'admin/visits');
                 get(visitsRef).then((snapshot) => {
@@ -616,6 +697,8 @@
             const grid = document.getElementById('productGrid');
             grid.innerHTML = "";
             
+            let animationDelayIndex = 0;
+
             products.forEach((p) => {
                 if (p.showOnHome === false) return;
 
@@ -630,6 +713,10 @@
 
                 const card = document.createElement('div');
                 card.className = 'card';
+                
+                // Dynamic Staggered Animation Delay
+                card.style.animationDelay = `${animationDelayIndex * 0.08}s`;
+                animationDelayIndex++;
                 
                 const reviewRef = ref(db, `reviews/${p.id}`);
                 get(reviewRef).then((snapshot) => {
@@ -674,7 +761,8 @@
                     </div>
                 `;
 
-                card.querySelector('.buy-btn').addEventListener('click', () => {
+                card.addEventListener('click', () => {
+                    if(isOut) return;
                     trackProductClickAndRedirect(p.id);
                 });
 
