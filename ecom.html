@@ -284,8 +284,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Customer Name</th>
+                            <th>Order ID & Customer</th>
                             <th>Phone</th>
                             <th>Total Amount</th>
                             <th>Status</th>
@@ -811,7 +810,7 @@ onValue(ref(db, 'orders'), snap => {
         if (totalLossStat) totalLossStat.innerText = "₹0";
         updateOrdersChart(statusCounts);
         updateEarningsChart({});
-        if (list) list.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b;">No orders found.</td></tr>`;
+        if (list) list.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No orders found.</td></tr>`;
         if (returnContainer) returnContainer.innerHTML = `<p style="color: #64748b; font-weight: 600;">No return or refund requests.</p>`;
         return;
     }
@@ -870,17 +869,22 @@ onValue(ref(db, 'orders'), snap => {
     }
 });
 
-/* PURE TABLE LIST VIEW ROW */
+/* PURE TABLE LIST VIEW ROW (WITH ORDER ID ON TOP) */
 function renderOrderRow(container, o, path) {
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
     const phone = o.customerPhone || o.parentPhone || "N/A";
-    const shortId = path.split('/').pop().substring(0, 8);
+    const fullOrderId = o.orderId || path.split('/').pop();
 
     container.innerHTML += `
     <tr>
-        <td><strong style="color:#0f172a;">#${shortId}</strong><br><small style="color:#64748b;">${o.date || ''}</small></td>
-        <td><strong style="color:#1e293b;">${o.customerName || 'Customer'}</strong></td>
+        <td style="vertical-align: top;">
+            <div style="font-size: 13px; font-weight: 800; color: #475569; margin-bottom: 4px;">
+                ID: #${fullOrderId}
+            </div>
+            <strong style="color:#1e293b; font-size: 14px;">${o.customerName || 'Customer'}</strong><br>
+            <small style="color:#64748b;">${o.date || ''}</small>
+        </td>
         <td><a href="tel:${phone}" style="color:#2563eb; text-decoration:none; font-weight:700;"><i class="fa fa-phone"></i> ${phone}</a></td>
         <td><strong style="color:#16a34a;">₹${o.price || '0'}</strong></td>
         <td>
@@ -922,6 +926,7 @@ window.viewFullOrderDetails = (path) => {
     const payMethod = o.paymentMethod || (o.transactionId ? "UPI Payment" : "Cash On Delivery");
     const phone = o.customerPhone || o.parentPhone || "N/A";
     const fullAddress = o.address || 'No Address Provided';
+    const fullOrderId = o.orderId || path.split('/').pop();
 
     let productsListHtml = "";
     if (o.items && Array.isArray(o.items) && o.items.length > 0) {
@@ -962,6 +967,11 @@ window.viewFullOrderDetails = (path) => {
 
     const modalContent = `
     <div class="order-detail-popup">
+        <div class="order-detail-section">
+            <div class="order-detail-title"><i class="fa fa-hashtag"></i> Order ID</div>
+            <p style="font-size: 15px; font-weight: 800; color: #0f172a;">ID: #${fullOrderId}</p>
+        </div>
+
         <div class="order-detail-section">
             <div class="order-detail-title"><i class="fa fa-user"></i> Customer Info</div>
             <p><strong>Name:</strong> ${o.customerName || 'N/A'}</p>
@@ -1023,12 +1033,13 @@ function renderReturnCard(container, o, path, customerPhone) {
     const refundMethod = o.refundMethod || 'N/A';
     const refundDetails = o.refundDetails || 'N/A';
     const userEmail = o.refundEmail || o.email || 'No Email Provided';
+    const fullOrderId = o.orderId || path.split('/').pop();
     
     container.innerHTML += `
     <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; padding: 18px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 5px;">
             <div>
-                <span style="font-size: 0.75rem; font-weight: 800; color: #64748b;">ORDER ID: #${path.split('/').pop()}</span>
+                <span style="font-size: 0.8rem; font-weight: 800; color: #475569;">ID: #${fullOrderId}</span>
                 <h4 style="font-size: 1rem; color: #1e293b; margin-top: 2px;">Customer: ${o.customerName || 'N/A'} (${customerPhone})</h4>
                 <p style="font-size: 0.85rem; color: #2563eb; margin: 4px 0 0 0; font-weight: bold; word-break: break-all;">
                     <i class="fa fa-envelope"></i> Email: ${userEmail}
