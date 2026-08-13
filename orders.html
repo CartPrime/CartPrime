@@ -238,15 +238,15 @@
                 if (checkStatus === 'returned') {
                     deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Your Money credited Check your Email</p>`;
                 } else if (checkStatus === 'returnrequested') {
-                    deliveryMsg = `<p style="font-size: 0.8rem; color: #f59e0b; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-clock"></i> Your order is returned request submitted</p>`;
+                    deliveryMsg = `<p style="font-size: 0.8rem; color: #f59e0b; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-clock"></i>Your Order Returned</p>`;
                 } else if (checkStatus === 'delivered') {
-                    deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Your product has been delivered</p>`;
+                    deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Your Product Delivered</p>`;
                 } else if (checkStatus === 'shipped') {
                     deliveryMsg = `<p style="font-size: 0.8rem; color: #2563eb; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-truck-fast"></i> Your order has been shipped</p>`;
                 } else if (order.deliveryDate) {
                     deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}</p>`;
                 } else if (checkStatus === 'orderconfirmed' || checkStatus === 'pending') {
-                    deliveryMsg = `<p style="font-size: 0.8rem; color: #d97706; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-clock flex-shrink-0"></i> Wait for approval order</p>`;
+                    deliveryMsg = `<p style="font-size: 0.8rem; color: #d97706; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-clock flex-shrink-0"></i> Wait for Approval order</p>`;
                 }
 
                 let orderHasReturnableProduct = false;
