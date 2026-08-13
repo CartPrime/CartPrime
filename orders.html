@@ -31,7 +31,7 @@
         .card-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .order-id-badge { font-size: 0.75rem; font-weight: 800; color: #64748b; }
 
-        .order-status { font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; }
+        .order-status { font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; display: inline-block; }
         .status-shipped { background: #e0e7ff; color: #3730a3; }
         .status-pending { background: #fef9c3; color: #a16207; }
         .status-delivered { background: #dcfce7; color: #15803d; }
@@ -67,8 +67,8 @@
 
         /* Modal Details Formatting */
         .modal-detail-box { text-align: left; font-size: 0.85rem; color: #334155; margin-top: 10px; }
-        .modal-detail-box p { margin-bottom: 6px; line-height: 1.4; }
-        .modal-section-title { font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: #64748b; margin-top: 12px; margin-bottom: 4px; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
+        .modal-detail-box p { margin-bottom: 6px; line-height: 1.4; display: flex; align-items: center; justify-content: space-between; }
+        .modal-section-title { font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: #64748b; margin-top: 12px; margin-bottom: 6px; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
 
         @media (max-width: 480px) {
             body { padding: 15px 4%; }
@@ -221,7 +221,6 @@
                 const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
 
                 let deliveryMsg = '';
-                // Delivered ആകുമ്പോൾ മാത്രം 'Your Order Delivered' എന്ന് കാണിക്കുന്നു
                 if (checkStatus === 'delivered') {
                     deliveryMsg = `<div class="delivery-text"><i class="fa-solid fa-circle-check"></i> Your Order Delivered</div>`;
                 } else if (checkStatus === 'shipped') {
@@ -275,7 +274,8 @@
         const order = cachedOrders[orderId];
         if (!order) return;
 
-        const checkStatus = (order.status || 'Pending').toLowerCase().replace(/\s+/g, '').trim();
+        const rawStatus = order.status || 'Pending';
+        const checkStatus = rawStatus.toLowerCase().replace(/\s+/g, '').trim();
         const isCOD = (order.paymentMethod === 'COD' || order.paymentStatus === 'COD');
         const isPaid = (order.paymentStatus === 'Paid' || order.paymentStatus === 'Success') && !isCOD;
         
@@ -318,11 +318,13 @@
             actionBtnHtml = `<button onclick="requestReturn('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#f1f5f9; color:#1e293b; border:1px solid #e2e8f0; border-radius:10px; font-weight:700; margin-top:15px; cursor:pointer;">Request Return</button>`; 
         }
 
-        // പോപ്പ്-അപ്പിൽ Delivered ആണെങ്കിൽ ഡെലിവറി തീയതി കാണിക്കില്ല
+        // സ്റ്റാറ്റസ് Highlight ചെയ്തു കാണിക്കാൻ തക്ക ബാഡ്ജ് ക്രിയേറ്റ് ചെയ്യുന്നു
+        const statusBadgeHtml = `<span class="order-status status-${checkStatus}">${checkStatus === 'delivered' ? 'Your Order Delivered' : rawStatus}</span>`;
+
         const deliveryInfoHtml = checkStatus === 'delivered' 
-            ? `<p><strong>Status:</strong> Your Order Delivered</p>`
-            : `<p><strong>Status:</strong> ${order.status || 'Pending'}</p>
-               <p><strong>Expected Delivery:</strong> ${order.deliveryDate || 'Will update soon'}</p>`;
+            ? `<p><strong>Status:</strong> ${statusBadgeHtml}</p>`
+            : `<p><strong>Status:</strong> ${statusBadgeHtml}</p>
+               <p><strong>Expected Delivery:</strong> <span>${order.deliveryDate || 'Will update soon'}</span></p>`;
 
         Swal.fire({
             title: `Order Details (#${order.id})`,
@@ -333,17 +335,19 @@
 
                     <div class="modal-section-title">Delivery Info</div>
                     ${deliveryInfoHtml}
-                    <p><strong>Order Date:</strong> ${order.date || 'N/A'}</p>
+                    <p><strong>Order Date:</strong> <span>${order.date || 'N/A'}</span></p>
 
                     <div class="modal-section-title">Shipping Address</div>
-                    <p><strong>${order.customerName || 'Customer'}</strong></p>
-                    <p>${order.address || 'N/A'}</p>
-                    <p>Phone: ${order.customerPhone || order.phone || order.userPhone}</p>
+                    <div style="background:#f8fafc; padding:8px 10px; border-radius:8px; margin-top:4px;">
+                        <p style="font-weight:700; color:#1e293b; margin:0;">${order.customerName || 'Customer'}</p>
+                        <p style="margin:2px 0; color:#64748b; font-size:0.8rem;">${order.address || 'N/A'}</p>
+                        <p style="margin:0; color:#64748b; font-size:0.8rem;">Phone: ${order.customerPhone || order.phone || order.userPhone}</p>
+                    </div>
 
                     <div class="modal-section-title">Payment Summary</div>
-                    <p><strong>Total Amount:</strong> ₹${order.price}</p>
-                    <p><strong>Payment Mode:</strong> ${isCOD ? 'Cash on Delivery' : (isPaid ? 'Online Paid' : 'Pending')}</p>
-                    <p><strong>Transaction ID:</strong> ${order.transactionId || 'N/A'}</p>
+                    <p><strong>Total Amount:</strong> <span>₹${order.price}</span></p>
+                    <p><strong>Payment Mode:</strong> <span>${isCOD ? 'Cash on Delivery' : (isPaid ? 'Online Paid' : 'Pending')}</span></p>
+                    <p><strong>Transaction ID:</strong> <span>${order.transactionId || 'N/A'}</span></p>
 
                     ${actionBtnHtml}
                 </div>
