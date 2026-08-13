@@ -159,6 +159,15 @@
                                 <input type="tel" id="custPhone" maxlength="10" inputmode="numeric" pattern="[0-9]*" placeholder="10-digit number" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
                             </div>
                         </div>
+
+                        <!-- Country Field (India Only) -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Country / Region</label>
+                            <select id="country" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium text-slate-800">
+                                <option value="India" selected>India</option>
+                            </select>
+                        </div>
+
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">House No, Building, Street</label>
                             <input type="text" id="house" placeholder="Flat/House No., Colony" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
@@ -433,6 +442,7 @@
             const fields = {
                 name: document.getElementById('custName').value.trim(),
                 phone: document.getElementById('custPhone').value.trim(),
+                country: document.getElementById('country').value.trim(),
                 house: document.getElementById('house').value.trim(),
                 area: document.getElementById('area').value.trim(),
                 city: document.getElementById('city').value.trim(),
@@ -441,10 +451,10 @@
                 utr: 'COD'
             };
 
-            if(!fields.name || !fields.phone || !fields.house || !fields.city || !fields.state || !fields.pin) {
+            if(!fields.name || !fields.phone || !fields.country || !fields.house || !fields.city || !fields.state || !fields.pin) {
                 return Swal.fire({
                     title: 'Address Missing',
-                    text: 'Please fill all required delivery address fields including State.',
+                    text: 'Please fill all required delivery address fields.',
                     icon: 'warning',
                     confirmButtonText: 'Ok',
                     customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
@@ -484,7 +494,7 @@
                         customerName: fields.name, 
                         customerPhone: fields.phone, 
                         phone: fields.phone, 
-                        address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state} - ${fields.pin}`, 
+                        address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state}, ${fields.country} - ${fields.pin}`, 
                         transactionId: 'COD', 
                         date: new Date().toISOString().split('T')[0], 
                         status: "Pending", 
