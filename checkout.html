@@ -22,10 +22,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--background);
             color: var(--text);
-            -webkit-tap-highlight-color: transparent; /* Removes mobile tap highlight */
+            -webkit-tap-highlight-color: transparent;
         }
         
-        /* Removes default blue outlines/focus rings on click across all elements */
         * {
             outline: none !important;
         }
@@ -36,7 +35,6 @@
 
         .hidden { display: none !important; }
         
-        /* Custom SweetAlert Styling */
         .swal-custom-popup {
             border-radius: 16px !important;
             padding: 2rem !important;
@@ -62,7 +60,6 @@
             font-weight: 600 !important;
         }
         
-        /* Product Preview Responsive Styling */
         .prod-item-row {
             display: flex;
             align-items: center;
@@ -118,7 +115,7 @@
 </head>
 <body class="bg-slate-50 min-h-screen pb-12">
 
-    <!-- Object Loading Animation Screen -->
+    <!-- Page Loader -->
     <div id="pageLoader" class="fixed inset-0 z-[100] bg-slate-50 flex flex-col items-center justify-center gap-4 transition-opacity duration-500">
         <div class="relative w-16 h-16">
             <div class="w-16 h-16 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
@@ -145,9 +142,18 @@
             
             <div class="lg:col-span-7 space-y-6">
                 <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm">
-                    <h2 class="text-base sm:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-location-dot text-blue-600"></i> Delivery Address
-                    </h2>
+                    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                        <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-blue-600"></i> Delivery Address
+                        </h2>
+
+                        <!-- Current Location Button -->
+                        <button type="button" id="locBtn" onclick="getCurrentLocation()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold py-2 px-3 rounded-xl transition-all flex items-center gap-2 border border-blue-200">
+                            <i class="fa-solid fa-crosshairs text-sm"></i> 
+                            <span id="locBtnText">Use Current Location</span>
+                        </button>
+                    </div>
+
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
@@ -160,7 +166,6 @@
                             </div>
                         </div>
 
-                        <!-- Country Field (India Only) -->
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Country / Region</label>
                             <select id="country" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium text-slate-800">
@@ -309,6 +314,76 @@
             });
         };
 
+        // --- CURRENT LOCATION (GPS) AUTO-FILL LOGIC ---
+        window.getCurrentLocation = function() {
+            const locBtnText = document.getElementById('locBtnText');
+            
+            if (!navigator.geolocation) {
+                showAlert('Not Supported', 'Geolocation is not supported by your browser.', 'error');
+                return;
+            }
+
+            locBtnText.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Fetching...`;
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    try {
+                        // OpenStreetMap Nominatim Free Geocoding API
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+                        const data = await response.json();
+
+                        if (data && data.address) {
+                            const addr = data.address;
+                            
+                            // Auto fill Pincode
+                            if (addr.postcode) {
+                                document.getElementById('pincode').value = addr.postcode.replace(/\s+/g, '').slice(0, 6);
+                            }
+
+                            // Auto fill City / Town
+                            const city = addr.city || addr.town || addr.village || addr.suburb || addr.county || "";
+                            document.getElementById('city').value = city;
+
+                            // Auto fill Area / Landmark / Road
+                            const localArea = [addr.road, addr.neighbourhood, addr.suburb].filter(Boolean).join(", ");
+                            document.getElementById('area').value = localArea || city;
+
+                            // Auto select State from dropdown
+                            if (addr.state) {
+                                const stateSelect = document.getElementById('state');
+                                const stateOptions = Array.from(stateSelect.options);
+                                const matchingOption = stateOptions.find(opt => 
+                                    opt.value.toLowerCase() === addr.state.toLowerCase() ||
+                                    addr.state.toLowerCase().includes(opt.value.toLowerCase())
+                                );
+                                if (matchingOption) {
+                                    stateSelect.value = matchingOption.value;
+                                }
+                            }
+
+                            showAlert('Success', 'Address details loaded from current location!', 'success');
+                        } else {
+                            showAlert('Warning', 'Could not detect complete address details.', 'warning');
+                        }
+                    } catch (err) {
+                        showAlert('Error', 'Failed to fetch location address. Please enter manually.', 'error');
+                    } finally {
+                        locBtnText.textContent = "Use Current Location";
+                    }
+                },
+                (error) => {
+                    locBtnText.textContent = "Use Current Location";
+                    let msg = "Unable to retrieve location.";
+                    if (error.code === error.PERMISSION_DENIED) msg = "Location access denied. Please allow location access in browser settings.";
+                    showAlert('Location Error', msg, 'error');
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        };
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserId = user.uid;
@@ -401,7 +476,6 @@
             if (previewContainer) previewContainer.innerHTML = previewHtml;
         }
 
-        // Hide loader animation safely
         function hideLoader() {
             const loader = document.getElementById('pageLoader');
             if (loader) {
@@ -497,10 +571,7 @@
                         address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state}, ${fields.country} - ${fields.pin}`, 
                         transactionId: 'COD', 
                         date: new Date().toISOString().split('T')[0], 
-                        
-                        // COD ആയതിനാൽ നേരിട്ട് Order Confirmed ആകുന്നു
                         status: "Order Confirmed", 
-                        
                         paymentStatus: "COD",
                         paymentMethod: "COD",
                         orderId: orderId
