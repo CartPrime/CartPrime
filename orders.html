@@ -21,12 +21,13 @@
         .status-pending { background: #fef9c3; color: #a16207; }
         .status-delivered { background: #e0f2fe; color: #0369a1; }
         .status-cancelled, .status-rejected { background: #fee2e2; color: #b91c1c; }
-        .status-confirmed { background: #e0f2fe; color: #0369a1; }
+        .status-orderconfirmed, .status-confirmed { background: #dcfce7; color: #15803d; }
         .status-return, .status-returned { background: #dcfce7; color: #15803d; }
         .status-returnrequested { background: #fee2e2; color: #b91c1c; }
 
         .pay-verify-badge { display: inline-block; font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; margin-top: 8px; text-transform: uppercase; }
         .pay-success { background: #16a34a; color: white; }
+        .pay-cod { background: #2563eb; color: white; }
         .pay-failed { background: #ef4444; color: white; }
 
         .order-items-container { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
@@ -175,7 +176,6 @@
                 </div>
             `;
 
-            // മാറ്റം 1: ഓർഡർ ലഭിച്ചില്ലെങ്കിൽ "Check your order number" എന്ന് കാണിക്കും
             if (!snapshot.exists()) {
                 list.innerHTML = activePhoneHeader + `
                     <div class="empty-state">
@@ -213,14 +213,18 @@
 
             ordersArr.reverse().forEach(order => {
                 const isPaid = order.paymentStatus === 'Paid';
+                const isCOD = order.paymentMethod === 'COD' || order.paymentStatus === 'COD';
                 const isRejected = order.paymentStatus === 'Rejected' || order.status === 'Rejected';
                 const displayStatus = order.status || 'Pending';
                 
                 const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
 
                 let payBadge = '', rejectReason = '';
-                if (isPaid) { payBadge = `<div class="pay-verify-badge pay-success"><i class="fa-solid fa-circle-check"></i> Payment Success</div>`; } 
-                else if (isRejected) {
+                if (isPaid) { 
+                    payBadge = `<div class="pay-verify-badge pay-success"><i class="fa-solid fa-circle-check"></i> Payment Success</div>`; 
+                } else if (isCOD) {
+                    payBadge = `<div class="pay-verify-badge pay-cod"><i class="fa-solid fa-truck-ram-box"></i> Cash on Delivery</div>`;
+                } else if (isRejected) {
                     payBadge = `<div class="pay-verify-badge pay-failed"><i class="fa-solid fa-circle-xmark"></i> Payment Not Success</div>`;
                     rejectReason = `<p style="color:red; font-size:0.75rem; font-weight:800; margin-top:5px;">Reason: Payment Not Success</p>`;
                 }
@@ -231,12 +235,14 @@
                     deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Your Money credited Check your Email</p>`;
                 } else if (checkStatus === 'returnrequested') {
                     deliveryMsg = `<p style="font-size: 0.8rem; color: #f59e0b; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-clock"></i> Your order is returned</p>`;
-                } else if (isPaid && !isRejected) {
-                    if (checkStatus === 'delivered') {
-                        deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Your product has been delivered</p>`;
-                    } else if (order.deliveryDate) {
-                        deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}</p>`;
-                    }
+                } else if (checkStatus === 'delivered') {
+                    deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Your product has been delivered</p>`;
+                } else if (order.deliveryDate) {
+                    // അഡ്മിൻ ഡെലിവറി ഡേറ്റ് നൽകിയാൽ അത് കാണിക്കും
+                    deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}</p>`;
+                } else if (checkStatus === 'orderconfirmed' || checkStatus === 'pending') {
+                    // ഡെലിവറി തീയതി നൽകുന്നതുവരെ അപ്രൂവലിനായി കാത്തിരിക്കുന്നു എന്ന് കാണിക്കും
+                    deliveryMsg = `<p style="font-size: 0.8rem; color: #d97706; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-clock flex-shrink-0"></i> Wait for approval order</p>`;
                 }
 
                 let orderHasReturnableProduct = false;
@@ -299,7 +305,8 @@
 
                 let actionButtonsHtml = '';
 
-                if (checkStatus === 'pending' && !isRejected) { 
+                // അഡ്മിൻ ഡെലിവറി തീയതി നൽകുന്നത് വരെ മാത്രം Cancel Button ലഭ്യമാകും (Order Confirmed / Pending ആണെങ്കിൽ)
+                if ((checkStatus === 'pending' || checkStatus === 'orderconfirmed') && !isRejected && !order.deliveryDate) { 
                     actionButtonsHtml = `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>`; 
                 } 
                 else if (checkStatus === 'delivered' && orderHasReturnableProduct) { 
@@ -312,7 +319,7 @@
                         <p style="font-size: 0.75rem; font-weight:800; color:#64748b; margin-bottom: 5px;">ID: #${order.id}</p>
                         <div class="order-items-container">${itemsHtml}</div>
                         <div class="info-block"><div class="info-title"><i class="fa-solid fa-location-dot"></i> Delivery Address</div><div class="info-text"><strong>${order.customerName || 'Customer'}</strong><br>${order.address || 'N/A'}<br>Phone: ${order.customerPhone || order.phone || phone}</div></div>
-                        <div class="info-block"><div class="info-title"><i class="fa-solid fa-receipt"></i> Payment Details</div><div class="info-text" style="display:flex; justify-content:space-between;"><span>Total Price / UTR:</span><span style="font-family:monospace; font-weight:800;">₹${order.price} | ${order.transactionId || 'N/A'}</span></div></div>
+                        <div class="info-block"><div class="info-title"><i class="fa-solid fa-receipt"></i> Payment Details</div><div class="info-text" style="display:flex; justify-content:space-between;"><span>Total Price / Payment:</span><span style="font-family:monospace; font-weight:800;">₹${order.price} | ${order.transactionId || 'COD'}</span></div></div>
                         <div class="action-btns">${actionButtonsHtml}</div>
                     </div>`;
             });
@@ -352,7 +359,6 @@
                 const detailsValue = document.getElementById('refundDetailsInput').value.trim();
                 const emailValue = document.getElementById('refundEmailInput').value.trim();
                 
-                // മാറ്റം 2: ശരിയായ ഇമെയിൽ ആണോ എന്ന് അറിയാനുള്ള റഗുലർ എക്സ്പ്രഷൻ (Regex)
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
                 if (!detailsValue) {
