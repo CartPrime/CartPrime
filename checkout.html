@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
     <script>
-        // ഹോം പേജിൽ സേവ് ചെയ്ത തീം അനുസരിച്ച് checkout പേജിലും തീം സെറ്റ് ചെയ്യാൻ
+        // തീം സെറ്റ് ചെയ്യാൻ
         (function() {
             const savedTheme = localStorage.getItem('theme') || localStorage.getItem('darkMode');
             if (savedTheme === 'dark' || savedTheme === 'true') {
@@ -160,7 +160,7 @@
                         </h2>
 
                         <!-- Current Location Button -->
-                        <button type="button" id="locBtn" onclick="getCurrentLocation()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold py-2 px-3 rounded-xl transition-all flex items-center gap-2 border border-blue-200">
+                        <button type="button" id="locBtn" onclick="getCurrentLocation()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold py-2 px-3 rounded-xl transition-all flex items-center gap-2 border border-blue-200 cursor-pointer">
                             <i class="fa-solid fa-crosshairs text-sm"></i> 
                             <span id="locBtnText">Use Current Location</span>
                         </button>
@@ -279,7 +279,7 @@
                     
                     <div id="productPreview" class="space-y-1"></div>
 
-                    <button onclick="placeOrder()" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base py-4 px-6 rounded-xl shadow-lg shadow-blue-600/20 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <button onclick="placeOrder()" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base py-4 px-6 rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
                         <i class="fa-solid fa-bag-shopping"></i> Complete Order
                     </button>
                     
