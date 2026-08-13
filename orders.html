@@ -216,13 +216,11 @@
                 const isPaid = (order.paymentStatus === 'Paid' || order.paymentStatus === 'Success') && !isCOD;
                 const isRejected = order.paymentStatus === 'Rejected' || order.status === 'Rejected';
                 
-                // അഡ്മിൻ മാറ്റുന്ന സ്റ്റാറ്റസ് ഇവിടെ നേരിട്ട് എടുക്കും
                 const displayStatus = order.status || 'Pending';
                 const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
 
                 let payBadge = '', rejectReason = '';
                 
-                // COD ആണെങ്കിൽ Payment Success എന്ന് വരില്ല, കേവലം Cash on Delivery മാത്രം കാണിക്കും
                 if (isCOD) {
                     payBadge = `<div class="pay-verify-badge pay-cod"><i class="fa-solid fa-truck-ram-box"></i> Cash on Delivery</div>`;
                 } else if (isPaid) { 
@@ -234,15 +232,17 @@
 
                 let deliveryMsg = '';
                 
-                // അഡ്മിൻ മാറ്റുന്ന സ്റ്റാറ്റസിന് അനുസരിച്ചുള്ള സന്ദേശങ്ങൾ
+                // സ്റ്റാറ്റസ് അനുസരിച്ച് ഡെലിവറി മെസ്സേജും തീയതിയും കാണിക്കുന്നു
                 if (checkStatus === 'returned') {
                     deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Your Money credited Check your Email</p>`;
                 } else if (checkStatus === 'returnrequested') {
-                    deliveryMsg = `<p style="font-size: 0.8rem; color: #f59e0b; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-clock"></i>Your Order Returned</p>`;
+                    deliveryMsg = `<p style="font-size: 0.8rem; color: #f59e0b; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-clock"></i> Your Order Returned</p>`;
                 } else if (checkStatus === 'delivered') {
                     deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> Your Product Delivered</p>`;
                 } else if (checkStatus === 'shipped') {
-                    deliveryMsg = `<p style="font-size: 0.8rem; color: #2563eb; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-truck-fast"></i> Your order has been shipped</p>`;
+                    // Shipped ആകുമ്പോൾ deliveryDate ഉണ്ടെങ്കിൽ അതും കൂടി കാണിക്കും
+                    const expDateText = order.deliveryDate ? ` (Expected Delivery: ${order.deliveryDate})` : '';
+                    deliveryMsg = `<p style="font-size: 0.8rem; color: #2563eb; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-truck-fast"></i> Your order has been shipped${expDateText}</p>`;
                 } else if (order.deliveryDate) {
                     deliveryMsg = `<p style="font-size: 0.8rem; color: #16a34a; font-weight: 800; margin-top: 5px;"><i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}</p>`;
                 } else if (checkStatus === 'orderconfirmed' || checkStatus === 'pending') {
@@ -309,7 +309,6 @@
 
                 let actionButtonsHtml = '';
 
-                // അഡ്മിൻ ഡിസ്‌പാച്ച്/ഷിപ്പ് ചെയ്യുന്നതിന് മുൻപ് മാത്രം Cancel ഓപ്ഷൻ
                 if ((checkStatus === 'pending' || checkStatus === 'orderconfirmed') && !isRejected && !order.deliveryDate) { 
                     actionButtonsHtml = `<button class="btn btn-cancel" onclick="cancelOrder('${order.id}', '${phone}')">Cancel Order</button>`; 
                 } 
@@ -417,5 +416,5 @@
         });
     };
 </script>
-</body>
+</body> 
 </html>
