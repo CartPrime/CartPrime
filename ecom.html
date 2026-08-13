@@ -429,10 +429,20 @@ import { getDatabase, ref, onValue, update, remove, push, set, get } from "https
 
 const ADMIN_PASSCODE = "73569778";
 
+// Request Notification Permission on Page Load
+function requestNotificationPermission() {
+    if ("Notification" in window) {
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+    }
+}
+
 async function checkAdminPasscode() {
     const isAuthenticated = localStorage.getItem("cartprime_admin_logged_in");
 
     if (isAuthenticated === "true") {
+        requestNotificationPermission();
         return; 
     }
 
@@ -451,6 +461,7 @@ async function checkAdminPasscode() {
 
     if (passcode === ADMIN_PASSCODE) {
         localStorage.setItem("cartprime_admin_logged_in", "true");
+        requestNotificationPermission();
         Swal.fire({ 
             icon: 'success', 
             title: 'Welcome Back, Admin!', 
@@ -496,6 +507,24 @@ const db = getDatabase(app);
 let ordersChartInstance = null;
 let earningsChartInstance = null;
 let globalOrdersCache = {};
+let initialLoadFinished = false; // ആദ്യത്തെ ലോഡിംഗിൽ Notification വരാതിരിക്കാൻ
+
+// Helper function to trigger Sound and Browser Notification
+function triggerNewOrderAlert(customerName, orderId) {
+    // 1. Audio Sound Alert
+    const sound = document.getElementById('orderSound');
+    if (sound) {
+        sound.play().catch(err => console.log("Audio play error:", err));
+    }
+
+    // 2. Desktop Push Notification Alert
+    if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("🛒 പുതിയ ഒരു ഓഡർ എത്തിയിട്ടുണ്ട്!", {
+            body: `Customer: ${customerName || 'Customer'} (#${orderId || ''})`,
+            icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
+        });
+    }
+}
 
 window.fetchMeeshoDetails = async () => {
     let urlInput = document.getElementById('meeshoUrl').value.trim();
@@ -771,6 +800,8 @@ onValue(ref(db, 'orders'), snap => {
     
     if (list) list.innerHTML = ""; 
     if (returnContainer) returnContainer.innerHTML = "";
+    
+    const previousOrdersKeys = Object.keys(globalOrdersCache);
     globalOrdersCache = {};
 
     let totalOrderCount = 0;
@@ -815,6 +846,7 @@ onValue(ref(db, 'orders'), snap => {
         updateEarningsChart({});
         if (list) list.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">No orders found.</td></tr>`;
         if (returnContainer) returnContainer.innerHTML = `<p style="color: #64748b; font-weight: 600;">No return or refund requests.</p>`;
+        initialLoadFinished = true;
         return;
     }
 
@@ -824,6 +856,11 @@ onValue(ref(db, 'orders'), snap => {
             totalOrderCount++;
             let path = childSnap.key;
             globalOrdersCache[path] = { ...data, pathKey: path };
+
+            // ചെക്ക് ചെയ്യാം പേജ് ലോഡ് ആയതിന് ശേഷം ആണോ പുതിയ ഓഡർ വന്നതെന്ന്
+            if (initialLoadFinished && !previousOrdersKeys.includes(path)) {
+                triggerNewOrderAlert(data.customerName, data.orderId || path);
+            }
 
             let st = data.status || "Pending";
             if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
@@ -844,6 +881,11 @@ onValue(ref(db, 'orders'), snap => {
                     let path = `${childSnap.key}/${nestedSnap.key}`;
                     globalOrdersCache[path] = { ...nestedData, pathKey: path, parentPhone: childSnap.key };
 
+                    // പുതിയ ഓഡർ അലർട്ട്
+                    if (initialLoadFinished && !previousOrdersKeys.includes(path)) {
+                        triggerNewOrderAlert(nestedData.customerName, nestedData.orderId || nestedSnap.key);
+                    }
+
                     let st = nestedData.status || "Pending";
                     if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
                     if (list) renderOrderRow(list, nestedData, path);
@@ -859,6 +901,9 @@ onValue(ref(db, 'orders'), snap => {
         }
     });
     
+    // ഫസ്റ്റ് ലോഡിംഗ് പൂർത്തിയായി എന്ന് മാർക്ക് ചെയ്യുക
+    initialLoadFinished = true;
+
     if (totalOrdersStat) totalOrdersStat.innerText = totalOrderCount;
     if (totalEarningsStat) totalEarningsStat.innerText = "₹" + totalEarnings.toLocaleString();
     if (todayEarningsStat) todayEarningsStat.innerText = "₹" + todayEarnings.toLocaleString();
