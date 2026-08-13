@@ -108,7 +108,10 @@
 
         .btn-add { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; }
         .save-btn { background: var(--primary); color: #fff; width: 100%; padding: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; }
-        .stock-badge { border: none; border-radius: 5px; width: 45px; height: 25px; color: white; font-weight: bold; cursor: pointer; }
+        
+        /* Stock Badge Styles */
+        .stock-badge { border: none; border-radius: 6px; width: 50px; height: 28px; color: white; font-weight: 800; font-size: 11px; cursor: pointer; transition: 0.2s ease-in-out; }
+        .stock-badge:hover { opacity: 0.85; transform: scale(1.03); }
         .in-stock { background-color: #2563eb; }
         .out-stock { background-color: #ef4444; }
 
@@ -273,7 +276,7 @@
         </div>
     </div>
 
-    <!-- ORDERS TAB (STRICT LIST VIEW WITHOUT PHONE COLUMN) -->
+    <!-- ORDERS TAB -->
     <div id="orders" class="tab-content">
         <h2 class="tab-title">Order Management</h2>
         <div class="admin-card">
@@ -492,7 +495,7 @@ const db = getDatabase(app);
 
 let ordersChartInstance = null;
 let earningsChartInstance = null;
-let globalOrdersCache = {}; // Cache orders for Modal View
+let globalOrdersCache = {};
 
 window.fetchMeeshoDetails = async () => {
     let urlInput = document.getElementById('meeshoUrl').value.trim();
@@ -869,7 +872,6 @@ onValue(ref(db, 'orders'), snap => {
     }
 });
 
-/* TABLE LIST VIEW ROW (MOBILE NUMBER REMOVED) */
 function renderOrderRow(container, o, path) {
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
@@ -897,7 +899,6 @@ function renderOrderRow(container, o, path) {
     </tr>`;
 }
 
-/* FUNCTION TO COPY ADDRESS */
 window.copyAddressText = (text) => {
     navigator.clipboard.writeText(text).then(() => {
         Swal.fire({
@@ -913,7 +914,6 @@ window.copyAddressText = (text) => {
     });
 };
 
-/* FULL DETAILS POPUP MODAL FUNCTION (MOBILE NUMBER REMOVED) */
 window.viewFullOrderDetails = (path) => {
     const o = globalOrdersCache[path];
     if (!o) return Swal.fire('Error', 'Order details not found', 'error');
@@ -1151,7 +1151,7 @@ onValue(ref(db, 'products'), snap => {
                     <span style="font-size:11px; padding:3px 6px; border-radius:5px; background:${isHome ? '#dcfce7' : '#f1f5f9'}; color:${isHome ? '#166534' : '#64748b'}; font-weight:bold;">${isHome ? 'Home' : 'Hidden'}</span>
                     <span style="font-size:11px; padding:3px 6px; border-radius:5px; background:${isCod ? '#e0f2fe' : '#fee2e2'}; color:${isCod ? '#0369a1' : '#991b1b'}; font-weight:bold; margin-left:2px;">${isCod ? 'COD' : 'Online'}</span>
                 </td>
-                <td><button class="stock-badge ${isOut ? 'out-stock' : 'in-stock'}" onclick="toggleStock('${child.key}', ${isOut})">${isOut ? 'OUT' : 'IN'}</button></td>
+                <td><button class="stock-badge ${isOut ? 'out-stock' : 'in-stock'}" title="Click to Toggle Stock" onclick="toggleStock('${child.key}', ${isOut})">${isOut ? 'OUT' : 'IN'}</button></td>
                 <td>
                     <button style="color:blue; border:none; background:none; cursor:pointer; padding:5px;" onclick="editProduct('${child.key}')"><i class="fa fa-edit"></i></button>
                     <button style="color:red; border:none; background:none; cursor:pointer; padding:5px;" onclick="deleteItem('products/${child.key}')"><i class="fa fa-trash"></i></button>
@@ -1184,7 +1184,23 @@ onValue(ref(db, 'banners'), snap => {
     });
 });
 
-window.toggleStock = (key, cur) => update(ref(db, `products/${key}`), { outOfStock: !cur });
+/* TOGGLE STOCK STATUS FUNCTION */
+window.toggleStock = (key, cur) => {
+    update(ref(db, `products/${key}`), { outOfStock: !cur })
+    .then(() => {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: `Product marked as ${!cur ? 'Out of Stock' : 'In Stock'}`,
+            showConfirmButton: false,
+            timer: 1500
+        });
+    })
+    .catch((err) => {
+        Swal.fire('Error', 'Failed to update stock status: ' + err.message, 'error');
+    });
+};
 
 window.editProduct = (key) => {
     get(ref(db, `products/${key}`)).then(snap => {
