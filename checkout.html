@@ -497,7 +497,10 @@
                         address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state}, ${fields.country} - ${fields.pin}`, 
                         transactionId: 'COD', 
                         date: new Date().toISOString().split('T')[0], 
-                        status: "Pending", 
+                        
+                        // COD ആയതിനാൽ നേരിട്ട് Order Confirmed ആകുന്നു
+                        status: "Order Confirmed", 
+                        
                         paymentStatus: "COD",
                         paymentMethod: "COD",
                         orderId: orderId
