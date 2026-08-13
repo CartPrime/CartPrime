@@ -127,11 +127,16 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        /* --- Dynamic Banner Slider (Updated for Auto Fit) --- */
+        /* --- Dynamic Banner Slider (Updated with Arrows) --- */
         .banner-section {
             padding: 15px 6% 10px 6%;
             position: relative;
             width: 100%;
+        }
+        .banner-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
         }
         .banner-slider {
             display: flex;
@@ -141,6 +146,7 @@
             scrollbar-width: none;
             scroll-behavior: smooth;
             align-items: center;
+            width: 100%;
         }
         .banner-slider::-webkit-scrollbar {
             display: none;
@@ -166,9 +172,42 @@
         .banner-item img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Banner image fully fits without cropping */
+            object-fit: contain;
             border-radius: 20px;
         }
+
+        /* Banner Navigation Arrows */
+        .banner-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #0f172a;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+        .banner-arrow:hover {
+            background: #000;
+            color: #fff;
+            transform: translateY(-50%) scale(1.1);
+        }
+        .banner-arrow.prev {
+            left: -12px;
+        }
+        .banner-arrow.next {
+            right: -12px;
+        }
+
         .banner-dots {
             display: flex;
             justify-content: center;
@@ -214,7 +253,6 @@
             display: flex; flex-direction: column; height: 100%;
             cursor: pointer;
             
-            /* Slide Animation Included */
             animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -340,6 +378,9 @@
             .banner-section { padding: 8px 4% 8px 4%; }
             .banner-item { flex: 0 0 100%; max-height: 160px; border-radius: 12px; }
             .banner-item img { border-radius: 12px; }
+            .banner-arrow { width: 30px; height: 30px; font-size: 0.8rem; }
+            .banner-arrow.prev { left: -5px; }
+            .banner-arrow.next { right: -5px; }
             .dot { width: 6px; height: 6px; }
             .dot.active { width: 14px; }
             
@@ -397,7 +438,11 @@
     <div class="category-bar" id="categoryBar"></div>
 
     <div class="banner-section" id="bannerSection" style="display: none;">
-        <div class="banner-slider" id="bannerSlider"></div>
+        <div class="banner-wrapper">
+            <button class="banner-arrow prev" id="bannerPrevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="banner-slider" id="bannerSlider"></div>
+            <button class="banner-arrow next" id="bannerNextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
         <div class="banner-dots" id="bannerDots"></div>
     </div>
 
@@ -560,7 +605,7 @@
         const bannerSlider = document.getElementById('bannerSlider');
         const bannerDots = document.getElementById('bannerDots');
 
-        /* --- UPDATED & FIXED BANNER CLICK REDIRECT LOGIC --- */
+        /* --- UPDATED BANNER LOGIC WITH CHEVRONS --- */
         onValue(ref(db, 'banners'), (snapshot) => {
             if (snapshot.exists()) {
                 bannerSlider.innerHTML = "";
@@ -576,11 +621,9 @@
                         item.className = 'banner-item';
                         item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner">`;
 
-                        // Added redirectLink to check Firebase key
                         const targetLink = bannerData.redirectLink || bannerData.link || bannerData.targetUrl || bannerData.url || bannerData.redirectUrl;
 
                         item.addEventListener('click', () => {
-                            // 1. External or Internal Web Link
                             if (targetLink && targetLink.toString().trim() !== "") {
                                 let linkStr = targetLink.toString().trim();
                                 if (linkStr.startsWith('http://') || linkStr.startsWith('https://')) {
@@ -589,11 +632,9 @@
                                     window.location.href = linkStr.startsWith('/') ? linkStr : `/${linkStr}`;
                                 }
                             } 
-                            // 2. Direct Product ID Link
                             else if (bannerData.productId) {
                                 trackProductClickAndRedirect(bannerData.productId);
                             } 
-                            // 3. Category Filter
                             else if (bannerData.category) {
                                 activeCategory = bannerData.category;
                                 const filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
@@ -629,6 +670,8 @@
         function initializeSliderScroll() {
             const slider = document.getElementById('bannerSlider');
             const dots = document.querySelectorAll('.dot');
+            const prevBtn = document.getElementById('bannerPrevBtn');
+            const nextBtn = document.getElementById('bannerNextBtn');
             const totalBanners = dots.length;
             if (totalBanners === 0) return;
 
@@ -652,6 +695,23 @@
             };
 
             startAutoScroll();
+
+            // Arrow Controls Logic
+            if (prevBtn && nextBtn) {
+                prevBtn.onclick = () => {
+                    clearInterval(autoScrollInterval);
+                    const width = slider.clientWidth;
+                    slider.scrollBy({ left: -width, behavior: 'smooth' });
+                    startAutoScroll();
+                };
+
+                nextBtn.onclick = () => {
+                    clearInterval(autoScrollInterval);
+                    const width = slider.clientWidth;
+                    slider.scrollBy({ left: width, behavior: 'smooth' });
+                    startAutoScroll();
+                };
+            }
 
             slider.addEventListener('scroll', () => {
                 const width = slider.clientWidth;
@@ -734,7 +794,6 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 
-                // Dynamic Staggered Animation Delay
                 card.style.animationDelay = `${animationDelayIndex * 0.08}s`;
                 animationDelayIndex++;
                 
@@ -846,7 +905,6 @@
             if (e.key === 'Enter') {
                 const searchVal = searchInput.value.trim();
 
-                // Secret trigger redirect
                 if (searchVal.toLowerCase() === "cartecom@com") {
                     window.location.href = "/ecom";
                     return;
