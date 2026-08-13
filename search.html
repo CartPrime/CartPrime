@@ -125,7 +125,7 @@
             background: var(--primary-hover);
         }
 
-        /* --- Controls Bar (Search Heading + Count + Sort) --- */
+        /* --- Controls Bar --- */
         .controls-bar {
             max-width: 1400px;
             margin: 0 auto;
@@ -187,6 +187,18 @@
             gap: 20px;
         }
 
+        /* --- Slide Up Animation for Cards --- */
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* --- Product Card Design --- */
         .card {
             background: var(--card-bg);
@@ -198,11 +210,15 @@
             flex-direction: column;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
+            
+            /* Slide Animation */
+            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
         }
 
         .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
         }
 
         .image-box {
@@ -222,6 +238,11 @@
             height: 100%;
             object-fit: contain;
             padding: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .image-box img {
+            transform: scale(1.05);
         }
 
         .discount-badge {
@@ -340,6 +361,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            animation: slideUpFade 0.4s ease forwards;
         }
 
         .section-separator-heading::before {
@@ -356,6 +378,7 @@
             text-align: center;
             padding: 60px 0;
             color: var(--text-muted);
+            animation: slideUpFade 0.4s ease forwards;
         }
 
         .no-results i {
@@ -364,8 +387,48 @@
             margin-bottom: 12px;
         }
 
+        /* --- Skeleton Loading Cards --- */
+        .skeleton-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 350px;
+        }
+
+        .skeleton-img {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+        }
+
+        .skeleton-info {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .skeleton-line {
+            height: 14px;
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes skeletonLoading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
         /* ===================================================
-           RESPONSIVE STYLE CONTROLS (MOBILE-FIRST)
+           RESPONSIVE STYLE CONTROLS
            =================================================== */
         @media (max-width: 768px) {
             .product-grid {
@@ -386,23 +449,16 @@
                 max-width: 100%;
             }
             .product-grid {
-                grid-template-columns: repeat(2, 1fr); /* Mobile 2 Column view */
+                grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
             }
             .controls-bar {
                 padding: 16px 4% 4px 4%;
                 align-items: center;
             }
-            .search-query-title {
-                font-size: 1.1rem;
-            }
-            .results-count {
-                font-size: 0.78rem;
-            }
-            .sort-dropdown {
-                padding: 6px 10px;
-                font-size: 0.78rem;
-            }
+            .search-query-title { font-size: 1.1rem; }
+            .results-count { font-size: 0.78rem; }
+            .sort-dropdown { padding: 6px 10px; font-size: 0.78rem; }
             .card-info { padding: 8px; }
             .card-info h3 { font-size: 0.8rem; height: 2.2rem; }
             .price { font-size: 0.95rem; }
@@ -414,7 +470,7 @@
 
     <nav class="navbar">
         <div class="nav-left">
-            <button class="back-btn" onclick="window.location.href='index.html'">
+            <button class="back-btn" onclick="window.location.href='/'">
                 <i class="fa-solid fa-arrow-left"></i>
             </button>
         </div>
@@ -430,7 +486,7 @@
     <div class="controls-bar">
         <div class="controls-left">
             <h2 id="searchPageTitle" class="search-query-title">Results for ""</h2>
-            <div id="resultsCount" class="results-count">Processing results...</div>
+            <div id="resultsCount" class="results-count">Searching products...</div>
         </div>
         <select id="sortSelect" class="sort-dropdown">
             <option value="relevance">Sort by: Relevance</option>
@@ -440,13 +496,12 @@
     </div>
 
     <div class="main-container">
-        <div id="productGrid" class="product-grid">
-            </div>
+        <div id="productGrid" class="product-grid"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -467,7 +522,9 @@
         let directMatches = [];
         let similarMatches = [];
 
-        // സെർച്ച് ഹെഡിങ്ങും ഇൻപുട്ട് ബോക്സും അപ്ഡേറ്റ് ചെയ്യുന്നു
+        // Show Skeleton Loading initially
+        showSkeletons();
+
         if (urlParams.get('q')) {
             const rawQuery = urlParams.get('q');
             document.getElementById('pageSearchInput').value = rawQuery;
@@ -477,7 +534,53 @@
         if (currentQuery) {
             fetchDataAndProcess();
         } else {
-            window.location.href = "home.html";
+            window.location.href = "/";
+        }
+
+        function showSkeletons() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = "";
+            for (let i = 0; i < 6; i++) {
+                grid.innerHTML += `
+                    <div class="skeleton-card">
+                        <div class="skeleton-img"></div>
+                        <div class="skeleton-info">
+                            <div class="skeleton-line" style="width: 80%;"></div>
+                            <div class="skeleton-line" style="width: 40%;"></div>
+                            <div class="skeleton-line" style="width: 60%; margin-top: auto;"></div>
+                            <div class="skeleton-line" style="height: 35px; border-radius: 8px;"></div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // --- 5 PRODUCTS VISIT TRACKING LOGIC ---
+        function trackProductClickAndRedirect(productId) {
+            let viewedProducts = JSON.parse(localStorage.getItem('viewedProductIds') || "[]");
+            let visitCounted = localStorage.getItem('visitCounted') === 'true';
+
+            if (!viewedProducts.includes(productId)) {
+                viewedProducts.push(productId);
+                localStorage.setItem('viewedProductIds', JSON.stringify(viewedProducts));
+            }
+
+            if (viewedProducts.length >= 5 && !visitCounted) {
+                const visitsRef = ref(db, 'admin/visits');
+                get(visitsRef).then((snapshot) => {
+                    let currentVisits = snapshot.exists() ? snapshot.val() : 0;
+                    set(visitsRef, currentVisits + 1).then(() => {
+                        localStorage.setItem('visitCounted', 'true');
+                        window.location.href = `/product-details?id=${productId}`;
+                    }).catch(() => {
+                        window.location.href = `/product-details?id=${productId}`;
+                    });
+                }).catch(() => {
+                    window.location.href = `/product-details?id=${productId}`;
+                });
+            } else {
+                window.location.href = `/product-details?id=${productId}`;
+            }
         }
 
         function fetchDataAndProcess() {
@@ -495,11 +598,7 @@
 
         function processSearch(allProducts, searchVal) {
             const searchWords = searchVal.split(' ').filter(word => word.length > 1);
-            
-            // ഇവിടെയാണ് മാറ്റം വരുത്തേണ്ടത്:
-            // p.showOnHome === false ആണോ എന്ന് നോക്കുന്ന വരി ഒഴിവാക്കി.
-            // ഇപ്പോൾ എല്ലാ പ്രൊഡക്റ്റുകളും ഫിൽട്ടർ ചെയ്യപ്പെടും.
-            
+
             directMatches = allProducts.filter(p => {
                 const productName = (p.name || "").toLowerCase();
                 const productCat = (p.category || "").toLowerCase();
@@ -517,7 +616,6 @@
             });
 
             similarMatches = allProducts.filter(p => {
-                // ഇവിടെയും കണ്ടീഷൻ ഒഴിവാക്കി
                 if (directMatches.some(dm => dm.id === p.id)) return false;
 
                 const productName = (p.name || "").toLowerCase();
@@ -561,6 +659,8 @@
                 return;
             }
 
+            let animationDelayIndex = 0;
+
             function createCard(p) {
                 const isOut = p.outOfStock === true;
                 const pr = parseFloat(p.price.toString().replace(/,/g, ''));
@@ -573,6 +673,10 @@
 
                 const card = document.createElement('div');
                 card.className = 'card';
+                
+                // Staggered Slide Animation Delay
+                card.style.animationDelay = `${animationDelayIndex * 0.08}s`;
+                animationDelayIndex++;
 
                 const reviewRef = ref(db, `reviews/${p.id}`);
                 get(reviewRef).then((snapshot) => {
@@ -596,14 +700,16 @@
                     }
                 });
 
+                const mainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150';
+
                 card.innerHTML = `
                     ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''}
                     ${!isOut ? discTag : ''}
                     <div class="image-box">
-                        <img src="${p.images[0]}" alt="${p.name}" style="${isOut ? 'opacity: 0.5; filter: grayscale(1);' : ''}">
+                        <img src="${mainImg}" alt="${p.name || 'Product'}" style="${isOut ? 'opacity: 0.5; filter: grayscale(1);' : ''}">
                     </div>
                     <div class="card-info">
-                        <h3>${p.name}</h3>
+                        <h3>${p.name || 'No Name'}</h3>
                         <div class="card-rating-ui"></div>
                         <div class="price-container">
                             <span class="price">₹${p.price}</span>
@@ -617,7 +723,7 @@
 
                 card.addEventListener('click', () => {
                     if (isOut) return;
-                    window.location.href = `product-details.html?id=${p.id}`;
+                    trackProductClickAndRedirect(p.id);
                 });
 
                 return card;
@@ -646,7 +752,7 @@
         function executeNewSearch() {
             const newVal = document.getElementById('pageSearchInput').value.trim();
             if (newVal.length >= 1) {
-                window.location.href = `search.html?q=${encodeURIComponent(newVal)}`;
+                window.location.href = `/search?q=${encodeURIComponent(newVal)}`;
             }
         }
 
