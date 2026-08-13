@@ -32,14 +32,14 @@
         h2.tab-title { font-weight: 800; font-size: 24px; margin-bottom: 25px; }
         .admin-card { background: white; padding: 25px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); width: 100%; }
         
-        /* Dashboard Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        /* Dashboard Stats Grid - Responsive */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: white; padding: 20px; border-radius: 20px; border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .stat-card i { font-size: 24px; color: var(--primary); margin-bottom: 10px; }
         .stat-card h3 { color: #64748b; font-size: 12px; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
         .stat-card p { font-size: 24px; font-weight: 800; color: #0f172a; word-break: break-all; }
         
-        /* Charts Grid Layout */
+        /* Charts Grid Layout - Responsive */
         .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 25px; }
         .chart-container { background: white; padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); height: 320px; display: flex; flex-direction: column; justify-content: center; position: relative; }
 
@@ -57,67 +57,81 @@
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
         .search-box input { padding-left: 45px; margin: 0; background: #f8fafc; border: 1px solid #e2e8f0; }
         
-        /* Badges & Actions */
+        /* Badges & Tables */
         .pay-badge, .status-badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; display: inline-block; }
+        
         .pay-Verified, .pay-Paid { background: #dcfce7; color: #166534; }
         .pay-Rejected { background: #fee2e2; color: #b91c1c; }
         .pay-Pending { background: #fef9c3; color: #854d0e; }
-        .pay-COD { background: #e0f2fe; color: #0369a1; }
-
         .status-Pending { background: #fef9c3; color: #854d0e; }
         .status-Confirmed { background: #dcfce7; color: #166534; }
         .status-Shipped { background: #e0f2fe; color: #0369a1; }
         .status-Delivered { background: #dbeafe; color: #1e40af; }
-        .status-Rejected, .status-Cancelled { background: #fee2e2; color: #b91c1c; }
+        .status-Rejected { background: #fee2e2; color: #b91c1c; }
 
-        /* Order Card Layout (New UI) */
-        .admin-order-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .admin-order-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border-color: #cbd5e1;
-        }
-        .admin-card-top {
+        /* Order Actions Buttons */
+        .order-actions-btn { display: flex; gap: 6px; flex-wrap: wrap; }
+        .order-actions-btn button { padding: 8px 10px; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; color: white; transition: 0.2s; }
+        .order-actions-btn button:hover { opacity: 0.85; }
+
+        .admin-prod-item {
             display: flex;
-            justify-content: space-between;
+            gap: 8px;
             align-items: center;
-            margin-bottom: 10px;
-            border-bottom: 1px dashed #f1f5f9;
-            padding-bottom: 8px;
-        }
-        .admin-card-body {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .admin-card-body img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 10px;
             background: #f8fafc;
             border: 1px solid #e2e8f0;
+            padding: 6px;
+            border-radius: 8px;
+            margin-bottom: 4px;
+        }
+        .admin-prod-img {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
             flex-shrink: 0;
+            cursor: pointer;
+        }
+        .highlight-size { display: inline-block; background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
+        .highlight-qty { display: inline-block; background: #dcfce7; color: #166534; border: 1px solid #86efac; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
+
+        /* Tables & Responsiveness */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; min-width: 650px; }
+        th { color: #64748b; padding: 12px 15px; text-align: left; font-size: 12px; }
+        td { padding: 12px 15px; background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+        td:first-child { border-left: 1px solid var(--border); border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        td:last-child { border-right: 1px solid var(--border); border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+
+        .btn-add { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; }
+        .save-btn { background: var(--primary); color: #fff; width: 100%; padding: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; }
+        .stock-badge { border: none; border-radius: 5px; width: 45px; height: 25px; color: white; font-weight: bold; cursor: pointer; }
+        .in-stock { background-color: #2563eb; }
+        .out-stock { background-color: #ef4444; }
+
+        .spec-row { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+        .spec-row input { flex: 1 1 130px; }
+
+        .custom-verify-modal {
+            border-radius: 24px !important;
+            padding: 25px !important;
+            background: #ffffff !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+            max-width: 90vw !important;
+        }
+        .custom-verify-input {
+            border-radius: 12px !important;
+            padding: 14px !important;
+            font-size: 16px !important;
+            text-align: center !important;
+            letter-spacing: 2px !important;
+            border: 2px solid #e2e8f0 !important;
+            background: #f8fafc !important;
         }
 
-        .highlight-price { font-weight: 800; color: #16a34a; background: #f0fdf4; padding: 2px 6px; border-radius: 4px; }
-        .highlight-paymode { font-weight: 800; color: #2563eb; background: #eff6ff; padding: 2px 6px; border-radius: 4px; }
-
-        /* Modal Styles */
-        .custom-verify-modal { border-radius: 20px !important; padding: 20px !important; max-width: 500px !important; }
-        .modal-detail-box { text-align: left; font-size: 0.85rem; color: #334155; margin-top: 10px; }
-        .modal-detail-box p { margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .modal-section-title { font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: #64748b; margin-top: 12px; margin-bottom: 6px; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
-
-        /* Responsive Breakpoints */
+        /* IMPROVED RESPONSIVE BREAKPOINTS */
         @media (max-width: 992px) {
             .sidebar { width: 80px; padding: 20px 10px; }
             .sidebar h2, .sidebar button span, .sidebar a span { display: none; }
@@ -128,10 +142,97 @@
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; justify-content: space-around; padding: 10px 5px; overflow-x: auto; }
-            .sidebar button, .sidebar a { width: auto; margin-bottom: 0; padding: 10px 14px; }
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                position: sticky;
+                top: 0;
+                flex-direction: row; 
+                justify-content: flex-start; 
+                align-items: center; 
+                padding: 10px 8px; 
+                box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+                z-index: 1000;
+            }
+            .sidebar h2 { display: none; }
+            .sidebar button, .sidebar a { width: auto; margin-bottom: 0; padding: 10px 16px; flex-shrink: 0; display: inline-flex; }
+            .sidebar button span, .sidebar a span { display: inline-block; font-size: 12px; margin-left: 6px; }
+            .sidebar i { font-size: 16px; margin-right: 0; }
+            
             .main-content { margin-left: 0; width: 100%; padding: 15px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .admin-card { padding: 15px; border-radius: 16px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .stat-card { padding: 15px 10px; border-radius: 14px; }
+            .stat-card p { font-size: 18px; }
+            .charts-grid { grid-template-columns: 1fr; }
+            .chart-container { height: 280px; padding: 15px; }
+            .auto-fill-box button { width: 100%; justify-content: center; }
+
+            /* Enhanced Responsive Tables for Mobile */
+            .table-responsive { overflow-x: visible !important; }
+            table { min-width: 100% !important; display: block; }
+            thead { display: none; }
+            tbody { display: block; width: 100%; }
+
+            tr {
+                display: block;
+                background: #ffffff;
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                margin-bottom: 12px;
+                padding: 12px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            }
+
+            td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                padding: 8px 0;
+                border: none !important;
+                text-align: left;
+                border-bottom: 1px dashed #f1f5f9 !important;
+            }
+
+            td:last-child { border-bottom: none !important; }
+            td:first-child, td:last-child { border-radius: 0; }
+
+            #orders td { display: block; }
+
+            .order-actions-btn {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-top: 8px;
+                width: 100%;
+            }
+
+            .order-actions-btn button {
+                flex: 1 1 calc(33.33% - 8px);
+                padding: 10px 6px;
+                font-size: 11px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+            }
+
+            .spec-row input { flex: 1 1 100%; }
+            #returnRefundSection { padding: 15px !important; border-radius: 16px !important; }
+        }
+
+        @media (max-width: 480px) {
+            h2.tab-title { font-size: 18px; margin-bottom: 15px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .stat-card p { font-size: 16px; }
+            .stat-card h3 { font-size: 9px; }
+            .form-row > * { flex: 1 1 100%; }
+            .order-actions-btn button { flex: 1 1 calc(50% - 8px); padding: 8px; font-size: 11px; }
+            .auto-fill-box input { flex: 1 1 100%; }
         }
     </style>
 </head>
@@ -153,35 +254,76 @@
     
     <div id="dashboard" class="tab-content active-tab">
         <h2 class="tab-title">Overview Dashboard</h2>
+        
         <div class="stats-grid">
-            <div class="stat-card"><i class="fa fa-shopping-cart"></i><h3>Total Orders</h3><p id="stat-total-orders">0</p></div>
-            <div class="stat-card"><i class="fa fa-wallet"></i><h3>Total Earnings</h3><p id="stat-total-earnings">₹0</p></div>
-            <div class="stat-card"><i class="fa fa-calendar-day"></i><h3>Today's Earnings</h3><p id="stat-today-earnings">₹0</p></div>
-            <div class="stat-card"><i class="fa fa-box-open"></i><h3>Total Products</h3><p id="stat-total-products">0</p></div>
-            <div class="stat-card"><i class="fa fa-eye"></i><h3>Total Register</h3><p id="stat-total-register">0</p></div>
+            <div class="stat-card">
+                <i class="fa fa-shopping-cart"></i>
+                <h3>Total Orders</h3>
+                <p id="stat-total-orders">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fa fa-wallet"></i>
+                <h3>Total Earnings</h3>
+                <p id="stat-total-earnings">₹0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fa fa-calendar-day"></i>
+                <h3>Today's Earnings</h3>
+                <p id="stat-today-earnings">₹0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fa fa-box-open"></i>
+                <h3>Total Products</h3>
+                <p id="stat-total-products">0</p>
+            </div>
+            <div class="stat-card">
+                <i class="fa fa-eye"></i>
+                <h3>Total Register</h3>
+                <p id="stat-total-register">0</p>
+            </div>
         </div>
 
         <div class="charts-grid">
-            <div class="chart-container"><h3 style="font-size: 13px; color:#64748b; margin-bottom: 10px; font-weight:800;">Order Analysis</h3><div style="position: relative; height: 100%; width: 100%;"><canvas id="ordersChart"></canvas></div></div>
-            <div class="chart-container"><h3 style="font-size: 13px; color:#64748b; margin-bottom: 10px; font-weight:800;">Daily Earnings (7 Days)</h3><div style="position: relative; height: 100%; width: 100%;"><canvas id="earningsChart"></canvas></div></div>
+            <div class="chart-container">
+                <h3 style="font-size: 13px; color:#64748b; margin-bottom: 10px; font-weight:800; text-transform: uppercase;">Order Analysis</h3>
+                <div style="position: relative; height: 100%; width: 100%;"><canvas id="ordersChart"></canvas></div>
+            </div>
+            <div class="chart-container">
+                <h3 style="font-size: 13px; color:#64748b; margin-bottom: 10px; font-weight:800; text-transform: uppercase;">Daily Money Earnings (7 Days)</h3>
+                <div style="position: relative; height: 100%; width: 100%;"><canvas id="earningsChart"></canvas></div>
+            </div>
         </div>
 
         <div id="returnRefundSection" style="margin-top: 30px; background: white; padding: 20px; border-radius: 20px; border: 1px solid #eee;">
-            <h2 style="font-weight: 800; margin-bottom: 20px; font-size: 18px;"><i class="fa-solid fa-rotate-left" style="margin-right: 10px;"></i>Return & Refund Requests</h2>
-            <div id="returnOrdersContainer" style="display: flex; flex-direction: column; gap: 15px;"><p style="color: #64748b; font-weight: 600;">Loading return requests...</p></div>
+            <h2 style="font-weight: 800; letter-spacing: -0.5px; margin-bottom: 20px; font-size: 18px;">
+                <i class="fa-solid fa-rotate-left" style="margin-right: 10px;"></i>Return & Refund Requests
+            </h2>
+            <div id="returnOrdersContainer" style="display: flex; flex-direction: column; gap: 15px;">
+                <p style="color: #64748b; font-weight: 600;">Loading return requests...</p>
+            </div>
         </div>
     </div>
 
-    <!-- ORDERS TAB (NEW CARD LIST VIEW) -->
     <div id="orders" class="tab-content">
         <h2 class="tab-title">Order Management</h2>
         <div class="admin-card">
             <div class="search-box">
                 <i class="fa fa-search"></i>
-                <input type="text" id="searchOrderInput" placeholder="Search orders by customer, phone, address or product..." onkeyup="filterOrders()">
+                <input type="text" id="searchOrderInput" placeholder="Search orders by customer, phone, address or product name..." onkeyup="filterOrders()">
             </div>
-            <div id="orderList">
-                <p style="text-align: center; color:#64748b;">Loading orders...</p>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer & Address</th>
+                            <th>Item(s) Ordered</th>
+                            <th>Total Amount</th>
+                            <th>Status & Payment</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderList"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -189,13 +331,18 @@
     <div id="addProduct" class="tab-content">
         <h2 class="tab-title" id="formTitle">Add New Item</h2>
         <div class="admin-card" style="max-width: 800px; margin: 0 auto;">
+            
             <div class="auto-fill-box">
                 <input type="text" id="meeshoUrl" placeholder="Paste Meesho / Amazon / Flipkart Product Link here...">
-                <button onclick="fetchMeeshoDetails()"><i class="fa fa-wand-magic-sparkles"></i> AI Auto Fill</button>
+                <button onclick="fetchMeeshoDetails()">
+                    <i class="fa fa-wand-magic-sparkles"></i> AI Auto Fill
+                </button>
             </div>
+
             <input type="hidden" id="editKey">
             <input type="text" id="pName" placeholder="PRODUCT NAME">
             <input type="text" id="pTitle" placeholder="FULL TITLE">
+            
             <select id="pCategory">
                 <option value="" disabled selected>SELECT CATEGORY</option>
                 <option value="Gadgets">Gadgets</option>
@@ -203,27 +350,70 @@
                 <option value="Watches">Watches</option>
                 <option value="Accessories">Accessories</option>
             </select>
-            <div class="form-row"><input type="text" id="pMrp" placeholder="MRP ₹"><input type="text" id="pPrice" placeholder="PRICE ₹"></div>
-            <div class="form-row"><input type="text" id="pShippedFrom" placeholder="SHIPPED FROM"><input type="number" id="pDeliveryDays" placeholder="DELIVERY IN (Days)" value="7"></div>
-            <textarea id="pDesc" placeholder="PRODUCT DESCRIPTION" rows="5"></textarea>
+
+            <div style="margin: 15px 0;">
+                <label style="font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 8px; display: block;">AVAILABLE SIZES (OPTIONAL):</label>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; background: #fcfdfe; padding: 12px; border: 1px solid var(--border); border-radius: 12px;">
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="S"> S</label>
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="M"> M</label>
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="L"> L</label>
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="XL"> XL</label>
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="XXL"> XXL</label>
+                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="Free Size"> Free Size</label>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <input type="text" id="pMrp" placeholder="MRP ₹">
+                <input type="text" id="pPrice" placeholder="PRICE ₹">
+            </div>
+            
+            <div class="form-row">
+                <input type="text" id="pShippedFrom" placeholder="SHIPPED FROM">
+                <input type="number" id="pDeliveryDays" placeholder="DELIVERY IN (Days)" value="7">
+            </div>
+
+            <textarea id="pDesc" placeholder="PRODUCT DESCRIPTION" rows="6" onkeydown="handleBullets(event)"></textarea>
+            
+            <div id="specInputs">
+                <div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>
+            </div>
+            <button class="btn-add" onclick="addSpecField()" style="margin-bottom: 15px;">+ Add Spec</button>
+            
             <div id="imageInputs"><input type="text" class="p-img-link" placeholder="IMAGE URL 1"></div>
             <button class="btn-add" onclick="addImageField()" style="margin-bottom: 15px;">+ Add Image</button>
-            <div class="form-row">
-                <select id="pReturn"><option value="true">7 DAYS RETURN</option><option value="false">NO RETURN</option></select>
-                <select id="pShowOnHome"><option value="false">Hide from Home</option><option value="true" selected>Show on Home</option></select>
+            
+            <div class="form-row" style="align-items:center;">
+                <select id="pReturn">
+                    <option value="true">7 DAYS RETURN</option>
+                    <option value="false">NO RETURN</option>
+                </select>
+                <select id="pShowOnHome">
+                    <option value="false" selected>Hide from Home (Search Only)</option>
+                    <option value="true">Show on Home Page</option>
+                </select>
             </div>
+
             <div style="margin-top: 10px;">
                 <h5 style="margin-bottom: 5px; font-size: 13px;">Cash On Delivery :-</h5>
-                <select id="pCod"><option value="true">Yes</option><option value="false">No</option></select>
+                <select id="pCod">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
             </div>
+            
             <button onclick="saveProduct()" id="saveBtn" class="save-btn" style="margin-top: 20px;">SAVE PRODUCT</button>
+            <button onclick="resetForm()" id="cancelEdit" style="display:none; color:red; border:none; background:none; width:100%; cursor:pointer; margin-top:10px; font-weight:bold;">Cancel Editing</button>
         </div>
     </div>
 
     <div id="manageProducts" class="tab-content">
         <h2 class="tab-title">Inventory</h2>
         <div class="admin-card">
-            <div class="search-box"><i class="fa fa-search"></i><input type="text" id="searchProductInput" placeholder="Search products..." onkeyup="filterProducts()"></div>
+            <div class="search-box">
+                <i class="fa fa-search"></i>
+                <input type="text" id="searchProductInput" placeholder="Search products by name..." onkeyup="filterProducts()">
+            </div>
             <div class="table-responsive">
                 <table>
                     <thead><tr><th>Img</th><th>Name</th><th>Price</th><th>Visibility</th><th>Stock</th><th>Action</th></tr></thead>
@@ -232,18 +422,21 @@
             </div>
         </div>
     </div>
-
+    
     <div id="banners" class="tab-content">
-        <h2 class="tab-title">Banner Management</h2>
+        <h2 class="tab-title">Home Banner Management</h2>
         <div class="admin-card" style="max-width: 800px; margin-bottom: 30px;">
-            <input type="text" id="bImgUrl" placeholder="BANNER IMAGE URL">
-            <input type="text" id="bRedirectLink" placeholder="REDIRECT CLICK URL (OPTIONAL)">
+            <input type="text" id="bImgUrl" placeholder="BANNER IMAGE URL (LINK)">
+            <input type="text" id="bRedirectLink" placeholder="REDIRECT CLICK URL / PRODUCT ID (OPTIONAL)">
             <button onclick="saveBanner()" class="save-btn" style="margin-top: 10px;">ADD BANNER</button>
         </div>
         <div class="admin-card">
             <h3>Active Banners</h3>
             <div class="table-responsive" style="margin-top: 15px;">
-                <table><thead><tr><th>Banner Image</th><th>Action</th></tr></thead><tbody id="bannerList"></tbody></table>
+                <table>
+                    <thead><tr><th>Banner Image</th><th>Action</th></tr></thead>
+                    <tbody id="bannerList"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -251,7 +444,9 @@
     <div id="users" class="tab-content">
         <h2 class="tab-title">Registered Users</h2>
         <div class="admin-card">
-            <div class="table-responsive"><table><thead><tr><th>Name</th><th>Phone/Email</th></tr></thead><tbody id="userList"></tbody></table></div>
+            <div class="table-responsive">
+                <table><thead><tr><th>Name / User</th><th>Mobile / Email</th></tr></thead><tbody id="userList"></tbody></table>
+            </div>
         </div>
     </div>
 </div>
@@ -259,6 +454,59 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const ADMIN_PASSCODE = "73569778";
+
+async function checkAdminPasscode() {
+    const isAuthenticated = localStorage.getItem("cartprime_admin_logged_in");
+
+    if (isAuthenticated === "true") {
+        return; 
+    }
+
+    const { value: passcode } = await Swal.fire({
+        title: '<div style="font-size: 20px; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-shield-halved" style="color: #ff9900; margin-right: 8px;"></i> Security Check</div>',
+        html: '<p style="color: #64748b; font-size: 13px; margin-top: 5px;">Enter your admin passcode to access CartPrime Panel.</p>',
+        input: 'password',
+        inputPlaceholder: '••••••••',
+        customClass: { popup: 'custom-verify-modal', input: 'custom-verify-input' },
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        confirmButtonText: 'Verify Access <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>',
+        confirmButtonColor: '#000000',
+        buttonsStyling: true
+    });
+
+    if (passcode === ADMIN_PASSCODE) {
+        localStorage.setItem("cartprime_admin_logged_in", "true");
+        Swal.fire({ 
+            icon: 'success', 
+            title: 'Welcome Back, Admin!', 
+            text: 'Access Granted Successfully',
+            timer: 1200, 
+            showConfirmButton: false,
+            customClass: { popup: 'custom-verify-modal' }
+        });
+    } else {
+        await Swal.fire({ 
+            icon: 'error', 
+            title: 'Access Denied', 
+            text: 'Incorrect passcode provided!',
+            confirmButtonColor: '#000',
+            customClass: { popup: 'custom-verify-modal' }
+        });
+        window.location.href = "index.html";
+    }
+}
+
+window.logoutAdmin = () => {
+    localStorage.removeItem("cartprime_admin_logged_in");
+    window.location.href = "index.html";
+};
+
+window.addEventListener('load', () => {
+    checkAdminPasscode();
+});
 
 const firebaseConfig = {
     apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -273,171 +521,544 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let cachedOrders = {}; 
+let ordersChartInstance = null;
+let earningsChartInstance = null;
+
+window.fetchMeeshoDetails = async () => {
+    let urlInput = document.getElementById('meeshoUrl').value.trim();
+    if (!urlInput) {
+        Swal.fire('Error', 'Please enter a valid product link', 'error');
+        return;
+    }
+
+    Swal.fire({
+        title: 'Fetching Product...',
+        text: 'Extracting details from Meesho link...',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+
+    try {
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(urlInput)}`;
+        const response = await fetch(proxyUrl);
+
+        if (!response.ok) throw new Error("Fetch failed");
+
+        const data = await response.json();
+        const html = data.contents;
+
+        const getMeta = (prop) => {
+            const regex = new RegExp(`<meta\\s+(?:property|name)=["']${prop}["']\\s+content=["']([^"']*)["']`, 'i');
+            const match = html.match(regex);
+            return match ? match[1] : '';
+        };
+
+        let title = getMeta('og:title') || getMeta('twitter:title');
+        if (!title) {
+            const titleMatch = html.match(/<title>([^<]*)<\/title>/i);
+            if (titleMatch) title = titleMatch[1].replace('| Meesho', '').trim();
+        }
+
+        let image = getMeta('og:image') || getMeta('twitter:image');
+        let description = getMeta('og:description') || getMeta('description');
+
+        let price = '';
+        const jsonLdMatch = html.match(/"price"\s*:\s*"?(\d+)"?/i);
+        if (jsonLdMatch) {
+            price = jsonLdMatch[1];
+        } else {
+            const priceRegex = /₹\s?(\d{2,6})/;
+            const priceMatch = html.match(priceRegex);
+            if (priceMatch) price = priceMatch[1];
+        }
+
+        let foundAny = false;
+
+        if (title) {
+            document.getElementById('pName').value = title;
+            document.getElementById('pTitle').value = title;
+            foundAny = true;
+        }
+
+        if (price) {
+            const priceNum = parseInt(price);
+            document.getElementById('pPrice').value = priceNum;
+            document.getElementById('pMrp').value = Math.round(priceNum * 1.3);
+            foundAny = true;
+        }
+
+        if (description) {
+            document.getElementById('pDesc').value = "• " + description.replace(/\n/g, "\n• ");
+        }
+
+        if (image) {
+            const imageContainer = document.getElementById('imageInputs');
+            imageContainer.innerHTML = `<input type="text" class="p-img-link" value="${image}">`;
+            foundAny = true;
+        }
+
+        if (foundAny) {
+            Swal.fire('Success!', 'Product details auto-filled successfully!', 'success');
+        } else {
+            Swal.fire('Warning', 'Link loaded, but could not auto-extract details. Please fill manually.', 'warning');
+        }
+
+    } catch (err) {
+        console.error("Auto Fill Error:", err);
+        Swal.fire('Fetch Failed', 'Could not load details from this link. Make sure link is valid.', 'error');
+    }
+};
+
+window.filterProducts = () => {
+    let input = document.getElementById('searchProductInput').value.toLowerCase();
+    let tableBody = document.getElementById('manageProductList');
+    if (!tableBody) return;
+    let rows = tableBody.getElementsByTagName('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        let nameColumn = rows[i].getElementsByTagName('td')[1];
+        if (nameColumn) {
+            let productName = nameColumn.textContent || nameColumn.innerText;
+            if (productName.toLowerCase().indexOf(input) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+};
+
+window.filterOrders = () => {
+    let input = document.getElementById('searchOrderInput').value.toLowerCase();
+    let tableBody = document.getElementById('orderList');
+    if (!tableBody) return;
+    let rows = tableBody.getElementsByTagName('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        let rowText = rows[i].textContent || rows[i].innerText;
+        if (rowText.toLowerCase().indexOf(input) > -1) {
+            rows[i].style.display = "";
+        } else {
+            rows[i].style.display = "none";
+        }
+    }
+};
+
+window.handleBullets = (e) => {
+    const el = e.target;
+    if (el.value === "") el.value = "• ";
+    if (e.key === "Enter") {
+        e.preventDefault();
+        const pos = el.selectionStart;
+        const before = el.value.substring(0, pos);
+        const after = el.value.substring(pos);
+        el.value = before + "\n• " + after;
+        el.selectionStart = el.selectionEnd = pos + 3;
+    }
+};
 
 window.openTab = (tabId, element) => {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
     document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active-tab');
-    if (element) element.classList.add('active');
+    
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) targetTab.classList.add('active-tab');
+
+    if (element) {
+        element.classList.add('active');
+    } else {
+        const fallbackBtn = document.getElementById('btn-' + tabId);
+        if (fallbackBtn) fallbackBtn.classList.add('active');
+    }
 };
 
-onValue(ref(db, 'orders'), snap => {
-    const list = document.getElementById('orderList');
-    if (!list) return;
-    list.innerHTML = "";
-    cachedOrders = {};
+window.saveProduct = () => {
+    const key = document.getElementById('editKey').value;
+    const specs = {};
+    document.querySelectorAll('.spec-row').forEach(row => {
+        const k = row.querySelector('.spec-key').value.trim();
+        const v = row.querySelector('.spec-val').value.trim();
+        if(k && v) specs[k] = v;
+    });
 
-    if (!snap.exists()) {
-        list.innerHTML = `<div style="text-align:center; color:#64748b; padding:20px;">No orders found.</div>`;
+    const selectedSizes = Array.from(document.querySelectorAll('.p-size:checked')).map(cb => cb.value);
+    const imageLinks = Array.from(document.querySelectorAll('.p-img-link')).map(input => input.value.trim()).filter(val => val !== "");
+
+    const pName = document.getElementById('pName').value.trim();
+    const pPrice = document.getElementById('pPrice').value.trim();
+    const pCategory = document.getElementById('pCategory').value;
+    const pShowOnHome = document.getElementById('pShowOnHome').value === "true"; 
+    const pCod = document.getElementById('pCod') ? document.getElementById('pCod').value === "true" : false;
+
+    if(!pName || !pPrice || !pCategory || imageLinks.length === 0) {
+        Swal.fire('Error', 'Please fill Name, Category, Price and provide at least one Image URL', 'error');
         return;
     }
 
-    let orderArr = [];
+    const data = {
+        name: pName,
+        title: document.getElementById('pTitle').value.trim() || pName,
+        category: pCategory,
+        mrp: document.getElementById('pMrp').value.trim() || pPrice,
+        price: pPrice,
+        shippedFrom: document.getElementById('pShippedFrom').value.trim() || "CartPrime Warehouse",
+        deliveryDays: document.getElementById('pDeliveryDays').value || 7,
+        desc: document.getElementById('pDesc').value || "No description available.",
+        specs: specs,
+        sizes: selectedSizes,
+        images: imageLinks,
+        return: document.getElementById('pReturn').value === "true",
+        outOfStock: false,
+        showOnHome: pShowOnHome,
+        cod: pCod
+    };
+
+    if(key) {
+        update(ref(db, 'products/' + key), data)
+            .then(() => { Swal.fire('Updated!', 'Product updated successfully', 'success'); resetForm(); openTab('manageProducts'); })
+            .catch(err => Swal.fire('Error', err.message, 'error'));
+    } else {
+        const newRef = push(ref(db, 'products'));
+        set(newRef, data)
+            .then(() => { Swal.fire('Saved!', 'New product added', 'success'); resetForm(); openTab('manageProducts'); })
+            .catch(err => Swal.fire('Error', err.message, 'error'));
+    }
+};
+
+window.saveBanner = () => {
+    const imgUrl = document.getElementById('bImgUrl').value.trim();
+    const link = document.getElementById('bRedirectLink').value.trim();
+
+    if(!imgUrl) { Swal.fire('Error', 'Please provide a Banner Image URL', 'error'); return; }
+
+    const newBannerRef = push(ref(db, 'banners'));
+    set(newBannerRef, { imageUrl: imgUrl, redirectLink: link || "#" }).then(() => {
+        Swal.fire('Saved!', 'Banner uploaded successfully', 'success');
+        document.getElementById('bImgUrl').value = "";
+        document.getElementById('bRedirectLink').value = "";
+    }).catch(err => Swal.fire('Error', err.message, 'error'));
+};
+
+window.viewProof = (imgUrl) => {
+    if(!imgUrl) return Swal.fire('No Proof', 'Customer did not upload a screenshot.', 'info');
+    Swal.fire({ imageUrl: imgUrl, imageAlt: 'Payment Proof', title: 'Payment Screenshot', confirmButtonColor: '#000' });
+};
+
+function updateOrdersChart(statusData) {
+    const chartEl = document.getElementById('ordersChart');
+    if (!chartEl) return;
+    const ctx = chartEl.getContext('2d');
+    
+    if(ordersChartInstance) ordersChartInstance.destroy();
+    
+    ordersChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Rejected', 'Returned'],
+            datasets: [{
+                label: 'Orders',
+                data: [statusData.Pending || 0, statusData.Confirmed || 0, statusData.Shipped || 0, statusData.Delivered || 0, statusData.Rejected || 0, statusData.Returned || 0],
+                backgroundColor: ['rgba(239, 68, 68, 0.8)','rgba(34, 197, 94, 0.8)','rgba(14, 165, 233, 0.8)','rgba(21, 128, 61, 0.9)','rgba(185, 28, 28, 0.9)','rgba(239, 68, 68, 0.9)'],
+                borderColor: ['#dc2626','#16a34a','#0284c7','#15803d','#b91c1c','#ef4444'],
+                borderWidth: 2, borderRadius: 8
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+    });
+}
+
+function updateEarningsChart(dailyEarningsMap) {
+    const chartEl = document.getElementById('earningsChart');
+    if (!chartEl) return;
+    const ctx = chartEl.getContext('2d');
+
+    const sortedDates = Object.keys(dailyEarningsMap).sort().slice(-7);
+    const earningsData = sortedDates.map(date => dailyEarningsMap[date]);
+
+    if(earningsChartInstance) earningsChartInstance.destroy();
+
+    earningsChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: sortedDates,
+            datasets: [{
+                label: 'Daily Revenue (₹)',
+                data: earningsData,
+                backgroundColor: 'rgba(34, 197, 94, 0.1)', 
+                borderColor: '#22c55e', borderWidth: 3, tension: 0.3, fill: true, pointBackgroundColor: '#16a34a', pointRadius: 5
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: value => '₹' + value } } } }
+    });
+}
+
+onValue(ref(db, 'orders'), snap => {
+    const list = document.getElementById('orderList');
+    const returnContainer = document.getElementById('returnOrdersContainer');
+    
+    if (list) list.innerHTML = ""; 
+    if (returnContainer) returnContainer.innerHTML = "";
+
+    let totalOrderCount = 0;
+    let statusCounts = { Pending: 0, Confirmed: 0, Shipped: 0, Delivered: 0, Rejected: 0, Returned: 0, 'Return Requested': 0 };
+    let hasReturns = false;
+    let totalEarnings = 0, todayEarnings = 0, totalLoss = 0; 
+    let dailyEarningsMap = {};
+
+    const todayDateStr = new Date().toISOString().split('T')[0];
+
+    const totalOrdersStat = document.getElementById('stat-total-orders');
+    const totalEarningsStat = document.getElementById('stat-total-earnings');
+    const todayEarningsStat = document.getElementById('stat-today-earnings');
+    const totalLossStat = document.getElementById('stat-total-lost');
+
+    function processOrderEarnings(orderData) {
+        const price = parseFloat(orderData.price) || 0;
+        let orderDate = orderData.date ? orderData.date.split(' ')[0] : todayDateStr; 
+        if(orderDate.includes(',')) orderDate = orderDate.replace(',','');
+
+        if (orderData.status === 'Rejected' || orderData.status === 'Returned' || orderData.status === 'Return Requested') totalLoss += price;
+
+        if (orderData.paymentStatus === 'Paid' || orderData.status === 'Confirmed' || orderData.status === 'Shipped' || orderData.status === 'Delivered') {
+            totalEarnings += price;
+            dailyEarningsMap[orderDate] = (dailyEarningsMap[orderDate] || 0) + price;
+            if (orderDate === todayDateStr) todayEarnings += price;
+        }
+        
+        if (orderData.status === 'Returned') {
+            totalEarnings -= price;
+            dailyEarningsMap[orderDate] = (dailyEarningsMap[orderDate] || 0) - price;
+            if (orderDate === todayDateStr) todayEarnings -= price;
+        }
+    }
+
+    if (!snap.exists()) {
+        if (totalOrdersStat) totalOrdersStat.innerText = "0";
+        if (totalEarningsStat) totalEarningsStat.innerText = "₹0";
+        if (todayEarningsStat) todayEarningsStat.innerText = "₹0";
+        if (totalLossStat) totalLossStat.innerText = "₹0";
+        updateOrdersChart(statusCounts);
+        updateEarningsChart({});
+        if (list) list.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No orders found.</td></tr>`;
+        if (returnContainer) returnContainer.innerHTML = `<p style="color: #64748b; font-weight: 600;">No return or refund requests.</p>`;
+        return;
+    }
+
     snap.forEach(childSnap => {
         const data = childSnap.val();
         if (data.productName || data.customerName) {
-            const fullObj = { id: childSnap.key, path: childSnap.key, ...data };
-            orderArr.push(fullObj);
-            cachedOrders[childSnap.key] = fullObj;
-        } else {
+            totalOrderCount++;
+            let st = data.status || "Pending";
+            if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
+            if (list) renderOrderRow(list, data, childSnap.key, data.customerPhone || "N/A");
+            
+            processOrderEarnings(data);
+
+            if (st === 'Return Requested' || st === 'Returned') {
+                hasReturns = true;
+                if (returnContainer) renderReturnCard(returnContainer, data, childSnap.key, data.customerPhone || "N/A");
+            }
+        } 
+        else {
             childSnap.forEach(nestedSnap => {
                 const nestedData = nestedSnap.val();
                 if (nestedData.productName || nestedData.customerName) {
-                    const fullObj = { id: nestedSnap.key, path: `${childSnap.key}/${nestedSnap.key}`, ...nestedData };
-                    orderArr.push(fullObj);
-                    cachedOrders[fullObj.path] = fullObj;
+                    totalOrderCount++;
+                    let st = nestedData.status || "Pending";
+                    if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
+                    if (list) renderOrderRow(list, nestedData, `${childSnap.key}/${nestedSnap.key}`, nestedData.customerPhone || childSnap.key);
+                    
+                    processOrderEarnings(nestedData);
+
+                    if (st === 'Return Requested' || st === 'Returned') {
+                        hasReturns = true;
+                        if (returnContainer) renderReturnCard(returnContainer, nestedData, `${childSnap.key}/${nestedSnap.key}`, nestedData.customerPhone || childSnap.key);
+                    }
                 }
             });
         }
     });
+    
+    if (totalOrdersStat) totalOrdersStat.innerText = totalOrderCount;
+    if (totalEarningsStat) totalEarningsStat.innerText = "₹" + totalEarnings.toLocaleString();
+    if (todayEarningsStat) todayEarningsStat.innerText = "₹" + todayEarnings.toLocaleString();
+    if (totalLossStat) totalLossStat.innerText = "₹" + totalLoss.toLocaleString();
+    
+    updateOrdersChart(statusCounts);
+    updateEarningsChart(dailyEarningsMap);
 
-    orderArr.reverse().forEach(o => {
-        const currentStatus = o.status || "Pending";
-        const isCOD = (o.paymentMethod === 'COD' || o.paymentStatus === 'COD');
-        
-        let mainImg = "https://via.placeholder.com/150";
-        let mainTitle = "Product";
-        
-        if (Array.isArray(o.items) && o.items.length > 0) {
-            mainImg = o.items[0].image || mainImg;
-            mainTitle = o.items[0].name || mainTitle;
-            if(o.items.length > 1) mainTitle += ` (+${o.items.length - 1} more)`;
-        } else {
-            mainImg = o.productImage || mainImg;
-            mainTitle = o.productName || mainTitle;
-        }
-
-        list.innerHTML += `
-        <div class="admin-order-card" onclick="window.showAdminOrderModal('${o.path}')">
-            <div class="admin-card-top">
-                <span style="font-size:0.75rem; font-weight:800; color:#64748b;">ID: #${o.id}</span>
-                <div>
-                    <span class="status-badge status-${currentStatus.replace(/\s+/g, '')}">${currentStatus}</span>
-                    <span class="pay-badge pay-${isCOD ? 'COD' : (o.paymentStatus || 'Pending')}">${isCOD ? 'COD' : (o.paymentStatus || 'Pending')}</span>
-                </div>
-            </div>
-            <div class="admin-card-body">
-                <img src="${mainImg}">
-                <div style="flex-grow:1;">
-                    <h4 style="font-size:0.9rem; color:#1e293b; font-weight:700;">${mainTitle}</h4>
-                    <p style="font-size:0.8rem; color:#2563eb; font-weight:700; margin-top:2px;">Customer: ${o.customerName || 'N/A'}</p>
-                    <p style="font-size:0.8rem; color:#16a34a; font-weight:800; margin-top:2px;">Amount: ₹${o.price || '0'}</p>
-                </div>
-                <div style="font-size:0.75rem; color:#64748b; font-weight:600;">Details <i class="fa fa-chevron-right"></i></div>
-            </div>
-        </div>`;
-    });
+    if (!hasReturns && returnContainer) {
+        returnContainer.innerHTML = `<p style="color: #64748b; font-weight: 600;">No return or refund requests at the moment.</p>`;
+    }
 });
 
-// ORDER DETAILS POPUP MODAL
-window.showAdminOrderModal = (path) => {
-    const o = cachedOrders[path];
-    if (!o) return;
-
-    const isCOD = (o.paymentMethod === 'COD' || o.paymentStatus === 'COD');
+function renderOrderRow(container, o, path, customerPhone) {
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
+    const proofImg = o.paymentProof || ""; 
+    const payMethod = o.paymentMethod || (o.transactionId ? "UPI Payment" : "Cash On Delivery");
+    
+    let productsListHtml = "";
 
-    let itemsHtml = '';
-    if (Array.isArray(o.items) && o.items.length > 0) {
+    if (o.items && Array.isArray(o.items) && o.items.length > 0) {
         o.items.forEach(item => {
-            itemsHtml += `
-            <div style="display:flex; gap:10px; align-items:center; background:#f8fafc; padding:8px; border-radius:8px; margin-bottom:5px;">
-                <img src="${item.image || 'https://via.placeholder.com/150'}" style="width:40px; height:40px; object-fit:cover; border-radius:6px;">
-                <div>
-                    <div style="font-weight:700; font-size:0.8rem;">${item.name || 'Product'}</div>
-                    <div style="font-size:0.75rem; color:#64748b;">₹${item.price} | Qty: ${item.quantity || 1} | Size: ${item.size || 'N/A'}</div>
+            let pImg = item.image || item.productImage || "https://via.placeholder.com/150";
+            let pSize = item.size || item.selectedSize || "N/A";
+            let pQty = item.quantity || item.qty || 1;
+
+            productsListHtml += `
+            <div class="admin-prod-item">
+                <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 12px; font-weight: 800; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.name || item.title || 'Product'}</p>
+                    <div style="margin-top: 2px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                        <span class="highlight-size">Size: ${pSize}</span>
+                        <span class="highlight-qty">Qty: ${pQty}</span>
+                    </div>
                 </div>
             </div>`;
         });
     } else {
-        itemsHtml = `
-        <div style="display:flex; gap:10px; align-items:center; background:#f8fafc; padding:8px; border-radius:8px; margin-bottom:5px;">
-            <img src="${o.productImage || 'https://via.placeholder.com/150'}" style="width:40px; height:40px; object-fit:cover; border-radius:6px;">
-            <div>
-                <div style="font-weight:700; font-size:0.8rem;">${o.productName || 'Product'}</div>
-                <div style="font-size:0.75rem; color:#64748b;">₹${o.price} | Size: ${o.selectedSize || 'N/A'}</div>
+        let pImg = o.productImage || "https://via.placeholder.com/150";
+        let pSize = o.selectedSize || "N/A";
+        let pQty = o.quantity || o.qty || 1;
+
+        productsListHtml = `
+        <div class="admin-prod-item">
+            <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
+            <div style="flex: 1; min-width: 0;">
+                <p style="font-size: 12px; font-weight: 800; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${o.productName || 'Product'}</p>
+                <div style="margin-top: 2px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                    <span class="highlight-size">Size: ${pSize}</span>
+                    <span class="highlight-qty">Qty: ${pQty}</span>
+                </div>
             </div>
         </div>`;
     }
 
-    // Dynamic Action Buttons
-    let actionButtonsHtml = '';
-    
-    // COD ആകുമ്പോൾ "Verify Payment" ബട്ടൺ കാണിക്കില്ല
-    if (!isCOD && payStatus !== 'Paid') {
-        actionButtonsHtml += `<button onclick="window.verifyPayment('${path}', 'Paid')" style="background:#16a34a; color:#fff; border:none; padding:8px 12px; border-radius:8px; font-weight:700; cursor:pointer;"><i class="fa fa-check"></i> Verify Online Payment</button>`;
-    } else if (isCOD) {
-        actionButtonsHtml += `<span style="background:#e0f2fe; color:#0369a1; padding:6px 10px; border-radius:8px; font-weight:800; font-size:0.75rem;"><i class="fa fa-hand-holding-dollar"></i> COD Order (No Payment Verification Needed)</span>`;
-    }
-
-    actionButtonsHtml += `
-        <button onclick="window.shipOrderWithDate('${path}')" style="background:#0284c7; color:#fff; border:none; padding:8px 12px; border-radius:8px; font-weight:700; cursor:pointer;"><i class="fa fa-truck-fast"></i> Ship Order</button>
-        <button onclick="window.updateStatus('${path}', 'Delivered')" style="background:#2563eb; color:#fff; border:none; padding:8px 12px; border-radius:8px; font-weight:700; cursor:pointer;"><i class="fa fa-box"></i> Delivered</button>
-        <button onclick="window.deleteItem('orders/${path}')" style="background:#ef4444; color:#fff; border:none; padding:8px 12px; border-radius:8px; font-weight:700; cursor:pointer;"><i class="fa fa-trash"></i> Delete</button>
-    `;
-
-    Swal.fire({
-        title: `Order Details (#${o.id})`,
-        html: `
-            <div class="modal-detail-box">
-                <div class="modal-section-title">Items Ordered</div>
-                ${itemsHtml}
-
-                <div class="modal-section-title">Customer Info</div>
-                <p><strong>Name:</strong> <span>${o.customerName || 'N/A'}</span></p>
-                <p><strong>Phone:</strong> <span>${o.customerPhone || o.phone || 'N/A'}</span></p>
-                <p><strong>Address:</strong> <span>${o.address || 'N/A'}</span></p>
-
-                <div class="modal-section-title">Order & Payment Info</div>
-                <p><strong>Total Amount:</strong> <span class="highlight-price">₹${o.price}</span></p>
-                <p><strong>Payment Mode:</strong> <span class="highlight-paymode">${isCOD ? 'Cash On Delivery' : 'Online Paid'}</span></p>
-                <p><strong>Order Status:</strong> <span>${currentStatus}</span></p>
-                ${o.deliveryDate ? `<p><strong>Expected Delivery:</strong> <span>${o.deliveryDate}</span></p>` : ''}
-
-                <div class="modal-section-title">Actions</div>
-                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
-                    ${actionButtonsHtml}
-                </div>
+    container.innerHTML += `
+    <tr>
+        <td>
+            <strong style="color:#0f172a; font-size:13px;"><i class="fa fa-user"></i> ${o.customerName || 'Customer'}</strong><br>
+            <span style="color:#2563eb; font-weight:700; font-size:11px;"><i class="fa fa-phone"></i> ${customerPhone}</span><br>
+            <span style="color:#64748b; font-size:11px;"><i class="fa fa-location-dot"></i> ${o.address || 'N/A'}</span>
+            ${o.deliveryDate ? `<br><span style="color:#0284c7; font-weight:bold; font-size:11px;"><i class="fa fa-truck"></i> Est. Delivery: ${o.deliveryDate}</span>` : ''}
+        </td>
+        <td style="min-width: 180px;">
+            ${productsListHtml}
+        </td>
+        <td>
+            <strong style="color:#16a34a; font-size:14px;">₹${o.price || '0'}</strong><br>
+            <span style="font-size:10px; color:#64748b;">${payMethod}</span>
+            ${proofImg ? `<br><button onclick="viewProof('${proofImg}')" style="margin-top:4px; background:#fff; border:1px solid #cbd5e1; padding:2px 6px; border-radius:4px; cursor:pointer; font-size:10px; font-weight:700;">Proof <i class="fa fa-image"></i></button>` : ''}
+        </td>
+        <td>
+            <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-start;">
+                <span class="status-badge status-${currentStatus}">${currentStatus}</span>
+                <span class="pay-badge pay-${payStatus}">${payStatus}</span>
             </div>
-        `,
-        showConfirmButton: true,
-        confirmButtonText: 'Close',
-        customClass: { popup: 'custom-verify-modal' }
+        </td>
+        <td>
+            <div class="order-actions-btn">
+                <button style="background:#16a34a" title="Verify Payment" onclick="verifyPayment('${path}', 'Paid')"><i class="fa fa-check"></i></button>
+                <button style="background:#ef4444" title="Reject / Cancel Payment" onclick="verifyPayment('${path}', 'Rejected')"><i class="fa fa-xmark"></i></button>
+                
+                <!-- SHIPPED BUTTON -->
+                <button style="background:#0284c7" title="Mark as Shipped" onclick="shipOrderWithDate('${path}')"><i class="fa fa-truck-fast"></i> Shipped</button>
+                
+                <button style="background:#2563eb" title="Mark Delivered" onclick="updateStatus('${path}', 'Delivered')"><i class="fa fa-box"></i></button>
+                <button style="background:#333;" title="Delete Order" onclick="deleteItem('orders/${path}')"><i class="fa fa-trash"></i></button>
+            </div>
+        </td>
+    </tr>`;
+}
+
+function renderReturnCard(container, o, path, customerPhone) {
+    const currentStatus = o.status || "Pending";
+    const refundMethod = o.refundMethod || 'N/A';
+    const refundDetails = o.refundDetails || 'N/A';
+    const userEmail = o.refundEmail || o.email || 'No Email Provided';
+    
+    container.innerHTML += `
+    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; padding: 18px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 5px;">
+            <div>
+                <span style="font-size: 0.75rem; font-weight: 800; color: #64748b;">ORDER ID: #${path.split('/').pop()}</span>
+                <h4 style="font-size: 1rem; color: #1e293b; margin-top: 2px;">Customer: ${o.customerName || 'N/A'} (${customerPhone})</h4>
+                <p style="font-size: 0.85rem; color: #2563eb; margin: 4px 0 0 0; font-weight: bold; word-break: break-all;">
+                    <i class="fa fa-envelope"></i> Email: ${userEmail}
+                </p>
+            </div>
+            <span style="font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 8px; background: ${currentStatus === 'Returned' ? '#dcfce7' : '#fee2e2'}; color: ${currentStatus === 'Returned' ? '#15803d' : '#b91c1c'}; text-transform: uppercase;">
+                ${currentStatus}
+            </span>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <img src="${o.productImage || (o.items && o.items[0] ? o.items[0].image : '') || ''}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
+            <div><p style="font-size:13px; font-weight:800;">${o.productName || 'Product'}</p></div>
+        </div>
+        <div style="background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 12px; font-size: 0.85rem;">
+            <p style="font-weight: 700; color: #ef4444; margin-bottom: 5px;"><i class="fa-solid fa-money-bill-transfer"></i> REFUND INFO</p>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="color:#64748b; font-weight:600;">Refund Amount:</span>
+                <span style="font-weight: 800; color: #000;">₹${o.price || '0'}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="color:#64748b; font-weight:600;">Method Selected:</span>
+                <span style="font-weight: 700; color: #1e293b;">${refundMethod}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <span style="color:#64748b; font-weight:600;">Payee Details:</span>
+                <span style="font-weight: 800; color: #000; font-family: monospace; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; word-break: break-all;">${refundDetails}</span>
+            </div>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 5px;">
+            ${currentStatus === 'Return Requested' ? `
+                <button onclick="approveRefund('${path}')" style="flex: 1; background: #16a34a; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem;">
+                    <i class="fa-solid fa-circle-check"></i> Approve & Refund Complete
+                </button>
+            ` : `
+                <p style="color: #16a34a; font-weight: 800; font-size: 0.8rem;"><i class="fa-solid fa-circle-check"></i> Refunded successfully and closed.</p>
+            `}
+        </div>
+    </div>`;
+}
+
+window.approveRefund = (path) => {
+    Swal.fire({
+        title: 'Complete Refund?',
+        text: "Make sure you have sent the money to the user's UPI/Mobile number before confirming.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Money Sent'
+    }).then((res) => {
+        if (res.isConfirmed) {
+            update(ref(db, 'orders/' + path), { status: 'Returned' })
+            .then(() => { Swal.fire('Success', 'Order status updated to Returned.', 'success'); })
+            .catch((err) => { Swal.fire('Error', 'Failed to update: ' + err.message, 'error'); });
+        }
     });
 };
 
 window.verifyPayment = (path, status) => {
-    update(ref(db, 'orders/' + path), { paymentStatus: 'Paid', status: 'Confirmed' })
-    .then(() => { Swal.fire('Updated', 'Payment verified successfully.', 'success'); });
+    let updateData = {};
+    if(status === 'Paid') {
+        updateData = { paymentStatus: 'Paid', status: 'Confirmed' };
+    } else if(status === 'Rejected') {
+        updateData = { paymentStatus: 'Rejected', status: 'Rejected', deliveryDate: null };
+    }
+    update(ref(db, 'orders/' + path), updateData).then(() => {
+        Swal.fire('Updated', `Payment status marked as ${status}`, 'success');
+    });
 };
 
 window.updateStatus = (path, s) => {
-    update(ref(db, 'orders/' + path), { status: s })
-    .then(() => { Swal.fire('Updated', `Status updated to ${s}`, 'success'); });
+    update(ref(db, 'orders/' + path), { status: s }).then(() => {
+        Swal.fire('Updated', `Order status marked as ${s}`, 'success');
+    });
 };
 
+// Shipped ആക്കുന്നതിനുള്ള ഫങ്ഷൻ
 window.shipOrderWithDate = async (path) => {
     const { value: date } = await Swal.fire({ 
         title: 'Select Expected Delivery Date', 
@@ -447,9 +1068,153 @@ window.shipOrderWithDate = async (path) => {
     });
     
     if (date) {
-        update(ref(db, 'orders/' + path), { status: 'Shipped', deliveryDate: date })
-        .then(() => Swal.fire('Shipped!', 'Order marked as shipped.', 'success'));
+        update(ref(db, 'orders/' + path), { status: 'Shipped', deliveryDate: date }).then(() => {
+            Swal.fire('Shipped!', 'Order status updated to Shipped.', 'success');
+        });
     }
+};
+
+onValue(ref(db, 'products'), snap => {
+    const list = document.getElementById('manageProductList');
+    if (!list) return;
+    list.innerHTML = "";
+    
+    let totalProductsCount = 0;
+    
+    if (snap.exists()) {
+        snap.forEach(child => {
+            totalProductsCount++;
+            const p = child.val();
+            const isOut = p.outOfStock === true;
+            const isHome = p.showOnHome === true; 
+            const isCod = p.cod === true;
+            
+            list.innerHTML += `<tr>
+                <td><img src="${p.images ? p.images[0] : ''}" width="40" height="40" style="object-fit:cover; border-radius:5px;"></td>
+                <td>${p.name || 'N/A'}</td>
+                <td>₹${p.price || '0'}</td>
+                <td>
+                    <span style="font-size:11px; padding:3px 6px; border-radius:5px; background:${isHome ? '#dcfce7' : '#f1f5f9'}; color:${isHome ? '#166534' : '#64748b'}; font-weight:bold;">${isHome ? 'Home' : 'Hidden'}</span>
+                    <span style="font-size:11px; padding:3px 6px; border-radius:5px; background:${isCod ? '#e0f2fe' : '#fee2e2'}; color:${isCod ? '#0369a1' : '#991b1b'}; font-weight:bold; margin-left:2px;">${isCod ? 'COD' : 'Online'}</span>
+                </td>
+                <td><button class="stock-badge ${isOut ? 'out-stock' : 'in-stock'}" onclick="toggleStock('${child.key}', ${isOut})">${isOut ? 'OUT' : 'IN'}</button></td>
+                <td>
+                    <button style="color:blue; border:none; background:none; cursor:pointer; padding:5px;" onclick="editProduct('${child.key}')"><i class="fa fa-edit"></i></button>
+                    <button style="color:red; border:none; background:none; cursor:pointer; padding:5px;" onclick="deleteItem('products/${child.key}')"><i class="fa fa-trash"></i></button>
+                </td>
+            </tr>`;
+        });
+    }
+    const totalProdStat = document.getElementById('stat-total-products');
+    if (totalProdStat) totalProdStat.innerText = totalProductsCount;
+});
+
+onValue(ref(db, 'banners'), snap => {
+    const bannerTable = document.getElementById('bannerList');
+    if (!bannerTable) return;
+    bannerTable.innerHTML = "";
+    if(!snap.exists()){
+        bannerTable.innerHTML = `<tr><td colspan="2" style="color: #94a3b8; text-align:center;">No banners uploaded yet.</td></tr>`;
+        return;
+    }
+    snap.forEach(child => {
+        const b = child.val();
+        bannerTable.innerHTML += `<tr>
+            <td><img src="${b.imageUrl}" style="max-width:200px; max-height:80px; border-radius:10px; object-fit:cover; width:100%;"></td>
+            <td>
+                <button style="color:red; border:none; background:none; cursor:pointer; font-size:16px;" onclick="deleteItem('banners/${child.key}')">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    });
+});
+
+window.toggleStock = (key, cur) => update(ref(db, `products/${key}`), { outOfStock: !cur });
+
+window.editProduct = (key) => {
+    get(ref(db, `products/${key}`)).then(snap => {
+        if (!snap.exists()) return;
+        const p = snap.val();
+        document.getElementById('editKey').value = key;
+        document.getElementById('pName').value = p.name || "";
+        document.getElementById('pTitle').value = p.title || "";
+        document.getElementById('pCategory').value = p.category || ""; 
+        document.getElementById('pMrp').value = p.mrp || "";
+        document.getElementById('pPrice').value = p.price || "";
+        document.getElementById('pShippedFrom').value = p.shippedFrom || "";
+        document.getElementById('pDeliveryDays').value = p.deliveryDays || 7;
+        document.getElementById('pDesc').value = p.desc || "• ";
+        
+        document.getElementById('pShowOnHome').value = p.showOnHome === true ? "true" : "false";
+        if (document.getElementById('pCod')) {
+            document.getElementById('pCod').value = p.cod === true ? "true" : "false"; 
+        }
+
+        const savedSizes = p.sizes || [];
+        document.querySelectorAll('.p-size').forEach(cb => {
+            cb.checked = savedSizes.includes(cb.value);
+        });
+        
+        const sc = document.getElementById('specInputs'); 
+        if (sc) {
+            sc.innerHTML = "";
+            if(p.specs && Object.keys(p.specs).length > 0) {
+                for(let k in p.specs) sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}"></div>`;
+            } else {
+                sc.innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
+            }
+        }
+        
+        const ic = document.getElementById('imageInputs'); 
+        if (ic) {
+            ic.innerHTML = "";
+            if(p.images && p.images.length > 0) {
+                p.images.forEach(u => { ic.innerHTML += `<input type="text" class="p-img-link" value="${u}">`; });
+            } else {
+                ic.innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
+            }
+        }
+        
+        if (document.getElementById('formTitle')) document.getElementById('formTitle').innerText = "Edit Product";
+        if (document.getElementById('saveBtn')) document.getElementById('saveBtn').innerText = "UPDATE PRODUCT";
+        if (document.getElementById('cancelEdit')) document.getElementById('cancelEdit').style.display = "block";
+        openTab('addProduct'); 
+    }).catch(err => console.error("Error updating form: ", err));
+};
+
+window.resetForm = () => {
+    document.getElementById('editKey').value = "";
+    document.getElementById('meeshoUrl').value = "";
+    document.getElementById('pName').value = "";
+    document.getElementById('pTitle').value = "";
+    document.getElementById('pCategory').value = ""; 
+    document.getElementById('pMrp').value = "";
+    document.getElementById('pPrice').value = "";
+    document.getElementById('pShippedFrom').value = "";
+    document.getElementById('pDeliveryDays').value = 7;
+    document.getElementById('pDesc').value = "";
+    document.getElementById('pShowOnHome').value = "false"; 
+    if (document.getElementById('pCod')) document.getElementById('pCod').value = "false"; 
+    
+    document.querySelectorAll('.p-size').forEach(cb => cb.checked = false);
+
+    if (document.getElementById('specInputs')) document.getElementById('specInputs').innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
+    if (document.getElementById('imageInputs')) document.getElementById('imageInputs').innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
+    if (document.getElementById('formTitle')) document.getElementById('formTitle').innerText = "Add New Item";
+    if (document.getElementById('saveBtn')) document.getElementById('saveBtn').innerText = "SAVE PRODUCT";
+    if (document.getElementById('cancelEdit')) document.getElementById('cancelEdit').style.display = "none";
+};
+
+window.addSpecField = () => {
+    const d = document.createElement('div'); d.className = 'spec-row';
+    d.innerHTML = `<input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value">`;
+    if (document.getElementById('specInputs')) document.getElementById('specInputs').appendChild(d);
+};
+
+window.addImageField = () => {
+    const i = document.createElement('input'); i.className = 'p-img-link'; i.placeholder = "Image URL";
+    if (document.getElementById('imageInputs')) document.getElementById('imageInputs').appendChild(i);
 };
 
 window.deleteItem = (p) => {
@@ -457,14 +1222,38 @@ window.deleteItem = (p) => {
     .then((res) => { if (res.isConfirmed) remove(ref(db, p)); });
 };
 
-window.filterOrders = () => {
-    let input = document.getElementById('searchOrderInput').value.toLowerCase();
-    let cards = document.getElementsByClassName('admin-order-card');
-    for (let card of cards) {
-        let text = card.textContent || card.innerText;
-        card.style.display = text.toLowerCase().includes(input) ? "" : "none";
-    }
-};
+document.addEventListener("DOMContentLoaded", () => {
+    onValue(ref(db, 'users'), snap => {
+        const list = document.getElementById('userList');
+        const registerStat = document.getElementById('stat-total-register');
+        
+        let totalUsersCount = 0;
+        if (list) list.innerHTML = "";
+        
+        if(snap.exists()) {
+            totalUsersCount = Object.keys(snap.val()).length; 
+            
+            snap.forEach(u => { 
+                const userData = u.val();
+                const userName = userData.name || 'N/A'; 
+                const phone = userData.phone || userData.email || u.key; 
+
+                if (list) {
+                    list.innerHTML += `
+                        <tr>
+                            <td>${userName}</td>
+                            <td>${phone}</td>
+                        </tr>`; 
+                }
+            });
+        }
+        
+        if (registerStat) {
+            registerStat.innerText = totalUsersCount.toLocaleString();
+        }
+    });
+});
 </script>
+
 </body> 
 </html>
