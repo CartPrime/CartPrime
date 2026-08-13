@@ -9,14 +9,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* --- Light Theme Variables --- */
         :root {
-            --primary: #000;
+            --primary: #000000;
             --accent: #2563eb;
             --bg: #ffffff;
             --surface: #f8fafc;
+            --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --skeleton-start: #f1f5f9;
+            --skeleton-mid: #e2e8f0;
+        }
+
+        /* --- Dark Theme Variables --- */
+        [data-theme="dark"] {
+            --primary: #ffffff;
+            --accent: #60a5fa;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --nav-bg: rgba(15, 23, 42, 0.85);
+            --skeleton-start: #1e293b;
+            --skeleton-mid: #334155;
         }
 
         * { 
@@ -40,6 +60,7 @@
             display: flex;
             flex-direction: column;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* --- Navigation --- */
@@ -49,37 +70,38 @@
             align-items: center;
             padding: 12px 6%;
             position: sticky; top: 0; 
-            background: rgba(255, 255, 255, 0.85);
+            background: var(--nav-bg);
             backdrop-filter: blur(12px);
             z-index: 1000;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid var(--border);
             gap: 15px;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
-        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; user-select: none; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; user-select: none; color: var(--text-main); }
         .logo span { color: var(--text-muted); font-weight: 300; }
 
         .search-container { flex: 1; max-width: 500px; position: relative; }
         .search-container input {
             width: 100%; padding: 10px 15px 10px 40px; border-radius: 12px;
-            border: 1px solid #e2e8f0; background: var(--surface); outline: none;
+            border: 1px solid var(--border); background: var(--surface); color: var(--text-main); outline: none;
             transition: 0.3s; font-size: 0.9rem;
         }
-        .search-container input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .search-container input:focus { border-color: var(--primary); background: var(--card-bg); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .search-container i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
 
         /* --- Compact Search Suggestion Box --- */
         .search-suggestions-box {
             position: absolute; top: calc(100% + 8px); left: 0; right: 0;
-            background: white; border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            max-height: 350px; overflow-y: auto; z-index: 2000; display: none; border: 1px solid rgba(0,0,0,0.05);
+            background: var(--card-bg); border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            max-height: 350px; overflow-y: auto; z-index: 2000; display: none; border: 1px solid var(--border);
         }
 
         .suggestion-item {
             display: flex; align-items: center; padding: 12px; gap: 15px;
-            cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: 0.2s;
+            cursor: pointer; border-bottom: 1px solid var(--border); transition: 0.2s;
         }
-        .suggestion-item:hover { background: #f8fafc; }
+        .suggestion-item:hover { background: var(--surface); }
         .suggestion-item img { 
             width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
         }
@@ -92,7 +114,7 @@
 
         /* --- Header / Hero --- */
         .hero { padding: 40px 6% 10px; text-align: left; }
-        .hero h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; }
+        .hero h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; color: var(--text-main); }
         .hero p { color: var(--text-muted); margin-top: 8px; font-size: 1rem; }
 
         /* --- Category Bar Styling --- */
@@ -115,19 +137,19 @@
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border);
             transition: all 0.3s ease;
             text-transform: capitalize;
             user-select: none;
         }
         .category-btn:hover, .category-btn.active {
             background: var(--primary);
-            color: #fff;
+            color: var(--bg);
             border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* --- Dynamic Banner Slider (Updated with Arrows) --- */
+        /* --- Dynamic Banner Slider --- */
         .banner-section {
             padding: 15px 6% 10px 6%;
             position: relative;
@@ -158,12 +180,12 @@
             overflow: hidden;
             height: auto;
             max-height: 220px;
-            background: #f8fafc;
+            background: var(--surface);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             transition: transform 0.3s ease;
         }
         .banner-item:hover {
@@ -183,9 +205,9 @@
             transform: translateY(-50%);
             width: 36px;
             height: 36px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #0f172a;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -197,16 +219,12 @@
             backdrop-filter: blur(4px);
         }
         .banner-arrow:hover {
-            background: #000;
-            color: #fff;
+            background: var(--primary);
+            color: var(--bg);
             transform: translateY(-50%) scale(1.1);
         }
-        .banner-arrow.prev {
-            left: -12px;
-        }
-        .banner-arrow.next {
-            right: -12px;
-        }
+        .banner-arrow.prev { left: -12px; }
+        .banner-arrow.next { right: -12px; }
 
         .banner-dots {
             display: flex;
@@ -218,7 +236,7 @@
         .dot {
             width: 7px;
             height: 7px;
-            background: #cbd5e1;
+            background: var(--border);
             border-radius: 50%;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -233,35 +251,48 @@
         .container { padding: 10px 6% 120px; flex: 1; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
 
+        /* --- Dynamic Theme Toggle Button --- */
+        .theme-toggle-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .theme-toggle-btn:hover {
+            background: var(--border);
+            transform: rotate(15deg);
+        }
+
         /* --- Slide Up Animation --- */
         @keyframes slideUpFade {
-            0% {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         /* --- Card Styling --- */
         .card {
-            background: #fff; border-radius: 24px; padding: 12px;
-            position: relative; border: 1px solid #f1f5f9;
+            background: var(--card-bg); border-radius: 24px; padding: 12px;
+            position: relative; border: 1px solid var(--border);
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             display: flex; flex-direction: column; height: 100%;
             cursor: pointer;
-            
             animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease;
         }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
         
         .image-box { 
             width: 100%; height: 260px; border-radius: 18px; 
-            overflow: hidden; background: #f8fafc; margin-bottom: 15px; position: relative;
+            overflow: hidden; background: var(--surface); margin-bottom: 15px; position: relative;
         }
         .card img { width: 100%; height: 100%; object-fit: contain; transition: 0.5s; }
 
@@ -276,7 +307,7 @@
 
         .card-info { flex-grow: 1; display: flex; flex-direction: column; }
         .card h3 { 
-            font-size: 1rem; font-weight: 700; margin-bottom: 4px; 
+            font-size: 1rem; font-weight: 700; margin-bottom: 4px; color: var(--text-main);
             display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
             overflow: hidden; text-overflow: ellipsis; 
         }
@@ -288,15 +319,15 @@
         .card-rating-ui span { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; }
 
         .price-container { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
-        .price { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
+        .price { font-weight: 800; font-size: 1.2rem; color: var(--text-main); }
         .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.85rem; }
 
         .buy-btn {
-            width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none;
+            width: 100%; padding: 14px; background: var(--primary); color: var(--bg); border: none;
             border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;
             font-size: 0.9rem; margin-top: auto;
         }
-        .buy-btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
+        .buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
 
         .nav-right { display: flex; align-items: center; gap: 12px; position: relative; flex-shrink: 0; }
         .icon-btn { position: relative; font-size: 1.25rem; color: var(--text-main); cursor: pointer; text-decoration: none; transition: 0.2s; }
@@ -310,10 +341,10 @@
 
         /* --- Skeleton Loading Placeholder Cards --- */
         .skeleton-card {
-            background: #fff;
+            background: var(--card-bg);
             border-radius: 24px;
             padding: 12px;
-            border: 1px solid #f1f5f9;
+            border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             height: 380px;
@@ -323,22 +354,15 @@
             width: 100%;
             height: 220px;
             border-radius: 18px;
-            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%);
             background-size: 200% 100%;
             animation: skeletonLoading 1.5s infinite;
             margin-bottom: 15px;
         }
 
-        .skeleton-info {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex-grow: 1;
-        }
-
         .skeleton-line {
             height: 14px;
-            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%);
             background-size: 200% 100%;
             animation: skeletonLoading 1.5s infinite;
             border-radius: 6px;
@@ -417,6 +441,11 @@
             <div id="searchSuggestions" class="search-suggestions-box"></div>
         </div>
         <div class="nav-right">
+            <!-- Global Theme Switcher Toggle Button -->
+            <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Theme">
+                <i class="fa-regular fa-moon"></i>
+            </button>
+
             <a href="/wishlist" class="icon-btn" title="My Wishlist">
                 <i class="fa-regular fa-heart"></i>
                 <span id="wishlistBadge" class="badge" style="display:none;">0</span>
@@ -470,6 +499,36 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
+        // --- GLOBAL THEME LOGIC ---
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = themeToggleBtn.querySelector('i');
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.className = 'fa-regular fa-sun';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeIcon.className = 'fa-regular fa-moon';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            let targetTheme = 'light';
+
+            if (currentTheme === 'light') {
+                targetTheme = 'dark';
+                themeIcon.className = 'fa-regular fa-sun';
+            } else {
+                targetTheme = 'light';
+                themeIcon.className = 'fa-regular fa-moon';
+            }
+
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            localStorage.setItem('theme', targetTheme);
+        });
+
+        // --- FIREBASE INITIALIZATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
             authDomain: "cartprime-shopping.firebaseapp.com",
@@ -488,7 +547,6 @@
         let activeCategory = "All";
         let autoScrollInterval = null;
 
-        // Display Skeleton Cards on first load
         showSkeletons();
 
         function showSkeletons() {
@@ -509,7 +567,6 @@
             }
         }
 
-        // --- 5 PRODUCTS VIEW LOGIC FOR ADMIN VISITS COUNT ---
         function trackProductClickAndRedirect(productId) {
             let viewedProducts = JSON.parse(localStorage.getItem('viewedProductIds') || "[]");
             let visitCounted = localStorage.getItem('visitCounted') === 'true';
@@ -605,7 +662,6 @@
         const bannerSlider = document.getElementById('bannerSlider');
         const bannerDots = document.getElementById('bannerDots');
 
-        /* --- UPDATED BANNER LOGIC WITH CHEVRONS --- */
         onValue(ref(db, 'banners'), (snapshot) => {
             if (snapshot.exists()) {
                 bannerSlider.innerHTML = "";
@@ -696,7 +752,6 @@
 
             startAutoScroll();
 
-            // Arrow Controls Logic
             if (prevBtn && nextBtn) {
                 prevBtn.onclick = () => {
                     clearInterval(autoScrollInterval);
