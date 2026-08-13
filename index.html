@@ -23,7 +23,7 @@
             padding: 0; 
             box-sizing: border-box; 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            outline: none !important; /* Removes default blue outlines/focus rings on click across all elements */
+            outline: none !important;
         }
 
         *:focus {
@@ -38,7 +38,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            -webkit-tap-highlight-color: transparent; /* Removes mobile tap highlight */
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* --- Navigation --- */
@@ -354,7 +354,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -373,6 +373,37 @@
         let allProducts = [];
         let activeCategory = "All";
         let autoScrollInterval = null;
+
+        // --- 5 PRODUCTS VIEW LOGIC FOR ADMIN VISITS COUNT ---
+        function trackProductClickAndRedirect(productId) {
+            // LocalStorage-ൽ നിന്ന് ഇതുവരെ കണ്ട പ്രോഡക്റ്റ് ID-കൾ എടുക്കുന്നു
+            let viewedProducts = JSON.parse(localStorage.getItem('viewedProductIds') || "[]");
+            let visitCounted = localStorage.getItem('visitCounted') === 'true';
+
+            // യൂസർ ഇതുവരെ ഈ പ്രോഡക്റ്റ് കണ്ടിട്ടില്ലെങ്കിൽ Array-ലേക്ക് ആഡ് ചെയ്യും
+            if (!viewedProducts.includes(productId)) {
+                viewedProducts.push(productId);
+                localStorage.setItem('viewedProductIds', JSON.stringify(viewedProducts));
+            }
+
+            // യൂസർ 5 അല്ലെങ്കിൽ അതിൽ കൂടുതൽ പ്രോഡക്റ്റ് കാണുകയും, ഇതുവരെ Count ആയിട്ടില്ലെങ്കിൽ
+            if (viewedProducts.length >= 5 && !visitCounted) {
+                const visitsRef = ref(db, 'admin/visits');
+                get(visitsRef).then((snapshot) => {
+                    let currentVisits = snapshot.exists() ? snapshot.val() : 0;
+                    set(visitsRef, currentVisits + 1).then(() => {
+                        localStorage.setItem('visitCounted', 'true');
+                        window.location.href = `/product-details?id=${productId}`;
+                    }).catch(() => {
+                        window.location.href = `/product-details?id=${productId}`;
+                    });
+                }).catch(() => {
+                    window.location.href = `/product-details?id=${productId}`;
+                });
+            } else {
+                window.location.href = `/product-details?id=${productId}`;
+            }
+        }
 
         if (window.location.pathname.endsWith('.html')) {
             let cleanPath = window.location.pathname.replace('.html', '');
@@ -459,7 +490,7 @@
 
                         if (bannerData.productId) {
                             item.addEventListener('click', () => {
-                                window.location.href = `/product-details?id=${bannerData.productId}`;
+                                trackProductClickAndRedirect(bannerData.productId);
                             });
                         } else if (bannerData.category) {
                             item.addEventListener('click', () => {
@@ -644,7 +675,7 @@
                 `;
 
                 card.querySelector('.buy-btn').addEventListener('click', () => {
-                    window.location.href = `/product-details?id=${p.id}`;
+                    trackProductClickAndRedirect(p.id);
                 });
 
                 grid.appendChild(card);
@@ -694,7 +725,7 @@
                         </div>
                     `;
                     div.addEventListener('click', () => {
-                        window.location.href = `/product-details?id=${p.id}`;
+                        trackProductClickAndRedirect(p.id);
                     });
                     suggestionsBox.appendChild(div);
                 });
