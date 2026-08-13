@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details | CartPrime</title>
     <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -42,49 +43,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Full Screen Loader */
-        .page-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .page-loader.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .spinner {
-            width: 42px;
-            height: 42px;
-            border: 4px solid #f1f5f9;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 0.5s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loader-text {
-            margin-top: 15px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-        }
-        
         /* Nav Bar */
         .nav { 
             padding: 15px 6%; 
@@ -381,11 +339,17 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-white min-h-screen">
 
-    <div class="page-loader" id="pageLoader">
-        <div class="spinner"></div>
-        <div class="loader-text">LOADING PRODUCT...</div>
+    <!-- Object Loading Animation Screen -->
+    <div id="pageLoader" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center gap-4 transition-opacity duration-500">
+        <div class="relative w-16 h-16">
+            <div class="w-16 h-16 border-4 border-slate-100 border-t-black rounded-full animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center text-black">
+                <i class="fa-solid fa-cart-shopping text-lg animate-pulse"></i>
+            </div>
+        </div>
+        <p class="text-sm font-bold text-slate-500 tracking-wide animate-pulse uppercase">Loading Product...</p>
     </div>
 
     <nav class="nav">
@@ -435,6 +399,15 @@
         const guestKey = localStorage.getItem('guestUserId') || 'guest_' + Math.random().toString(36).substring(2, 9);
         localStorage.setItem('guestUserId', guestKey);
 
+        // Hide Loader Function with smooth transition
+        function hideLoader() {
+            const loader = document.getElementById('pageLoader');
+            if (loader) {
+                loader.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => loader.remove(), 500);
+            }
+        }
+
         get(child(ref(db), `wishlist/${guestKey}/${productId}`)).then(snap => { 
             if(snap.exists() && document.getElementById('wishlistHeart')) {
                 document.getElementById('wishlistHeart').classList.add('active'); 
@@ -454,13 +427,6 @@
             });
         } else {
             hideLoader();
-        }
-
-        function hideLoader() {
-            const loader = document.getElementById('pageLoader');
-            if (loader) {
-                loader.classList.add('hidden');
-            }
         }
 
         function renderProduct(p) {
