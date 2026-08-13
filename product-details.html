@@ -10,15 +10,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Theme Script (ഫ്ലിക്കറിംഗ് ഒഴിവാക്കാൻ) -->
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
     <style>
         :root { 
             --primary: #000; 
+            --primary-invert: #fff;
             --bg: #fff; 
             --grey: #f4f4f4; 
+            --border-color: #f1f5f9;
             --red: #ff3b30; 
             --surface: #f8fafc;
             --text-muted: #64748b;
             --flipkart-green: #388e3c;
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --drawer-bg: #fff;
+        }
+
+        [data-theme="dark"] {
+            --primary: #fff; 
+            --primary-invert: #000;
+            --bg: #0f172a; 
+            --grey: #334155; 
+            --border-color: #1e293b;
+            --surface: #1e293b;
+            --text-muted: #94a3b8;
+            --nav-bg: rgba(15, 23, 42, 0.85);
+            --drawer-bg: #0f172a;
         }
         
         * { 
@@ -35,8 +57,8 @@
         }
         
         body { 
-            background: #fff; 
-            color: #111; 
+            background: var(--bg); 
+            color: var(--primary); 
             overflow-x: hidden; 
             padding-bottom: 100px; 
             min-height: 100vh;
@@ -49,16 +71,16 @@
             display: flex; 
             align-items: center; 
             gap: 15px; 
-            border-bottom: 1px solid rgba(0,0,0,0.05); 
+            border-bottom: 1px solid var(--border-color); 
             position: sticky; 
             top: 0; 
-            background: rgba(255, 255, 255, 0.85); 
+            background: var(--nav-bg); 
             backdrop-filter: blur(12px);
             z-index: 100; 
         }
         .nav a { 
             text-decoration: none; 
-            color: #000; 
+            color: var(--primary); 
             font-weight: 700; 
             font-size: 0.9rem; 
             display: flex;
@@ -88,12 +110,11 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            border: 1px solid #f1f5f9; 
+            border: 1px solid var(--border-color); 
             position: relative; 
         }
         .main-img { max-width: 90%; max-height: 90%; object-fit: contain; transition: 0.3s; }
         
-        /* Image Slider Modifications */
         .image-slider {
             display: flex;
             width: 100%;
@@ -121,8 +142,8 @@
             z-index: 10; 
             cursor: pointer; 
             font-size: 1.3rem; 
-            color: #cbd5e1; 
-            background: rgba(255, 255, 255, 0.9); 
+            color: var(--text-muted); 
+            background: var(--bg); 
             border-radius: 50%; 
             transition: 0.3s; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -133,7 +154,7 @@
             height: 44px;
             user-select: none;
         }
-        .wishlist-container:hover { background: #fff; color: #000; }
+        .wishlist-container:hover { color: var(--primary); }
         .wishlist-container.active { color: #ff3b30; animation: heartBeat 0.5s ease-in-out; }
         @keyframes heartBeat { 
             0% { transform: scale(1); } 
@@ -149,7 +170,7 @@
             z-index: 10; 
             cursor: pointer; 
             font-size: 1.2rem; 
-            color: #fff; 
+            color: var(--primary-invert); 
             background: var(--primary); 
             border-radius: 50%; 
             transition: 0.3s; 
@@ -161,7 +182,7 @@
             height: 44px;
             user-select: none;
         }
-        .share-container:hover { background: #1e293b; transform: scale(1.05); }
+        .share-container:hover { transform: scale(1.05); opacity: 0.9; }
 
         /* Thumbnails */
         .thumb-container { 
@@ -186,11 +207,11 @@
             transition: 0.2s;
             user-select: none;
         }
-        .thumb.active { border-color: var(--primary); background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .thumb.active { border-color: var(--primary); background: var(--bg); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
         /* Info Section */
         .info-section { flex: 1; min-width: 350px; }
-        .p-name { font-size: 2rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; line-height: 1.25; color: #000; }
+        .p-name { font-size: 2rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; line-height: 1.25; color: var(--primary); }
         
         /* Price Box */
         @keyframes priceSlide {
@@ -208,14 +229,14 @@
         .price-box.animate {
             animation: priceSlide 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
-        .price { font-size: 2.2rem; font-weight: 800; color: #000; }
+        .price { font-size: 2.2rem; font-weight: 800; color: var(--primary); }
         .mrp { font-size: 1.2rem; font-weight: 600; color: var(--text-muted); text-decoration: line-through; }
         .discount { font-size: 1.2rem; font-weight: 700; color: var(--flipkart-green); }
 
         /* Size Selection Styles */
         .size-box-wrapper {
             margin: 20px 0 25px 0;
-            border-top: 1px solid #f1f5f9;
+            border-top: 1px solid var(--border-color);
             padding-top: 15px;
         }
         .size-title {
@@ -224,7 +245,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 12px;
-            color: #0f172a;
+            color: var(--primary);
             display: flex;
             justify-content: space-between;
         }
@@ -235,10 +256,10 @@
         }
         .size-btn {
             padding: 10px 18px;
-            border: 1.5px solid #e2e8f0;
+            border: 1.5px solid var(--border-color);
             border-radius: 12px;
-            background: #fff;
-            color: #1e293b;
+            background: var(--bg);
+            color: var(--primary);
             font-weight: 700;
             font-size: 0.9rem;
             cursor: pointer;
@@ -248,12 +269,12 @@
             user-select: none;
         }
         .size-btn:hover {
-            border-color: #000;
+            border-color: var(--primary);
         }
         .size-btn.active {
-            background: #000;
-            color: #fff;
-            border-color: #000;
+            background: var(--primary);
+            color: var(--primary-invert);
+            border-color: var(--primary);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
@@ -269,45 +290,45 @@
         .policy-no { color: var(--red); }
         
         /* Technical Specifications Box */
-        .specs-box { margin-bottom: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px; }
+        .specs-box { margin-bottom: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; }
         .specs-box h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-muted); }
-        .spec-row { display: flex; padding: 12px 0; border-bottom: 1px solid #f8fafc; font-size: 0.9rem; align-items: center; }
-        .spec-key { width: 140px; color: #64748b; font-weight: 600; flex-shrink: 0; }
-        .spec-val { font-weight: 700; color: #0f172a; }
+        .spec-row { display: flex; padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; align-items: center; }
+        .spec-key { width: 140px; color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
+        .spec-val { font-weight: 700; color: var(--primary); }
         
-        .desc-text { color: #334155; line-height: 1.7; margin-bottom: 30px; font-size: 0.95rem; white-space: pre-line; }
+        .desc-text { color: var(--text-muted); line-height: 1.7; margin-bottom: 30px; font-size: 0.95rem; white-space: pre-line; }
         
         /* Bottom Action Sticky Bar */
         .bottom-action-bar { 
             position: fixed; bottom: 0; left: 0; width: 100%; 
-            background: white; padding: 16px 6%; 
+            background: var(--bg); padding: 16px 6%; 
             box-shadow: 0 -8px 30px rgba(0,0,0,0.04); 
             display: flex; align-items: center; justify-content: space-between; gap: 15px; 
-            z-index: 1000; border-top: 1px solid #f1f5f9; 
+            z-index: 1000; border-top: 1px solid var(--border-color); 
         }
         .btn-group { display: flex; gap: 10px; width: 75%; max-width: 500px; }
         .buy-now { 
-            width: 100%; padding: 16px; background: var(--primary); color: #fff; 
+            width: 100%; padding: 16px; background: var(--primary); color: var(--primary-invert); 
             border: none; border-radius: 16px; font-weight: 800; font-size: 1rem; 
             cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px;
         }
         .buy-now:hover { opacity: 0.9; }
-        .out-btn { background: #cbd5e1 !important; color: #64748b !important; cursor: not-allowed; }
+        .out-btn { background: var(--grey) !important; color: var(--text-muted) !important; cursor: not-allowed; }
 
         /* Cart Drawer Overlays */
         .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1999; display: none; backdrop-filter: blur(4px); }
         .drawer-overlay.open { display: block; }
-        .cart-drawer { position: fixed; top: 0; right: -450px; width: 100%; max-width: 400px; height: 100%; background: #fff; box-shadow: -10px 0 40px rgba(0,0,0,0.12); z-index: 2000; transition: cubic-bezier(0.16, 1, 0.3, 1) 0.4s; display: flex; flex-direction: column; border-left: 1px solid #eee; }
+        .cart-drawer { position: fixed; top: 0; right: -450px; width: 100%; max-width: 400px; height: 100%; background: var(--drawer-bg); box-shadow: -10px 0 40px rgba(0,0,0,0.12); z-index: 2000; transition: cubic-bezier(0.16, 1, 0.3, 1) 0.4s; display: flex; flex-direction: column; border-left: 1px solid var(--border-color); }
         .cart-drawer.open { right: 0; }
-        .drawer-header { padding: 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
-        .drawer-header h3 { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; }
+        .drawer-header { padding: 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
+        .drawer-header h3 { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; color: var(--primary); }
         .close-drawer { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
-        .drawer-content { flex: 1; padding: 24px; overflow-y: auto; }
-        .drawer-footer { padding: 24px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 12px; }
+        .drawer-content { flex: 1; padding: 24px; overflow-y: auto; color: var(--primary); }
+        .drawer-footer { padding: 24px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; }
         .drawer-btn { width: 100%; padding: 16px; font-weight: 800; border-radius: 14px; cursor: pointer; text-align: center; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
-        .drawer-btn-black { background: #000; color: #fff; }
-        .drawer-btn-black:hover { background: #1e293b; }
-        .drawer-btn-outline { background: #fff; color: #000; border: 2px solid #000; }
+        .drawer-btn-black { background: var(--primary); color: var(--primary-invert); }
+        .drawer-btn-black:hover { opacity: 0.9; }
+        .drawer-btn-outline { background: var(--bg); color: var(--primary); border: 2px solid var(--primary); }
         .drawer-btn-outline:hover { background: var(--surface); }
 
         /* RESPONSIVE MEDIA QUERIES FOR MOBILE DEVICES */
@@ -330,7 +351,7 @@
             .spec-key { width: 110px; }
             .desc-text { font-size: 0.9rem; margin-bottom: 20px; }
             
-            .bottom-action-bar { padding: 12px 4%; background: #fff; }
+            .bottom-action-bar { padding: 12px 4%; }
             .bottom-action-bar span[style*="font-size: 1.2rem"] { font-size: 1.05rem !important; }
             .btn-group { width: 70%; }
             .buy-now { padding: 14px; font-size: 0.85rem; border-radius: 12px; }
@@ -339,17 +360,17 @@
         }
     </style>
 </head>
-<body class="bg-white min-h-screen">
+<body>
 
     <!-- Object Loading Animation Screen -->
-    <div id="pageLoader" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center gap-4 transition-opacity duration-500">
+    <div id="pageLoader" class="fixed inset-0 z-[9999] bg-[var(--bg)] flex flex-col items-center justify-center gap-4 transition-opacity duration-500">
         <div class="relative w-16 h-16">
-            <div class="w-16 h-16 border-4 border-slate-100 border-t-black rounded-full animate-spin"></div>
-            <div class="absolute inset-0 flex items-center justify-center text-black">
+            <div class="w-16 h-16 border-4 border-slate-300 border-t-[var(--primary)] rounded-full animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center text-[var(--primary)]">
                 <i class="fa-solid fa-cart-shopping text-lg animate-pulse"></i>
             </div>
         </div>
-        <p class="text-sm font-bold text-slate-500 tracking-wide animate-pulse uppercase">Loading Product...</p>
+        <p class="text-sm font-bold text-[var(--text-muted)] tracking-wide animate-pulse uppercase">Loading Product...</p>
     </div>
 
     <nav class="nav">
@@ -399,7 +420,6 @@
         const guestKey = localStorage.getItem('guestUserId') || 'guest_' + Math.random().toString(36).substring(2, 9);
         localStorage.setItem('guestUserId', guestKey);
 
-        // Hide Loader Function with smooth transition
         function hideLoader() {
             const loader = document.getElementById('pageLoader');
             if (loader) {
@@ -408,11 +428,8 @@
             }
         }
 
-        // View Count Tracking Function (Executes after 6 Seconds)
         function track6SecView(pId) {
             if (!pId) return;
-            
-            // 6 സെക്കൻഡ് പേജിൽ നിന്നാൽ മാത്രം പ്രവർത്തിക്കും
             setTimeout(() => {
                 const viewRef = ref(db, `products/${pId}/views`);
                 get(viewRef).then((snapshot) => {
@@ -432,10 +449,7 @@
             get(child(ref(db), `products/${productId}`)).then(snap => { 
                 if (snap.exists()) {
                     renderProduct(snap.val()); 
-                    
-                    // Start 6-second timer for view count
                     track6SecView(productId);
-
                 } else {
                     document.getElementById('productDetail').innerHTML = "<p style='padding: 20px; font-weight: 700;'>Product not found!</p>";
                 }
@@ -454,7 +468,6 @@
             });
             
             const isOut = p.outOfStock === true; 
-            
             const returnStatus = p.return ? (p.return.toString().toLowerCase().trim() === 'true' || p.return === true || p.return.toString().toLowerCase().trim() === 'available') : false;
             const codStatus = p.cod ? (p.cod.toString().toLowerCase().trim() === 'yes' || p.cod.toString().toLowerCase().trim() === 'true' || p.cod === true || p.cod.toString().toLowerCase().trim() === 'available') : false;
 
@@ -466,8 +479,6 @@
             const discountPct = baseMrp > displayPrice ? Math.round(((baseMrp - displayPrice) / baseMrp) * 100) : 0;
 
             const availableSizes = p.sizes || [];
-            
-            // Checking for Free Size auto-selection
             const freeSizeFound = availableSizes.find(sz => sz.toString().toLowerCase().trim() === 'free size');
             if (freeSizeFound) {
                 selectedProductSize = freeSizeFound;
@@ -481,7 +492,7 @@
                 <div class="size-box-wrapper">
                     <div class="size-title">
                         <span>Select Size:</span>
-                        <span id="selectedSizeLabel" style="color: #64748b; font-weight: 600;">${selectedProductSize ? selectedProductSize : 'None'}</span>
+                        <span id="selectedSizeLabel" style="color: var(--text-muted); font-weight: 600;">${selectedProductSize ? selectedProductSize : 'None'}</span>
                     </div>
                     <div class="size-container">
                         ${availableSizes.map(sz => {
@@ -537,7 +548,7 @@
                 
             document.getElementById('stickyAction').innerHTML = `
                 <div style="display: flex; flex-direction: column; line-height: 1.2;">
-                    <span style="font-size: 0.75rem; color: #64748b; font-weight: 600; margin-bottom: 2px;">Total Price</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;">Total Price</span>
                     <span style="font-size: 1.2rem; font-weight: 800;">₹${displayPrice.toLocaleString('en-IN')}</span>
                 </div>
                 <div class="btn-group">
@@ -599,55 +610,17 @@
             };
 
             if (navigator.share) {
-                navigator.share(shareData)
-                .then(() => console.log('Shared successfully'))
-                .catch((error) => console.log('Error sharing:', error));
+                navigator.share(shareData).catch(() => {});
             } else {
                 const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage + " " + currentUrl)}`;
                 window.open(whatsappUrl, '_blank');
-                
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(currentUrl).then(() => {
-                        showSuccessAlert();
-                    }).catch(() => {
-                        oldSchoolCopyFallback(currentUrl);
+                        Swal.fire({ title: 'Link Copied!', icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
                     });
-                } else {
-                    oldSchoolCopyFallback(currentUrl);
                 }
             }
         };
-
-        function oldSchoolCopyFallback(text) {
-            const dummyTextArea = document.createElement('textarea');
-            dummyTextArea.value = text;
-            dummyTextArea.style.position = 'fixed';
-            dummyTextArea.style.top = '0';
-            dummyTextArea.style.left = '0';
-            dummyTextArea.style.opacity = '0';
-            document.body.appendChild(dummyTextArea);
-            dummyTextArea.select();
-            
-            try {
-                document.execCommand('copy');
-                showSuccessAlert();
-            } catch (err) {
-                console.error('Fallback copy failed', err);
-            }
-            document.body.removeChild(dummyTextArea);
-        }
-
-        function showSuccessAlert() {
-            Swal.fire({
-                title: 'Link Copied!',
-                text: 'Product link copied to clipboard.',
-                icon: 'success',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000
-            });
-        }
 
         window.toggleWishlist = (id, name, price, img) => {
             const heart = document.getElementById('wishlistHeart'); 
