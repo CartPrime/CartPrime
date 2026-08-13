@@ -221,13 +221,14 @@
                 const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
 
                 let deliveryMsg = '';
-                if (checkStatus === 'shipped') {
+                // Delivered ആകുമ്പോൾ മാത്രം 'Your Order Delivered' എന്ന് കാണിക്കുന്നു
+                if (checkStatus === 'delivered') {
+                    deliveryMsg = `<div class="delivery-text"><i class="fa-solid fa-circle-check"></i> Your Order Delivered</div>`;
+                } else if (checkStatus === 'shipped') {
                     const expDateText = order.deliveryDate ? `: ${order.deliveryDate}` : '';
                     deliveryMsg = `<div class="delivery-text" style="color:#2563eb;"><i class="fa-solid fa-truck-fast"></i> Expected Delivery${expDateText}</div>`;
                 } else if (order.deliveryDate) {
                     deliveryMsg = `<div class="delivery-text"><i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}</div>`;
-                } else if (checkStatus === 'delivered') {
-                    deliveryMsg = `<div class="delivery-text"><i class="fa-solid fa-circle-check"></i> Delivered</div>`;
                 } else if (checkStatus === 'returned') {
                     deliveryMsg = `<div class="delivery-text" style="color:#065f46;"><i class="fa-solid fa-rotate-left"></i> Returned</div>`;
                 } else {
@@ -317,6 +318,12 @@
             actionBtnHtml = `<button onclick="requestReturn('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#f1f5f9; color:#1e293b; border:1px solid #e2e8f0; border-radius:10px; font-weight:700; margin-top:15px; cursor:pointer;">Request Return</button>`; 
         }
 
+        // പോപ്പ്-അപ്പിൽ Delivered ആണെങ്കിൽ ഡെലിവറി തീയതി കാണിക്കില്ല
+        const deliveryInfoHtml = checkStatus === 'delivered' 
+            ? `<p><strong>Status:</strong> Your Order Delivered</p>`
+            : `<p><strong>Status:</strong> ${order.status || 'Pending'}</p>
+               <p><strong>Expected Delivery:</strong> ${order.deliveryDate || 'Will update soon'}</p>`;
+
         Swal.fire({
             title: `Order Details (#${order.id})`,
             html: `
@@ -325,8 +332,7 @@
                     ${itemsListHtml}
 
                     <div class="modal-section-title">Delivery Info</div>
-                    <p><strong>Status:</strong> ${order.status || 'Pending'}</p>
-                    <p><strong>Expected Delivery:</strong> ${order.deliveryDate || 'Will update soon'}</p>
+                    ${deliveryInfoHtml}
                     <p><strong>Order Date:</strong> ${order.date || 'N/A'}</p>
 
                     <div class="modal-section-title">Shipping Address</div>
