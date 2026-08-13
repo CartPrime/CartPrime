@@ -408,6 +408,20 @@
             }
         }
 
+        // View Count Tracking Function (Executes after 6 Seconds)
+        function track6SecView(pId) {
+            if (!pId) return;
+            
+            // 6 സെക്കൻഡ് പേജിൽ നിന്നാൽ മാത്രം പ്രവർത്തിക്കും
+            setTimeout(() => {
+                const viewRef = ref(db, `products/${pId}/views`);
+                get(viewRef).then((snapshot) => {
+                    let currentViews = snapshot.exists() ? snapshot.val() : 0;
+                    set(viewRef, currentViews + 1);
+                }).catch(err => console.error("View count update failed:", err));
+            }, 6000); 
+        }
+
         get(child(ref(db), `wishlist/${guestKey}/${productId}`)).then(snap => { 
             if(snap.exists() && document.getElementById('wishlistHeart')) {
                 document.getElementById('wishlistHeart').classList.add('active'); 
@@ -418,6 +432,10 @@
             get(child(ref(db), `products/${productId}`)).then(snap => { 
                 if (snap.exists()) {
                     renderProduct(snap.val()); 
+                    
+                    // Start 6-second timer for view count
+                    track6SecView(productId);
+
                 } else {
                     document.getElementById('productDetail').innerHTML = "<p style='padding: 20px; font-weight: 700;'>Product not found!</p>";
                 }
