@@ -5,22 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CartPrime Admin - Ultimate Control</title>
     <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
-    <audio id="orderSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-
-    <!-- OneSignal SDK Code -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "2a461e57-51ca-4cdf-abb6-273fda96a4d0",
-          safari_web_id: "web.onesignal.auto.261dc44c-6b5c-4882-ba5f-51ef0736d918",
-          notifyButton: {
-            enable: true,
-          },
-        });
-      });
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -84,6 +68,9 @@
         .status-Shipped { background: #e0f2fe; color: #0369a1; }
         .status-Delivered { background: #dbeafe; color: #1e40af; }
         .status-Rejected { background: #fee2e2; color: #b91c1c; }
+
+        /* View Badge */
+        .views-badge { font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 800; background: #f1f5f9; color: #475569; display: inline-flex; align-items: center; gap: 4px; }
 
         /* Order Actions Buttons */
         .order-actions-btn { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
@@ -394,6 +381,7 @@
         </div>
     </div>
 
+    <!-- INVENTORY TAB (UPDATED WITH VIEWS) -->
     <div id="manageProducts" class="tab-content">
         <h2 class="tab-title">Inventory</h2>
         <div class="admin-card">
@@ -403,7 +391,17 @@
             </div>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>Img</th><th>Name</th><th>Price</th><th>Visibility</th><th>Stock</th><th>Action</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Img</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Views</th>
+                            <th>Visibility</th>
+                            <th>Stock</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
                     <tbody id="manageProductList"></tbody>
                 </table>
             </div>
@@ -444,20 +442,10 @@ import { getDatabase, ref, onValue, update, remove, push, set, get } from "https
 
 const ADMIN_PASSCODE = "73569778";
 
-// Request Notification Permission on Page Load
-function requestNotificationPermission() {
-    if ("Notification" in window) {
-        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-            Notification.requestPermission();
-        }
-    }
-}
-
 async function checkAdminPasscode() {
     const isAuthenticated = localStorage.getItem("cartprime_admin_logged_in");
 
     if (isAuthenticated === "true") {
-        requestNotificationPermission();
         return; 
     }
 
@@ -476,7 +464,6 @@ async function checkAdminPasscode() {
 
     if (passcode === ADMIN_PASSCODE) {
         localStorage.setItem("cartprime_admin_logged_in", "true");
-        requestNotificationPermission();
         Swal.fire({ 
             icon: 'success', 
             title: 'Welcome Back, Admin!', 
@@ -522,24 +509,6 @@ const db = getDatabase(app);
 let ordersChartInstance = null;
 let earningsChartInstance = null;
 let globalOrdersCache = {};
-let initialLoadFinished = false; // ആദ്യത്തെ ലോഡിംഗിൽ Notification വരാതിരിക്കാൻ
-
-// Helper function to trigger Sound and Browser Notification
-function triggerNewOrderAlert(customerName, orderId) {
-    // 1. Audio Sound Alert
-    const sound = document.getElementById('orderSound');
-    if (sound) {
-        sound.play().catch(err => console.log("Audio play error:", err));
-    }
-
-    // 2. Desktop Push Notification Alert
-    if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("🛒 പുതിയ ഒരു ഓഡർ എത്തിയിട്ടുണ്ട്!", {
-            body: `Customer: ${customerName || 'Customer'} (#${orderId || ''})`,
-            icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
-        });
-    }
-}
 
 window.fetchMeeshoDetails = async () => {
     let urlInput = document.getElementById('meeshoUrl').value.trim();
@@ -735,6 +704,7 @@ window.saveProduct = () => {
             .then(() => { Swal.fire('Updated!', 'Product updated successfully', 'success'); resetForm(); openTab('manageProducts'); })
             .catch(err => Swal.fire('Error', err.message, 'error'));
     } else {
+        data.views = 0; // പുതിയ പ്രോഡക്റ്റിന്റെ Views ആദ്യം 0 ആയി സെറ്റ് ചെയ്യുന്നു
         const newRef = push(ref(db, 'products'));
         set(newRef, data)
             .then(() => { Swal.fire('Saved!', 'New product added', 'success'); resetForm(); openTab('manageProducts'); })
@@ -816,7 +786,6 @@ onValue(ref(db, 'orders'), snap => {
     if (list) list.innerHTML = ""; 
     if (returnContainer) returnContainer.innerHTML = "";
     
-    const previousOrdersKeys = Object.keys(globalOrdersCache);
     globalOrdersCache = {};
 
     let totalOrderCount = 0;
@@ -861,7 +830,6 @@ onValue(ref(db, 'orders'), snap => {
         updateEarningsChart({});
         if (list) list.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">No orders found.</td></tr>`;
         if (returnContainer) returnContainer.innerHTML = `<p style="color: #64748b; font-weight: 600;">No return or refund requests.</p>`;
-        initialLoadFinished = true;
         return;
     }
 
@@ -871,11 +839,6 @@ onValue(ref(db, 'orders'), snap => {
             totalOrderCount++;
             let path = childSnap.key;
             globalOrdersCache[path] = { ...data, pathKey: path };
-
-            // ചെക്ക് ചെയ്യാം പേജ് ലോഡ് ആയതിന് ശേഷം ആണോ പുതിയ ഓഡർ വന്നതെന്ന്
-            if (initialLoadFinished && !previousOrdersKeys.includes(path)) {
-                triggerNewOrderAlert(data.customerName, data.orderId || path);
-            }
 
             let st = data.status || "Pending";
             if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
@@ -896,11 +859,6 @@ onValue(ref(db, 'orders'), snap => {
                     let path = `${childSnap.key}/${nestedSnap.key}`;
                     globalOrdersCache[path] = { ...nestedData, pathKey: path, parentPhone: childSnap.key };
 
-                    // പുതിയ ഓഡർ അലർട്ട്
-                    if (initialLoadFinished && !previousOrdersKeys.includes(path)) {
-                        triggerNewOrderAlert(nestedData.customerName, nestedData.orderId || nestedSnap.key);
-                    }
-
                     let st = nestedData.status || "Pending";
                     if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
                     if (list) renderOrderRow(list, nestedData, path);
@@ -915,9 +873,6 @@ onValue(ref(db, 'orders'), snap => {
             });
         }
     });
-    
-    // ഫസ്റ്റ് ലോഡിംഗ് പൂർത്തിയായി എന്ന് മാർക്ക് ചെയ്യുക
-    initialLoadFinished = true;
 
     if (totalOrdersStat) totalOrdersStat.innerText = totalOrderCount;
     if (totalEarningsStat) totalEarningsStat.innerText = "₹" + totalEarnings.toLocaleString();
@@ -1188,6 +1143,7 @@ window.shipOrderWithDate = async (path) => {
     }
 };
 
+/* READ PRODUCTS (WITH VIEWS DISPLAY) */
 onValue(ref(db, 'products'), snap => {
     const list = document.getElementById('manageProductList');
     if (!list) return;
@@ -1202,11 +1158,13 @@ onValue(ref(db, 'products'), snap => {
             const isOut = p.outOfStock === true;
             const isHome = p.showOnHome === true; 
             const isCod = p.cod === true;
+            const viewsCount = p.views || 0; // പ്രോഡക്റ്റിന്റെ Views കാൽക്കുലേറ്റ് ചെയ്യുന്നു
             
             list.innerHTML += `<tr>
                 <td><img src="${p.images ? p.images[0] : ''}" width="40" height="40" style="object-fit:cover; border-radius:5px;"></td>
                 <td>${p.name || 'N/A'}</td>
                 <td>₹${p.price || '0'}</td>
+                <td><span class="views-badge"><i class="fa fa-eye"></i> ${viewsCount}</span></td>
                 <td>
                     <span style="font-size:11px; padding:3px 6px; border-radius:5px; background:${isHome ? '#dcfce7' : '#f1f5f9'}; color:${isHome ? '#166534' : '#64748b'}; font-weight:bold;">${isHome ? 'Home' : 'Hidden'}</span>
                     <span style="font-size:11px; padding:3px 6px; border-radius:5px; background:${isCod ? '#e0f2fe' : '#fee2e2'}; color:${isCod ? '#0369a1' : '#991b1b'}; font-weight:bold; margin-left:2px;">${isCod ? 'COD' : 'Online'}</span>
