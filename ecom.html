@@ -99,7 +99,7 @@
 
         /* Tables */
         .table-responsive { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; min-width: 600px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; min-width: 500px; }
         th { color: #64748b; padding: 12px 15px; text-align: left; font-size: 12px; text-transform: uppercase; }
         td { padding: 12px 15px; background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
         td:first-child { border-left: 1px solid var(--border); border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
@@ -272,20 +272,19 @@
         </div>
     </div>
 
-    <!-- ORDERS TAB (STRICT LIST VIEW) -->
+    <!-- ORDERS TAB (STRICT LIST VIEW WITHOUT PHONE COLUMN) -->
     <div id="orders" class="tab-content">
         <h2 class="tab-title">Order Management</h2>
         <div class="admin-card">
             <div class="search-box">
                 <i class="fa fa-search"></i>
-                <input type="text" id="searchOrderInput" placeholder="Search by customer, phone, address or order ID..." onkeyup="filterOrders()">
+                <input type="text" id="searchOrderInput" placeholder="Search by customer, address or order ID..." onkeyup="filterOrders()">
             </div>
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
                             <th>Order ID & Customer</th>
-                            <th>Phone</th>
                             <th>Total Amount</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -810,7 +809,7 @@ onValue(ref(db, 'orders'), snap => {
         if (totalLossStat) totalLossStat.innerText = "₹0";
         updateOrdersChart(statusCounts);
         updateEarningsChart({});
-        if (list) list.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No orders found.</td></tr>`;
+        if (list) list.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">No orders found.</td></tr>`;
         if (returnContainer) returnContainer.innerHTML = `<p style="color: #64748b; font-weight: 600;">No return or refund requests.</p>`;
         return;
     }
@@ -830,7 +829,7 @@ onValue(ref(db, 'orders'), snap => {
 
             if (st === 'Return Requested' || st === 'Returned') {
                 hasReturns = true;
-                if (returnContainer) renderReturnCard(returnContainer, data, path, data.customerPhone || "N/A");
+                if (returnContainer) renderReturnCard(returnContainer, data, path);
             }
         } 
         else {
@@ -849,7 +848,7 @@ onValue(ref(db, 'orders'), snap => {
 
                     if (st === 'Return Requested' || st === 'Returned') {
                         hasReturns = true;
-                        if (returnContainer) renderReturnCard(returnContainer, nestedData, path, nestedData.customerPhone || childSnap.key);
+                        if (returnContainer) renderReturnCard(returnContainer, nestedData, path);
                     }
                 }
             });
@@ -869,11 +868,10 @@ onValue(ref(db, 'orders'), snap => {
     }
 });
 
-/* PURE TABLE LIST VIEW ROW (WITH ORDER ID ON TOP) */
+/* TABLE LIST VIEW ROW (MOBILE NUMBER REMOVED) */
 function renderOrderRow(container, o, path) {
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
-    const phone = o.customerPhone || o.parentPhone || "N/A";
     const fullOrderId = o.orderId || path.split('/').pop();
 
     container.innerHTML += `
@@ -885,7 +883,6 @@ function renderOrderRow(container, o, path) {
             <strong style="color:#1e293b; font-size: 14px;">${o.customerName || 'Customer'}</strong><br>
             <small style="color:#64748b;">${o.date || ''}</small>
         </td>
-        <td><a href="tel:${phone}" style="color:#2563eb; text-decoration:none; font-weight:700;"><i class="fa fa-phone"></i> ${phone}</a></td>
         <td><strong style="color:#16a34a;">₹${o.price || '0'}</strong></td>
         <td>
             <span class="status-badge status-${currentStatus}">${currentStatus}</span>
@@ -915,7 +912,7 @@ window.copyAddressText = (text) => {
     });
 };
 
-/* FULL DETAILS POPUP MODAL FUNCTION */
+/* FULL DETAILS POPUP MODAL FUNCTION (MOBILE NUMBER REMOVED) */
 window.viewFullOrderDetails = (path) => {
     const o = globalOrdersCache[path];
     if (!o) return Swal.fire('Error', 'Order details not found', 'error');
@@ -924,7 +921,6 @@ window.viewFullOrderDetails = (path) => {
     const currentStatus = o.status || "Pending";
     const proofImg = o.paymentProof || ""; 
     const payMethod = o.paymentMethod || (o.transactionId ? "UPI Payment" : "Cash On Delivery");
-    const phone = o.customerPhone || o.parentPhone || "N/A";
     const fullAddress = o.address || 'No Address Provided';
     const fullOrderId = o.orderId || path.split('/').pop();
 
@@ -975,7 +971,6 @@ window.viewFullOrderDetails = (path) => {
         <div class="order-detail-section">
             <div class="order-detail-title"><i class="fa fa-user"></i> Customer Info</div>
             <p><strong>Name:</strong> ${o.customerName || 'N/A'}</p>
-            <p><strong>Phone:</strong> <a href="tel:${phone}" style="color:#2563eb; text-decoration:none; font-weight:bold;">${phone}</a></p>
             
             <div style="margin-top: 8px;">
                 <strong>Delivery Address:</strong>
@@ -1028,7 +1023,7 @@ window.viewFullOrderDetails = (path) => {
     });
 };
 
-function renderReturnCard(container, o, path, customerPhone) {
+function renderReturnCard(container, o, path) {
     const currentStatus = o.status || "Pending";
     const refundMethod = o.refundMethod || 'N/A';
     const refundDetails = o.refundDetails || 'N/A';
@@ -1040,7 +1035,7 @@ function renderReturnCard(container, o, path, customerPhone) {
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 5px;">
             <div>
                 <span style="font-size: 0.8rem; font-weight: 800; color: #475569;">ID: #${fullOrderId}</span>
-                <h4 style="font-size: 1rem; color: #1e293b; margin-top: 2px;">Customer: ${o.customerName || 'N/A'} (${customerPhone})</h4>
+                <h4 style="font-size: 1rem; color: #1e293b; margin-top: 2px;">Customer: ${o.customerName || 'N/A'}</h4>
                 <p style="font-size: 0.85rem; color: #2563eb; margin: 4px 0 0 0; font-weight: bold; word-break: break-all;">
                     <i class="fa fa-envelope"></i> Email: ${userEmail}
                 </p>
