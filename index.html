@@ -127,7 +127,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        /* --- Dynamic Banner Slider --- */
+        /* --- Dynamic Banner Slider (Updated for Auto Fit) --- */
         .banner-section {
             padding: 15px 6% 10px 6%;
             position: relative;
@@ -140,6 +140,7 @@
             scroll-snap-type: x mandatory;
             scrollbar-width: none;
             scroll-behavior: smooth;
+            align-items: center;
         }
         .banner-slider::-webkit-scrollbar {
             display: none;
@@ -149,7 +150,12 @@
             scroll-snap-align: start;
             border-radius: 20px;
             overflow: hidden;
-            height: 190px;
+            height: auto;
+            max-height: 220px;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.02);
             transition: transform 0.3s ease;
@@ -160,7 +166,7 @@
         .banner-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* Banner image fully fits without cropping */
             border-radius: 20px;
         }
         .banner-dots {
@@ -332,7 +338,7 @@
             .category-btn { padding: 8px 16px; font-size: 0.8rem; }
 
             .banner-section { padding: 8px 4% 8px 4%; }
-            .banner-item { flex: 0 0 100%; height: 135px; border-radius: 12px; }
+            .banner-item { flex: 0 0 100%; max-height: 160px; border-radius: 12px; }
             .banner-item img { border-radius: 12px; }
             .dot { width: 6px; height: 6px; }
             .dot.active { width: 14px; }
@@ -567,9 +573,23 @@
                     if (imgUrl) {
                         const item = document.createElement('div');
                         item.className = 'banner-item';
-                        item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit;">`;
+                        item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner">`;
 
-                        if (bannerData.productId) {
+                        // Banner Redirection Priority Logic:
+                        // 1. External Custom Link (link / targetUrl / url)
+                        // 2. Specific Product ID
+                        // 3. Category Filter
+                        const targetLink = bannerData.link || bannerData.targetUrl || bannerData.url;
+
+                        if (targetLink) {
+                            item.addEventListener('click', () => {
+                                if (targetLink.startsWith('http://') || targetLink.startsWith('https://')) {
+                                    window.location.href = targetLink;
+                                } else {
+                                    window.location.href = targetLink.startsWith('/') ? targetLink : `/${targetLink}`;
+                                }
+                            });
+                        } else if (bannerData.productId) {
                             item.addEventListener('click', () => {
                                 trackProductClickAndRedirect(bannerData.productId);
                             });
