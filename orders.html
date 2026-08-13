@@ -40,6 +40,21 @@
         .status-return, .status-returned { background: #d1fae5; color: #065f46; }
         .status-returnrequested { background: #fef3c7; color: #92400e; }
 
+        /* Return Tag Badge */
+        .return-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 5px;
+        }
+
         .item-main-content { display: flex; gap: 12px; align-items: center; }
         .item-main-content img { width: 65px; height: 65px; border-radius: 10px; object-fit: contain; background: #f8fafc; border: 1px solid #f1f1f1; flex-shrink: 0; }
         .item-info { flex-grow: 1; }
@@ -65,10 +80,13 @@
         .swal-radio-option input { accent-color: #000; width: 15px; height: 15px; }
         .swal-input-field { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 8px; font-size: 0.85rem; font-weight: 600; outline: none; }
 
-        /* Modal Details Formatting */
+        /* Modal Details Formatting & Highlight Styling */
         .modal-detail-box { text-align: left; font-size: 0.85rem; color: #334155; margin-top: 10px; }
-        .modal-detail-box p { margin-bottom: 6px; line-height: 1.4; display: flex; align-items: center; justify-content: space-between; }
+        .modal-detail-box p { margin-bottom: 8px; line-height: 1.4; display: flex; align-items: center; justify-content: space-between; }
         .modal-section-title { font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: #64748b; margin-top: 12px; margin-bottom: 6px; border-top: 1px dashed #e2e8f0; padding-top: 8px; }
+
+        .highlight-price { font-weight: 800; color: #16a34a; font-size: 0.95rem; background: #f0fdf4; padding: 3px 8px; border-radius: 6px; border: 1px solid #bbf7d0; }
+        .highlight-paymode { font-weight: 800; color: #2563eb; font-size: 0.8rem; background: #eff6ff; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe; }
 
         @media (max-width: 480px) {
             body { padding: 15px 4%; }
@@ -236,6 +254,7 @@
 
                 let mainImg = "https://via.placeholder.com/150";
                 let mainTitle = "Product";
+                let hasReturnPolicy = false;
 
                 if (Array.isArray(order.items) && order.items.length > 0) {
                     mainImg = order.items[0].image || mainImg;
@@ -244,11 +263,15 @@
                     if(order.items.length > 1) {
                         mainTitle += ` (+${order.items.length - 1} more)`;
                     }
+                    hasReturnPolicy = order.items.some(i => i.return === true || i.return === "true" || i.returnPolicy === true || i.isReturnable === true);
                 } else {
                     mainImg = order.productImage || mainImg;
                     const rawName = order.productName || mainTitle;
                     mainTitle = rawName.split(' ').slice(0, 4).join(' ') + (rawName.split(' ').length > 4 ? '...' : '');
+                    hasReturnPolicy = order.return === true || order.return === "true" || order.returnPolicy === true || order.isReturnable === true;
                 }
+
+                const returnBadgeHtml = hasReturnPolicy ? `<div class="return-badge"><i class="fa-solid fa-rotate-left"></i> Easy to Return</div>` : '';
 
                 list.innerHTML += `
                     <div class="order-card" onclick="window.showOrderDetails('${order.id}')">
@@ -261,6 +284,7 @@
                             <div class="item-info">
                                 <h3>${mainTitle}</h3>
                                 ${deliveryMsg}
+                                ${returnBadgeHtml}
                             </div>
                         </div>
                         <div class="click-more-text">Tap to view full details <i class="fa-solid fa-chevron-right"></i></div>
@@ -290,9 +314,10 @@
                 itemsListHtml += `
                     <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:8px; border-radius:8px;">
                         <img src="${item.image || 'https://via.placeholder.com/150'}" style="width:40px; height:40px; object-fit:contain; border-radius:6px; background:#fff;">
-                        <div>
+                        <div style="flex-grow:1;">
                             <div style="font-weight:700; font-size:0.8rem; color:#1e293b;">${item.name || 'Product'}</div>
                             <div style="font-size:0.75rem; color:#64748b;">₹${item.price} | Qty: ${item.quantity || 1}</div>
+                            ${itemCanReturn ? '<div class="return-badge" style="margin-top:2px;"><i class="fa-solid fa-rotate-left"></i> Easy to Return</div>' : ''}
                         </div>
                     </div>`;
             });
@@ -303,9 +328,10 @@
             itemsListHtml = `
                 <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:8px; border-radius:8px;">
                     <img src="${order.productImage || 'https://via.placeholder.com/150'}" style="width:40px; height:40px; object-fit:contain; border-radius:6px; background:#fff;">
-                    <div>
+                    <div style="flex-grow:1;">
                         <div style="font-weight:700; font-size:0.8rem; color:#1e293b;">${order.productName || 'Product'}</div>
                         <div style="font-size:0.75rem; color:#64748b;">₹${order.price}</div>
+                        ${singleCanReturn ? '<div class="return-badge" style="margin-top:2px;"><i class="fa-solid fa-rotate-left"></i> Easy to Return</div>' : ''}
                     </div>
                 </div>`;
         }
@@ -315,16 +341,19 @@
             actionBtnHtml = `<button onclick="cancelOrder('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#fee2e2; color:#ef4444; border:none; border-radius:10px; font-weight:700; margin-top:15px; cursor:pointer;">Cancel Order</button>`; 
         } 
         else if (checkStatus === 'delivered' && orderHasReturnableProduct) { 
-            actionBtnHtml = `<button onclick="requestReturn('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#f1f5f9; color:#1e293b; border:1px solid #e2e8f0; border-radius:10px; font-weight:700; margin-top:15px; cursor:pointer;">Request Return</button>`; 
+            actionBtnHtml = `<button onclick="requestReturn('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#f1f5f9; color:#1e293b; border:1px solid #e2e8f0; border-radius:10px; font-weight:700; margin-top:15px; cursor:pointer;"><i class="fa-solid fa-rotate-left"></i> Request Return</button>`; 
         }
 
-        // സ്റ്റാറ്റസ് Highlight ചെയ്തു കാണിക്കാൻ തക്ക ബാഡ്ജ് ക്രിയേറ്റ് ചെയ്യുന്നു
+        // സ്റ്റാറ്റസ് Highlight ബാഡ്ജ്
         const statusBadgeHtml = `<span class="order-status status-${checkStatus}">${checkStatus === 'delivered' ? 'Your Order Delivered' : rawStatus}</span>`;
 
         const deliveryInfoHtml = checkStatus === 'delivered' 
             ? `<p><strong>Status:</strong> ${statusBadgeHtml}</p>`
             : `<p><strong>Status:</strong> ${statusBadgeHtml}</p>
                <p><strong>Expected Delivery:</strong> <span>${order.deliveryDate || 'Will update soon'}</span></p>`;
+
+        // ഹൈലൈറ്റ് ചെയ്യുന്ന Payment Details
+        const paymentModeText = isCOD ? 'Cash on Delivery' : (isPaid ? 'Online Paid' : 'Pending');
 
         Swal.fire({
             title: `Order Details (#${order.id})`,
@@ -345,8 +374,8 @@
                     </div>
 
                     <div class="modal-section-title">Payment Summary</div>
-                    <p><strong>Total Amount:</strong> <span>₹${order.price}</span></p>
-                    <p><strong>Payment Mode:</strong> <span>${isCOD ? 'Cash on Delivery' : (isPaid ? 'Online Paid' : 'Pending')}</span></p>
+                    <p><strong>Total Amount:</strong> <span class="highlight-price">₹${order.price}</span></p>
+                    <p><strong>Payment Mode:</strong> <span class="highlight-paymode">${paymentModeText}</span></p>
                     <p><strong>Transaction ID:</strong> <span>${order.transactionId || 'N/A'}</span></p>
 
                     ${actionBtnHtml}
