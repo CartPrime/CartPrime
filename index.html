@@ -560,6 +560,7 @@
         const bannerSlider = document.getElementById('bannerSlider');
         const bannerDots = document.getElementById('bannerDots');
 
+        /* --- UPDATED BANNER LOGIC WITH LINK REDIRECTION --- */
         onValue(ref(db, 'banners'), (snapshot) => {
             if (snapshot.exists()) {
                 bannerSlider.innerHTML = "";
@@ -568,33 +569,34 @@
 
                 snapshot.forEach(child => {
                     const bannerData = child.val();
-                    const imgUrl = bannerData.imageUrl || bannerData.image;
+                    const imgUrl = bannerData.imageUrl || bannerData.image || bannerData.url;
 
                     if (imgUrl) {
                         const item = document.createElement('div');
                         item.className = 'banner-item';
                         item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner">`;
 
-                        // Banner Redirection Priority Logic:
-                        // 1. External Custom Link (link / targetUrl / url)
-                        // 2. Specific Product ID
-                        // 3. Category Filter
-                        const targetLink = bannerData.link || bannerData.targetUrl || bannerData.url;
+                        // Fetch external/custom link from any possible key name
+                        const targetLink = bannerData.link || bannerData.targetUrl || bannerData.url || bannerData.redirectUrl;
 
-                        if (targetLink) {
-                            item.addEventListener('click', () => {
-                                if (targetLink.startsWith('http://') || targetLink.startsWith('https://')) {
-                                    window.location.href = targetLink;
+                        item.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            
+                            // Priority 1: Check for External/Custom Web Link
+                            if (targetLink && targetLink.toString().trim() !== "") {
+                                let linkStr = targetLink.toString().trim();
+                                if (linkStr.startsWith('http://') || linkStr.startsWith('https://')) {
+                                    window.open(linkStr, '_blank'); // Opens in new tab/redirects
                                 } else {
-                                    window.location.href = targetLink.startsWith('/') ? targetLink : `/${targetLink}`;
+                                    window.location.href = linkStr.startsWith('/') ? linkStr : `/${linkStr}`;
                                 }
-                            });
-                        } else if (bannerData.productId) {
-                            item.addEventListener('click', () => {
+                            } 
+                            // Priority 2: Direct Product ID Link
+                            else if (bannerData.productId) {
                                 trackProductClickAndRedirect(bannerData.productId);
-                            });
-                        } else if (bannerData.category) {
-                            item.addEventListener('click', () => {
+                            } 
+                            // Priority 3: Category Filter
+                            else if (bannerData.category) {
                                 activeCategory = bannerData.category;
                                 const filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
                                 renderProducts(filtered);
@@ -602,8 +604,8 @@
                                     if(b.getAttribute('data-cat').toLowerCase() === activeCategory.toLowerCase()) b.classList.add('active');
                                     else b.classList.remove('active');
                                 });
-                            });
-                        }
+                            }
+                        });
 
                         bannerSlider.appendChild(item);
 
