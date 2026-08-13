@@ -576,8 +576,8 @@
                         item.className = 'banner-item';
                         item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner">`;
 
-                        // Fetch link from Firebase properties
-                        const targetLink = bannerData.link || bannerData.targetUrl || bannerData.url || bannerData.redirectUrl;
+                        // Added redirectLink to check Firebase key
+                        const targetLink = bannerData.redirectLink || bannerData.link || bannerData.targetUrl || bannerData.url || bannerData.redirectUrl;
 
                         item.addEventListener('click', () => {
                             // 1. External or Internal Web Link
