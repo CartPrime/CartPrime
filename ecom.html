@@ -70,7 +70,7 @@
         .status-Rejected { background: #fee2e2; color: #b91c1c; }
 
         /* Order Actions Buttons */
-        .order-actions-btn { display: flex; gap: 6px; flex-wrap: wrap; }
+        .order-actions-btn { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
         .order-actions-btn button { padding: 8px 10px; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; color: white; transition: 0.2s; }
         .order-actions-btn button:hover { opacity: 0.85; }
 
@@ -131,7 +131,12 @@
             background: #f8fafc !important;
         }
 
-        /* IMPROVED RESPONSIVE BREAKPOINTS */
+        /* Detail Modal Custom Styles */
+        .order-detail-popup { text-align: left; font-size: 13px; color: #1e293b; max-height: 75vh; overflow-y: auto; padding-right: 5px; }
+        .order-detail-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+        .order-detail-title { font-weight: 800; font-size: 12px; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+
+        /* RESPONSIVE BREAKPOINTS */
         @media (max-width: 992px) {
             .sidebar { width: 80px; padding: 20px 10px; }
             .sidebar h2, .sidebar button span, .sidebar a span { display: none; }
@@ -201,7 +206,7 @@
             td:last-child { border-bottom: none !important; }
             td:first-child, td:last-child { border-radius: 0; }
 
-            #orders td { display: block; }
+            #orders td { display: flex; }
 
             .order-actions-btn {
                 display: flex;
@@ -212,7 +217,7 @@
             }
 
             .order-actions-btn button {
-                flex: 1 1 calc(33.33% - 8px);
+                flex: 1 1 calc(50% - 8px);
                 padding: 10px 6px;
                 font-size: 11px;
                 display: flex;
@@ -231,7 +236,7 @@
             .stat-card p { font-size: 16px; }
             .stat-card h3 { font-size: 9px; }
             .form-row > * { flex: 1 1 100%; }
-            .order-actions-btn button { flex: 1 1 calc(50% - 8px); padding: 8px; font-size: 11px; }
+            .order-actions-btn button { flex: 1 1 100%; padding: 10px; font-size: 12px; }
             .auto-fill-box input { flex: 1 1 100%; }
         }
     </style>
@@ -304,6 +309,7 @@
         </div>
     </div>
 
+    <!-- ORDERS TAB -->
     <div id="orders" class="tab-content">
         <h2 class="tab-title">Order Management</h2>
         <div class="admin-card">
@@ -315,10 +321,10 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Customer & Address</th>
-                            <th>Item(s) Ordered</th>
+                            <th>Order Info</th>
+                            <th>Customer</th>
                             <th>Total Amount</th>
-                            <th>Status & Payment</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -523,6 +529,7 @@ const db = getDatabase(app);
 
 let ordersChartInstance = null;
 let earningsChartInstance = null;
+let globalOrdersCache = {}; // Cache orders for Modal View
 
 window.fetchMeeshoDetails = async () => {
     let urlInput = document.getElementById('meeshoUrl').value.trim();
@@ -798,6 +805,7 @@ onValue(ref(db, 'orders'), snap => {
     
     if (list) list.innerHTML = ""; 
     if (returnContainer) returnContainer.innerHTML = "";
+    globalOrdersCache = {};
 
     let totalOrderCount = 0;
     let statusCounts = { Pending: 0, Confirmed: 0, Shipped: 0, Delivered: 0, Rejected: 0, Returned: 0, 'Return Requested': 0 };
@@ -848,15 +856,18 @@ onValue(ref(db, 'orders'), snap => {
         const data = childSnap.val();
         if (data.productName || data.customerName) {
             totalOrderCount++;
+            let path = childSnap.key;
+            globalOrdersCache[path] = { ...data, pathKey: path };
+
             let st = data.status || "Pending";
             if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
-            if (list) renderOrderRow(list, data, childSnap.key, data.customerPhone || "N/A");
+            if (list) renderOrderRow(list, data, path);
             
             processOrderEarnings(data);
 
             if (st === 'Return Requested' || st === 'Returned') {
                 hasReturns = true;
-                if (returnContainer) renderReturnCard(returnContainer, data, childSnap.key, data.customerPhone || "N/A");
+                if (returnContainer) renderReturnCard(returnContainer, data, path, data.customerPhone || "N/A");
             }
         } 
         else {
@@ -864,15 +875,18 @@ onValue(ref(db, 'orders'), snap => {
                 const nestedData = nestedSnap.val();
                 if (nestedData.productName || nestedData.customerName) {
                     totalOrderCount++;
+                    let path = `${childSnap.key}/${nestedSnap.key}`;
+                    globalOrdersCache[path] = { ...nestedData, pathKey: path, parentPhone: childSnap.key };
+
                     let st = nestedData.status || "Pending";
                     if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
-                    if (list) renderOrderRow(list, nestedData, `${childSnap.key}/${nestedSnap.key}`, nestedData.customerPhone || childSnap.key);
+                    if (list) renderOrderRow(list, nestedData, path);
                     
                     processOrderEarnings(nestedData);
 
                     if (st === 'Return Requested' || st === 'Returned') {
                         hasReturns = true;
-                        if (returnContainer) renderReturnCard(returnContainer, nestedData, `${childSnap.key}/${nestedSnap.key}`, nestedData.customerPhone || childSnap.key);
+                        if (returnContainer) renderReturnCard(returnContainer, nestedData, path, nestedData.customerPhone || childSnap.key);
                     }
                 }
             });
@@ -892,14 +906,54 @@ onValue(ref(db, 'orders'), snap => {
     }
 });
 
-function renderOrderRow(container, o, path, customerPhone) {
+/* CLEAN & COMPACT ORDER ROW IN LIST VIEW */
+function renderOrderRow(container, o, path) {
+    const payStatus = o.paymentStatus || "Pending";
+    const currentStatus = o.status || "Pending";
+    const phone = o.customerPhone || o.parentPhone || "N/A";
+    const shortId = path.split('/').pop().substring(0, 8);
+
+    container.innerHTML += `
+    <tr>
+        <td>
+            <strong style="color:#0f172a; font-size:12px;">#${shortId}</strong><br>
+            <span style="color:#64748b; font-size:11px;">${o.date || 'N/A'}</span>
+        </td>
+        <td>
+            <strong style="color:#0f172a; font-size:13px;">${o.customerName || 'Customer'}</strong><br>
+            <span style="color:#2563eb; font-weight:700; font-size:11px;"><i class="fa fa-phone"></i> ${phone}</span>
+        </td>
+        <td>
+            <strong style="color:#16a34a; font-size:14px;">₹${o.price || '0'}</strong>
+        </td>
+        <td>
+            <div style="display:flex; flex-direction:column; gap:3px; align-items:flex-start;">
+                <span class="status-badge status-${currentStatus}">${currentStatus}</span>
+                <span class="pay-badge pay-${payStatus}">${payStatus}</span>
+            </div>
+        </td>
+        <td>
+            <div class="order-actions-btn">
+                <button style="background:#000;" onclick="viewFullOrderDetails('${path}')">
+                    <i class="fa fa-eye"></i> View Full Details
+                </button>
+            </div>
+        </td>
+    </tr>`;
+}
+
+/* FULL DETAILS POPUP MODAL FUNCTION */
+window.viewFullOrderDetails = (path) => {
+    const o = globalOrdersCache[path];
+    if (!o) return Swal.fire('Error', 'Order details not found', 'error');
+
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
     const proofImg = o.paymentProof || ""; 
     const payMethod = o.paymentMethod || (o.transactionId ? "UPI Payment" : "Cash On Delivery");
-    
-    let productsListHtml = "";
+    const phone = o.customerPhone || o.parentPhone || "N/A";
 
+    let productsListHtml = "";
     if (o.items && Array.isArray(o.items) && o.items.length > 0) {
         o.items.forEach(item => {
             let pImg = item.image || item.productImage || "https://via.placeholder.com/150";
@@ -907,11 +961,11 @@ function renderOrderRow(container, o, path, customerPhone) {
             let pQty = item.quantity || item.qty || 1;
 
             productsListHtml += `
-            <div class="admin-prod-item">
+            <div class="admin-prod-item" style="margin-bottom:8px; background:#fff; padding:8px;">
                 <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
                 <div style="flex: 1; min-width: 0;">
-                    <p style="font-size: 12px; font-weight: 800; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.name || item.title || 'Product'}</p>
-                    <div style="margin-top: 2px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                    <p style="font-size: 13px; font-weight: 800; color: #1e293b;">${item.name || item.title || 'Product'}</p>
+                    <div style="margin-top: 4px; display: flex; align-items: center; gap: 6px;">
                         <span class="highlight-size">Size: ${pSize}</span>
                         <span class="highlight-qty">Qty: ${pQty}</span>
                     </div>
@@ -924,11 +978,11 @@ function renderOrderRow(container, o, path, customerPhone) {
         let pQty = o.quantity || o.qty || 1;
 
         productsListHtml = `
-        <div class="admin-prod-item">
+        <div class="admin-prod-item" style="margin-bottom:8px; background:#fff; padding:8px;">
             <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
             <div style="flex: 1; min-width: 0;">
-                <p style="font-size: 12px; font-weight: 800; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${o.productName || 'Product'}</p>
-                <div style="margin-top: 2px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                <p style="font-size: 13px; font-weight: 800; color: #1e293b;">${o.productName || 'Product'}</p>
+                <div style="margin-top: 4px; display: flex; align-items: center; gap: 6px;">
                     <span class="highlight-size">Size: ${pSize}</span>
                     <span class="highlight-qty">Qty: ${pQty}</span>
                 </div>
@@ -936,42 +990,56 @@ function renderOrderRow(container, o, path, customerPhone) {
         </div>`;
     }
 
-    container.innerHTML += `
-    <tr>
-        <td>
-            <strong style="color:#0f172a; font-size:13px;"><i class="fa fa-user"></i> ${o.customerName || 'Customer'}</strong><br>
-            <span style="color:#2563eb; font-weight:700; font-size:11px;"><i class="fa fa-phone"></i> ${customerPhone}</span><br>
-            <span style="color:#64748b; font-size:11px;"><i class="fa fa-location-dot"></i> ${o.address || 'N/A'}</span>
-            ${o.deliveryDate ? `<br><span style="color:#0284c7; font-weight:bold; font-size:11px;"><i class="fa fa-truck"></i> Est. Delivery: ${o.deliveryDate}</span>` : ''}
-        </td>
-        <td style="min-width: 180px;">
+    const modalContent = `
+    <div class="order-detail-popup">
+        <div class="order-detail-section">
+            <div class="order-detail-title"><i class="fa fa-user"></i> Customer Info</div>
+            <p><strong>Name:</strong> ${o.customerName || 'N/A'}</p>
+            <p><strong>Phone:</strong> <a href="tel:${phone}" style="color:#2563eb; text-decoration:none; font-weight:bold;">${phone}</a></p>
+            <p style="margin-top:4px;"><strong>Address:</strong> ${o.address || 'N/A'}</p>
+        </div>
+
+        <div class="order-detail-section">
+            <div class="order-detail-title"><i class="fa fa-box"></i> Ordered Item(s)</div>
             ${productsListHtml}
-        </td>
-        <td>
-            <strong style="color:#16a34a; font-size:14px;">₹${o.price || '0'}</strong><br>
-            <span style="font-size:10px; color:#64748b;">${payMethod}</span>
-            ${proofImg ? `<br><button onclick="viewProof('${proofImg}')" style="margin-top:4px; background:#fff; border:1px solid #cbd5e1; padding:2px 6px; border-radius:4px; cursor:pointer; font-size:10px; font-weight:700;">Proof <i class="fa fa-image"></i></button>` : ''}
-        </td>
-        <td>
-            <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-start;">
-                <span class="status-badge status-${currentStatus}">${currentStatus}</span>
-                <span class="pay-badge pay-${payStatus}">${payStatus}</span>
+        </div>
+
+        <div class="order-detail-section">
+            <div class="order-detail-title"><i class="fa fa-receipt"></i> Payment & Order Status</div>
+            <p><strong>Total Price:</strong> <span style="color:#16a34a; font-weight:bold;">₹${o.price || '0'}</span></p>
+            <p><strong>Payment Method:</strong> ${payMethod}</p>
+            <p><strong>Payment Status:</strong> <span class="pay-badge pay-${payStatus}">${payStatus}</span></p>
+            <p style="margin-top:4px;"><strong>Order Status:</strong> <span class="status-badge status-${currentStatus}">${currentStatus}</span></p>
+            ${o.deliveryDate ? `<p style="margin-top:4px; color:#0284c7; font-weight:bold;"><i class="fa fa-truck"></i> Est. Delivery: ${o.deliveryDate}</p>` : ''}
+            
+            ${proofImg ? `
+                <button onclick="viewProof('${proofImg}')" style="margin-top:10px; background:#1e293b; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; width:100%;">
+                    <i class="fa fa-image"></i> View Payment Screenshot
+                </button>
+            ` : ''}
+        </div>
+
+        <div class="order-detail-section" style="background:#fff; border:1px solid #cbd5e1;">
+            <div class="order-detail-title" style="color:#0f172a;"><i class="fa fa-sliders"></i> Update Actions</div>
+            <div class="order-actions-btn" style="margin-top:8px;">
+                <button style="background:#16a34a" title="Verify Payment" onclick="verifyPayment('${path}', 'Paid')"><i class="fa fa-check"></i> Paid</button>
+                <button style="background:#ef4444" title="Reject Payment" onclick="verifyPayment('${path}', 'Rejected')"><i class="fa fa-xmark"></i> Reject</button>
+                <button style="background:#0284c7" title="Mark as Shipped" onclick="shipOrderWithDate('${path}')"><i class="fa fa-truck-fast"></i> Ship</button>
+                <button style="background:#2563eb" title="Mark Delivered" onclick="updateStatus('${path}', 'Delivered')"><i class="fa fa-box"></i> Deliver</button>
+                <button style="background:#333;" title="Delete Order" onclick="deleteItem('orders/${path}')"><i class="fa fa-trash"></i> Delete</button>
             </div>
-        </td>
-        <td>
-            <div class="order-actions-btn">
-                <button style="background:#16a34a" title="Verify Payment" onclick="verifyPayment('${path}', 'Paid')"><i class="fa fa-check"></i></button>
-                <button style="background:#ef4444" title="Reject / Cancel Payment" onclick="verifyPayment('${path}', 'Rejected')"><i class="fa fa-xmark"></i></button>
-                
-                <!-- SHIPPED BUTTON -->
-                <button style="background:#0284c7" title="Mark as Shipped" onclick="shipOrderWithDate('${path}')"><i class="fa fa-truck-fast"></i> Shipped</button>
-                
-                <button style="background:#2563eb" title="Mark Delivered" onclick="updateStatus('${path}', 'Delivered')"><i class="fa fa-box"></i></button>
-                <button style="background:#333;" title="Delete Order" onclick="deleteItem('orders/${path}')"><i class="fa fa-trash"></i></button>
-            </div>
-        </td>
-    </tr>`;
-}
+        </div>
+    </div>
+    `;
+
+    Swal.fire({
+        title: `Order Details`,
+        html: modalContent,
+        showCloseButton: true,
+        showConfirmButton: false,
+        customClass: { popup: 'custom-verify-modal' }
+    });
+};
 
 function renderReturnCard(container, o, path, customerPhone) {
     const currentStatus = o.status || "Pending";
@@ -1048,17 +1116,18 @@ window.verifyPayment = (path, status) => {
         updateData = { paymentStatus: 'Rejected', status: 'Rejected', deliveryDate: null };
     }
     update(ref(db, 'orders/' + path), updateData).then(() => {
+        Swal.close();
         Swal.fire('Updated', `Payment status marked as ${status}`, 'success');
     });
 };
 
 window.updateStatus = (path, s) => {
     update(ref(db, 'orders/' + path), { status: s }).then(() => {
+        Swal.close();
         Swal.fire('Updated', `Order status marked as ${s}`, 'success');
     });
 };
 
-// Shipped ആക്കുന്നതിനുള്ള ഫങ്ഷൻ
 window.shipOrderWithDate = async (path) => {
     const { value: date } = await Swal.fire({ 
         title: 'Select Expected Delivery Date', 
@@ -1069,6 +1138,7 @@ window.shipOrderWithDate = async (path) => {
     
     if (date) {
         update(ref(db, 'orders/' + path), { status: 'Shipped', deliveryDate: date }).then(() => {
+            Swal.close();
             Swal.fire('Shipped!', 'Order status updated to Shipped.', 'success');
         });
     }
@@ -1219,7 +1289,7 @@ window.addImageField = () => {
 
 window.deleteItem = (p) => {
     Swal.fire({ title: 'Delete?', text: "Cannot undo!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })
-    .then((res) => { if (res.isConfirmed) remove(ref(db, p)); });
+    .then((res) => { if (res.isConfirmed) { remove(ref(db, p)); Swal.close(); } });
 };
 
 document.addEventListener("DOMContentLoaded", () => {
