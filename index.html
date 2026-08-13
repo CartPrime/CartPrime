@@ -560,7 +560,7 @@
         const bannerSlider = document.getElementById('bannerSlider');
         const bannerDots = document.getElementById('bannerDots');
 
-        /* --- UPDATED BANNER LOGIC WITH LINK REDIRECTION --- */
+        /* --- UPDATED & FIXED BANNER CLICK REDIRECT LOGIC --- */
         onValue(ref(db, 'banners'), (snapshot) => {
             if (snapshot.exists()) {
                 bannerSlider.innerHTML = "";
@@ -576,26 +576,24 @@
                         item.className = 'banner-item';
                         item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner">`;
 
-                        // Fetch external/custom link from any possible key name
+                        // Fetch link from Firebase properties
                         const targetLink = bannerData.link || bannerData.targetUrl || bannerData.url || bannerData.redirectUrl;
 
-                        item.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            
-                            // Priority 1: Check for External/Custom Web Link
+                        item.addEventListener('click', () => {
+                            // 1. External or Internal Web Link
                             if (targetLink && targetLink.toString().trim() !== "") {
                                 let linkStr = targetLink.toString().trim();
                                 if (linkStr.startsWith('http://') || linkStr.startsWith('https://')) {
-                                    window.open(linkStr, '_blank'); // Opens in new tab/redirects
+                                    window.location.href = linkStr;
                                 } else {
                                     window.location.href = linkStr.startsWith('/') ? linkStr : `/${linkStr}`;
                                 }
                             } 
-                            // Priority 2: Direct Product ID Link
+                            // 2. Direct Product ID Link
                             else if (bannerData.productId) {
                                 trackProductClickAndRedirect(bannerData.productId);
                             } 
-                            // Priority 3: Category Filter
+                            // 3. Category Filter
                             else if (bannerData.category) {
                                 activeCategory = bannerData.category;
                                 const filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
