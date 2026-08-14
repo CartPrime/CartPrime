@@ -373,6 +373,54 @@
             100% { background-position: -200% 0; }
         }
 
+        /* --- Cookies Consent Banner --- */
+        .cookie-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            max-width: 450px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 18px;
+            padding: 18px 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+        .cookie-banner p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .cookie-banner p strong {
+            color: var(--text-main);
+        }
+        .cookie-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .cookie-btn {
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+        .cookie-accept {
+            background: var(--primary);
+            color: var(--bg);
+        }
+        .cookie-accept:hover {
+            opacity: 0.9;
+        }
+
         footer { 
             background: #000; color: #fff; padding: 30px 6%; 
             margin-top: auto; width: 100%; border-top: 1px solid #1e293b;
@@ -380,7 +428,9 @@
         .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .footer-logo { font-weight: 800; font-size: 1.5rem; }
         .footer-logo span { color: #64748b; }
-        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 9px; }
+        .footer-contact { display: flex; flex-direction: column; gap: 8px; }
+        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 9px; transition: opacity 0.2s; }
+        .footer-contact a:hover { opacity: 0.8; }
         .footer-bottom { border-top: 1px solid #1e293b; margin-top: 20px; padding-top: 15px; text-align: center; color: #94a3b8; font-size: 0.85rem; }
 
         @media (max-width: 768px) {
@@ -426,8 +476,11 @@
             .skeleton-card { border-radius: 16px; padding: 8px; height: 280px; }
             .skeleton-img { height: 140px; border-radius: 12px; }
             
+            .cookie-banner { left: 10px; right: 10px; bottom: 10px; padding: 14px; }
+
             footer { padding: 25px 4%; }
-            .footer-content { flex-direction: column; text-align: center; gap: 10px; }
+            .footer-content { flex-direction: column; text-align: center; gap: 15px; }
+            .footer-contact { align-items: center; }
         }
     </style>
 </head>
@@ -479,6 +532,14 @@
         <div class="grid" id="productGrid"></div>
     </div>
 
+    <!-- Cookies Consent Banner -->
+    <div class="cookie-banner" id="cookieBanner" style="display: none;">
+        <p><strong>We use cookies!</strong> We use cookies to enhance your shopping experience and analyze our website traffic.</p>
+        <div class="cookie-actions">
+            <button class="cookie-btn cookie-accept" id="acceptCookiesBtn">Accept Cookies</button>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-content">
             <div class="footer-logo">CART<span>PRIME</span></div>
@@ -486,6 +547,10 @@
                 <a href="mailto:cartprimeshopping@gmail.com">
                     <i class="fa-regular fa-envelope"></i>
                     cartprimeshopping@gmail.com
+                </a>
+                <a href="https://www.instagram.com/cartprimeonlinestore?igsh=MWFmYTkzdHhyOXoyYQ==" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-brands fa-instagram" style="font-size: 1.1rem; color: #e1306c;"></i>
+                    @cartprimeonlinestore
                 </a>
             </div>
         </div>
@@ -498,6 +563,19 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // --- COOKIES CONSENT LOGIC ---
+        const cookieBanner = document.getElementById('cookieBanner');
+        const acceptCookiesBtn = document.getElementById('acceptCookiesBtn');
+
+        if (!localStorage.getItem('cookiesAccepted')) {
+            cookieBanner.style.display = 'flex';
+        }
+
+        acceptCookiesBtn.addEventListener('click', () => {
+            localStorage.setItem('cookiesAccepted', 'true');
+            cookieBanner.style.display = 'none';
+        });
 
         // --- GLOBAL THEME LOGIC ---
         const themeToggleBtn = document.getElementById('themeToggleBtn');
