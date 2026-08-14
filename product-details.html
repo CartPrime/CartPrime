@@ -289,28 +289,59 @@
         .policy-yes { color: #22c55e; }
         .policy-no { color: var(--red); }
         
-        /* Technical Specifications Box & View More Button */
-        .specs-box { margin-bottom: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; }
-        .specs-box h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-muted); }
-        .spec-row { display: flex; padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; align-items: center; }
+        /* Custom Box Style for Technical Specifications */
+        .specs-box { 
+            margin-bottom: 30px; 
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        .specs-box h4 { 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 15px; 
+            color: var(--primary);
+            font-weight: 800;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+        .spec-row { 
+            display: flex; 
+            padding: 10px 0; 
+            border-bottom: 1px solid var(--border-color); 
+            font-size: 0.9rem; 
+            align-items: center; 
+        }
+        .spec-row:last-of-type { border-bottom: none; }
         .spec-key { width: 140px; color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
         .spec-val { font-weight: 700; color: var(--primary); }
         
+        /* View More Button Box Styling */
         .view-more-btn {
+            width: 100%;
             margin-top: 12px;
-            background: none;
-            border: none;
+            padding: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             color: var(--primary);
             font-weight: 800;
             font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 0;
-            transition: opacity 0.2s;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
         }
-        .view-more-btn:hover { opacity: 0.7; }
+        .view-more-btn:hover { 
+            background: var(--primary);
+            color: var(--primary-invert);
+            border-color: var(--primary);
+        }
         
         .desc-text { color: var(--text-muted); line-height: 1.7; margin-bottom: 30px; font-size: 0.95rem; white-space: pre-line; }
         
@@ -362,7 +393,7 @@
             .price { font-size: 1.8rem; }
             .mrp, .discount { font-size: 1rem; }
             
-            .specs-box { margin-bottom: 20px; padding-top: 15px; }
+            .specs-box { margin-bottom: 20px; padding: 15px; }
             .spec-row { font-size: 0.85rem; padding: 10px 0; }
             .spec-key { width: 110px; }
             .desc-text { font-size: 0.9rem; margin-bottom: 20px; }
@@ -490,7 +521,7 @@
                 if (specEntries.length > 4) {
                     specsHTML += `
                         <button class="view-more-btn" id="viewMoreSpecsBtn" onclick="window.toggleSpecs()">
-                            <span>View More</span> <i class="fa-solid fa-chevron-down" id="specsChevron"></i>
+                            <span>View More Specifications</span> <i class="fa-solid fa-chevron-down" id="specsChevron"></i>
                         </button>`;
                 }
             }
@@ -570,7 +601,11 @@
                         </div>
                     </div>
 
-                    <div class="specs-box"><h4>Specifications</h4>${specsHTML || '<p style="color: var(--text-muted); font-size: 0.9rem;">No specifications available.</p>'}</div>
+                    <div class="specs-box">
+                        <h4>Specifications</h4>
+                        ${specsHTML || '<p style="color: var(--text-muted); font-size: 0.9rem;">No specifications available.</p>'}
+                    </div>
+
                     <div class="desc-text">${p.desc || ''}</div>
                 </div>`;
                 
@@ -634,10 +669,10 @@
             });
 
             if (isCurrentlyHidden) {
-                btn.querySelector('span').innerText = 'View Less';
+                btn.querySelector('span').innerText = 'View Less Specifications';
                 chevron.classList.replace('fa-chevron-down', 'fa-chevron-up');
             } else {
-                btn.querySelector('span').innerText = 'View More';
+                btn.querySelector('span').innerText = 'View More Specifications';
                 chevron.classList.replace('fa-chevron-up', 'fa-chevron-down');
             }
         };
