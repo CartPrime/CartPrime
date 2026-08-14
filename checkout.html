@@ -326,7 +326,7 @@
             });
         };
 
-        // --- CURRENT LOCATION (GPS) AUTO-FILL LOGIC ---
+        // --- CURRENT LOCATION (GPS) AUTO-FILL LOGIC (UPDATED & FIXED) ---
         window.getCurrentLocation = function() {
             const locBtnText = document.getElementById('locBtnText');
             
@@ -359,13 +359,17 @@
                             const localArea = [addr.road, addr.neighbourhood, addr.suburb].filter(Boolean).join(", ");
                             document.getElementById('area').value = localArea || city;
 
+                            // State Auto-Select Logic Enhanced
                             if (addr.state) {
                                 const stateSelect = document.getElementById('state');
-                                const stateOptions = Array.from(stateSelect.options);
-                                const matchingOption = stateOptions.find(opt => 
-                                    opt.value.toLowerCase() === addr.state.toLowerCase() ||
-                                    addr.state.toLowerCase().includes(opt.value.toLowerCase())
-                                );
+                                let apiState = addr.state.toLowerCase().replace(/^state of\s+/i, '').trim();
+
+                                const matchingOption = Array.from(stateSelect.options).find(opt => {
+                                    let optVal = opt.value.toLowerCase().trim();
+                                    if (!optVal) return false;
+                                    return optVal === apiState || apiState.includes(optVal) || optVal.includes(apiState);
+                                });
+
                                 if (matchingOption) {
                                     stateSelect.value = matchingOption.value;
                                 }
