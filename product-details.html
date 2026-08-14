@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Theme Script (ഫ്ലിക്കറിംഗ് ഒഴിവാക്കാൻ) -->
+    <!-- Theme Script -->
     <script>
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -289,12 +289,28 @@
         .policy-yes { color: #22c55e; }
         .policy-no { color: var(--red); }
         
-        /* Technical Specifications Box */
+        /* Technical Specifications Box & View More Button */
         .specs-box { margin-bottom: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; }
         .specs-box h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-muted); }
         .spec-row { display: flex; padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; align-items: center; }
         .spec-key { width: 140px; color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
         .spec-val { font-weight: 700; color: var(--primary); }
+        
+        .view-more-btn {
+            margin-top: 12px;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+            transition: opacity 0.2s;
+        }
+        .view-more-btn:hover { opacity: 0.7; }
         
         .desc-text { color: var(--text-muted); line-height: 1.7; margin-bottom: 30px; font-size: 0.95rem; white-space: pre-line; }
         
@@ -463,9 +479,21 @@
 
         function renderProduct(p) {
             let specsHTML = ""; 
-            if (p.specs) Object.entries(p.specs).forEach(([k, v]) => { 
-                specsHTML += `<div class="spec-row"><div class="spec-key">${k}</div><div class="spec-val">${v}</div></div>`; 
-            });
+            if (p.specs) {
+                const specEntries = Object.entries(p.specs);
+                
+                specEntries.forEach(([k, v], idx) => {
+                    const isHidden = idx >= 4 ? 'style="display: none;" class="spec-row extra-spec"' : 'class="spec-row"';
+                    specsHTML += `<div ${isHidden}><div class="spec-key">${k}</div><div class="spec-val">${v}</div></div>`;
+                });
+
+                if (specEntries.length > 4) {
+                    specsHTML += `
+                        <button class="view-more-btn" id="viewMoreSpecsBtn" onclick="window.toggleSpecs()">
+                            <span>View More</span> <i class="fa-solid fa-chevron-down" id="specsChevron"></i>
+                        </button>`;
+                }
+            }
             
             const isOut = p.outOfStock === true; 
             const returnStatus = p.return ? (p.return.toString().toLowerCase().trim() === 'true' || p.return === true || p.return.toString().toLowerCase().trim() === 'available') : false;
@@ -590,6 +618,29 @@
                 observer.observe(targetBox);
             }
         }
+
+        /* Toggle Extra Specs Functionality */
+        window.toggleSpecs = () => {
+            const extraSpecs = document.querySelectorAll('.extra-spec');
+            const btn = document.getElementById('viewMoreSpecsBtn');
+            const chevron = document.getElementById('specsChevron');
+            
+            if (!extraSpecs.length) return;
+
+            const isCurrentlyHidden = extraSpecs[0].style.display === 'none';
+
+            extraSpecs.forEach(row => {
+                row.style.display = isCurrentlyHidden ? 'flex' : 'none';
+            });
+
+            if (isCurrentlyHidden) {
+                btn.querySelector('span').innerText = 'View Less';
+                chevron.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                btn.querySelector('span').innerText = 'View More';
+                chevron.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+        };
 
         window.selectSize = (btn, size) => {
             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
