@@ -27,7 +27,6 @@
             --surface: #f8fafc;
             --text-muted: #64748b;
             --flipkart-green: #388e3c;
-            --star-gold: #ffb800;
             --nav-bg: rgba(255, 255, 255, 0.85);
             --drawer-bg: #fff;
         }
@@ -269,9 +268,7 @@
             text-align: center;
             user-select: none;
         }
-        .size-btn:hover {
-            border-color: var(--primary);
-        }
+        .size-btn:hover { border-color: var(--primary); }
         .size-btn.active {
             background: var(--primary);
             color: var(--primary-invert);
@@ -320,7 +317,7 @@
         .spec-key { width: 140px; color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
         .spec-val { font-weight: 700; color: var(--primary); }
         
-        /* Reviews Section Styles */
+        /* Dynamic Multi-Color Reviews Section Styles */
         .reviews-box {
             margin-top: 35px;
             background: var(--surface);
@@ -329,27 +326,41 @@
             padding: 24px;
         }
         .reviews-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid var(--border-color);
         }
-        .rating-summary {
+        .rating-summary-container {
             display: flex;
+            gap: 20px;
             align-items: center;
-            gap: 12px;
+            flex-wrap: wrap;
         }
-        .avg-score {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary);
+        .avg-score-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            background: var(--bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            min-width: 120px;
         }
-        .star-rating {
-            color: var(--star-gold);
-            font-size: 0.9rem;
-        }
+        .avg-score { font-size: 2.4rem; font-weight: 800; color: var(--primary); line-height: 1; }
+        
+        /* Star Colors */
+        .star-red { color: #ef4444 !important; }
+        .star-orange { color: #f97316 !important; }
+        .star-yellow { color: #f59e0b !important; }
+        .star-green { color: #16a34a !important; }
+
+        /* Rating Breakdown Progress Bar */
+        .rating-bars { flex-grow: 1; min-width: 200px; }
+        .bar-row { display: flex; align-items: center; gap: 10px; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; }
+        .progress-bg { flex-grow: 1; height: 8px; background: var(--border-color); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 10px; transition: width 0.4s ease; }
+
         .review-card {
             background: var(--bg);
             border: 1px solid var(--border-color);
@@ -358,20 +369,20 @@
             margin-bottom: 14px;
         }
         .review-card:last-child { margin-bottom: 0; }
-        .reviewer-info {
-            display: flex;
-            justify-content: space-between;
+        .reviewer-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .reviewer-name { font-weight: 700; font-size: 0.9rem; color: var(--primary); }
+        .review-date { font-size: 0.75rem; color: var(--text-muted); }
+
+        .rating-badge {
+            display: inline-flex;
             align-items: center;
-            margin-bottom: 8px;
-        }
-        .reviewer-name {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--primary);
-        }
-        .review-date {
+            gap: 4px;
             font-size: 0.75rem;
-            color: var(--text-muted);
+            font-weight: 800;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
         }
         
         /* View More Button Box Styling */
@@ -548,14 +559,11 @@
         });
 
         if (productId) {
-            // Load product data along with customer reviews
-            Promise.all([
-                get(child(ref(db), `products/${productId}`)),
-                get(child(ref(db), `reviews/${productId}`))
-            ]).then(([productSnap, reviewSnap]) => {
+            // Fetch Product and Reviews directly from products/${productId}
+            get(child(ref(db), `products/${productId}`)).then((productSnap) => {
                 if (productSnap.exists()) {
                     const productData = productSnap.val();
-                    const reviewsData = reviewSnap.exists() ? reviewSnap.val() : null;
+                    const reviewsData = productData.reviews || null;
                     renderProduct(productData, reviewsData); 
                     track6SecView(productId);
                 } else {
@@ -569,15 +577,33 @@
             hideLoader();
         }
 
-        function renderStars(rating) {
+        /* Color-coded Dynamic Stars Generator */
+        function getStarClass(rating) {
+            const r = Math.round(rating);
+            if (r === 1) return 'star-red';
+            if (r === 2) return 'star-orange';
+            if (r === 3) return 'star-yellow';
+            return 'star-green';
+        }
+
+        function getBgColor(rating) {
+            const r = Math.round(rating);
+            if (r === 1) return '#ef4444';
+            if (r === 2) return '#f97316';
+            if (r === 3) return '#f59e0b';
+            return '#16a34a';
+        }
+
+        function renderColorStars(rating) {
             let stars = '';
+            const colorClass = getStarClass(rating);
             for (let i = 1; i <= 5; i++) {
                 if (i <= rating) {
-                    stars += '<i class="fa-solid fa-star"></i>';
+                    stars += `<i class="fa-solid fa-star ${colorClass}"></i>`;
                 } else if (i - 0.5 <= rating) {
-                    stars += '<i class="fa-solid fa-star-half-stroke"></i>';
+                    stars += `<i class="fa-solid fa-star-half-stroke ${colorClass}"></i>`;
                 } else {
-                    stars += '<i class="fa-regular fa-star"></i>';
+                    stars += `<i class="fa-regular fa-star" style="color:#cbd5e1;"></i>`;
                 }
             }
             return stars;
@@ -601,19 +627,25 @@
                 }
             }
 
-            /* Render Reviews Section */
+            /* Calculate & Render Dynamic Reviews Section */
             let reviewsListHTML = '';
             let totalRatingSum = 0;
             let reviewCount = 0;
+            let starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
 
             if (reviews) {
                 const reviewsArr = Object.values(reviews);
                 reviewCount = reviewsArr.length;
                 
                 reviewsArr.forEach(r => {
-                    const ratingVal = parseFloat(r.rating || 5);
+                    const ratingVal = parseInt(r.rating || 5);
                     totalRatingSum += ratingVal;
-                    const dateStr = r.date ? new Date(r.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+                    if (starCounts[ratingVal] !== undefined) {
+                        starCounts[ratingVal]++;
+                    }
+
+                    const dateStr = r.date || '';
+                    const starBg = getBgColor(ratingVal);
 
                     reviewsListHTML += `
                         <div class="review-card">
@@ -621,8 +653,8 @@
                                 <span class="reviewer-name">${r.userName || r.name || 'Verified Customer'}</span>
                                 <span class="review-date">${dateStr}</span>
                             </div>
-                            <div class="star-rating" style="margin-bottom: 6px;">
-                                ${renderStars(ratingVal)}
+                            <div class="rating-badge" style="background:${starBg};">
+                                <span>${ratingVal}</span> <i class="fa-solid fa-star" style="font-size: 0.65rem;"></i>
                             </div>
                             <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5;">${r.comment || r.review || ''}</p>
                         </div>
@@ -632,22 +664,41 @@
 
             const avgRating = reviewCount > 0 ? (totalRatingSum / reviewCount).toFixed(1) : 0;
 
+            /* Progress Bars for Ratings Breakdown */
+            let ratingBarsHTML = '';
+            [5, 4, 3, 2, 1].forEach(starNum => {
+                const count = starCounts[starNum];
+                const pct = reviewCount > 0 ? Math.round((count / reviewCount) * 100) : 0;
+                const barColor = getBgColor(starNum);
+
+                ratingBarsHTML += `
+                    <div class="bar-row">
+                        <span style="width: 15px;">${starNum}★</span>
+                        <div class="progress-bg">
+                            <div class="progress-fill" style="width: ${pct}%; background: ${barColor};"></div>
+                        </div>
+                        <span style="width: 35px; text-align: right;">${pct}%</span>
+                    </div>
+                `;
+            });
+
             const reviewsBoxHTML = `
                 <div class="reviews-box">
                     <div class="reviews-header">
-                        <div>
-                            <h4 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800;">Customer Reviews</h4>
-                            <div class="rating-summary" style="margin-top: 6px;">
-                                <span class="avg-score">${reviewCount > 0 ? avgRating : 'N/A'}</span>
-                                <div>
-                                    <div class="star-rating">${renderStars(avgRating)}</div>
-                                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Based on ${reviewCount} review${reviewCount !== 1 ? 's' : ''}</span>
-                                </div>
+                        <h4 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; margin-bottom: 12px;">Ratings & Reviews</h4>
+                        <div class="rating-summary-container">
+                            <div class="avg-score-box">
+                                <span class="avg-score">${reviewCount > 0 ? avgRating : '0'}</span>
+                                <div style="font-size: 0.85rem; margin: 4px 0;">${renderColorStars(avgRating)}</div>
+                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">${reviewCount} Rating${reviewCount !== 1 ? 's' : ''}</span>
+                            </div>
+                            <div class="rating-bars">
+                                ${ratingBarsHTML}
                             </div>
                         </div>
                     </div>
                     <div class="reviews-list">
-                        ${reviewCount > 0 ? reviewsListHTML : '<p style="color: var(--text-muted); font-size: 0.88rem;">No customer reviews yet.</p>'}
+                        ${reviewCount > 0 ? reviewsListHTML : '<p style="color: var(--text-muted); font-size: 0.88rem; text-align: center; padding: 10px;">No reviews for this product yet.</p>'}
                     </div>
                 </div>
             `;
