@@ -252,18 +252,33 @@
 
             list.innerHTML = activePhoneHeader;
 
+            // നാളത്തെ തീയതി കൃത്യമായി കണക്കാക്കാൻ
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowStr = tomorrow.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            
+            const tDay = tomorrow.getDate();
+            const tMonth = tomorrow.toLocaleString('en-IN', { month: 'short' });
+            const tYear = tomorrow.getFullYear();
+            
+            const tomorrowStr1 = `${tDay} ${tMonth} ${tYear}`.toLowerCase(); // ഉദാഹരണത്തിന്: 16 aug 2026
+            const tomorrowStr2 = `${tDay}-${tMonth}-${tYear}`.toLowerCase();
+            const tomorrowStr3 = `${tDay}/${tMonth}/${tYear}`.toLowerCase();
 
             ordersArr.forEach(order => {
                 const displayStatus = order.status || 'Pending';
                 const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
 
                 let deliveryMsg = '';
-                const orderDateStr = order.deliveryDate ? order.deliveryDate.trim() : '';
+                const orderDateStr = order.deliveryDate ? order.deliveryDate.trim().toLowerCase() : '';
 
-                if (checkStatus === 'shipped' && (orderDateStr === tomorrowStr || orderDateStr.toLowerCase().includes('tomorrow'))) {
+                // തീയതി നാളത്തെതാണോ അല്ലെങ്കിൽ 'tomorrow' എന്ന് എഴുതിയിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുന്നു
+                const isTomorrowDate = orderDateStr === tomorrowStr1 || 
+                                       orderDateStr === tomorrowStr2 || 
+                                       orderDateStr === tomorrowStr3 || 
+                                       orderDateStr.includes('tomorrow') ||
+                                       orderDateStr.includes(`${tDay} ${tMonth.toLowerCase()}`);
+
+                if (checkStatus === 'shipped' && isTomorrowDate) {
                     deliveryMsg = `<div class="delivery-text" style="color:#d97706; font-weight:800;"><i class="fa-solid fa-truck-fast"></i> Order Tomorrow Arriving</div>`;
                 } else if (checkStatus === 'delivered') {
                     deliveryMsg = `<div class="delivery-text"><i class="fa-solid fa-circle-check"></i> Your Order Delivered</div>`;
