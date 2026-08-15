@@ -682,11 +682,13 @@
             window.location.href = "/";
         });
 
-        onAuthStateChanged(auth, (user) => {
+        // --- UPDATED BADGES COUNT LOGIC (Wishlist & Orders) ---
+        function updateBadges(user) {
             const wishlistBadge = document.getElementById('wishlistBadge');
             const ordersBadge = document.getElementById('ordersBadge');
 
             if (user) {
+                // Wishlist Count
                 onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => {
                     const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
                     if (count > 0) {
@@ -697,9 +699,18 @@
                     }
                 });
 
-                const userPhone = user.phoneNumber || localStorage.getItem('userPhone');
-                if (userPhone) {
-                    onValue(ref(db, `orders/${userPhone}`), (snapshot) => {
+                // Orders Count - Checks Phone Number from multiple sources (localStorage / Auth)
+                const phoneSources = [
+                    localStorage.getItem('userPhone'),
+                    localStorage.getItem('cartPrime_LastOrderPhone'),
+                    localStorage.getItem('cartPrime_Phone'),
+                    user.phoneNumber
+                ];
+
+                let targetPhone = phoneSources.find(p => p && p.trim() !== "");
+
+                if (targetPhone) {
+                    onValue(ref(db, `orders/${targetPhone}`), (snapshot) => {
                         const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
                         if (count > 0) {
                             ordersBadge.textContent = count;
@@ -720,10 +731,31 @@
                     });
                 }
             } else {
+                // Check if Guest Phone exists in localStorage for orders count
+                const guestPhone = localStorage.getItem('userPhone') || localStorage.getItem('cartPrime_LastOrderPhone');
+                if (guestPhone) {
+                    onValue(ref(db, `orders/${guestPhone}`), (snapshot) => {
+                        const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
+                        if (count > 0) {
+                            ordersBadge.textContent = count;
+                            ordersBadge.style.display = 'flex';
+                        } else {
+                            ordersBadge.style.display = 'none';
+                        }
+                    });
+                } else {
+                    ordersBadge.style.display = 'none';
+                }
                 wishlistBadge.style.display = 'none';
-                ordersBadge.style.display = 'none';
             }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            updateBadges(user);
         });
+
+        // Also check on load for guest users
+        updateBadges(null);
         
         onValue(ref(db, 'products'), (snapshot) => {
             allProducts = [];
