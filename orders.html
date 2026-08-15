@@ -263,7 +263,7 @@
                 let deliveryMsg = '';
                 const orderDateStr = order.deliveryDate ? order.deliveryDate.trim() : '';
 
-                if (orderDateStr === tomorrowStr || orderDateStr.toLowerCase().includes('tomorrow')) {
+                if (checkStatus === 'shipped' && (orderDateStr === tomorrowStr || orderDateStr.toLowerCase().includes('tomorrow'))) {
                     deliveryMsg = `<div class="delivery-text" style="color:#d97706; font-weight:800;"><i class="fa-solid fa-truck-fast"></i> Order Tomorrow Arriving</div>`;
                 } else if (checkStatus === 'delivered') {
                     deliveryMsg = `<div class="delivery-text"><i class="fa-solid fa-circle-check"></i> Your Order Delivered</div>`;
@@ -271,7 +271,7 @@
                     const expDateText = order.deliveryDate ? `: ${order.deliveryDate}` : '';
                     deliveryMsg = `<div class="delivery-text" style="color:#2563eb;"><i class="fa-solid fa-truck-fast"></i> Expected Delivery${expDateText}</div>`;
                 } else if (order.deliveryDate) {
-                    deliveryMsg = `<div class="delivery-text"><i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}</div>`;
+                    deliveryMsg = `<div class="delivery-text" style="color:#2563eb;"><i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}</div>`;
                 } else if (checkStatus === 'returned') {
                     deliveryMsg = `<div class="delivery-text" style="color:#065f46;"><i class="fa-solid fa-rotate-left"></i> Returned</div>`;
                 } else {
