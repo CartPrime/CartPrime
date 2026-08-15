@@ -1,1348 +1,1357 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CartPrime Admin - Ultimate Control</title>
-    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>CartPrime Admin Panel</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons & SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        :root { --sidebar-bg: #000000; --accent: #ff9900; --bg-light: #f8fafc; --border: #e2e8f0; --primary: #000; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-light); display: flex; min-height: 100vh; color: #1e293b; overflow-x: hidden; flex-direction: row; }
-        
+        :root {
+            --primary: #0f172a;
+            --accent: #ff9900;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); display: flex; min-height: 100vh; }
+
         /* Sidebar Styling */
-        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); color: white; padding: 30px 20px; position: fixed; box-shadow: 4px 0 10px rgba(0,0,0,0.1); z-index: 100; transition: all 0.3s ease; display: flex; flex-direction: column; }
-        .sidebar h2 { margin-bottom: 30px; text-align: center; font-size: 22px; font-weight: 800; border-bottom: 1px solid #333; padding-bottom: 20px; }
-        .sidebar button, .sidebar a { width: 100%; padding: 14px; background: transparent; border: none; color: #94a3b8; text-align: left; cursor: pointer; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; display: flex; align-items: center; text-decoration: none; transition: 0.3s; }
-        .sidebar button:hover, .sidebar button.active, .sidebar a:hover { background: rgba(255,255,255,0.1); color: white; }
-        .sidebar i { margin-right: 12px; font-size: 18px; width: 20px; text-align: center; }
-        
-        /* Main Layout */
-        .main-content { margin-left: 260px; padding: 30px; width: calc(100% - 260px); transition: all 0.3s ease; flex: 1; }
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
-        .active-tab { display: block !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .sidebar { width: 260px; background-color: var(--primary); color: white; padding: 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { color: var(--accent); margin-bottom: 30px; font-size: 22px; text-align: center; font-weight: 800; }
+        .sidebar button { background: none; border: none; color: #94a3b8; padding: 12px 15px; width: 100%; text-align: left; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+        .sidebar button:hover, .sidebar button.active { background: rgba(255,255,255,0.1); color: white; }
+        .sidebar button.active { border-left: 4px solid var(--accent); }
+        .logout-btn { margin-top: auto; background: #dc2626 !important; color: white !important; }
 
-        h2.tab-title { font-weight: 800; font-size: 24px; margin-bottom: 25px; }
-        .admin-card { background: white; padding: 25px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); width: 100%; }
-        
-        /* Dashboard Stats Grid */
+        /* Main Content */
+        .main-content { flex: 1; padding: 25px; overflow-y: auto; }
+        .tab-content { display: none; }
+        .tab-content.active-tab { display: block; }
+
+        /* Admin Header Stats */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: white; padding: 20px; border-radius: 20px; border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .stat-card i { font-size: 24px; color: var(--primary); margin-bottom: 10px; }
-        .stat-card h3 { color: #64748b; font-size: 12px; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
-        .stat-card p { font-size: 24px; font-weight: 800; color: #0f172a; word-break: break-all; }
-        
-        /* Charts Grid Layout */
-        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 25px; }
-        .chart-container { background: white; padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); height: 320px; display: flex; flex-direction: column; justify-content: center; position: relative; }
+        .stat-card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .stat-card p { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        .stat-card h3 { font-size: 22px; margin-top: 5px; color: #0f172a; }
 
-        /* Form Controls */
-        input, textarea, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fcfdfe; }
-        
-        .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
-        .form-row > * { flex: 1 1 200px; }
-
-        .auto-fill-box { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; flex-wrap: wrap; }
-        .auto-fill-box input { flex: 1 1 250px; margin: 0; background: white; }
-        .auto-fill-box button { background: #ff9900; color: white; border: none; padding: 14px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; flex: 0 1 auto; }
-
-        .search-box { position: relative; margin-bottom: 20px; width: 100%; }
-        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
-        .search-box input { padding-left: 45px; margin: 0; background: #f8fafc; border: 1px solid #e2e8f0; }
-        
-        /* Badges & Tables */
-        .pay-badge, .status-badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; display: inline-block; }
-        
-        .pay-Verified, .pay-Paid { background: #dcfce7; color: #166534; }
-        .pay-Rejected { background: #fee2e2; color: #b91c1c; }
-        .pay-Pending { background: #fef9c3; color: #854d0e; }
-        .status-Pending { background: #fef9c3; color: #854d0e; }
-        .status-Confirmed { background: #dcfce7; color: #166534; }
-        .status-Shipped { background: #e0f2fe; color: #0369a1; }
-        .status-Delivered { background: #dbeafe; color: #1e40af; }
-        .status-Rejected { background: #fee2e2; color: #b91c1c; }
-
-        /* View Badge */
-        .views-badge { font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 800; background: #f1f5f9; color: #475569; display: inline-flex; align-items: center; gap: 4px; }
-
-        /* Order Actions Buttons */
-        .order-actions-btn { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-        .order-actions-btn button { padding: 8px 12px; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; color: white; transition: 0.2s; }
-        .order-actions-btn button:hover { opacity: 0.85; }
-
-        .admin-prod-item {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 8px;
-            border-radius: 8px;
-            margin-bottom: 6px;
-        }
-        .admin-prod-img {
-            width: 45px;
-            height: 45px;
-            object-fit: cover;
-            border-radius: 6px;
-            border: 1px solid #cbd5e1;
-            background: #fff;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-        .highlight-size { display: inline-block; background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
-        .highlight-qty { display: inline-block; background: #dcfce7; color: #166534; border: 1px solid #86efac; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
+        /* Form Controls & Containers */
+        .card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 5px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; }
+        .form-row { display: flex; gap: 15px; }
+        .form-row .form-group { flex: 1; }
 
         /* Tables */
-        .table-responsive { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; min-width: 500px; }
-        th { color: #64748b; padding: 12px 15px; text-align: left; font-size: 12px; text-transform: uppercase; }
-        td { padding: 12px 15px; background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
-        td:first-child { border-left: 1px solid var(--border); border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
-        td:last-child { border-right: 1px solid var(--border); border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 13px; }
+        th { background: #f1f5f9; font-weight: 700; color: #475569; }
 
-        .btn-add { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; }
-        .save-btn { background: var(--primary); color: #fff; width: 100%; padding: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; }
-        
-        /* Stock Badge Styles */
-        .stock-badge { border: none; border-radius: 6px; width: 50px; height: 28px; color: white; font-weight: 800; font-size: 11px; cursor: pointer; transition: 0.2s ease-in-out; }
-        .stock-badge:hover { opacity: 0.85; transform: scale(1.03); }
-        .in-stock { background-color: #2563eb; }
-        .out-stock { background-color: #ef4444; }
+        /* Badges */
+        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .status-Pending { background: #fee2e2; color: #dc2626; }
+        .status-Confirmed { background: #dcfce7; color: #16a34a; }
+        .status-Shipped { background: #e0f2fe; color: #0284c7; }
+        .status-Delivered { background: #dcfce7; color: #15803d; }
+        .status-Rejected { background: #fee2e2; color: #b91c1c; }
 
-        .spec-row { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
-        .spec-row input { flex: 1 1 130px; }
+        .pay-badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; }
+        .pay-Paid { background: #dcfce7; color: #15803d; }
+        .pay-Pending { background: #fef3c7; color: #d97706; }
+        .pay-Rejected { background: #fee2e2; color: #b91c1c; }
 
-        .custom-verify-modal {
-            border-radius: 24px !important;
-            padding: 25px !important;
-            background: #ffffff !important;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-            max-width: 550px !important;
-            width: 90vw !important;
-        }
-        
-        .custom-verify-input {
-            border-radius: 12px !important;
-            padding: 14px !important;
-            font-size: 16px !important;
-            text-align: center !important;
-            letter-spacing: 2px !important;
-            border: 2px solid #e2e8f0 !important;
-            background: #f8fafc !important;
-        }
+        .stock-badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; cursor: pointer; border: none; }
+        .in-stock { background: #dcfce7; color: #15803d; }
+        .out-stock { background: #fee2e2; color: #b91c1c; }
 
-        /* Detail Modal Custom Styles */
-        .order-detail-popup { text-align: left; font-size: 13px; color: #1e293b; max-height: 75vh; overflow-y: auto; padding-right: 5px; }
-        .order-detail-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
-        .order-detail-title { font-weight: 800; font-size: 12px; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        /* Spec & Image Dynamic Rows */
+        .spec-row { display: flex; gap: 10px; margin-bottom: 8px; }
+        .p-img-link { margin-bottom: 8px; }
 
-        /* Copy Address Box */
-        .address-box {
-            background: #fff;
-            border: 1px solid #cbd5e1;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 6px;
-            font-size: 12px;
-            color: #334155;
-            position: relative;
-        }
-        .btn-copy-address {
-            background: #ff9900;
-            color: #fff;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 800;
-            cursor: pointer;
-            margin-top: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
+        /* Charts Layout */
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .chart-box { height: 260px; position: relative; }
 
-        /* RESPONSIVE BREAKPOINTS */
-        @media (max-width: 992px) {
-            .sidebar { width: 80px; padding: 20px 10px; }
-            .sidebar h2, .sidebar button span, .sidebar a span { display: none; }
-            .sidebar button, .sidebar a { justify-content: center; padding: 16px 0; margin-bottom: 12px; }
-            .sidebar i { margin-right: 0; font-size: 20px; width: auto; }
-            .main-content { margin-left: 80px; width: calc(100% - 80px); padding: 20px; }
-        }
+        /* Order Details Modal Custom Style */
+        .admin-prod-item { display: flex; gap: 10px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 8px; margin-bottom: 8px; }
+        .admin-prod-img { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; cursor: pointer; }
+        .highlight-size, .highlight-qty { font-size: 11px; padding: 2px 6px; border-radius: 4px; background: #e2e8f0; font-weight: bold; }
+        .address-box { background: #f1f5f9; padding: 8px; border-radius: 6px; font-size: 12px; margin: 4px 0; max-height: 80px; overflow-y: auto; }
+        .btn-copy-address { background: #334155; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; }
+        .order-detail-section { text-align: left; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+        .order-detail-title { font-size: 12px; font-weight: 800; color: #64748b; margin-bottom: 5px; text-transform: uppercase; }
+        .order-actions-btn { display: flex; gap: 5px; flex-wrap: wrap; }
+        .order-actions-btn button { flex: 1; min-width: 70px; border: none; color: white; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            .sidebar { 
-                width: 100%; 
-                height: auto; 
-                position: sticky;
-                top: 0;
-                flex-direction: row; 
-                justify-content: flex-start; 
-                align-items: center; 
-                padding: 10px 8px; 
-                box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
-                overflow-x: auto;
-                white-space: nowrap;
-                z-index: 1000;
-            }
-            .sidebar h2 { display: none; }
-            .sidebar button, .sidebar a { width: auto; margin-bottom: 0; padding: 10px 16px; flex-shrink: 0; display: inline-flex; }
-            .sidebar button span, .sidebar a span { display: inline-block; font-size: 12px; margin-left: 6px; }
-            .sidebar i { font-size: 16px; margin-right: 0; }
-            
-            .main-content { margin-left: 0; width: 100%; padding: 15px; }
-            .admin-card { padding: 15px; border-radius: 16px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .stat-card { padding: 15px 10px; border-radius: 14px; }
-            .stat-card p { font-size: 18px; }
+            .sidebar { width: 100%; }
             .charts-grid { grid-template-columns: 1fr; }
-            .chart-container { height: 280px; padding: 15px; }
         }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>CartPrime</h2>
-    <button onclick="openTab('dashboard', this)" class="tablinks active" id="btn-dashboard" title="Dashboard"><i class="fa fa-chart-pie"></i> <span>Dashboard</span></button>
-    <button onclick="openTab('orders', this)" class="tablinks" id="btn-orders" title="Orders"><i class="fa fa-shopping-bag"></i> <span>Orders</span></button>
-    <button onclick="openTab('addProduct', this)" class="tablinks" id="btn-addProduct" title="Add Product"><i class="fa fa-plus"></i> <span>Add Product</span></button>
-    <button onclick="openTab('manageProducts', this)" class="tablinks" id="btn-manageProducts" title="Inventory"><i class="fa fa-layer-group"></i> <span>Inventory</span></button>
-    <button onclick="openTab('banners', this)" class="tablinks" id="btn-banners" title="Banners"><i class="fa fa-images"></i> <span>Banners</span></button>
-    <button onclick="openTab('users', this)" class="tablinks" id="btn-users" title="Users"><i class="fa fa-user-friends"></i> <span>Users</span></button>
-    <a href="index.html" title="Back to Store"><i class="fa fa-arrow-left"></i> <span>Back Store</span></a>
-    <button onclick="logoutAdmin()" style="color: #ef4444; margin-top: auto;" title="Logout"><i class="fa fa-right-from-bracket"></i> <span>Logout</span></button>
-</div>
+    <!-- SIDEBAR NAVIGATION -->
+    <div class="sidebar">
+        <h2>CartPrime Panel</h2>
+        <button id="btn-dashboard" class="tablinks active" onclick="openTab('dashboard', this)"><i class="fa fa-chart-pie"></i> Dashboard</button>
+        <button id="btn-manageProducts" class="tablinks" onclick="openTab('manageProducts', this)"><i class="fa fa-boxes-stacked"></i> Inventory</button>
+        <button id="btn-addProduct" class="tablinks" onclick="openTab('addProduct', this)"><i class="fa fa-plus-circle"></i> Add/Edit Item</button>
+        <button id="btn-manageOrders" class="tablinks" onclick="openTab('manageOrders', this)"><i class="fa fa-shopping-cart"></i> Orders</button>
+        <button id="btn-returns" class="tablinks" onclick="openTab('returns', this)"><i class="fa fa-rotate-left"></i> Returns/Refunds</button>
+        <button id="btn-manageBanners" class="tablinks" onclick="openTab('manageBanners', this)"><i class="fa fa-images"></i> Banners</button>
+        <button id="btn-manageUsers" class="tablinks" onclick="openTab('manageUsers', this)"><i class="fa fa-users"></i> Registered Users</button>
+        <button class="logout-btn" onclick="logoutAdmin()"><i class="fa fa-right-from-bracket"></i> Logout</button>
+    </div>
 
-<div class="main-content">
-    
-    <div id="dashboard" class="tab-content active-tab">
-        <h2 class="tab-title">Overview Dashboard</h2>
-        
+    <!-- MAIN BODY SECTION -->
+    <div class="main-content">
+
+        <!-- STATS OVERVIEW HEADER -->
         <div class="stats-grid">
             <div class="stat-card">
-                <i class="fa fa-shopping-cart"></i>
-                <h3>Total Orders</h3>
-                <p id="stat-total-orders">0</p>
+                <p>Site Visits</p>
+                <h3 id="stat-total-visits">0</h3>
             </div>
             <div class="stat-card">
-                <i class="fa fa-wallet"></i>
-                <h3>Total Earnings</h3>
-                <p id="stat-total-earnings">₹0</p>
+                <p>Total Orders</p>
+                <h3 id="stat-total-orders">0</h3>
             </div>
             <div class="stat-card">
-                <i class="fa fa-calendar-day"></i>
-                <h3>Today's Earnings</h3>
-                <p id="stat-today-earnings">₹0</p>
+                <p>Total Products</p>
+                <h3 id="stat-total-products">0</h3>
             </div>
             <div class="stat-card">
-                <i class="fa fa-box-open"></i>
-                <h3>Total Products</h3>
-                <p id="stat-total-products">0</p>
+                <p>Total Revenue</p>
+                <h3 id="stat-total-earnings" style="color: #16a34a;">₹0</h3>
             </div>
-            <!-- TOTAL VISITS UPDATE -->
             <div class="stat-card">
-                <i class="fa fa-eye"></i>
-                <h3>Total Visits</h3>
-                <p id="stat-total-visits">0</p>
+                <p>Today's Sales</p>
+                <h3 id="stat-today-earnings" style="color: #0284c7;">₹0</h3>
+            </div>
+            <div class="stat-card">
+                <p>Total Lost/Refunds</p>
+                <h3 id="stat-total-lost" style="color: #dc2626;">₹0</h3>
             </div>
         </div>
 
-        <div class="charts-grid">
-            <div class="chart-container">
-                <h3 style="font-size: 13px; color:#64748b; margin-bottom: 10px; font-weight:800; text-transform: uppercase;">Order Analysis</h3>
-                <div style="position: relative; height: 100%; width: 100%;"><canvas id="ordersChart"></canvas></div>
-            </div>
-            <div class="chart-container">
-                <h3 style="font-size: 13px; color:#64748b; margin-bottom: 10px; font-weight:800; text-transform: uppercase;">Daily Money Earnings (7 Days)</h3>
-                <div style="position: relative; height: 100%; width: 100%;"><canvas id="earningsChart"></canvas></div>
-            </div>
-        </div>
-
-        <div id="returnRefundSection" style="margin-top: 30px; background: white; padding: 20px; border-radius: 20px; border: 1px solid #eee;">
-            <h2 style="font-weight: 800; letter-spacing: -0.5px; margin-bottom: 20px; font-size: 18px;">
-                <i class="fa-solid fa-rotate-left" style="margin-right: 10px;"></i>Return & Refund Requests
-            </h2>
-            <div id="returnOrdersContainer" style="display: flex; flex-direction: column; gap: 15px;">
-                <p style="color: #64748b; font-weight: 600;">Loading return requests...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ORDERS TAB -->
-    <div id="orders" class="tab-content">
-        <h2 class="tab-title">Order Management</h2>
-        <div class="admin-card">
-            <div class="search-box">
-                <i class="fa fa-search"></i>
-                <input type="text" id="searchOrderInput" placeholder="Search by customer, address or order ID..." onkeyup="filterOrders()">
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Order ID & Customer</th>
-                            <th>Total Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orderList"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div id="addProduct" class="tab-content">
-        <h2 class="tab-title" id="formTitle">Add New Item</h2>
-        <div class="admin-card" style="max-width: 800px; margin: 0 auto;">
-            
-            <div class="auto-fill-box">
-                <input type="text" id="meeshoUrl" placeholder="Paste Meesho / Amazon / Flipkart Product Link here...">
-                <button onclick="fetchMeeshoDetails()">
-                    <i class="fa fa-wand-magic-sparkles"></i> AI Auto Fill
-                </button>
-            </div>
-
-            <input type="hidden" id="editKey">
-            <input type="text" id="pName" placeholder="PRODUCT NAME">
-            <input type="text" id="pTitle" placeholder="FULL TITLE">
-            
-            <select id="pCategory">
-                <option value="" disabled selected>SELECT CATEGORY</option>
-                <option value="Gadgets">Gadgets</option>
-                <option value="Fashion">Fashion</option>
-                <option value="Watches">Watches</option>
-                <option value="Accessories">Accessories</option>
-            </select>
-
-            <div style="margin: 15px 0;">
-                <label style="font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 8px; display: block;">AVAILABLE SIZES (OPTIONAL):</label>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; background: #fcfdfe; padding: 12px; border: 1px solid var(--border); border-radius: 12px;">
-                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="S"> S</label>
-                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="M"> M</label>
-                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="L"> L</label>
-                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="XL"> XL</label>
-                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="XXL"> XXL</label>
-                    <label style="font-size: 14px; font-weight: 600; cursor: pointer;"><input type="checkbox" class="p-size" value="Free Size"> Free Size</label>
+        <!-- 1. DASHBOARD TAB -->
+        <div id="dashboard" class="tab-content active-tab">
+            <div class="charts-grid">
+                <div class="card">
+                    <h4 style="margin-bottom: 15px;">Order Status Breakdown</h4>
+                    <div class="chart-box">
+                        <canvas id="ordersChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4 style="margin-bottom: 15px;">Revenue Metrics (Last 7 Days)</h4>
+                    <div class="chart-box">
+                        <canvas id="earningsChart"></canvas>
+                    </div>
                 </div>
             </div>
-
-            <div class="form-row">
-                <input type="text" id="pMrp" placeholder="MRP ₹">
-                <input type="text" id="pPrice" placeholder="PRICE ₹">
-            </div>
-            
-            <div class="form-row">
-                <input type="text" id="pShippedFrom" placeholder="SHIPPED FROM">
-                <input type="number" id="pDeliveryDays" placeholder="DELIVERY IN (Days)" value="7">
-            </div>
-
-            <textarea id="pDesc" placeholder="PRODUCT DESCRIPTION" rows="6" onkeydown="handleBullets(event)"></textarea>
-            
-            <div id="specInputs">
-                <div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>
-            </div>
-            <button class="btn-add" onclick="addSpecField()" style="margin-bottom: 15px;">+ Add Spec</button>
-            
-            <div id="imageInputs"><input type="text" class="p-img-link" placeholder="IMAGE URL 1"></div>
-            <button class="btn-add" onclick="addImageField()" style="margin-bottom: 15px;">+ Add Image</button>
-            
-            <div class="form-row" style="align-items:center;">
-                <select id="pReturn">
-                    <option value="true">7 DAYS RETURN</option>
-                    <option value="false">NO RETURN</option>
-                </select>
-                <select id="pShowOnHome">
-                    <option value="false" selected>Hide from Home (Search Only)</option>
-                    <option value="true">Show on Home Page</option>
-                </select>
-            </div>
-
-            <div style="margin-top: 10px;">
-                <h5 style="margin-bottom: 5px; font-size: 13px;">Cash On Delivery :-</h5>
-                <select id="pCod">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                </select>
-            </div>
-            
-            <button onclick="saveProduct()" id="saveBtn" class="save-btn" style="margin-top: 20px;">SAVE PRODUCT</button>
-            <button onclick="resetForm()" id="cancelEdit" style="display:none; color:red; border:none; background:none; width:100%; cursor:pointer; margin-top:10px; font-weight:bold;">Cancel Editing</button>
         </div>
-    </div>
 
-    <!-- INVENTORY TAB -->
-    <div id="manageProducts" class="tab-content">
-        <h2 class="tab-title">Inventory</h2>
-        <div class="admin-card">
-            <div class="search-box">
-                <i class="fa fa-search"></i>
-                <input type="text" id="searchProductInput" placeholder="Search products by name..." onkeyup="filterProducts()">
-            </div>
-            <div class="table-responsive">
+        <!-- 2. INVENTORY (MANAGE PRODUCTS) TAB -->
+        <div id="manageProducts" class="tab-content">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <h3>Product Inventory</h3>
+                    <input type="text" id="searchProductInput" placeholder="Search product..." onkeyup="filterProducts()" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; width: 220px;">
+                </div>
                 <table>
                     <thead>
                         <tr>
-                            <th>Img</th>
-                            <th>Name</th>
+                            <th>Image</th>
+                            <th>Product Name</th>
                             <th>Price</th>
                             <th>Views</th>
-                            <th>Visibility</th>
+                            <th>Display / Type</th>
                             <th>Stock</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manageProductList">
+                        <!-- Loaded via Firebase -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. ADD / EDIT PRODUCT TAB -->
+        <div id="addProduct" class="tab-content">
+            <div class="card">
+                <h3 id="formTitle" style="margin-bottom: 15px;">Add New Item</h3>
+                
+                <!-- Auto Fetch Form (Meesho) -->
+                <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <label style="font-size: 12px; font-weight: 700; color: #475569;">AUTO-FILL PRODUCT FROM MEESHO LINK:</label>
+                    <div style="display: flex; gap: 10px; margin-top: 5px;">
+                        <input type="text" id="meeshoUrl" placeholder="Paste Meesho Product URL here..." style="flex:1; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                        <button style="background: var(--accent); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="fetchMeeshoDetails()"><i class="fa fa-wand-magic-sparkles"></i> Auto Fetch</button>
+                    </div>
+                </div>
+
+                <input type="hidden" id="editKey">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Product Name *</label>
+                        <input type="text" id="pName" placeholder="e.g. Men's Cotton Shirt">
+                    </div>
+                    <div class="form-group">
+                        <label>Display Title</label>
+                        <input type="text" id="pTitle" placeholder="Full Product Title">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <input type="text" id="pCategory" placeholder="e.g. Shirts, Electronics">
+                    </div>
+                    <div class="form-group">
+                        <label>Price (₹) *</label>
+                        <input type="number" id="pPrice" placeholder="Selling Price">
+                    </div>
+                    <div class="form-group">
+                        <label>MRP (₹)</label>
+                        <input type="number" id="pMrp" placeholder="Original Price">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Shipped From</label>
+                        <input type="text" id="pShippedFrom" placeholder="CartPrime Warehouse">
+                    </div>
+                    <div class="form-group">
+                        <label>Est. Delivery Days</label>
+                        <input type="number" id="pDeliveryDays" value="7">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Show on Home Page?</label>
+                        <select id="pShowOnHome">
+                            <option value="false">No (Hidden)</option>
+                            <option value="true">Yes (Show)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Enable Cash On Delivery (COD)?</label>
+                        <select id="pCod">
+                            <option value="false">No (Online Payment Only)</option>
+                            <option value="true">Yes (COD Allowed)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Allow Return?</label>
+                        <select id="pReturn">
+                            <option value="true">Yes (Returnable)</option>
+                            <option value="false">No (Non-Returnable)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Available Sizes</label>
+                    <div style="display: flex; gap: 15px; margin-top: 5px;">
+                        <label><input type="checkbox" class="p-size" value="S"> S</label>
+                        <label><input type="checkbox" class="p-size" value="M"> M</label>
+                        <label><input type="checkbox" class="p-size" value="L"> L</label>
+                        <label><input type="checkbox" class="p-size" value="XL"> XL</label>
+                        <label><input type="checkbox" class="p-size" value="XXL"> XXL</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Description (Bulleted)</label>
+                    <textarea id="pDesc" rows="4" onkeydown="handleBullets(event)" placeholder="• Feature 1"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Images (URLs)</label>
+                    <div id="imageInputs">
+                        <input type="text" class="p-img-link" placeholder="IMAGE URL 1">
+                    </div>
+                    <button type="button" style="background:#e2e8f0; border:none; padding:5px 10px; border-radius:6px; font-size:12px; cursor:pointer; margin-top:5px;" onclick="addImageField()">+ Add Image URL</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Specifications</label>
+                    <div id="specInputs">
+                        <div class="spec-row">
+                            <input type="text" class="spec-key" placeholder="Key (e.g. Fabric)">
+                            <input type="text" class="spec-val" placeholder="Value (e.g. Cotton)">
+                        </div>
+                    </div>
+                    <button type="button" style="background:#e2e8f0; border:none; padding:5px 10px; border-radius:6px; font-size:12px; cursor:pointer; margin-top:5px;" onclick="addSpecField()">+ Add Specification</button>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button id="saveBtn" style="background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="saveProduct()">SAVE PRODUCT</button>
+                    <button id="cancelEdit" style="background: #94a3b8; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; display: none;" onclick="resetForm()">CANCEL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ORDERS MANAGEMENT TAB -->
+        <div id="manageOrders" class="tab-content">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <h3>Orders Database</h3>
+                    <input type="text" id="searchOrderInput" placeholder="Search order ID, user..." onkeyup="filterOrders()" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; width: 220px;">
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order & Customer Info</th>
+                            <th>Total Price</th>
+                            <th>Status / Payment</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="manageProductList"></tbody>
+                    <tbody id="orderList">
+                        <!-- Loaded via Firebase -->
+                    </tbody>
                 </table>
             </div>
         </div>
-    </div>
-    
-    <div id="banners" class="tab-content">
-        <h2 class="tab-title">Home Banner Management</h2>
-        <div class="admin-card" style="max-width: 800px; margin-bottom: 30px;">
-            <input type="text" id="bImgUrl" placeholder="BANNER IMAGE URL (LINK)">
-            <input type="text" id="bRedirectLink" placeholder="REDIRECT CLICK URL / PRODUCT ID (OPTIONAL)">
-            <button onclick="saveBanner()" class="save-btn" style="margin-top: 10px;">ADD BANNER</button>
+
+        <!-- 5. RETURNS & REFUNDS TAB -->
+        <div id="returns" class="tab-content">
+            <div class="card">
+                <h3>Return & Refund Requests</h3>
+                <div id="returnOrdersContainer" style="margin-top: 15px;">
+                    <!-- Loaded via Firebase -->
+                </div>
+            </div>
         </div>
-        <div class="admin-card">
-            <h3>Active Banners</h3>
-            <div class="table-responsive" style="margin-top: 15px;">
+
+        <!-- 6. BANNERS MANAGEMENT TAB -->
+        <div id="manageBanners" class="tab-content">
+            <div class="card">
+                <h3>Upload Main Banner</h3>
+                <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <input type="text" id="bImgUrl" placeholder="Image URL..." style="flex:2; padding:10px; border:1px solid var(--border-color); border-radius:8px;">
+                    <input type="text" id="bRedirectLink" placeholder="Redirect Link (Optional)..." style="flex:1; padding:10px; border:1px solid var(--border-color); border-radius:8px;">
+                    <button style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="saveBanner()">Upload Banner</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Active Banners</h3>
                 <table>
-                    <thead><tr><th>Banner Image</th><th>Action</th></tr></thead>
-                    <tbody id="bannerList"></tbody>
+                    <thead>
+                        <tr>
+                            <th>Banner Image</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bannerList">
+                        <!-- Loaded via Firebase -->
+                    </tbody>
                 </table>
             </div>
         </div>
-    </div>
 
-    <div id="users" class="tab-content">
-        <h2 class="tab-title">Registered Users</h2>
-        <div class="admin-card">
-            <div class="table-responsive">
-                <table><thead><tr><th>Name / User</th><th>Mobile / Email</th></tr></thead><tbody id="userList"></tbody></table>
+        <!-- 7. REGISTERED USERS TAB -->
+        <div id="manageUsers" class="tab-content">
+            <div class="card">
+                <h3>Registered App Users</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Phone / Contact Info</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userList">
+                        <!-- Loaded via Firebase -->
+                    </tbody>
+                </table>
             </div>
         </div>
+
     </div>
-</div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    <!-- FIREBASE MODULE CODE -->
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-const ADMIN_PASSCODE = "73569778";
+    const ADMIN_PASSCODE = "73569778";
 
-async function checkAdminPasscode() {
-    const isAuthenticated = localStorage.getItem("cartprime_admin_logged_in");
+    async function checkAdminPasscode() {
+        const isAuthenticated = localStorage.getItem("cartprime_admin_logged_in");
 
-    if (isAuthenticated === "true") {
-        return; 
+        if (isAuthenticated === "true") {
+            return; 
+        }
+
+        const { value: passcode } = await Swal.fire({
+            title: '<div style="font-size: 20px; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-shield-halved" style="color: #ff9900; margin-right: 8px;"></i> Security Check</div>',
+            html: '<p style="color: #64748b; font-size: 13px; margin-top: 5px;">Enter your admin passcode to access CartPrime Panel.</p>',
+            input: 'password',
+            inputPlaceholder: '••••••••',
+            customClass: { popup: 'custom-verify-modal', input: 'custom-verify-input' },
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonText: 'Verify Access <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>',
+            confirmButtonColor: '#000000',
+            buttonsStyling: true
+        });
+
+        if (passcode === ADMIN_PASSCODE) {
+            localStorage.setItem("cartprime_admin_logged_in", "true");
+            Swal.fire({ 
+                icon: 'success', 
+                title: 'Welcome Back, Admin!', 
+                text: 'Access Granted Successfully',
+                timer: 1200, 
+                showConfirmButton: false,
+                customClass: { popup: 'custom-verify-modal' }
+            });
+        } else {
+            await Swal.fire({ 
+                icon: 'error', 
+                title: 'Access Denied', 
+                text: 'Incorrect passcode provided!',
+                confirmButtonColor: '#000',
+                customClass: { popup: 'custom-verify-modal' }
+            });
+            window.location.href = "index.html";
+        }
     }
 
-    const { value: passcode } = await Swal.fire({
-        title: '<div style="font-size: 20px; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-shield-halved" style="color: #ff9900; margin-right: 8px;"></i> Security Check</div>',
-        html: '<p style="color: #64748b; font-size: 13px; margin-top: 5px;">Enter your admin passcode to access CartPrime Panel.</p>',
-        input: 'password',
-        inputPlaceholder: '••••••••',
-        customClass: { popup: 'custom-verify-modal', input: 'custom-verify-input' },
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        confirmButtonText: 'Verify Access <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i>',
-        confirmButtonColor: '#000000',
-        buttonsStyling: true
-    });
-
-    if (passcode === ADMIN_PASSCODE) {
-        localStorage.setItem("cartprime_admin_logged_in", "true");
-        Swal.fire({ 
-            icon: 'success', 
-            title: 'Welcome Back, Admin!', 
-            text: 'Access Granted Successfully',
-            timer: 1200, 
-            showConfirmButton: false,
-            customClass: { popup: 'custom-verify-modal' }
-        });
-    } else {
-        await Swal.fire({ 
-            icon: 'error', 
-            title: 'Access Denied', 
-            text: 'Incorrect passcode provided!',
-            confirmButtonColor: '#000',
-            customClass: { popup: 'custom-verify-modal' }
-        });
+    window.logoutAdmin = () => {
+        localStorage.removeItem("cartprime_admin_logged_in");
         window.location.href = "index.html";
-    }
-}
+    };
 
-window.logoutAdmin = () => {
-    localStorage.removeItem("cartprime_admin_logged_in");
-    window.location.href = "index.html";
-};
-
-window.addEventListener('load', () => {
-    checkAdminPasscode();
-});
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
-    authDomain: "cartprime-shopping.firebaseapp.com",
-    projectId: "cartprime-shopping",
-    storageBucket: "cartprime-shopping.firebasestorage.app",
-    messagingSenderId: "570068438689",
-    appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
-    measurementId: "G-9GREWHMEYL"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-let ordersChartInstance = null;
-let earningsChartInstance = null;
-let globalOrdersCache = {};
-
-// FETCH SITE VISITS REAL-TIME
-onValue(ref(db, 'site_stats/total_visits'), (snapshot) => {
-    const visitsElem = document.getElementById('stat-total-visits');
-    if(visitsElem) {
-        visitsElem.innerText = (snapshot.val() || 0).toLocaleString();
-    }
-});
-
-window.fetchMeeshoDetails = async () => {
-    let urlInput = document.getElementById('meeshoUrl').value.trim();
-    if (!urlInput) {
-        Swal.fire('Error', 'Please enter a valid product link', 'error');
-        return;
-    }
-
-    Swal.fire({
-        title: 'Fetching Product...',
-        text: 'Extracting details from Meesho link...',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); }
+    window.addEventListener('load', () => {
+        checkAdminPasscode();
     });
 
-    try {
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(urlInput)}`;
-        const response = await fetch(proxyUrl);
+    const firebaseConfig = {
+        apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+        authDomain: "cartprime-shopping.firebaseapp.com",
+        projectId: "cartprime-shopping",
+        storageBucket: "cartprime-shopping.firebasestorage.app",
+        messagingSenderId: "570068438689",
+        appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+        measurementId: "G-9GREWHMEYL"
+    };
 
-        if (!response.ok) throw new Error("Fetch failed");
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-        const data = await response.json();
-        const html = data.contents;
+    let ordersChartInstance = null;
+    let earningsChartInstance = null;
+    let globalOrdersCache = {};
 
-        const getMeta = (prop) => {
-            const regex = new RegExp(`<meta\\s+(?:property|name)=["']${prop}["']\\s+content=["']([^"']*)["']`, 'i');
-            const match = html.match(regex);
-            return match ? match[1] : '';
-        };
+    // FETCH SITE VISITS REAL-TIME
+    onValue(ref(db, 'site_stats/total_visits'), (snapshot) => {
+        const visitsElem = document.getElementById('stat-total-visits');
+        if(visitsElem) {
+            visitsElem.innerText = (snapshot.val() || 0).toLocaleString();
+        }
+    });
 
-        let title = getMeta('og:title') || getMeta('twitter:title');
-        if (!title) {
-            const titleMatch = html.match(/<title>([^<]*)<\/title>/i);
-            if (titleMatch) title = titleMatch[1].replace('| Meesho', '').trim();
+    window.fetchMeeshoDetails = async () => {
+        let urlInput = document.getElementById('meeshoUrl').value.trim();
+        if (!urlInput) {
+            Swal.fire('Error', 'Please enter a valid product link', 'error');
+            return;
         }
 
-        let image = getMeta('og:image') || getMeta('twitter:image');
-        let description = getMeta('og:description') || getMeta('description');
+        Swal.fire({
+            title: 'Fetching Product...',
+            text: 'Extracting details from Meesho link...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
 
-        let price = '';
-        const jsonLdMatch = html.match(/"price"\s*:\s*"?(\d+)"?/i);
-        if (jsonLdMatch) {
-            price = jsonLdMatch[1];
-        } else {
-            const priceRegex = /₹\s?(\d{2,6})/;
-            const priceMatch = html.match(priceRegex);
-            if (priceMatch) price = priceMatch[1];
+        try {
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(urlInput)}`;
+            const response = await fetch(proxyUrl);
+
+            if (!response.ok) throw new Error("Fetch failed");
+
+            const data = await response.json();
+            const html = data.contents;
+
+            const getMeta = (prop) => {
+                const regex = new RegExp(`<meta\\s+(?:property|name)=["']${prop}["']\\s+content=["']([^"']*)["']`, 'i');
+                const match = html.match(regex);
+                return match ? match[1] : '';
+            };
+
+            let title = getMeta('og:title') || getMeta('twitter:title');
+            if (!title) {
+                const titleMatch = html.match(/<title>([^<]*)<\/title>/i);
+                if (titleMatch) title = titleMatch[1].replace('| Meesho', '').trim();
+            }
+
+            let image = getMeta('og:image') || getMeta('twitter:image');
+            let description = getMeta('og:description') || getMeta('description');
+
+            let price = '';
+            const jsonLdMatch = html.match(/"price"\s*:\s*"?(\d+)"?/i);
+            if (jsonLdMatch) {
+                price = jsonLdMatch[1];
+            } else {
+                const priceRegex = /₹\s?(\d{2,6})/;
+                const priceMatch = html.match(priceRegex);
+                if (priceMatch) price = priceMatch[1];
+            }
+
+            let foundAny = false;
+
+            if (title) {
+                document.getElementById('pName').value = title;
+                document.getElementById('pTitle').value = title;
+                foundAny = true;
+            }
+
+            if (price) {
+                const priceNum = parseInt(price);
+                document.getElementById('pPrice').value = priceNum;
+                document.getElementById('pMrp').value = Math.round(priceNum * 1.3);
+                foundAny = true;
+            }
+
+            if (description) {
+                document.getElementById('pDesc').value = "• " + description.replace(/\n/g, "\n• ");
+            }
+
+            if (image) {
+                const imageContainer = document.getElementById('imageInputs');
+                imageContainer.innerHTML = `<input type="text" class="p-img-link" value="${image}">`;
+                foundAny = true;
+            }
+
+            if (foundAny) {
+                Swal.fire('Success!', 'Product details auto-filled successfully!', 'success');
+            } else {
+                Swal.fire('Warning', 'Link loaded, but could not auto-extract details. Please fill manually.', 'warning');
+            }
+
+        } catch (err) {
+            console.error("Auto Fill Error:", err);
+            Swal.fire('Fetch Failed', 'Could not load details from this link. Make sure link is valid.', 'error');
         }
+    };
 
-        let foundAny = false;
+    /* --- OPEN REVIEW MODAL FROM INVENTORY --- */
+    window.openReviewModal = (productId, productName) => {
+        Swal.fire({
+            title: `<div style="font-size: 18px; font-weight: 800;">Add Review for ${productName}</div>`,
+            html: `
+                <div style="text-align: left; margin-top: 10px;">
+                    <label style="font-size: 12px; font-weight: bold; color: #64748b;">MEESHO PRODUCT / REVIEW LINK:</label>
+                    <input type="text" id="swalMeeshoReviewUrl" placeholder="Paste Meesho link here..." style="width:100%; padding:12px; margin-top:5px; border:1px solid #cbd5e1; border-radius:8px;">
+                    
+                    <div style="margin-top: 15px;">
+                        <label style="font-size: 12px; font-weight: bold; color: #64748b;">OR ADD MANUAL REVIEW DETAILS:</label>
+                        <input type="text" id="swalReviewerName" placeholder="Reviewer Name (e.g. Rahul K.)" style="padding:10px; margin-top:5px; border:1px solid #cbd5e1; border-radius:8px; width:100%;">
+                        <select id="swalReviewRating" style="padding:10px; margin-top:8px; border:1px solid #cbd5e1; border-radius:8px; width:100%;">
+                            <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                            <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                            <option value="3">⭐⭐⭐ (3 Stars)</option>
+                            <option value="2">⭐⭐ (2 Stars)</option>
+                            <option value="1">⭐ (1 Star)</option>
+                        </select>
+                        <textarea id="swalReviewComment" placeholder="Write review comment here..." rows="3" style="padding:10px; margin-top:8px; border:1px solid #cbd5e1; border-radius:8px; width:100%;"></textarea>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: '<i class="fa fa-wand-magic-sparkles"></i> Fetch & Save Review',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#ff9900',
+            customClass: { popup: 'custom-verify-modal' },
+            preConfirm: async () => {
+                const url = document.getElementById('swalMeeshoReviewUrl').value.trim();
+                const manualName = document.getElementById('swalReviewerName').value.trim();
+                const manualRating = document.getElementById('swalReviewRating').value;
+                const manualComment = document.getElementById('swalReviewComment').value.trim();
 
-        if (title) {
-            document.getElementById('pName').value = title;
-            document.getElementById('pTitle').value = title;
-            foundAny = true;
+                let reviewData = {
+                    name: manualName || "Verified Customer",
+                    rating: parseInt(manualRating) || 5,
+                    comment: manualComment || "Good product, very nice quality!",
+                    date: new Date().toLocaleDateString()
+                };
+
+                if (url) {
+                    try {
+                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+                        const response = await fetch(proxyUrl);
+                        if (response.ok) {
+                            const data = await response.json();
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(data.contents, 'text/html');
+                            
+                            const title = doc.querySelector('meta[property="og:title"]')?.content;
+                            const desc = doc.querySelector('meta[property="og:description"]')?.content;
+                            
+                            if (desc) reviewData.comment = desc.substring(0, 150) + "...";
+                            if (title) reviewData.name = title.split('|')[0].trim() || "Meesho Buyer";
+                        }
+                    } catch (e) {
+                        console.log("Scraping failed, saving manual/default fallback data.");
+                    }
+                }
+
+                // Save review into Firebase under product reviews node
+                const reviewsRef = ref(db, `products/${productId}/reviews`);
+                await push(reviewsRef, reviewData);
+                return true;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire('Success!', 'Product review added successfully.', 'success');
+            }
+        });
+    };
+
+    window.filterProducts = () => {
+        let input = document.getElementById('searchProductInput').value.toLowerCase();
+        let tableBody = document.getElementById('manageProductList');
+        if (!tableBody) return;
+        let rows = tableBody.getElementsByTagName('tr');
+
+        for (let i = 0; i < rows.length; i++) {
+            let nameColumn = rows[i].getElementsByTagName('td')[1];
+            if (nameColumn) {
+                let productName = nameColumn.textContent || nameColumn.innerText;
+                if (productName.toLowerCase().indexOf(input) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
         }
+    };
 
-        if (price) {
-            const priceNum = parseInt(price);
-            document.getElementById('pPrice').value = priceNum;
-            document.getElementById('pMrp').value = Math.round(priceNum * 1.3);
-            foundAny = true;
-        }
+    window.filterOrders = () => {
+        let input = document.getElementById('searchOrderInput').value.toLowerCase();
+        let tableBody = document.getElementById('orderList');
+        if (!tableBody) return;
+        let rows = tableBody.getElementsByTagName('tr');
 
-        if (description) {
-            document.getElementById('pDesc').value = "• " + description.replace(/\n/g, "\n• ");
-        }
-
-        if (image) {
-            const imageContainer = document.getElementById('imageInputs');
-            imageContainer.innerHTML = `<input type="text" class="p-img-link" value="${image}">`;
-            foundAny = true;
-        }
-
-        if (foundAny) {
-            Swal.fire('Success!', 'Product details auto-filled successfully!', 'success');
-        } else {
-            Swal.fire('Warning', 'Link loaded, but could not auto-extract details. Please fill manually.', 'warning');
-        }
-
-    } catch (err) {
-        console.error("Auto Fill Error:", err);
-        Swal.fire('Fetch Failed', 'Could not load details from this link. Make sure link is valid.', 'error');
-    }
-};
-
-window.filterProducts = () => {
-    let input = document.getElementById('searchProductInput').value.toLowerCase();
-    let tableBody = document.getElementById('manageProductList');
-    if (!tableBody) return;
-    let rows = tableBody.getElementsByTagName('tr');
-
-    for (let i = 0; i < rows.length; i++) {
-        let nameColumn = rows[i].getElementsByTagName('td')[1];
-        if (nameColumn) {
-            let productName = nameColumn.textContent || nameColumn.innerText;
-            if (productName.toLowerCase().indexOf(input) > -1) {
+        for (let i = 0; i < rows.length; i++) {
+            let rowText = rows[i].textContent || rows[i].innerText;
+            if (rowText.toLowerCase().indexOf(input) > -1) {
                 rows[i].style.display = "";
             } else {
                 rows[i].style.display = "none";
             }
         }
-    }
-};
-
-window.filterOrders = () => {
-    let input = document.getElementById('searchOrderInput').value.toLowerCase();
-    let tableBody = document.getElementById('orderList');
-    if (!tableBody) return;
-    let rows = tableBody.getElementsByTagName('tr');
-
-    for (let i = 0; i < rows.length; i++) {
-        let rowText = rows[i].textContent || rows[i].innerText;
-        if (rowText.toLowerCase().indexOf(input) > -1) {
-            rows[i].style.display = "";
-        } else {
-            rows[i].style.display = "none";
-        }
-    }
-};
-
-window.handleBullets = (e) => {
-    const el = e.target;
-    if (el.value === "") el.value = "• ";
-    if (e.key === "Enter") {
-        e.preventDefault();
-        const pos = el.selectionStart;
-        const before = el.value.substring(0, pos);
-        const after = el.value.substring(pos);
-        el.value = before + "\n• " + after;
-        el.selectionStart = el.selectionEnd = pos + 3;
-    }
-};
-
-window.openTab = (tabId, element) => {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
-    document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
-    
-    const targetTab = document.getElementById(tabId);
-    if (targetTab) targetTab.classList.add('active-tab');
-
-    if (element) {
-        element.classList.add('active');
-    } else {
-        const fallbackBtn = document.getElementById('btn-' + tabId);
-        if (fallbackBtn) fallbackBtn.classList.add('active');
-    }
-};
-
-window.saveProduct = () => {
-    const key = document.getElementById('editKey').value;
-    const specs = {};
-    document.querySelectorAll('.spec-row').forEach(row => {
-        const k = row.querySelector('.spec-key').value.trim();
-        const v = row.querySelector('.spec-val').value.trim();
-        if(k && v) specs[k] = v;
-    });
-
-    const selectedSizes = Array.from(document.querySelectorAll('.p-size:checked')).map(cb => cb.value);
-    const imageLinks = Array.from(document.querySelectorAll('.p-img-link')).map(input => input.value.trim()).filter(val => val !== "");
-
-    const pName = document.getElementById('pName').value.trim();
-    const pPrice = document.getElementById('pPrice').value.trim();
-    const pCategory = document.getElementById('pCategory').value;
-    const pShowOnHome = document.getElementById('pShowOnHome').value === "true"; 
-    const pCod = document.getElementById('pCod') ? document.getElementById('pCod').value === "true" : false;
-
-    if(!pName || !pPrice || !pCategory || imageLinks.length === 0) {
-        Swal.fire('Error', 'Please fill Name, Category, Price and provide at least one Image URL', 'error');
-        return;
-    }
-
-    const data = {
-        name: pName,
-        title: document.getElementById('pTitle').value.trim() || pName,
-        category: pCategory,
-        mrp: document.getElementById('pMrp').value.trim() || pPrice,
-        price: pPrice,
-        shippedFrom: document.getElementById('pShippedFrom').value.trim() || "CartPrime Warehouse",
-        deliveryDays: document.getElementById('pDeliveryDays').value || 7,
-        desc: document.getElementById('pDesc').value || "No description available.",
-        specs: specs,
-        sizes: selectedSizes,
-        images: imageLinks,
-        return: document.getElementById('pReturn').value === "true",
-        outOfStock: false,
-        showOnHome: pShowOnHome,
-        cod: pCod
     };
 
-    if(key) {
-        update(ref(db, 'products/' + key), data)
-            .then(() => { Swal.fire('Updated!', 'Product updated successfully', 'success'); resetForm(); openTab('manageProducts'); })
-            .catch(err => Swal.fire('Error', err.message, 'error'));
-    } else {
-        data.views = 0; 
-        const newRef = push(ref(db, 'products'));
-        set(newRef, data)
-            .then(() => { Swal.fire('Saved!', 'New product added', 'success'); resetForm(); openTab('manageProducts'); })
-            .catch(err => Swal.fire('Error', err.message, 'error'));
-    }
-};
-
-window.saveBanner = () => {
-    const imgUrl = document.getElementById('bImgUrl').value.trim();
-    const link = document.getElementById('bRedirectLink').value.trim();
-
-    if(!imgUrl) { Swal.fire('Error', 'Please provide a Banner Image URL', 'error'); return; }
-
-    const newBannerRef = push(ref(db, 'banners'));
-    set(newBannerRef, { imageUrl: imgUrl, redirectLink: link || "#" }).then(() => {
-        Swal.fire('Saved!', 'Banner uploaded successfully', 'success');
-        document.getElementById('bImgUrl').value = "";
-        document.getElementById('bRedirectLink').value = "";
-    }).catch(err => Swal.fire('Error', err.message, 'error'));
-};
-
-window.viewProof = (imgUrl) => {
-    if(!imgUrl) return Swal.fire('No Proof', 'Customer did not upload a screenshot.', 'info');
-    Swal.fire({ imageUrl: imgUrl, imageAlt: 'Payment Proof', title: 'Payment Screenshot', confirmButtonColor: '#000' });
-};
-
-function updateOrdersChart(statusData) {
-    const chartEl = document.getElementById('ordersChart');
-    if (!chartEl) return;
-    const ctx = chartEl.getContext('2d');
-    
-    if(ordersChartInstance) ordersChartInstance.destroy();
-    
-    ordersChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Rejected', 'Returned'],
-            datasets: [{
-                label: 'Orders',
-                data: [statusData.Pending || 0, statusData.Confirmed || 0, statusData.Shipped || 0, statusData.Delivered || 0, statusData.Rejected || 0, statusData.Returned || 0],
-                backgroundColor: ['rgba(239, 68, 68, 0.8)','rgba(34, 197, 94, 0.8)','rgba(14, 165, 233, 0.8)','rgba(21, 128, 61, 0.9)','rgba(185, 28, 28, 0.9)','rgba(239, 68, 68, 0.9)'],
-                borderColor: ['#dc2626','#16a34a','#0284c7','#15803d','#b91c1c','#ef4444'],
-                borderWidth: 2, borderRadius: 8
-            }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-    });
-}
-
-function updateEarningsChart(dailyEarningsMap) {
-    const chartEl = document.getElementById('earningsChart');
-    if (!chartEl) return;
-    const ctx = chartEl.getContext('2d');
-
-    const sortedDates = Object.keys(dailyEarningsMap).sort().slice(-7);
-    const earningsData = sortedDates.map(date => dailyEarningsMap[date]);
-
-    if(earningsChartInstance) earningsChartInstance.destroy();
-
-    earningsChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: sortedDates,
-            datasets: [{
-                label: 'Daily Revenue (₹)',
-                data: earningsData,
-                backgroundColor: 'rgba(34, 197, 94, 0.1)', 
-                borderColor: '#22c55e', borderWidth: 3, tension: 0.3, fill: true, pointBackgroundColor: '#16a34a', pointRadius: 5
-            }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: value => '₹' + value } } } }
-    });
-}
-
-onValue(ref(db, 'orders'), snap => {
-    const list = document.getElementById('orderList');
-    const returnContainer = document.getElementById('returnOrdersContainer');
-    
-    if (list) list.innerHTML = ""; 
-    if (returnContainer) returnContainer.innerHTML = "";
-    
-    globalOrdersCache = {};
-
-    let totalOrderCount = 0;
-    let statusCounts = { Pending: 0, Confirmed: 0, Shipped: 0, Delivered: 0, Rejected: 0, Returned: 0, 'Return Requested': 0 };
-    let hasReturns = false;
-    let totalEarnings = 0, todayEarnings = 0, totalLoss = 0; 
-    let dailyEarningsMap = {};
-
-    const todayDateStr = new Date().toISOString().split('T')[0];
-
-    const totalOrdersStat = document.getElementById('stat-total-orders');
-    const totalEarningsStat = document.getElementById('stat-total-earnings');
-    const todayEarningsStat = document.getElementById('stat-today-earnings');
-    const totalLossStat = document.getElementById('stat-total-lost');
-
-    function processOrderEarnings(orderData) {
-        const price = parseFloat(orderData.price) || 0;
-        let orderDate = orderData.date ? orderData.date.split(' ')[0] : todayDateStr; 
-        if(orderDate.includes(',')) orderDate = orderDate.replace(',','');
-
-        if (orderData.status === 'Rejected' || orderData.status === 'Returned' || orderData.status === 'Return Requested') totalLoss += price;
-
-        if (orderData.paymentStatus === 'Paid' || orderData.status === 'Confirmed' || orderData.status === 'Shipped' || orderData.status === 'Delivered') {
-            totalEarnings += price;
-            dailyEarningsMap[orderDate] = (dailyEarningsMap[orderDate] || 0) + price;
-            if (orderDate === todayDateStr) todayEarnings += price;
+    window.handleBullets = (e) => {
+        const el = e.target;
+        if (el.value === "") el.value = "• ";
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const pos = el.selectionStart;
+            const before = el.value.substring(0, pos);
+            const after = el.value.substring(pos);
+            el.value = before + "\n• " + after;
+            el.selectionStart = el.selectionEnd = pos + 3;
         }
+    };
+
+    window.openTab = (tabId, element) => {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+        document.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
         
-        if (orderData.status === 'Returned') {
-            totalEarnings -= price;
-            dailyEarningsMap[orderDate] = (dailyEarningsMap[orderDate] || 0) - price;
-            if (orderDate === todayDateStr) todayEarnings -= price;
+        const targetTab = document.getElementById(tabId);
+        if (targetTab) targetTab.classList.add('active-tab');
+
+        if (element) {
+            element.classList.add('active');
+        } else {
+            const fallbackBtn = document.getElementById('btn-' + tabId);
+            if (fallbackBtn) fallbackBtn.classList.add('active');
         }
-    }
+    };
 
-    if (!snap.exists()) {
-        if (totalOrdersStat) totalOrdersStat.innerText = "0";
-        if (totalEarningsStat) totalEarningsStat.innerText = "₹0";
-        if (todayEarningsStat) todayEarningsStat.innerText = "₹0";
-        if (totalLossStat) totalLossStat.innerText = "₹0";
-        updateOrdersChart(statusCounts);
-        updateEarningsChart({});
-        if (list) list.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">No orders found.</td></tr>`;
-        if (returnContainer) returnContainer.innerHTML = `<p style="color: #64748b; font-weight: 600;">No return or refund requests.</p>`;
-        return;
-    }
-
-    snap.forEach(childSnap => {
-        const data = childSnap.val();
-        if (data.productName || data.customerName) {
-            totalOrderCount++;
-            let path = childSnap.key;
-            globalOrdersCache[path] = { ...data, pathKey: path };
-
-            let st = data.status || "Pending";
-            if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
-            if (list) renderOrderRow(list, data, path);
-            
-            processOrderEarnings(data);
-
-            if (st === 'Return Requested' || st === 'Returned') {
-                hasReturns = true;
-                if (returnContainer) renderReturnCard(returnContainer, data, path);
-            }
-        } 
-        else {
-            childSnap.forEach(nestedSnap => {
-                const nestedData = nestedSnap.val();
-                if (nestedData.productName || nestedData.customerName) {
-                    totalOrderCount++;
-                    let path = `${childSnap.key}/${nestedSnap.key}`;
-                    globalOrdersCache[path] = { ...nestedData, pathKey: path, parentPhone: childSnap.key };
-
-                    let st = nestedData.status || "Pending";
-                    if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
-                    if (list) renderOrderRow(list, nestedData, path);
-                    
-                    processOrderEarnings(nestedData);
-
-                    if (st === 'Return Requested' || st === 'Returned') {
-                        hasReturns = true;
-                        if (returnContainer) renderReturnCard(returnContainer, nestedData, path);
-                    }
-                }
-            });
-        }
-    });
-
-    if (totalOrdersStat) totalOrdersStat.innerText = totalOrderCount;
-    if (totalEarningsStat) totalEarningsStat.innerText = "₹" + totalEarnings.toLocaleString();
-    if (todayEarningsStat) todayEarningsStat.innerText = "₹" + todayEarnings.toLocaleString();
-    if (totalLossStat) totalLossStat.innerText = "₹" + totalLoss.toLocaleString();
-    
-    updateOrdersChart(statusCounts);
-    updateEarningsChart(dailyEarningsMap);
-
-    if (!hasReturns && returnContainer) {
-        returnContainer.innerHTML = `<p style="color: #64748b; font-weight: 600;">No return or refund requests at the moment.</p>`;
-    }
-});
-
-function renderOrderRow(container, o, path) {
-    const payStatus = o.paymentStatus || "Pending";
-    const currentStatus = o.status || "Pending";
-    const fullOrderId = o.orderId || path.split('/').pop();
-
-    container.innerHTML += `
-    <tr>
-        <td style="vertical-align: top;">
-            <div style="font-size: 13px; font-weight: 800; color: #475569; margin-bottom: 4px;">
-                ID: #${fullOrderId}
-            </div>
-            <strong style="color:#1e293b; font-size: 14px;">${o.customerName || 'Customer'}</strong><br>
-            <small style="color:#64748b;">${o.date || ''}</small>
-        </td>
-        <td><strong style="color:#16a34a;">₹${o.price || '0'}</strong></td>
-        <td>
-            <span class="status-badge status-${currentStatus}">${currentStatus}</span>
-            <span class="pay-badge pay-${payStatus}" style="margin-left:2px;">${payStatus}</span>
-        </td>
-        <td>
-            <button style="background:#000; color:#fff; border:none; padding:8px 12px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="viewFullOrderDetails('${path}')">
-                <i class="fa fa-eye"></i> View Details
-            </button>
-        </td>
-    </tr>`;
-}
-
-window.copyAddressText = (text) => {
-    navigator.clipboard.writeText(text).then(() => {
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Address Copied!',
-            showConfirmButton: false,
-            timer: 1500
+    window.saveProduct = () => {
+        const key = document.getElementById('editKey').value;
+        const specs = {};
+        document.querySelectorAll('.spec-row').forEach(row => {
+            const k = row.querySelector('.spec-key').value.trim();
+            const v = row.querySelector('.spec-val').value.trim();
+            if(k && v) specs[k] = v;
         });
-    }).catch(err => {
-        Swal.fire('Error', 'Failed to copy address', 'error');
+
+        const selectedSizes = Array.from(document.querySelectorAll('.p-size:checked')).map(cb => cb.value);
+        const imageLinks = Array.from(document.querySelectorAll('.p-img-link')).map(input => input.value.trim()).filter(val => val !== "");
+
+        const pName = document.getElementById('pName').value.trim();
+        const pPrice = document.getElementById('pPrice').value.trim();
+        const pCategory = document.getElementById('pCategory').value;
+        const pShowOnHome = document.getElementById('pShowOnHome').value === "true"; 
+        const pCod = document.getElementById('pCod') ? document.getElementById('pCod').value === "true" : false;
+
+        if(!pName || !pPrice || !pCategory || imageLinks.length === 0) {
+            Swal.fire('Error', 'Please fill Name, Category, Price and provide at least one Image URL', 'error');
+            return;
+        }
+
+        const data = {
+            name: pName,
+            title: document.getElementById('pTitle').value.trim() || pName,
+            category: pCategory,
+            mrp: document.getElementById('pMrp').value.trim() || pPrice,
+            price: pPrice,
+            shippedFrom: document.getElementById('pShippedFrom').value.trim() || "CartPrime Warehouse",
+            deliveryDays: document.getElementById('pDeliveryDays').value || 7,
+            desc: document.getElementById('pDesc').value || "No description available.",
+            specs: specs,
+            sizes: selectedSizes,
+            images: imageLinks,
+            return: document.getElementById('pReturn').value === "true",
+            outOfStock: false,
+            showOnHome: pShowOnHome,
+            cod: pCod
+        };
+
+        if(key) {
+            update(ref(db, 'products/' + key), data)
+                .then(() => { Swal.fire('Updated!', 'Product updated successfully', 'success'); resetForm(); openTab('manageProducts'); })
+                .catch(err => Swal.fire('Error', err.message, 'error'));
+        } else {
+            data.views = 0; 
+            const newRef = push(ref(db, 'products'));
+            set(newRef, data)
+                .then(() => { Swal.fire('Saved!', 'New product added', 'success'); resetForm(); openTab('manageProducts'); })
+                .catch(err => Swal.fire('Error', err.message, 'error'));
+        }
+    };
+
+    window.saveBanner = () => {
+        const imgUrl = document.getElementById('bImgUrl').value.trim();
+        const link = document.getElementById('bRedirectLink').value.trim();
+
+        if(!imgUrl) { Swal.fire('Error', 'Please provide a Banner Image URL', 'error'); return; }
+
+        const newBannerRef = push(ref(db, 'banners'));
+        set(newBannerRef, { imageUrl: imgUrl, redirectLink: link || "#" }).then(() => {
+            Swal.fire('Saved!', 'Banner uploaded successfully', 'success');
+            document.getElementById('bImgUrl').value = "";
+            document.getElementById('bRedirectLink').value = "";
+        }).catch(err => Swal.fire('Error', err.message, 'error'));
+    };
+
+    window.viewProof = (imgUrl) => {
+        if(!imgUrl) return Swal.fire('No Proof', 'Customer did not upload a screenshot.', 'info');
+        Swal.fire({ imageUrl: imgUrl, imageAlt: 'Payment Proof', title: 'Payment Screenshot', confirmButtonColor: '#000' });
+    };
+
+    function updateOrdersChart(statusData) {
+        const chartEl = document.getElementById('ordersChart');
+        if (!chartEl) return;
+        const ctx = chartEl.getContext('2d');
+        
+        if(ordersChartInstance) ordersChartInstance.destroy();
+        
+        ordersChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Rejected', 'Returned'],
+                datasets: [{
+                    label: 'Orders',
+                    data: [statusData.Pending || 0, statusData.Confirmed || 0, statusData.Shipped || 0, statusData.Delivered || 0, statusData.Rejected || 0, statusData.Returned || 0],
+                    backgroundColor: ['rgba(239, 68, 68, 0.8)','rgba(34, 197, 94, 0.8)','rgba(14, 165, 233, 0.8)','rgba(21, 128, 61, 0.9)','rgba(185, 28, 28, 0.9)','rgba(239, 68, 68, 0.9)'],
+                    borderColor: ['#dc2626','#16a34a','#0284c7','#15803d','#b91c1c','#ef4444'],
+                    borderWidth: 2, borderRadius: 8
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        });
+    }
+
+    function updateEarningsChart(dailyEarningsMap) {
+        const chartEl = document.getElementById('earningsChart');
+        if (!chartEl) return;
+        const ctx = chartEl.getContext('2d');
+
+        const sortedDates = Object.keys(dailyEarningsMap).sort().slice(-7);
+        const earningsData = sortedDates.map(date => dailyEarningsMap[date]);
+
+        if(earningsChartInstance) earningsChartInstance.destroy();
+
+        earningsChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: sortedDates,
+                datasets: [{
+                    label: 'Daily Revenue (₹)',
+                    data: earningsData,
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)', 
+                    borderColor: '#22c55e', borderWidth: 3, tension: 0.3, fill: true, pointBackgroundColor: '#16a34a', pointRadius: 5
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: value => '₹' + value } } } }
+        });
+    }
+
+    onValue(ref(db, 'orders'), snap => {
+        const list = document.getElementById('orderList');
+        const returnContainer = document.getElementById('returnOrdersContainer');
+        
+        if (list) list.innerHTML = ""; 
+        if (returnContainer) returnContainer.innerHTML = "";
+        
+        globalOrdersCache = {};
+
+        let totalOrderCount = 0;
+        let statusCounts = { Pending: 0, Confirmed: 0, Shipped: 0, Delivered: 0, Rejected: 0, Returned: 0, 'Return Requested': 0 };
+        let hasReturns = false;
+        let totalEarnings = 0, todayEarnings = 0, totalLoss = 0; 
+        let dailyEarningsMap = {};
+
+        const todayDateStr = new Date().toISOString().split('T')[0];
+
+        const totalOrdersStat = document.getElementById('stat-total-orders');
+        const totalEarningsStat = document.getElementById('stat-total-earnings');
+        const todayEarningsStat = document.getElementById('stat-today-earnings');
+        const totalLossStat = document.getElementById('stat-total-lost');
+
+        function processOrderEarnings(orderData) {
+            const price = parseFloat(orderData.price) || 0;
+            let orderDate = orderData.date ? orderData.date.split(' ')[0] : todayDateStr; 
+            if(orderDate.includes(',')) orderDate = orderDate.replace(',','');
+
+            if (orderData.status === 'Rejected' || orderData.status === 'Returned' || orderData.status === 'Return Requested') totalLoss += price;
+
+            if (orderData.paymentStatus === 'Paid' || orderData.status === 'Confirmed' || orderData.status === 'Shipped' || orderData.status === 'Delivered') {
+                totalEarnings += price;
+                dailyEarningsMap[orderDate] = (dailyEarningsMap[orderDate] || 0) + price;
+                if (orderDate === todayDateStr) todayEarnings += price;
+            }
+            
+            if (orderData.status === 'Returned') {
+                totalEarnings -= price;
+                dailyEarningsMap[orderDate] = (dailyEarningsMap[orderDate] || 0) - price;
+                if (orderDate === todayDateStr) todayEarnings -= price;
+            }
+        }
+
+        if (!snap.exists()) {
+            if (totalOrdersStat) totalOrdersStat.innerText = "0";
+            if (totalEarningsStat) totalEarningsStat.innerText = "₹0";
+            if (todayEarningsStat) todayEarningsStat.innerText = "₹0";
+            if (totalLossStat) totalLossStat.innerText = "₹0";
+            updateOrdersChart(statusCounts);
+            updateEarningsChart({});
+            if (list) list.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">No orders found.</td></tr>`;
+            if (returnContainer) returnContainer.innerHTML = `<p style="color: #64748b; font-weight: 600;">No return or refund requests.</p>`;
+            return;
+        }
+
+        snap.forEach(childSnap => {
+            const data = childSnap.val();
+            if (data.productName || data.customerName) {
+                totalOrderCount++;
+                let path = childSnap.key;
+                globalOrdersCache[path] = { ...data, pathKey: path };
+
+                let st = data.status || "Pending";
+                if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
+                if (list) renderOrderRow(list, data, path);
+                
+                processOrderEarnings(data);
+
+                if (st === 'Return Requested' || st === 'Returned') {
+                    hasReturns = true;
+                    if (returnContainer) renderReturnCard(returnContainer, data, path);
+                }
+            } 
+            else {
+                childSnap.forEach(nestedSnap => {
+                    const nestedData = nestedSnap.val();
+                    if (nestedData.productName || nestedData.customerName) {
+                        totalOrderCount++;
+                        let path = `${childSnap.key}/${nestedSnap.key}`;
+                        globalOrdersCache[path] = { ...nestedData, pathKey: path, parentPhone: childSnap.key };
+
+                        let st = nestedData.status || "Pending";
+                        if (statusCounts[st] !== undefined) statusCounts[st] = (statusCounts[st] || 0) + 1;
+                        if (list) renderOrderRow(list, nestedData, path);
+                        
+                        processOrderEarnings(nestedData);
+
+                        if (st === 'Return Requested' || st === 'Returned') {
+                            hasReturns = true;
+                            if (returnContainer) renderReturnCard(returnContainer, nestedData, path);
+                        }
+                    }
+                });
+            }
+        });
+
+        if (totalOrdersStat) totalOrdersStat.innerText = totalOrderCount;
+        if (totalEarningsStat) totalEarningsStat.innerText = "₹" + totalEarnings.toLocaleString();
+        if (todayEarningsStat) todayEarningsStat.innerText = "₹" + todayEarnings.toLocaleString();
+        if (totalLossStat) totalLossStat.innerText = "₹" + totalLoss.toLocaleString();
+        
+        updateOrdersChart(statusCounts);
+        updateEarningsChart(dailyEarningsMap);
+
+        if (!hasReturns && returnContainer) {
+            returnContainer.innerHTML = `<p style="color: #64748b; font-weight: 600;">No return or refund requests at the moment.</p>`;
+        }
     });
-};
 
-window.viewFullOrderDetails = (path) => {
-    const o = globalOrdersCache[path];
-    if (!o) return Swal.fire('Error', 'Order details not found', 'error');
+    function renderOrderRow(container, o, path) {
+        const payStatus = o.paymentStatus || "Pending";
+        const currentStatus = o.status || "Pending";
+        const fullOrderId = o.orderId || path.split('/').pop();
 
-    const payStatus = o.paymentStatus || "Pending";
-    const currentStatus = o.status || "Pending";
-    const proofImg = o.paymentProof || ""; 
-    const payMethod = o.paymentMethod || (o.transactionId ? "UPI Payment" : "Cash On Delivery");
-    const fullAddress = o.address || 'No Address Provided';
-    const fullOrderId = o.orderId || path.split('/').pop();
+        container.innerHTML += `
+        <tr>
+            <td style="vertical-align: top;">
+                <div style="font-size: 13px; font-weight: 800; color: #475569; margin-bottom: 4px;">
+                    ID: #${fullOrderId}
+                </div>
+                <strong style="color:#1e293b; font-size: 14px;">${o.customerName || 'Customer'}</strong><br>
+                <small style="color:#64748b;">${o.date || ''}</small>
+            </td>
+            <td><strong style="color:#16a34a;">₹${o.price || '0'}</strong></td>
+            <td>
+                <span class="status-badge status-${currentStatus}">${currentStatus}</span>
+                <span class="pay-badge pay-${payStatus}" style="margin-left:2px;">${payStatus}</span>
+            </td>
+            <td>
+                <button style="background:#000; color:#fff; border:none; padding:8px 12px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="viewFullOrderDetails('${path}')">
+                    <i class="fa fa-eye"></i> View Details
+                </button>
+            </td>
+        </tr>`;
+    }
 
-    let productsListHtml = "";
-    if (o.items && Array.isArray(o.items) && o.items.length > 0) {
-        o.items.forEach(item => {
-            let pImg = item.image || item.productImage || "https://via.placeholder.com/150";
-            let pSize = item.size || item.selectedSize || "N/A";
-            let pQty = item.quantity || item.qty || 1;
+    window.copyAddressText = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Address Copied!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }).catch(err => {
+            Swal.fire('Error', 'Failed to copy address', 'error');
+        });
+    };
 
-            productsListHtml += `
+    window.viewFullOrderDetails = (path) => {
+        const o = globalOrdersCache[path];
+        if (!o) return Swal.fire('Error', 'Order details not found', 'error');
+
+        const payStatus = o.paymentStatus || "Pending";
+        const currentStatus = o.status || "Pending";
+        const proofImg = o.paymentProof || ""; 
+        const payMethod = o.paymentMethod || (o.transactionId ? "UPI Payment" : "Cash On Delivery");
+        const fullAddress = o.address || 'No Address Provided';
+        const fullOrderId = o.orderId || path.split('/').pop();
+
+        let productsListHtml = "";
+        if (o.items && Array.isArray(o.items) && o.items.length > 0) {
+            o.items.forEach(item => {
+                let pImg = item.image || item.productImage || "https://via.placeholder.com/150";
+                let pSize = item.size || item.selectedSize || "N/A";
+                let pQty = item.quantity || item.qty || 1;
+
+                productsListHtml += `
+                <div class="admin-prod-item">
+                    <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
+                    <div style="flex: 1; min-width: 0;">
+                        <p style="font-size: 13px; font-weight: 800; color: #1e293b;">${item.name || item.title || 'Product'}</p>
+                        <div style="margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+                            <span class="highlight-size">Size: ${pSize}</span>
+                            <span class="highlight-qty">Qty: ${pQty}</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+        } else {
+            let pImg = o.productImage || "https://via.placeholder.com/150";
+            let pSize = o.selectedSize || "N/A";
+            let pQty = o.quantity || o.qty || 1;
+
+            productsListHtml = `
             <div class="admin-prod-item">
                 <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
                 <div style="flex: 1; min-width: 0;">
-                    <p style="font-size: 13px; font-weight: 800; color: #1e293b;">${item.name || item.title || 'Product'}</p>
+                    <p style="font-size: 13px; font-weight: 800; color: #1e293b;">${o.productName || 'Product'}</p>
                     <div style="margin-top: 4px; display: flex; align-items: center; gap: 6px;">
                         <span class="highlight-size">Size: ${pSize}</span>
                         <span class="highlight-qty">Qty: ${pQty}</span>
                     </div>
                 </div>
             </div>`;
-        });
-    } else {
-        let pImg = o.productImage || "https://via.placeholder.com/150";
-        let pSize = o.selectedSize || "N/A";
-        let pQty = o.quantity || o.qty || 1;
+        }
 
-        productsListHtml = `
-        <div class="admin-prod-item">
-            <img src="${pImg}" class="admin-prod-img" onclick="viewProof('${pImg}')">
-            <div style="flex: 1; min-width: 0;">
-                <p style="font-size: 13px; font-weight: 800; color: #1e293b;">${o.productName || 'Product'}</p>
-                <div style="margin-top: 4px; display: flex; align-items: center; gap: 6px;">
-                    <span class="highlight-size">Size: ${pSize}</span>
-                    <span class="highlight-qty">Qty: ${pQty}</span>
+        const modalContent = `
+        <div class="order-detail-popup">
+            <div class="order-detail-section">
+                <div class="order-detail-title"><i class="fa fa-hashtag"></i> Order ID</div>
+                <p style="font-size: 15px; font-weight: 800; color: #0f172a;">ID: #${fullOrderId}</p>
+            </div>
+
+            <div class="order-detail-section">
+                <div class="order-detail-title"><i class="fa fa-user"></i> Customer Info</div>
+                <p><strong>Name:</strong> ${o.customerName || 'N/A'}</p>
+                
+                <div style="margin-top: 8px;">
+                    <strong>Delivery Address:</strong>
+                    <div class="address-box" id="addressTextVal">${fullAddress}</div>
+                    <button class="btn-copy-address" onclick="copyAddressText(\`${fullAddress.replace(/`/g, '')}\`)">
+                        <i class="fa fa-copy"></i> Copy Address
+                    </button>
                 </div>
+            </div>
+
+            <div class="order-detail-section">
+                <div class="order-detail-title"><i class="fa fa-box"></i> Ordered Item(s)</div>
+                ${productsListHtml}
+            </div>
+
+            <div class="order-detail-section">
+                <div class="order-detail-title"><i class="fa fa-receipt"></i> Payment & Order Status</div>
+                <p><strong>Total Price:</strong> <span style="color:#16a34a; font-weight:bold;">₹${o.price || '0'}</span></p>
+                <p><strong>Payment Method:</strong> ${payMethod}</p>
+                <p><strong>Payment Status:</strong> <span class="pay-badge pay-${payStatus}">${payStatus}</span></p>
+                <p style="margin-top:4px;"><strong>Order Status:</strong> <span class="status-badge status-${currentStatus}">${currentStatus}</span></p>
+                ${o.deliveryDate ? `<p style="margin-top:4px; color:#0284c7; font-weight:bold;"><i class="fa fa-truck"></i> Est. Delivery: ${o.deliveryDate}</p>` : ''}
+                
+                ${proofImg ? `
+                    <button onclick="viewProof('${proofImg}')" style="margin-top:10px; background:#1e293b; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; width:100%;">
+                        <i class="fa fa-image"></i> View Payment Screenshot
+                    </button>
+                ` : ''}
+            </div>
+
+            <div class="order-detail-section" style="background:#fff; border:1px solid #cbd5e1;">
+                <div class="order-detail-title" style="color:#0f172a;"><i class="fa fa-sliders"></i> Update Status</div>
+                <div class="order-actions-btn" style="margin-top:8px;">
+                    <button style="background:#16a34a" title="Verify Payment" onclick="verifyPayment('${path}', 'Paid')"><i class="fa fa-check"></i> Paid</button>
+                    <button style="background:#ef4444" title="Reject Payment" onclick="verifyPayment('${path}', 'Rejected')"><i class="fa fa-xmark"></i> Reject</button>
+                    <button style="background:#0284c7" title="Mark as Shipped" onclick="shipOrderWithDate('${path}')"><i class="fa fa-truck-fast"></i> Ship</button>
+                    <button style="background:#2563eb" title="Mark Delivered" onclick="updateStatus('${path}', 'Delivered')"><i class="fa fa-box"></i> Deliver</button>
+                    <button style="background:#333;" title="Delete Order" onclick="deleteItem('orders/${path}')"><i class="fa fa-trash"></i> Delete</button>
+                </div>
+            </div>
+        </div>
+        `;
+
+        Swal.fire({
+            title: `Order Details`,
+            html: modalContent,
+            showCloseButton: true,
+            showConfirmButton: false,
+            customClass: { popup: 'custom-verify-modal' }
+        });
+    };
+
+    function renderReturnCard(container, o, path) {
+        const currentStatus = o.status || "Pending";
+        const userEmail = o.refundEmail || o.email || 'No Email Provided';
+        const fullOrderId = o.orderId || path.split('/').pop();
+        
+        container.innerHTML += `
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; padding: 18px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 5px;">
+                <div>
+                    <span style="font-size: 0.8rem; font-weight: 800; color: #475569;">ID: #${fullOrderId}</span>
+                    <h4 style="font-size: 1rem; color: #1e293b; margin-top: 2px;">Customer: ${o.customerName || 'N/A'}</h4>
+                    <p style="font-size: 0.85rem; color: #2563eb; margin: 4px 0 0 0; font-weight: bold; word-break: break-all;">
+                        <i class="fa fa-envelope"></i> Email: ${userEmail}
+                    </p>
+                </div>
+                <span style="font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 8px; background: ${currentStatus === 'Returned' ? '#dcfce7' : '#fee2e2'}; color: ${currentStatus === 'Returned' ? '#15803d' : '#b91c1c'}; text-transform: uppercase;">
+                    ${currentStatus}
+                </span>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <img src="${o.productImage || (o.items && o.items[0] ? o.items[0].image : '') || ''}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
+                <div><p style="font-size:13px; font-weight:800;">${o.productName || 'Product'}</p></div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 5px;">
+                ${currentStatus === 'Return Requested' ? `
+                    <button onclick="approveRefund('${path}')" style="flex: 1; background: #16a34a; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem;">
+                        <i class="fa-solid fa-circle-check"></i> Approve & Refund Complete
+                    </button>
+                ` : `
+                    <p style="color: #16a34a; font-weight: 800; font-size: 0.8rem;"><i class="fa-solid fa-circle-check"></i> Refunded successfully and closed.</p>
+                `}
             </div>
         </div>`;
     }
 
-    const modalContent = `
-    <div class="order-detail-popup">
-        <div class="order-detail-section">
-            <div class="order-detail-title"><i class="fa fa-hashtag"></i> Order ID</div>
-            <p style="font-size: 15px; font-weight: 800; color: #0f172a;">ID: #${fullOrderId}</p>
-        </div>
-
-        <div class="order-detail-section">
-            <div class="order-detail-title"><i class="fa fa-user"></i> Customer Info</div>
-            <p><strong>Name:</strong> ${o.customerName || 'N/A'}</p>
-            
-            <div style="margin-top: 8px;">
-                <strong>Delivery Address:</strong>
-                <div class="address-box" id="addressTextVal">${fullAddress}</div>
-                <button class="btn-copy-address" onclick="copyAddressText(\`${fullAddress.replace(/`/g, '')}\`)">
-                    <i class="fa fa-copy"></i> Copy Address
-                </button>
-            </div>
-        </div>
-
-        <div class="order-detail-section">
-            <div class="order-detail-title"><i class="fa fa-box"></i> Ordered Item(s)</div>
-            ${productsListHtml}
-        </div>
-
-        <div class="order-detail-section">
-            <div class="order-detail-title"><i class="fa fa-receipt"></i> Payment & Order Status</div>
-            <p><strong>Total Price:</strong> <span style="color:#16a34a; font-weight:bold;">₹${o.price || '0'}</span></p>
-            <p><strong>Payment Method:</strong> ${payMethod}</p>
-            <p><strong>Payment Status:</strong> <span class="pay-badge pay-${payStatus}">${payStatus}</span></p>
-            <p style="margin-top:4px;"><strong>Order Status:</strong> <span class="status-badge status-${currentStatus}">${currentStatus}</span></p>
-            ${o.deliveryDate ? `<p style="margin-top:4px; color:#0284c7; font-weight:bold;"><i class="fa fa-truck"></i> Est. Delivery: ${o.deliveryDate}</p>` : ''}
-            
-            ${proofImg ? `
-                <button onclick="viewProof('${proofImg}')" style="margin-top:10px; background:#1e293b; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; width:100%;">
-                    <i class="fa fa-image"></i> View Payment Screenshot
-                </button>
-            ` : ''}
-        </div>
-
-        <div class="order-detail-section" style="background:#fff; border:1px solid #cbd5e1;">
-            <div class="order-detail-title" style="color:#0f172a;"><i class="fa fa-sliders"></i> Update Status</div>
-            <div class="order-actions-btn" style="margin-top:8px;">
-                <button style="background:#16a34a" title="Verify Payment" onclick="verifyPayment('${path}', 'Paid')"><i class="fa fa-check"></i> Paid</button>
-                <button style="background:#ef4444" title="Reject Payment" onclick="verifyPayment('${path}', 'Rejected')"><i class="fa fa-xmark"></i> Reject</button>
-                <button style="background:#0284c7" title="Mark as Shipped" onclick="shipOrderWithDate('${path}')"><i class="fa fa-truck-fast"></i> Ship</button>
-                <button style="background:#2563eb" title="Mark Delivered" onclick="updateStatus('${path}', 'Delivered')"><i class="fa fa-box"></i> Deliver</button>
-                <button style="background:#333;" title="Delete Order" onclick="deleteItem('orders/${path}')"><i class="fa fa-trash"></i> Delete</button>
-            </div>
-        </div>
-    </div>
-    `;
-
-    Swal.fire({
-        title: `Order Details`,
-        html: modalContent,
-        showCloseButton: true,
-        showConfirmButton: false,
-        customClass: { popup: 'custom-verify-modal' }
-    });
-};
-
-function renderReturnCard(container, o, path) {
-    const currentStatus = o.status || "Pending";
-    const refundMethod = o.refundMethod || 'N/A';
-    const refundDetails = o.refundDetails || 'N/A';
-    const userEmail = o.refundEmail || o.email || 'No Email Provided';
-    const fullOrderId = o.orderId || path.split('/').pop();
-    
-    container.innerHTML += `
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; padding: 18px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 5px;">
-            <div>
-                <span style="font-size: 0.8rem; font-weight: 800; color: #475569;">ID: #${fullOrderId}</span>
-                <h4 style="font-size: 1rem; color: #1e293b; margin-top: 2px;">Customer: ${o.customerName || 'N/A'}</h4>
-                <p style="font-size: 0.85rem; color: #2563eb; margin: 4px 0 0 0; font-weight: bold; word-break: break-all;">
-                    <i class="fa fa-envelope"></i> Email: ${userEmail}
-                </p>
-            </div>
-            <span style="font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 8px; background: ${currentStatus === 'Returned' ? '#dcfce7' : '#fee2e2'}; color: ${currentStatus === 'Returned' ? '#15803d' : '#b91c1c'}; text-transform: uppercase;">
-                ${currentStatus}
-            </span>
-        </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-            <img src="${o.productImage || (o.items && o.items[0] ? o.items[0].image : '') || ''}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
-            <div><p style="font-size:13px; font-weight:800;">${o.productName || 'Product'}</p></div>
-        </div>
-        <div style="background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 12px; font-size: 0.85rem;">
-            <p style="font-weight: 700; color: #ef4444; margin-bottom: 5px;"><i class="fa-solid fa-money-bill-transfer"></i> REFUND INFO</p>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                <span style="color:#64748b; font-weight:600;">Refund Amount:</span>
-                <span style="font-weight: 800; color: #000;">₹${o.price || '0'}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                <span style="color:#64748b; font-weight:600;">Method Selected:</span>
-                <span style="font-weight: 700; color: #1e293b;">${refundMethod}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
-                <span style="color:#64748b; font-weight:600;">Payee Details:</span>
-                <span style="font-weight: 800; color: #000; font-family: monospace; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; word-break: break-all;">${refundDetails}</span>
-            </div>
-        </div>
-        <div style="display: flex; gap: 10px; margin-top: 5px;">
-            ${currentStatus === 'Return Requested' ? `
-                <button onclick="approveRefund('${path}')" style="flex: 1; background: #16a34a; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem;">
-                    <i class="fa-solid fa-circle-check"></i> Approve & Refund Complete
-                </button>
-            ` : `
-                <p style="color: #16a34a; font-weight: 800; font-size: 0.8rem;"><i class="fa-solid fa-circle-check"></i> Refunded successfully and closed.</p>
-            `}
-        </div>
-    </div>`;
-}
-
-window.approveRefund = (path) => {
-    Swal.fire({
-        title: 'Complete Refund?',
-        text: "Make sure you have sent the money to the user's UPI/Mobile number before confirming.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, Money Sent'
-    }).then((res) => {
-        if (res.isConfirmed) {
-            update(ref(db, 'orders/' + path), { status: 'Returned' })
-            .then(() => { Swal.fire('Success', 'Order status updated to Returned.', 'success'); })
-            .catch((err) => { Swal.fire('Error', 'Failed to update: ' + err.message, 'error'); });
-        }
-    });
-};
-
-window.verifyPayment = (path, status) => {
-    let updateData = {};
-    if(status === 'Paid') {
-        updateData = { paymentStatus: 'Paid', status: 'Confirmed' };
-    } else if(status === 'Rejected') {
-        updateData = { paymentStatus: 'Rejected', status: 'Rejected', deliveryDate: null };
-    }
-    update(ref(db, 'orders/' + path), updateData).then(() => {
-        Swal.close();
-        Swal.fire('Updated', `Payment status marked as ${status}`, 'success');
-    });
-};
-
-window.updateStatus = (path, s) => {
-    update(ref(db, 'orders/' + path), { status: s }).then(() => {
-        Swal.close();
-        Swal.fire('Updated', `Order status marked as ${s}`, 'success');
-    });
-};
-
-window.shipOrderWithDate = async (path) => {
-    const { value: date } = await Swal.fire({ 
-        title: 'Select Expected Delivery Date', 
-        input: 'date', 
-        showCancelButton: true,
-        confirmButtonText: 'Mark Shipped'
-    });
-    
-    if (date) {
-        update(ref(db, 'orders/' + path), { status: 'Shipped', deliveryDate: date }).then(() => {
-            Swal.close();
-            Swal.fire('Shipped!', 'Order status updated to Shipped.', 'success');
+    window.approveRefund = (path) => {
+        Swal.fire({
+            title: 'Complete Refund?',
+            text: "Make sure you have sent the money to the user's UPI/Mobile number before confirming.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Money Sent'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                update(ref(db, 'orders/' + path), { status: 'Returned' })
+                .then(() => { Swal.fire('Success', 'Order status updated to Returned.', 'success'); })
+                .catch((err) => { Swal.fire('Error', 'Failed to update: ' + err.message, 'error'); });
+            }
         });
-    }
-};
+    };
 
-/* READ PRODUCTS (WITH REAL-TIME VIEWS DISPLAY) */
-onValue(ref(db, 'products'), snap => {
-    const list = document.getElementById('manageProductList');
-    if (!list) return;
-    list.innerHTML = "";
-    
-    let totalProductsCount = 0;
-    
-    if (snap.exists()) {
+    window.verifyPayment = (path, status) => {
+        let updateData = {};
+        if(status === 'Paid') {
+            updateData = { paymentStatus: 'Paid', status: 'Confirmed' };
+        } else if(status === 'Rejected') {
+            updateData = { paymentStatus: 'Rejected', status: 'Rejected', deliveryDate: null };
+        }
+        update(ref(db, 'orders/' + path), updateData).then(() => {
+            Swal.close();
+            Swal.fire('Updated', `Payment status marked as ${status}`, 'success');
+        });
+    };
+
+    window.updateStatus = (path, s) => {
+        update(ref(db, 'orders/' + path), { status: s }).then(() => {
+            Swal.close();
+            Swal.fire('Updated', `Order status marked as ${s}`, 'success');
+        });
+    };
+
+    window.shipOrderWithDate = async (path) => {
+        const { value: date } = await Swal.fire({ 
+            title: 'Select Expected Delivery Date', 
+            input: 'date', 
+            showCancelButton: true,
+            confirmButtonText: 'Mark Shipped'
+        });
+        
+        if (date) {
+            update(ref(db, 'orders/' + path), { status: 'Shipped', deliveryDate: date }).then(() => {
+                Swal.close();
+                Swal.fire('Shipped!', 'Order status updated to Shipped.', 'success');
+            });
+        }
+    };
+
+    /* READ PRODUCTS (WITH "ADD REVIEW" BUTTON ADDED IN INVENTORY TABLE) */
+    onValue(ref(db, 'products'), snap => {
+        const list = document.getElementById('manageProductList');
+        if (!list) return;
+        list.innerHTML = "";
+        
+        let totalProductsCount = 0;
+        
+        if (snap.exists()) {
+            snap.forEach(child => {
+                totalProductsCount++;
+                const p = child.val();
+                const isOut = p.outOfStock === true;
+                const isHome = p.showOnHome === true; 
+                const isCod = p.cod === true;
+                const viewsCount = p.views || 0;
+                const pKey = child.key;
+                const pNameEscaped = (p.name || 'Product').replace(/'/g, "\\'");
+                
+                list.innerHTML += `<tr>
+                    <td><img src="${p.images ? p.images[0] : ''}" width="40" height="40" style="object-fit:cover; border-radius:5px;"></td>
+                    <td>${p.name || 'N/A'}</td>
+                    <td>₹${p.price || '0'}</td>
+                    <td><span class="views-badge"><i class="fa fa-eye"></i> ${viewsCount}</span></td>
+                    <td>
+                        <span style="font-size:11px; padding:3px 6px; border-radius:5px; background:${isHome ? '#dcfce7' : '#f1f5f9'}; color:${isHome ? '#166534' : '#64748b'}; font-weight:bold;">${isHome ? 'Home' : 'Hidden'}</span>
+                        <span style="font-size:11px; padding:3px 6px; border-radius:5px; background:${isCod ? '#e0f2fe' : '#fee2e2'}; color:${isCod ? '#0369a1' : '#991b1b'}; font-weight:bold; margin-left:2px;">${isCod ? 'COD' : 'Online'}</span>
+                    </td>
+                    <td><button class="stock-badge ${isOut ? 'out-stock' : 'in-stock'}" title="Click to Toggle Stock" onclick="toggleStock('${pKey}', ${isOut})">${isOut ? 'OUT' : 'IN'}</button></td>
+                    <td>
+                        <!-- ADD REVIEW BUTTON -->
+                        <button style="color:#ff9900; border:1px solid #ff9900; background:none; cursor:pointer; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;" onclick="openReviewModal('${pKey}', '${pNameEscaped}')" title="Add Meesho Review"><i class="fa fa-star"></i> Review</button>
+                        <button style="color:blue; border:none; background:none; cursor:pointer; padding:5px;" onclick="editProduct('${pKey}')"><i class="fa fa-edit"></i></button>
+                        <button style="color:red; border:none; background:none; cursor:pointer; padding:5px;" onclick="deleteItem('products/${pKey}')"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+        }
+        const totalProdStat = document.getElementById('stat-total-products');
+        if (totalProdStat) totalProdStat.innerText = totalProductsCount;
+    });
+
+    onValue(ref(db, 'banners'), snap => {
+        const bannerTable = document.getElementById('bannerList');
+        if (!bannerTable) return;
+        bannerTable.innerHTML = "";
+        if(!snap.exists()){
+            bannerTable.innerHTML = `<tr><td colspan="2" style="color: #94a3b8; text-align:center;">No banners uploaded yet.</td></tr>`;
+            return;
+        }
         snap.forEach(child => {
-            totalProductsCount++;
-            const p = child.val();
-            const isOut = p.outOfStock === true;
-            const isHome = p.showOnHome === true; 
-            const isCod = p.cod === true;
-            const viewsCount = p.views || 0; // പ്രോഡക്റ്റിന്റെ Views
-            
-            list.innerHTML += `<tr>
-                <td><img src="${p.images ? p.images[0] : ''}" width="40" height="40" style="object-fit:cover; border-radius:5px;"></td>
-                <td>${p.name || 'N/A'}</td>
-                <td>₹${p.price || '0'}</td>
-                <td><span class="views-badge"><i class="fa fa-eye"></i> ${viewsCount}</span></td>
+            const b = child.val();
+            bannerTable.innerHTML += `<tr>
+                <td><img src="${b.imageUrl}" style="max-width:200px; max-height:80px; border-radius:10px; object-fit:cover; width:100%;"></td>
                 <td>
-                    <span style="font-size:11px; padding:3px 6px; border-radius:5px; background:${isHome ? '#dcfce7' : '#f1f5f9'}; color:${isHome ? '#166534' : '#64748b'}; font-weight:bold;">${isHome ? 'Home' : 'Hidden'}</span>
-                    <span style="font-size:11px; padding:3px 6px; border-radius:5px; background:${isCod ? '#e0f2fe' : '#fee2e2'}; color:${isCod ? '#0369a1' : '#991b1b'}; font-weight:bold; margin-left:2px;">${isCod ? 'COD' : 'Online'}</span>
-                </td>
-                <td><button class="stock-badge ${isOut ? 'out-stock' : 'in-stock'}" title="Click to Toggle Stock" onclick="toggleStock('${child.key}', ${isOut})">${isOut ? 'OUT' : 'IN'}</button></td>
-                <td>
-                    <button style="color:blue; border:none; background:none; cursor:pointer; padding:5px;" onclick="editProduct('${child.key}')"><i class="fa fa-edit"></i></button>
-                    <button style="color:red; border:none; background:none; cursor:pointer; padding:5px;" onclick="deleteItem('products/${child.key}')"><i class="fa fa-trash"></i></button>
+                    <button style="color:red; border:none; background:none; cursor:pointer; font-size:16px;" onclick="deleteItem('banners/${child.key}')">
+                        <i class="fa fa-trash"></i>
+                    </button>
                 </td>
             </tr>`;
         });
-    }
-    const totalProdStat = document.getElementById('stat-total-products');
-    if (totalProdStat) totalProdStat.innerText = totalProductsCount;
-});
-
-onValue(ref(db, 'banners'), snap => {
-    const bannerTable = document.getElementById('bannerList');
-    if (!bannerTable) return;
-    bannerTable.innerHTML = "";
-    if(!snap.exists()){
-        bannerTable.innerHTML = `<tr><td colspan="2" style="color: #94a3b8; text-align:center;">No banners uploaded yet.</td></tr>`;
-        return;
-    }
-    snap.forEach(child => {
-        const b = child.val();
-        bannerTable.innerHTML += `<tr>
-            <td><img src="${b.imageUrl}" style="max-width:200px; max-height:80px; border-radius:10px; object-fit:cover; width:100%;"></td>
-            <td>
-                <button style="color:red; border:none; background:none; cursor:pointer; font-size:16px;" onclick="deleteItem('banners/${child.key}')">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </td>
-        </tr>`;
     });
-});
 
-/* TOGGLE STOCK STATUS FUNCTION */
-window.toggleStock = (key, cur) => {
-    update(ref(db, `products/${key}`), { outOfStock: !cur })
-    .then(() => {
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: `Product marked as ${!cur ? 'Out of Stock' : 'In Stock'}`,
-            showConfirmButton: false,
-            timer: 1500
-        });
-    })
-    .catch((err) => {
-        Swal.fire('Error', 'Failed to update stock status: ' + err.message, 'error');
-    });
-};
-
-window.editProduct = (key) => {
-    get(ref(db, `products/${key}`)).then(snap => {
-        if (!snap.exists()) return;
-        const p = snap.val();
-        document.getElementById('editKey').value = key;
-        document.getElementById('pName').value = p.name || "";
-        document.getElementById('pTitle').value = p.title || "";
-        document.getElementById('pCategory').value = p.category || ""; 
-        document.getElementById('pMrp').value = p.mrp || "";
-        document.getElementById('pPrice').value = p.price || "";
-        document.getElementById('pShippedFrom').value = p.shippedFrom || "";
-        document.getElementById('pDeliveryDays').value = p.deliveryDays || 7;
-        document.getElementById('pDesc').value = p.desc || "• ";
-        
-        document.getElementById('pShowOnHome').value = p.showOnHome === true ? "true" : "false";
-        if (document.getElementById('pCod')) {
-            document.getElementById('pCod').value = p.cod === true ? "true" : "false"; 
-        }
-
-        const savedSizes = p.sizes || [];
-        document.querySelectorAll('.p-size').forEach(cb => {
-            cb.checked = savedSizes.includes(cb.value);
-        });
-        
-        const sc = document.getElementById('specInputs'); 
-        if (sc) {
-            sc.innerHTML = "";
-            if(p.specs && Object.keys(p.specs).length > 0) {
-                for(let k in p.specs) sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}"></div>`;
-            } else {
-                sc.innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
-            }
-        }
-        
-        const ic = document.getElementById('imageInputs'); 
-        if (ic) {
-            ic.innerHTML = "";
-            if(p.images && p.images.length > 0) {
-                p.images.forEach(u => { ic.innerHTML += `<input type="text" class="p-img-link" value="${u}">`; });
-            } else {
-                ic.innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
-            }
-        }
-        
-        if (document.getElementById('formTitle')) document.getElementById('formTitle').innerText = "Edit Product";
-        if (document.getElementById('saveBtn')) document.getElementById('saveBtn').innerText = "UPDATE PRODUCT";
-        if (document.getElementById('cancelEdit')) document.getElementById('cancelEdit').style.display = "block";
-        openTab('addProduct'); 
-    }).catch(err => console.error("Error updating form: ", err));
-};
-
-window.resetForm = () => {
-    document.getElementById('editKey').value = "";
-    document.getElementById('meeshoUrl').value = "";
-    document.getElementById('pName').value = "";
-    document.getElementById('pTitle').value = "";
-    document.getElementById('pCategory').value = ""; 
-    document.getElementById('pMrp').value = "";
-    document.getElementById('pPrice').value = "";
-    document.getElementById('pShippedFrom').value = "";
-    document.getElementById('pDeliveryDays').value = 7;
-    document.getElementById('pDesc').value = "";
-    document.getElementById('pShowOnHome').value = "false"; 
-    if (document.getElementById('pCod')) document.getElementById('pCod').value = "false"; 
-    
-    document.querySelectorAll('.p-size').forEach(cb => cb.checked = false);
-
-    if (document.getElementById('specInputs')) document.getElementById('specInputs').innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
-    if (document.getElementById('imageInputs')) document.getElementById('imageInputs').innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
-    if (document.getElementById('formTitle')) document.getElementById('formTitle').innerText = "Add New Item";
-    if (document.getElementById('saveBtn')) document.getElementById('saveBtn').innerText = "SAVE PRODUCT";
-    if (document.getElementById('cancelEdit')) document.getElementById('cancelEdit').style.display = "none";
-};
-
-window.addSpecField = () => {
-    const d = document.createElement('div'); d.className = 'spec-row';
-    d.innerHTML = `<input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value">`;
-    if (document.getElementById('specInputs')) document.getElementById('specInputs').appendChild(d);
-};
-
-window.addImageField = () => {
-    const i = document.createElement('input'); i.className = 'p-img-link'; i.placeholder = "Image URL";
-    if (document.getElementById('imageInputs')) document.getElementById('imageInputs').appendChild(i);
-};
-
-window.deleteItem = (p) => {
-    Swal.fire({ title: 'Delete?', text: "Cannot undo!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })
-    .then((res) => { if (res.isConfirmed) { remove(ref(db, p)); Swal.close(); } });
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-    onValue(ref(db, 'users'), snap => {
-        const list = document.getElementById('userList');
-        
-        if (list) list.innerHTML = "";
-        
-        if(snap.exists()) {
-            snap.forEach(u => { 
-                const userData = u.val();
-                const userName = userData.name || 'N/A'; 
-                const phone = userData.phone || userData.email || u.key; 
-
-                if (list) {
-                    list.innerHTML += `
-                        <tr>
-                            <td>${userName}</td>
-                            <td>${phone}</td>
-                        </tr>`; 
-                }
+    window.toggleStock = (key, cur) => {
+        update(ref(db, `products/${key}`), { outOfStock: !cur })
+        .then(() => {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: `Product marked as ${!cur ? 'Out of Stock' : 'In Stock'}`,
+                showConfirmButton: false,
+                timer: 1500
             });
-        }
-    });
-});
-</script>
+        })
+        .catch((err) => {
+            Swal.fire('Error', 'Failed to update stock status: ' + err.message, 'error');
+        });
+    };
 
-</body> 
-   </html>
+    window.editProduct = (key) => {
+        get(ref(db, `products/${key}`)).then(snap => {
+            if (!snap.exists()) return;
+            const p = snap.val();
+            document.getElementById('editKey').value = key;
+            document.getElementById('pName').value = p.name || "";
+            document.getElementById('pTitle').value = p.title || "";
+            document.getElementById('pCategory').value = p.category || ""; 
+            document.getElementById('pMrp').value = p.mrp || "";
+            document.getElementById('pPrice').value = p.price || "";
+            document.getElementById('pShippedFrom').value = p.shippedFrom || "";
+            document.getElementById('pDeliveryDays').value = p.deliveryDays || 7;
+            document.getElementById('pDesc').value = p.desc || "• ";
+            
+            document.getElementById('pShowOnHome').value = p.showOnHome === true ? "true" : "false";
+            if (document.getElementById('pCod')) {
+                document.getElementById('pCod').value = p.cod === true ? "true" : "false"; 
+            }
+
+            const savedSizes = p.sizes || [];
+            document.querySelectorAll('.p-size').forEach(cb => {
+                cb.checked = savedSizes.includes(cb.value);
+            });
+            
+            const sc = document.getElementById('specInputs'); 
+            if (sc) {
+                sc.innerHTML = "";
+                if(p.specs && Object.keys(p.specs).length > 0) {
+                    for(let k in p.specs) sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}"></div>`;
+                } else {
+                    sc.innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
+                }
+            }
+            
+            const ic = document.getElementById('imageInputs'); 
+            if (ic) {
+                ic.innerHTML = "";
+                if(p.images && p.images.length > 0) {
+                    p.images.forEach(u => { ic.innerHTML += `<input type="text" class="p-img-link" value="${u}">`; });
+                } else {
+                    ic.innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
+                }
+            }
+            
+            if (document.getElementById('formTitle')) document.getElementById('formTitle').innerText = "Edit Product";
+            if (document.getElementById('saveBtn')) document.getElementById('saveBtn').innerText = "UPDATE PRODUCT";
+            if (document.getElementById('cancelEdit')) document.getElementById('cancelEdit').style.display = "block";
+            openTab('addProduct'); 
+        }).catch(err => console.error("Error updating form: ", err));
+    };
+
+    window.resetForm = () => {
+        document.getElementById('editKey').value = "";
+        document.getElementById('meeshoUrl').value = "";
+        document.getElementById('pName').value = "";
+        document.getElementById('pTitle').value = "";
+        document.getElementById('pCategory').value = ""; 
+        document.getElementById('pMrp').value = "";
+        document.getElementById('pPrice').value = "";
+        document.getElementById('pShippedFrom').value = "";
+        document.getElementById('pDeliveryDays').value = 7;
+        document.getElementById('pDesc').value = "";
+        document.getElementById('pShowOnHome').value = "false"; 
+        if (document.getElementById('pCod')) document.getElementById('pCod').value = "false"; 
+        
+        document.querySelectorAll('.p-size').forEach(cb => cb.checked = false);
+
+        if (document.getElementById('specInputs')) document.getElementById('specInputs').innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
+        if (document.getElementById('imageInputs')) document.getElementById('imageInputs').innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
+        if (document.getElementById('formTitle')) document.getElementById('formTitle').innerText = "Add New Item";
+        if (document.getElementById('saveBtn')) document.getElementById('saveBtn').innerText = "SAVE PRODUCT";
+        if (document.getElementById('cancelEdit')) document.getElementById('cancelEdit').style.display = "none";
+    };
+
+    window.addSpecField = () => {
+        const d = document.createElement('div'); d.className = 'spec-row';
+        d.innerHTML = `<input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value">`;
+        if (document.getElementById('specInputs')) document.getElementById('specInputs').appendChild(d);
+    };
+
+    window.addImageField = () => {
+        const i = document.createElement('input'); i.className = 'p-img-link'; i.placeholder = "Image URL";
+        if (document.getElementById('imageInputs')) document.getElementById('imageInputs').appendChild(i);
+    };
+
+    window.deleteItem = (p) => {
+        Swal.fire({ title: 'Delete?', text: "Cannot undo!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })
+        .then((res) => { if (res.isConfirmed) { remove(ref(db, p)); Swal.close(); } });
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        onValue(ref(db, 'users'), snap => {
+            const list = document.getElementById('userList');
+            
+            if (list) list.innerHTML = "";
+            
+            if(snap.exists()) {
+                snap.forEach(u => { 
+                    const userData = u.val();
+                    const userName = userData.name || 'N/A'; 
+                    const phone = userData.phone || userData.email || u.key; 
+
+                    if (list) {
+                        list.innerHTML += `
+                            <tr>
+                                <td>${userName}</td>
+                                <td>${phone}</td>
+                            </tr>`; 
+                    }
+                });
+            }
+        });
+    });
+    </script>
+</body>
+</html>
