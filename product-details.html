@@ -27,6 +27,7 @@
             --surface: #f8fafc;
             --text-muted: #64748b;
             --flipkart-green: #388e3c;
+            --star-gold: #ffb800;
             --nav-bg: rgba(255, 255, 255, 0.85);
             --drawer-bg: #fff;
         }
@@ -319,6 +320,60 @@
         .spec-key { width: 140px; color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
         .spec-val { font-weight: 700; color: var(--primary); }
         
+        /* Reviews Section Styles */
+        .reviews-box {
+            margin-top: 35px;
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+        }
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .rating-summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avg-score {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .star-rating {
+            color: var(--star-gold);
+            font-size: 0.9rem;
+        }
+        .review-card {
+            background: var(--bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .review-card:last-child { margin-bottom: 0; }
+        .reviewer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .reviewer-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--primary);
+        }
+        .review-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
         /* View More Button Box Styling */
         .view-more-btn {
             width: 100%;
@@ -493,9 +548,15 @@
         });
 
         if (productId) {
-            get(child(ref(db), `products/${productId}`)).then(snap => { 
-                if (snap.exists()) {
-                    renderProduct(snap.val()); 
+            // Load product data along with customer reviews
+            Promise.all([
+                get(child(ref(db), `products/${productId}`)),
+                get(child(ref(db), `reviews/${productId}`))
+            ]).then(([productSnap, reviewSnap]) => {
+                if (productSnap.exists()) {
+                    const productData = productSnap.val();
+                    const reviewsData = reviewSnap.exists() ? reviewSnap.val() : null;
+                    renderProduct(productData, reviewsData); 
                     track6SecView(productId);
                 } else {
                     document.getElementById('productDetail').innerHTML = "<p style='padding: 20px; font-weight: 700;'>Product not found!</p>";
@@ -508,7 +569,21 @@
             hideLoader();
         }
 
-        function renderProduct(p) {
+        function renderStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += '<i class="fa-solid fa-star"></i>';
+                } else if (i - 0.5 <= rating) {
+                    stars += '<i class="fa-solid fa-star-half-stroke"></i>';
+                } else {
+                    stars += '<i class="fa-regular fa-star"></i>';
+                }
+            }
+            return stars;
+        }
+
+        function renderProduct(p, reviews) {
             let specsHTML = ""; 
             if (p.specs) {
                 const specEntries = Object.entries(p.specs);
@@ -525,6 +600,57 @@
                         </button>`;
                 }
             }
+
+            /* Render Reviews Section */
+            let reviewsListHTML = '';
+            let totalRatingSum = 0;
+            let reviewCount = 0;
+
+            if (reviews) {
+                const reviewsArr = Object.values(reviews);
+                reviewCount = reviewsArr.length;
+                
+                reviewsArr.forEach(r => {
+                    const ratingVal = parseFloat(r.rating || 5);
+                    totalRatingSum += ratingVal;
+                    const dateStr = r.date ? new Date(r.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+
+                    reviewsListHTML += `
+                        <div class="review-card">
+                            <div class="reviewer-info">
+                                <span class="reviewer-name">${r.userName || r.name || 'Verified Customer'}</span>
+                                <span class="review-date">${dateStr}</span>
+                            </div>
+                            <div class="star-rating" style="margin-bottom: 6px;">
+                                ${renderStars(ratingVal)}
+                            </div>
+                            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5;">${r.comment || r.review || ''}</p>
+                        </div>
+                    `;
+                });
+            }
+
+            const avgRating = reviewCount > 0 ? (totalRatingSum / reviewCount).toFixed(1) : 0;
+
+            const reviewsBoxHTML = `
+                <div class="reviews-box">
+                    <div class="reviews-header">
+                        <div>
+                            <h4 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800;">Customer Reviews</h4>
+                            <div class="rating-summary" style="margin-top: 6px;">
+                                <span class="avg-score">${reviewCount > 0 ? avgRating : 'N/A'}</span>
+                                <div>
+                                    <div class="star-rating">${renderStars(avgRating)}</div>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Based on ${reviewCount} review${reviewCount !== 1 ? 's' : ''}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reviews-list">
+                        ${reviewCount > 0 ? reviewsListHTML : '<p style="color: var(--text-muted); font-size: 0.88rem;">No customer reviews yet.</p>'}
+                    </div>
+                </div>
+            `;
             
             const isOut = p.outOfStock === true; 
             const returnStatus = p.return ? (p.return.toString().toLowerCase().trim() === 'true' || p.return === true || p.return.toString().toLowerCase().trim() === 'available') : false;
@@ -607,6 +733,8 @@
                     </div>
 
                     <div class="desc-text">${p.desc || ''}</div>
+
+                    ${reviewsBoxHTML}
                 </div>`;
                 
             document.getElementById('stickyAction').innerHTML = `
