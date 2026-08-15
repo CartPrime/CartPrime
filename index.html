@@ -628,18 +628,10 @@
 
         themeToggleBtn.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
-            let targetTheme = 'light';
-
-            if (currentTheme === 'light') {
-                targetTheme = 'dark';
-                themeIcon.className = 'fa-regular fa-sun';
-            } else {
-                targetTheme = 'light';
-                themeIcon.className = 'fa-regular fa-moon';
-            }
-
+            let targetTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', targetTheme);
             localStorage.setItem('theme', targetTheme);
+            themeIcon.className = targetTheme === 'dark' ? 'fa-regular fa-sun' : 'fa-regular fa-moon';
         });
 
         // --- FIREBASE INITIALIZATION ---
@@ -720,86 +712,68 @@
             window.location.href = "/";
         });
 
-        // --- UPDATED BADGES COUNT LOGIC (Wishlist & Orders) ---
+        // --- UPDATED BADGES & WISHLIST LOGIC ---
         function updateBadges(user) {
             const wishlistBadge = document.getElementById('wishlistBadge');
             const ordersBadge = document.getElementById('ordersBadge');
 
             if (user) {
-                // Wishlist Count
+                // Logged-in user: Fetch from Firebase
                 onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => {
                     if (snapshot.exists()) {
                         userWishlistIds = snapshot.val();
-                        const count = Object.keys(userWishlistIds).length;
-                        if (count > 0) {
-                            wishlistBadge.textContent = count;
-                            wishlistBadge.style.display = 'flex';
-                        } else {
-                            wishlistBadge.style.display = 'none';
-                        }
                     } else {
                         userWishlistIds = {};
-                        wishlistBadge.style.display = 'none';
                     }
-                    // Re-render products to update wishlist heart icons state
-                    if (allProducts.length > 0) {
-                        let filtered = allProducts;
-                        if (activeCategory !== "All") {
-                            filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
-                        }
-                        renderProducts(filtered);
+                    updateWishlistUIAndBadge(wishlistBadge);
+                });
+            } else {
+                // Guest user: Fetch from localStorage
+                let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}");
+                userWishlistIds = localWishlist;
+                updateWishlistUIAndBadge(wishlistBadge);
+            }
+
+            // Orders Count Logic
+            const phoneSources = [
+                localStorage.getItem('userPhone'),
+                localStorage.getItem('cartPrime_LastOrderPhone'),
+                localStorage.getItem('cartPrime_Phone'),
+                user ? user.phoneNumber : null
+            ];
+
+            let targetPhone = phoneSources.find(p => p && p.trim() !== "");
+
+            if (targetPhone) {
+                onValue(ref(db, `orders/${targetPhone}`), (snapshot) => {
+                    const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
+                    if (count > 0) {
+                        ordersBadge.textContent = count;
+                        ordersBadge.style.display = 'flex';
+                    } else {
+                        ordersBadge.style.display = 'none';
                     }
                 });
-
-                // Orders Count - Checks Phone Number from multiple sources (localStorage / Auth)
-                const phoneSources = [
-                    localStorage.getItem('userPhone'),
-                    localStorage.getItem('cartPrime_LastOrderPhone'),
-                    localStorage.getItem('cartPrime_Phone'),
-                    user.phoneNumber
-                ];
-
-                let targetPhone = phoneSources.find(p => p && p.trim() !== "");
-
-                if (targetPhone) {
-                    onValue(ref(db, `orders/${targetPhone}`), (snapshot) => {
-                        const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
-                        if (count > 0) {
-                            ordersBadge.textContent = count;
-                            ordersBadge.style.display = 'flex';
-                        } else {
-                            ordersBadge.style.display = 'none';
-                        }
-                    });
-                } else {
-                    onValue(ref(db, `orders/${user.uid}`), (snapshot) => {
-                        const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
-                        if (count > 0) {
-                            ordersBadge.textContent = count;
-                            ordersBadge.style.display = 'flex';
-                        } else {
-                            ordersBadge.style.display = 'none';
-                        }
-                    });
-                }
             } else {
-                userWishlistIds = {};
-                const guestPhone = localStorage.getItem('userPhone') || localStorage.getItem('cartPrime_LastOrderPhone');
-                if (guestPhone) {
-                    onValue(ref(db, `orders/${guestPhone}`), (snapshot) => {
-                        const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
-                        if (count > 0) {
-                            ordersBadge.textContent = count;
-                            ordersBadge.style.display = 'flex';
-                        } else {
-                            ordersBadge.style.display = 'none';
-                        }
-                    });
-                } else {
-                    ordersBadge.style.display = 'none';
-                }
+                ordersBadge.style.display = 'none';
+            }
+        }
+
+        function updateWishlistUIAndBadge(wishlistBadge) {
+            const count = Object.keys(userWishlistIds).length;
+            if (count > 0) {
+                wishlistBadge.textContent = count;
+                wishlistBadge.style.display = 'flex';
+            } else {
                 wishlistBadge.style.display = 'none';
-                if (allProducts.length > 0) renderProducts(allProducts);
+            }
+
+            if (allProducts.length > 0) {
+                let filtered = allProducts;
+                if (activeCategory !== "All") {
+                    filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
+                }
+                renderProducts(filtered);
             }
         }
 
@@ -1012,7 +986,7 @@
                     discTag = `<div class="discount-badge ${hasDisc ? 'with-wishlist' : ''}">${disc}% OFF</div>`;
                 }
 
-                const isWishlisted = currentUser && userWishlistIds[p.id];
+                const isWishlisted = userWishlistIds[p.id] ? true : false;
 
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -1065,31 +1039,45 @@
                     </div>
                 `;
 
-                // Wishlist Button Toggle Handler
+                // Wishlist Button Toggle Handler (Supports both Guest & Logged-in users)
                 const wishlistBtn = card.querySelector('.card-wishlist-btn');
                 wishlistBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if (!currentUser) {
-                        alert("Please login to add items to your wishlist.");
-                        window.location.href = "/login";
-                        return;
-                    }
-
                     const prodId = wishlistBtn.getAttribute('data-id');
-                    const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`);
 
-                    if (userWishlistIds[prodId]) {
-                        remove(wishRef).then(() => {
-                            delete userWishlistIds[prodId];
+                    if (currentUser) {
+                        // Firebase Wishlist Sync
+                        const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`);
+                        if (userWishlistIds[prodId]) {
+                            remove(wishRef).then(() => {
+                                delete userWishlistIds[prodId];
+                                wishlistBtn.classList.remove('active');
+                                wishlistBtn.querySelector('i').className = 'fa-regular fa-heart';
+                                updateWishlistUIAndBadge(document.getElementById('wishlistBadge'));
+                            });
+                        } else {
+                            set(wishRef, true).then(() => {
+                                userWishlistIds[prodId] = true;
+                                wishlistBtn.classList.add('active');
+                                wishlistBtn.querySelector('i').className = 'fa-solid fa-heart';
+                                updateWishlistUIAndBadge(document.getElementById('wishlistBadge'));
+                            });
+                        }
+                    } else {
+                        // LocalStorage Wishlist (Guest mode)
+                        let guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}");
+                        if (guestWishlist[prodId]) {
+                            delete guestWishlist[prodId];
                             wishlistBtn.classList.remove('active');
                             wishlistBtn.querySelector('i').className = 'fa-regular fa-heart';
-                        });
-                    } else {
-                        set(wishRef, true).then(() => {
-                            userWishlistIds[prodId] = true;
+                        } else {
+                            guestWishlist[prodId] = true;
                             wishlistBtn.classList.add('active');
                             wishlistBtn.querySelector('i').className = 'fa-solid fa-heart';
-                        });
+                        }
+                        localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist));
+                        userWishlistIds = guestWishlist;
+                        updateWishlistUIAndBadge(document.getElementById('wishlistBadge'));
                     }
                 });
 
