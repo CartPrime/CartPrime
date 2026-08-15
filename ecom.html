@@ -66,6 +66,7 @@
         .status-Pending { background: #fef9c3; color: #854d0e; }
         .status-Confirmed { background: #dcfce7; color: #166534; }
         .status-Shipped { background: #e0f2fe; color: #0369a1; }
+        .status-TodayArriving { background: #fef08a; color: #854d0e; border: 1px solid #fde047; }
         .status-Delivered { background: #dbeafe; color: #1e40af; }
         .status-Rejected { background: #fee2e2; color: #b91c1c; }
 
@@ -830,12 +831,20 @@ function updateOrdersChart(statusData) {
     ordersChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Rejected', 'Returned'],
+            labels: ['Pending', 'Confirmed', 'Shipped', 'Today Arriving', 'Delivered', 'Rejected', 'Returned'],
             datasets: [{
                 label: 'Orders',
-                data: [statusData.Pending || 0, statusData.Confirmed || 0, statusData.Shipped || 0, statusData.Delivered || 0, statusData.Rejected || 0, statusData.Returned || 0],
-                backgroundColor: ['rgba(239, 68, 68, 0.8)','rgba(34, 197, 94, 0.8)','rgba(14, 165, 233, 0.8)','rgba(21, 128, 61, 0.9)','rgba(185, 28, 28, 0.9)','rgba(239, 68, 68, 0.9)'],
-                borderColor: ['#dc2626','#16a34a','#0284c7','#15803d','#b91c1c','#ef4444'],
+                data: [
+                    statusData.Pending || 0, 
+                    statusData.Confirmed || 0, 
+                    statusData.Shipped || 0, 
+                    statusData['Today Arriving'] || 0, 
+                    statusData.Delivered || 0, 
+                    statusData.Rejected || 0, 
+                    statusData.Returned || 0
+                ],
+                backgroundColor: ['rgba(239, 68, 68, 0.8)','rgba(34, 197, 94, 0.8)','rgba(14, 165, 233, 0.8)','rgba(234, 179, 8, 0.8)','rgba(21, 128, 61, 0.9)','rgba(185, 28, 28, 0.9)','rgba(239, 68, 68, 0.9)'],
+                borderColor: ['#dc2626','#16a34a','#0284c7','#ca8a04','#15803d','#b91c1c','#ef4444'],
                 borderWidth: 2, borderRadius: 8
             }]
         },
@@ -878,7 +887,7 @@ onValue(ref(db, 'orders'), snap => {
     globalOrdersCache = {};
 
     let totalOrderCount = 0;
-    let statusCounts = { Pending: 0, Confirmed: 0, Shipped: 0, Delivered: 0, Rejected: 0, Returned: 0, 'Return Requested': 0 };
+    let statusCounts = { Pending: 0, Confirmed: 0, Shipped: 0, 'Today Arriving': 0, Delivered: 0, Rejected: 0, Returned: 0, 'Return Requested': 0 };
     let hasReturns = false;
     let totalEarnings = 0, todayEarnings = 0, totalLoss = 0; 
     let dailyEarningsMap = {};
@@ -897,7 +906,7 @@ onValue(ref(db, 'orders'), snap => {
 
         if (orderData.status === 'Rejected' || orderData.status === 'Returned' || orderData.status === 'Return Requested') totalLoss += price;
 
-        if (orderData.paymentStatus === 'Paid' || orderData.status === 'Confirmed' || orderData.status === 'Shipped' || orderData.status === 'Delivered') {
+        if (orderData.paymentStatus === 'Paid' || orderData.status === 'Confirmed' || orderData.status === 'Shipped' || orderData.status === 'Today Arriving' || orderData.status === 'Delivered') {
             totalEarnings += price;
             dailyEarningsMap[orderDate] = (dailyEarningsMap[orderDate] || 0) + price;
             if (orderDate === todayDateStr) todayEarnings += price;
@@ -979,6 +988,7 @@ onValue(ref(db, 'orders'), snap => {
 function renderOrderRow(container, o, path) {
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
+    const statusClass = currentStatus.replace(/\s+/g, '');
     const fullOrderId = o.orderId || path.split('/').pop();
 
     container.innerHTML += `
@@ -992,7 +1002,7 @@ function renderOrderRow(container, o, path) {
         </td>
         <td><strong style="color:#16a34a;">₹${o.price || '0'}</strong></td>
         <td>
-            <span class="status-badge status-${currentStatus}">${currentStatus}</span>
+            <span class="status-badge status-${statusClass}">${currentStatus}</span>
             <span class="pay-badge pay-${payStatus}" style="margin-left:2px;">${payStatus}</span>
         </td>
         <td>
@@ -1024,6 +1034,7 @@ window.viewFullOrderDetails = (path) => {
 
     const payStatus = o.paymentStatus || "Pending";
     const currentStatus = o.status || "Pending";
+    const statusClass = currentStatus.replace(/\s+/g, '');
     const proofImg = o.paymentProof || ""; 
     const payMethod = o.paymentMethod || (o.transactionId ? "UPI Payment" : "Cash On Delivery");
     const fullAddress = o.address || 'No Address Provided';
@@ -1096,7 +1107,7 @@ window.viewFullOrderDetails = (path) => {
             <p><strong>Total Price:</strong> <span style="color:#16a34a; font-weight:bold;">₹${o.price || '0'}</span></p>
             <p><strong>Payment Method:</strong> ${payMethod}</p>
             <p><strong>Payment Status:</strong> <span class="pay-badge pay-${payStatus}">${payStatus}</span></p>
-            <p style="margin-top:4px;"><strong>Order Status:</strong> <span class="status-badge status-${currentStatus}">${currentStatus}</span></p>
+            <p style="margin-top:4px;"><strong>Order Status:</strong> <span class="status-badge status-${statusClass}">${currentStatus}</span></p>
             ${o.deliveryDate ? `<p style="margin-top:4px; color:#0284c7; font-weight:bold;"><i class="fa fa-truck"></i> Est. Delivery: ${o.deliveryDate}</p>` : ''}
             
             ${proofImg ? `
@@ -1112,6 +1123,7 @@ window.viewFullOrderDetails = (path) => {
                 <button style="background:#16a34a" title="Verify Payment" onclick="verifyPayment('${path}', 'Paid')"><i class="fa fa-check"></i> Paid</button>
                 <button style="background:#ef4444" title="Reject Payment" onclick="verifyPayment('${path}', 'Rejected')"><i class="fa fa-xmark"></i> Reject</button>
                 <button style="background:#0284c7" title="Mark as Shipped" onclick="shipOrderWithDate('${path}')"><i class="fa fa-truck-fast"></i> Ship</button>
+                <button style="background:#eab308; color:#000;" title="Mark Today Arriving" onclick="updateStatus('${path}', 'Today Arriving')"><i class="fa fa-clock"></i> Today Arriving</button>
                 <button style="background:#2563eb" title="Mark Delivered" onclick="updateStatus('${path}', 'Delivered')"><i class="fa fa-box"></i> Deliver</button>
                 <button style="background:#333;" title="Delete Order" onclick="deleteItem('orders/${path}')"><i class="fa fa-trash"></i> Delete</button>
             </div>
