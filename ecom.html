@@ -586,6 +586,7 @@ window.fetchMeeshoDetails = async () => {
                                 name: r.author?.name || r.author || 'Verified Buyer',
                                 rating: parseInt(r.reviewRating?.ratingValue || 5),
                                 comment: r.reviewBody || r.description || 'Great product!',
+                                image: r.image || '',
                                 date: new Date().toLocaleDateString('en-IN')
                             });
                         });
@@ -609,6 +610,7 @@ window.fetchMeeshoDetails = async () => {
                             name: r.author_name || r.user_name || r.author || 'Meesho Customer',
                             rating: parseInt(r.rating || r.ratingValue || 5),
                             comment: r.review_text || r.comment || r.description || 'Good quality product.',
+                            image: r.image || (r.images && r.images[0]) || '',
                             date: new Date().toLocaleDateString('en-IN')
                         });
                     });
@@ -1269,7 +1271,7 @@ onValue(ref(db, 'products'), snap => {
     if (totalProdStat) totalProdStat.innerText = totalProductsCount;
 });
 
-/* FUNCTION TO ADD PRODUCT REVIEWS MANUALLY */
+/* UPDATED FUNCTION TO ADD PRODUCT REVIEWS MANUALLY WITH IMAGE SUPPORT */
 window.openAddReviewModal = async (productKey) => {
     const { value: formValues } = await Swal.fire({
         title: 'Add Product Review',
@@ -1282,7 +1284,8 @@ window.openAddReviewModal = async (productKey) => {
                 '<option value="2">2 Star ⭐⭐</option>' +
                 '<option value="1">1 Star ⭐</option>' +
             '</select>' +
-            '<textarea id="reviewComment" class="swal2-textarea" placeholder="Write Review or Paste Meesho Review here..."></textarea>',
+            '<textarea id="reviewComment" class="swal2-textarea" placeholder="Write Review or Paste Meesho Review here..."></textarea>' +
+            '<input id="reviewImgUrl" class="swal2-input" placeholder="Review Image URL (Optional)">',
         focusConfirm: false,
         showCancelButton: true,
         confirmButtonText: 'Save Review',
@@ -1291,6 +1294,7 @@ window.openAddReviewModal = async (productKey) => {
                 name: document.getElementById('reviewerName').value.trim() || 'Verified Customer',
                 rating: parseInt(document.getElementById('reviewRating').value),
                 comment: document.getElementById('reviewComment').value.trim(),
+                image: document.getElementById('reviewImgUrl').value.trim() || '',
                 date: new Date().toLocaleDateString('en-IN')
             }
         }
@@ -1305,7 +1309,7 @@ window.openAddReviewModal = async (productKey) => {
         const reviewRef = push(ref(db, `products/${productKey}/reviews`));
         set(reviewRef, formValues)
             .then(() => {
-                Swal.fire('Success!', 'Review added to product successfully!', 'success');
+                Swal.fire('Success!', 'Review with image added to product successfully!', 'success');
             })
             .catch(err => Swal.fire('Error', err.message, 'error'));
     }
