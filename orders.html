@@ -252,12 +252,20 @@
 
             list.innerHTML = activePhoneHeader;
 
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowStr = tomorrow.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
             ordersArr.forEach(order => {
                 const displayStatus = order.status || 'Pending';
                 const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
 
                 let deliveryMsg = '';
-                if (checkStatus === 'delivered') {
+                const orderDateStr = order.deliveryDate ? order.deliveryDate.trim() : '';
+
+                if (orderDateStr === tomorrowStr || orderDateStr.toLowerCase().includes('tomorrow')) {
+                    deliveryMsg = `<div class="delivery-text" style="color:#d97706; font-weight:800;"><i class="fa-solid fa-truck-fast"></i> Order Tomorrow Arriving</div>`;
+                } else if (checkStatus === 'delivered') {
                     deliveryMsg = `<div class="delivery-text"><i class="fa-solid fa-circle-check"></i> Your Order Delivered</div>`;
                 } else if (checkStatus === 'shipped') {
                     const expDateText = order.deliveryDate ? `: ${order.deliveryDate}` : '';
@@ -291,7 +299,6 @@
 
                 const returnBadgeHtml = hasReturnPolicy ? `<div class="return-badge"><i class="fa-solid fa-rotate-left"></i> Easy to Return</div>` : '';
 
-                /* Delivered ആയ ഓർഡറുകൾക്ക് പുറത്തുതന്നെ Review ബട്ടൺ കാണിക്കുന്നു */
                 let cardReviewBtnHtml = '';
                 if (checkStatus === 'delivered') {
                     if (order.reviewed) {
@@ -322,7 +329,6 @@
         });
     }
 
-    // Modal Details Window
     window.showOrderDetails = (orderId) => {
         const order = cachedOrders[orderId];
         if (!order) return;
@@ -412,7 +418,6 @@
         });
     };
 
-    /* Dynamic Multi-Color Star Rating Modal */
     window.openReviewModal = (orderId) => {
         const order = cachedOrders[orderId];
         let currentRating = 5;
