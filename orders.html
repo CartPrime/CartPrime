@@ -88,6 +88,15 @@
         .highlight-price { font-weight: 800; color: #16a34a; font-size: 0.95rem; background: #f0fdf4; padding: 3px 8px; border-radius: 6px; border: 1px solid #bbf7d0; }
         .highlight-paymode { font-weight: 800; color: #2563eb; font-size: 0.8rem; background: #eff6ff; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe; }
 
+        /* Multi-Color Dynamic Star Rating Style */
+        .star-rating { display: flex; gap: 8px; justify-content: center; font-size: 1.8rem; margin: 15px 0; cursor: pointer; color: #cbd5e1; }
+        .star-rating i { transition: color 0.2s ease; }
+        .star-rating[data-rating="1"] i.selected { color: #ef4444 !important; } /* Red */
+        .star-rating[data-rating="2"] i.selected { color: #f97316 !important; } /* Orange */
+        .star-rating[data-rating="3"] i.selected { color: #f59e0b !important; } /* Yellow */
+        .star-rating[data-rating="4"] i.selected,
+        .star-rating[data-rating="5"] i.selected { color: #16a34a !important; } /* Green */
+
         @media (max-width: 480px) {
             body { padding: 15px 4%; }
             .order-card { padding: 12px; }
@@ -109,7 +118,7 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, onValue, update, off } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getDatabase, ref, onValue, update, push, off } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -232,9 +241,19 @@
                 return;
             }
 
+            // Delivered ആയ ഓർഡറുകൾ താഴേക്കും ബാക്കി ഓർഡറുകൾ മുകളിലും വരുന്ന രീതിയിൽ Sorting
+            ordersArr.sort((a, b) => {
+                const statusA = (a.status || '').toLowerCase().trim();
+                const statusB = (b.status || '').toLowerCase().trim();
+
+                if (statusA === 'delivered' && statusB !== 'delivered') return 1;
+                if (statusA !== 'delivered' && statusB === 'delivered') return -1;
+                return 0;
+            });
+
             list.innerHTML = activePhoneHeader;
 
-            ordersArr.reverse().forEach(order => {
+            ordersArr.forEach(order => {
                 const displayStatus = order.status || 'Pending';
                 const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
 
@@ -293,7 +312,7 @@
         });
     }
 
-    // പ്രൊഡക്റ്റിൽ ക്ലിക്ക് ചെയ്യുമ്പോൾ പോപ്പ്-അപ്പിൽ ഫുൾ വിവരങ്ങൾ കാണിക്കാൻ
+    // Modal Details Window
     window.showOrderDetails = (orderId) => {
         const order = cachedOrders[orderId];
         if (!order) return;
@@ -340,11 +359,14 @@
         if ((checkStatus === 'pending' || checkStatus === 'orderconfirmed') && !order.deliveryDate) { 
             actionBtnHtml = `<button onclick="cancelOrder('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#fee2e2; color:#ef4444; border:none; border-radius:10px; font-weight:700; margin-top:15px; cursor:pointer;">Cancel Order</button>`; 
         } 
-        else if (checkStatus === 'delivered' && orderHasReturnableProduct) { 
-            actionBtnHtml = `<button onclick="requestReturn('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#f1f5f9; color:#1e293b; border:1px solid #e2e8f0; border-radius:10px; font-weight:700; margin-top:15px; cursor:pointer;"><i class="fa-solid fa-rotate-left"></i> Request Return</button>`; 
+        else if (checkStatus === 'delivered') { 
+            let reviewBtn = `<button onclick="window.openReviewModal('${order.id}')" style="width:100%; padding:10px; background:#fef3c7; color:#b45309; border:1px solid #fde68a; border-radius:10px; font-weight:700; margin-top:10px; cursor:pointer;"><i class="fa-solid fa-star" style="color:#f59e0b;"></i> Write a Review</button>`;
+            
+            let returnBtn = orderHasReturnableProduct ? `<button onclick="requestReturn('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#f1f5f9; color:#1e293b; border:1px solid #e2e8f0; border-radius:10px; font-weight:700; margin-top:10px; cursor:pointer;"><i class="fa-solid fa-rotate-left"></i> Request Return</button>` : ''; 
+            
+            actionBtnHtml = reviewBtn + returnBtn;
         }
 
-        // സ്റ്റാറ്റസ് Highlight ബാഡ്ജ്
         const statusBadgeHtml = `<span class="order-status status-${checkStatus}">${checkStatus === 'delivered' ? 'Your Order Delivered' : rawStatus}</span>`;
 
         const deliveryInfoHtml = checkStatus === 'delivered' 
@@ -352,7 +374,6 @@
             : `<p><strong>Status:</strong> ${statusBadgeHtml}</p>
                <p><strong>Expected Delivery:</strong> <span>${order.deliveryDate || 'Will update soon'}</span></p>`;
 
-        // ഹൈലൈറ്റ് ചെയ്യുന്ന Payment Details
         const paymentModeText = isCOD ? 'Cash on Delivery' : (isPaid ? 'Online Paid' : 'Pending');
 
         Swal.fire({
@@ -384,6 +405,82 @@
             showConfirmButton: true,
             confirmButtonText: 'Close',
             customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
+        });
+    };
+
+    /* Dynamic Multi-Color Star Rating Modal */
+    window.openReviewModal = (orderId) => {
+        const order = cachedOrders[orderId];
+        let currentRating = 5;
+
+        Swal.fire({
+            title: 'Rate Product',
+            html: `
+                <p style="font-size:0.8rem; color:#64748b;">Share your experience with this item</p>
+                <div class="star-rating" id="starContainer" data-rating="5">
+                    <i class="fa-solid fa-star selected" data-value="1"></i>
+                    <i class="fa-solid fa-star selected" data-value="2"></i>
+                    <i class="fa-solid fa-star selected" data-value="3"></i>
+                    <i class="fa-solid fa-star selected" data-value="4"></i>
+                    <i class="fa-solid fa-star selected" data-value="5"></i>
+                </div>
+                <textarea id="reviewComment" class="swal-input-field" rows="3" placeholder="Write your review here..."></textarea>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Submit Review',
+            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' },
+            didOpen: () => {
+                const starContainer = document.getElementById('starContainer');
+                const stars = starContainer.querySelectorAll('i');
+
+                stars.forEach(star => {
+                    star.addEventListener('click', (e) => {
+                        currentRating = parseInt(e.target.getAttribute('data-value'));
+                        starContainer.setAttribute('data-rating', currentRating);
+
+                        stars.forEach((s, idx) => {
+                            if (idx < currentRating) {
+                                s.classList.add('selected');
+                            } else {
+                                s.classList.remove('selected');
+                            }
+                        });
+                    });
+                });
+            },
+            preConfirm: () => {
+                const comment = document.getElementById('reviewComment').value.trim();
+                if (!comment) {
+                    Swal.showValidationMessage('Please write a short review.');
+                    return false;
+                }
+                return { rating: currentRating, comment: comment };
+            }
+        }).then((res) => {
+            if (res.isConfirmed) {
+                const reviewData = {
+                    userName: order.customerName || "Customer",
+                    userPhone: order.userPhone,
+                    rating: res.value.rating,
+                    comment: res.value.comment,
+                    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                };
+
+                if (Array.isArray(order.items)) {
+                    order.items.forEach(item => {
+                        const productId = item.id || item.productId;
+                        if (productId) {
+                            push(ref(db, `products/${productId}/reviews`), reviewData);
+                        }
+                    });
+                } else if (order.productId) {
+                    push(ref(db, `products/${order.productId}/reviews`), reviewData);
+                }
+
+                update(ref(db, `orders/${order.userPhone}/${orderId}`), { reviewed: true });
+
+                showAlert('Thank You!', 'Your review has been published successfully.', 'success');
+            }
         });
     };
 
