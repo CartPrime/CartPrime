@@ -510,6 +510,7 @@ const db = getDatabase(app);
 let ordersChartInstance = null;
 let earningsChartInstance = null;
 let globalOrdersCache = {};
+let extractedFetchedReviews = []; // Storing temporarily fetched reviews
 
 // FETCH SITE VISITS REAL-TIME
 onValue(ref(db, 'site_stats/total_visits'), (snapshot) => {
@@ -519,6 +520,7 @@ onValue(ref(db, 'site_stats/total_visits'), (snapshot) => {
     }
 });
 
+/* UPDATED AUTO-FILL WITH AUTOMATIC REVIEWS FETCHING */
 window.fetchMeeshoDetails = async () => {
     let urlInput = document.getElementById('meeshoUrl').value.trim();
     if (!urlInput) {
@@ -527,8 +529,8 @@ window.fetchMeeshoDetails = async () => {
     }
 
     Swal.fire({
-        title: 'Fetching Product...',
-        text: 'Extracting details from Meesho link...',
+        title: 'Fetching Product & Reviews...',
+        text: 'Extracting details and reviews from link...',
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); }
     });
@@ -551,7 +553,7 @@ window.fetchMeeshoDetails = async () => {
         let title = getMeta('og:title') || getMeta('twitter:title');
         if (!title) {
             const titleMatch = html.match(/<title>([^<]*)<\/title>/i);
-            if (titleMatch) title = titleMatch[1].replace('| Meesho', '').trim();
+            if (titleMatch) title = titleMatch[1].replace('| Meesho', '').replace('| Flipkart', '').replace('| Amazon', '').trim();
         }
 
         let image = getMeta('og:image') || getMeta('twitter:image');
@@ -565,6 +567,51 @@ window.fetchMeeshoDetails = async () => {
             const priceRegex = /₹\s?(\d{2,6})/;
             const priceMatch = html.match(priceRegex);
             if (priceMatch) price = priceMatch[1];
+        }
+
+        // AUTOMATIC REVIEWS EXTRACTION LOGIC
+        extractedFetchedReviews = [];
+        
+        // Strategy A: JSON-LD schema parsing
+        const jsonLdScripts = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi);
+        if (jsonLdScripts) {
+            jsonLdScripts.forEach(script => {
+                try {
+                    const jsonContent = script.replace(/<script[^>]*>/i, '').replace(/<\/script>/i, '').trim();
+                    const parsed = JSON.parse(jsonContent);
+                    const revs = parsed.review || (parsed['@graph'] ? parsed['@graph'].find(item => item.review)?.review : null);
+                    if (revs && Array.isArray(revs)) {
+                        revs.forEach(r => {
+                            extractedFetchedReviews.push({
+                                name: r.author?.name || r.author || 'Verified Buyer',
+                                rating: r.reviewRating?.ratingValue || 5,
+                                comment: r.reviewBody || r.description || 'Great product!',
+                                date: new Date().toLocaleDateString('en-IN')
+                            });
+                        });
+                    }
+                } catch(e) {}
+            });
+        }
+
+        // Strategy B: React Next.js State Extraction (Meesho Specific)
+        if (extractedFetchedReviews.length === 0) {
+            const nextDataMatch = html.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/i);
+            if (nextDataMatch) {
+                try {
+                    const parsedNext = JSON.parse(nextDataMatch[1]);
+                    const productData = parsedNext?.props?.pageProps?.initialState?.product || {};
+                    const rawReviews = productData.reviews || productData.productReviews || [];
+                    rawReviews.forEach(r => {
+                        extractedFetchedReviews.push({
+                            name: r.author_name || r.user_name || 'Meesho Customer',
+                            rating: r.rating || 5,
+                            comment: r.review_text || r.comment || 'Good quality product.',
+                            date: new Date().toLocaleDateString('en-IN')
+                        });
+                    });
+                } catch (e) {}
+            }
         }
 
         let foundAny = false;
@@ -593,7 +640,15 @@ window.fetchMeeshoDetails = async () => {
         }
 
         if (foundAny) {
-            Swal.fire('Success!', 'Product details auto-filled successfully!', 'success');
+            let revMsg = extractedFetchedReviews.length > 0 
+                ? `<br><b style="color:#16a34a;">${extractedFetchedReviews.length} Reviews auto-extracted!</b>` 
+                : '<br><small style="color:#64748b;">No automatic reviews found, but product info loaded.</small>';
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Auto Fill Complete!',
+                html: 'Product details loaded successfully.' + revMsg
+            });
         } else {
             Swal.fire('Warning', 'Link loaded, but could not auto-extract details. Please fill manually.', 'warning');
         }
@@ -710,13 +765,34 @@ window.saveProduct = () => {
 
     if(key) {
         update(ref(db, 'products/' + key), data)
-            .then(() => { Swal.fire('Updated!', 'Product updated successfully', 'success'); resetForm(); openTab('manageProducts'); })
+            .then(() => { 
+                Swal.fire('Updated!', 'Product updated successfully', 'success'); 
+                resetForm(); 
+                openTab('manageProducts'); 
+            })
             .catch(err => Swal.fire('Error', err.message, 'error'));
     } else {
         data.views = 0; 
+        
+        // Auto-save extracted reviews to product object if available
+        if (extractedFetchedReviews && extractedFetchedReviews.length > 0) {
+            const autoReviewsObj = {};
+            extractedFetchedReviews.forEach(r => {
+                const rKey = 'rev_' + Math.random().toString(36).substr(2, 9);
+                autoReviewsObj[rKey] = r;
+            });
+            data.reviews = autoReviewsObj;
+        }
+
         const newRef = push(ref(db, 'products'));
         set(newRef, data)
-            .then(() => { Swal.fire('Saved!', 'New product added', 'success'); resetForm(); openTab('manageProducts'); })
+            .then(() => { 
+                const msg = extractedFetchedReviews.length > 0 ? `New product added with ${extractedFetchedReviews.length} reviews!` : 'New product added!';
+                Swal.fire('Saved!', msg, 'success'); 
+                extractedFetchedReviews = [];
+                resetForm(); 
+                openTab('manageProducts'); 
+            })
             .catch(err => Swal.fire('Error', err.message, 'error'));
     }
 };
@@ -1191,7 +1267,7 @@ onValue(ref(db, 'products'), snap => {
     if (totalProdStat) totalProdStat.innerText = totalProductsCount;
 });
 
-/* FUNCTION TO ADD PRODUCT REVIEWS */
+/* FUNCTION TO ADD PRODUCT REVIEWS MANUALLY */
 window.openAddReviewModal = async (productKey) => {
     const { value: formValues } = await Swal.fire({
         title: 'Add Product Review',
@@ -1337,6 +1413,7 @@ window.resetForm = () => {
     document.getElementById('pShowOnHome').value = "false"; 
     if (document.getElementById('pCod')) document.getElementById('pCod').value = "false"; 
     
+    extractedFetchedReviews = [];
     document.querySelectorAll('.p-size').forEach(cb => cb.checked = false);
 
     if (document.getElementById('specInputs')) document.getElementById('specInputs').innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
