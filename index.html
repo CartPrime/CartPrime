@@ -305,6 +305,40 @@
             color: white; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; z-index: 10;
         }
 
+        /* --- Product Card Wishlist Button --- */
+        .card-wishlist-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 12;
+            color: #64748b;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .card-wishlist-btn:hover {
+            transform: scale(1.1);
+            color: #ef4444;
+        }
+        .card-wishlist-btn.active {
+            color: #ef4444;
+            background: #fff;
+        }
+
+        /* Adjust discount badge position if wishlist button exists */
+        .discount-badge.with-wishlist {
+            right: 52px;
+        }
+
         .card-info { flex-grow: 1; display: flex; flex-direction: column; }
         .card h3 { 
             font-size: 1rem; font-weight: 700; margin-bottom: 4px; color: var(--text-main);
@@ -472,6 +506,8 @@
             .stock-badge, .discount-badge { padding: 3px 8px; font-size: 0.6rem; border-radius: 6px; top: 8px; }
             .stock-badge { left: 8px; }
             .discount-badge { right: 8px; }
+            .discount-badge.with-wishlist { right: 44px; }
+            .card-wishlist-btn { width: 28px; height: 28px; font-size: 0.8rem; top: 8px; right: 8px; }
 
             .skeleton-card { border-radius: 16px; padding: 8px; height: 280px; }
             .skeleton-img { height: 140px; border-radius: 12px; }
@@ -562,7 +598,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         // --- COOKIES CONSENT LOGIC ---
         const cookieBanner = document.getElementById('cookieBanner');
@@ -624,6 +660,8 @@
         let allProducts = [];
         let activeCategory = "All";
         let autoScrollInterval = null;
+        let currentUser = null;
+        let userWishlistIds = {};
 
         showSkeletons();
 
@@ -690,12 +728,26 @@
             if (user) {
                 // Wishlist Count
                 onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => {
-                    const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
-                    if (count > 0) {
-                        wishlistBadge.textContent = count;
-                        wishlistBadge.style.display = 'flex';
+                    if (snapshot.exists()) {
+                        userWishlistIds = snapshot.val();
+                        const count = Object.keys(userWishlistIds).length;
+                        if (count > 0) {
+                            wishlistBadge.textContent = count;
+                            wishlistBadge.style.display = 'flex';
+                        } else {
+                            wishlistBadge.style.display = 'none';
+                        }
                     } else {
+                        userWishlistIds = {};
                         wishlistBadge.style.display = 'none';
+                    }
+                    // Re-render products to update wishlist heart icons state
+                    if (allProducts.length > 0) {
+                        let filtered = allProducts;
+                        if (activeCategory !== "All") {
+                            filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
+                        }
+                        renderProducts(filtered);
                     }
                 });
 
@@ -731,7 +783,7 @@
                     });
                 }
             } else {
-                // Check if Guest Phone exists in localStorage for orders count
+                userWishlistIds = {};
                 const guestPhone = localStorage.getItem('userPhone') || localStorage.getItem('cartPrime_LastOrderPhone');
                 if (guestPhone) {
                     onValue(ref(db, `orders/${guestPhone}`), (snapshot) => {
@@ -747,14 +799,15 @@
                     ordersBadge.style.display = 'none';
                 }
                 wishlistBadge.style.display = 'none';
+                if (allProducts.length > 0) renderProducts(allProducts);
             }
         }
 
         onAuthStateChanged(auth, (user) => {
+            currentUser = user;
             updateBadges(user);
         });
 
-        // Also check on load for guest users
         updateBadges(null);
         
         onValue(ref(db, 'products'), (snapshot) => {
@@ -950,15 +1003,19 @@
                 const isOut = p.outOfStock === true;
                 const pr = parseFloat(p.price.toString().replace(/,/g, ''));
                 const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr);
+                
                 let discTag = "";
+                let hasDisc = false;
                 if(mr > pr) {
                     const disc = Math.round(((mr - pr) / mr) * 100);
-                    discTag = `<div class="discount-badge">${disc}% OFF</div>`;
+                    hasDisc = true;
+                    discTag = `<div class="discount-badge ${hasDisc ? 'with-wishlist' : ''}">${disc}% OFF</div>`;
                 }
+
+                const isWishlisted = currentUser && userWishlistIds[p.id];
 
                 const card = document.createElement('div');
                 card.className = 'card';
-                
                 card.style.animationDelay = `${animationDelayIndex * 0.08}s`;
                 animationDelayIndex++;
                 
@@ -989,6 +1046,9 @@
                 card.innerHTML = `
                     ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''}
                     ${!isOut ? discTag : ''}
+                    <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist" data-id="${p.id}">
+                        <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                    </button>
                     <div class="image-box">
                         <img src="${productMainImg}" alt="${p.name || 'Product'}" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}">
                     </div>
@@ -1004,6 +1064,34 @@
                         </button>
                     </div>
                 `;
+
+                // Wishlist Button Toggle Handler
+                const wishlistBtn = card.querySelector('.card-wishlist-btn');
+                wishlistBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!currentUser) {
+                        alert("Please login to add items to your wishlist.");
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    const prodId = wishlistBtn.getAttribute('data-id');
+                    const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`);
+
+                    if (userWishlistIds[prodId]) {
+                        remove(wishRef).then(() => {
+                            delete userWishlistIds[prodId];
+                            wishlistBtn.classList.remove('active');
+                            wishlistBtn.querySelector('i').className = 'fa-regular fa-heart';
+                        });
+                    } else {
+                        set(wishRef, true).then(() => {
+                            userWishlistIds[prodId] = true;
+                            wishlistBtn.classList.add('active');
+                            wishlistBtn.querySelector('i').className = 'fa-solid fa-heart';
+                        });
+                    }
+                });
 
                 card.addEventListener('click', () => {
                     if(isOut) return;
