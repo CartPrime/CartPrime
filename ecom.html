@@ -49,9 +49,9 @@
         .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
         .form-row > * { flex: 1 1 200px; }
 
-        .auto-fill-box { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; flex-wrap: wrap; }
-        .auto-fill-box input { flex: 1 1 250px; margin: 0; background: white; }
-        .auto-fill-box button { background: #ff9900; color: white; border: none; padding: 14px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; flex: 0 1 auto; }
+        .auto-fill-box { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; flex-wrap: wrap; align-items: center; }
+        .auto-fill-box textarea { flex: 1 1 250px; margin: 0; background: white; resize: vertical; }
+        .auto-fill-box button { background: #ff9900; color: white; border: none; padding: 14px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; flex: 0 1 auto; height: fit-content; }
 
         .search-box { position: relative; margin-bottom: 20px; width: 100%; }
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
@@ -309,9 +309,9 @@
         <div class="admin-card" style="max-width: 800px; margin: 0 auto;">
             
             <div class="auto-fill-box">
-                <input type="text" id="meeshoUrl" placeholder="Paste Meesho / Amazon / Flipkart Product Link here...">
+                <textarea id="meeshoUrl" placeholder="Paste Meesho Product Description / Details text here..." rows="3"></textarea>
                 <button onclick="fetchMeeshoDetails()">
-                    <i class="fa fa-wand-magic-sparkles"></i> AI Auto Fill
+                    <i class="fa fa-wand-magic-sparkles"></i> Auto Fill Details
                 </button>
             </div>
 
@@ -511,7 +511,7 @@ const db = getDatabase(app);
 let ordersChartInstance = null;
 let earningsChartInstance = null;
 let globalOrdersCache = {};
-let extractedFetchedReviews = []; // Storing temporarily fetched reviews
+let extractedFetchedReviews = [];
 
 // FETCH SITE VISITS REAL-TIME
 onValue(ref(db, 'site_stats/total_visits'), (snapshot) => {
@@ -521,146 +521,102 @@ onValue(ref(db, 'site_stats/total_visits'), (snapshot) => {
     }
 });
 
-/* UPDATED AUTO-FILL WITH AUTOMATIC REVIEWS FETCHING */
+/* MANUAL TEXT AUTO-FILL LOGIC (FROM MEESHO DESCRIPTION TEXT) */
 window.fetchMeeshoDetails = async () => {
-    let urlInput = document.getElementById('meeshoUrl').value.trim();
-    if (!urlInput) {
-        Swal.fire('Error', 'Please enter a valid product link', 'error');
+    let inputData = document.getElementById('meeshoUrl').value.trim();
+    if (!inputData) {
+        Swal.fire('Error', 'Please paste the Meesho product description text in the input box.', 'error');
         return;
     }
 
-    Swal.fire({
-        title: 'Fetching Product & Reviews...',
-        text: 'Extracting details and reviews from link...',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); }
-    });
-
     try {
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(urlInput)}`;
-        const response = await fetch(proxyUrl);
-
-        if (!response.ok) throw new Error("Fetch failed");
-
-        const data = await response.json();
-        const html = data.contents;
-
-        const getMeta = (prop) => {
-            const regex = new RegExp(`<meta\\s+(?:property|name)=["']${prop}["']\\s+content=["']([^"']*)["']`, 'i');
-            const match = html.match(regex);
-            return match ? match[1] : '';
-        };
-
-        let title = getMeta('og:title') || getMeta('twitter:title');
-        if (!title) {
-            const titleMatch = html.match(/<title>([^<]*)<\/title>/i);
-            if (titleMatch) title = titleMatch[1].replace('| Meesho', '').replace('| Flipkart', '').replace('| Amazon', '').trim();
-        }
-
-        let image = getMeta('og:image') || getMeta('twitter:image');
-        let description = getMeta('og:description') || getMeta('description');
-
-        let price = '';
-        const jsonLdMatch = html.match(/"price"\s*:\s*"?(\d+)"?/i);
-        if (jsonLdMatch) {
-            price = jsonLdMatch[1];
-        } else {
-            const priceRegex = /₹\s?(\d{2,6})/;
-            const priceMatch = html.match(priceRegex);
-            if (priceMatch) price = priceMatch[1];
-        }
-
-        // AUTOMATIC REVIEWS EXTRACTION LOGIC
-        extractedFetchedReviews = [];
+        let lines = inputData.split('\n').map(l => l.trim()).filter(l => l.length > 0);
         
-        // Strategy A: JSON-LD schema parsing
-        const jsonLdScripts = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi);
-        if (jsonLdScripts) {
-            jsonLdScripts.forEach(script => {
-                try {
-                    const jsonContent = script.replace(/<script[^>]*>/i, '').replace(/<\/script>/i, '').trim();
-                    const parsed = JSON.parse(jsonContent);
-                    const revs = parsed.review || (parsed['@graph'] ? parsed['@graph'].find(item => item.review)?.review : null);
-                    if (revs && Array.isArray(revs)) {
-                        revs.forEach(r => {
-                            extractedFetchedReviews.push({
-                                name: r.author?.name || r.author || 'Verified Buyer',
-                                rating: parseInt(r.reviewRating?.ratingValue || 5),
-                                comment: r.reviewBody || r.description || 'Great product!',
-                                image: r.image || '',
-                                date: new Date().toLocaleDateString('en-IN')
-                            });
-                        });
-                    }
-                } catch(e) {}
-            });
+        let pName = "";
+        let pPrice = "";
+        let pMrp = "";
+        let pDesc = [];
+        let specs = {};
+
+        // 1. Identify Title/Name from First Line
+        if (lines.length > 0) {
+            pName = lines[0].replace(/^(Name|Title)\s*:\s*/i, '').trim();
         }
 
-        // Strategy B: React Next.js State Extraction (Meesho Specific)
-        if (extractedFetchedReviews.length === 0) {
-            const nextDataMatch = html.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/i);
-            if (nextDataMatch) {
-                try {
-                    const parsedNext = JSON.parse(nextDataMatch[1]);
-                    const pageProps = parsedNext?.props?.pageProps || {};
-                    const productData = pageProps.initialState?.product || pageProps.productData || {};
-                    const rawReviews = productData.reviews || productData.productReviews || pageProps.reviews || [];
+        // 2. Process line-by-line for Price, Description, Key-Value Specs
+        lines.forEach((line) => {
+            // Price Extraction
+            if (/price|rate|mrp|₹/i.test(line) && /\d+/.test(line)) {
+                let numbers = line.match(/\d+/g);
+                if (numbers) {
+                    let extractedNum = parseInt(numbers[0]);
+                    if (!pPrice || extractedNum < pPrice) {
+                        pPrice = extractedNum;
+                    }
+                }
+            }
 
-                    rawReviews.forEach(r => {
-                        extractedFetchedReviews.push({
-                            name: r.author_name || r.user_name || r.author || 'Meesho Customer',
-                            rating: parseInt(r.rating || r.ratingValue || 5),
-                            comment: r.review_text || r.comment || r.description || 'Good quality product.',
-                            image: r.image || (r.images && r.images[0]) || '',
-                            date: new Date().toLocaleDateString('en-IN')
-                        });
-                    });
-                } catch (e) {}
+            // Key-Value Extraction (e.g. Fabric: Cotton)
+            if (line.includes(':')) {
+                let parts = line.split(':');
+                let key = parts[0].trim();
+                let val = parts.slice(1).join(':').trim();
+
+                if (key.length < 25 && val.length > 0) {
+                    if (key.toLowerCase().includes('name') || key.toLowerCase().includes('product name')) {
+                        pName = val;
+                    } else {
+                        specs[key] = val;
+                    }
+                }
+            }
+
+            // Description Bullet formatting
+            pDesc.push("• " + line);
+        });
+
+        // Generate Price & MRP
+        if (pPrice) {
+            pMrp = Math.round(pPrice * 1.3);
+        }
+
+        // Fill Form Fields
+        if (pName) {
+            document.getElementById('pName').value = pName;
+            document.getElementById('pTitle').value = pName;
+        }
+
+        if (pPrice) {
+            document.getElementById('pPrice').value = pPrice;
+            document.getElementById('pMrp').value = pMrp;
+        }
+
+        if (pDesc.length > 0) {
+            document.getElementById('pDesc').value = pDesc.join('\n');
+        }
+
+        // Fill Specifications
+        const specContainer = document.getElementById('specInputs');
+        if (specContainer && Object.keys(specs).length > 0) {
+            specContainer.innerHTML = "";
+            for (let [k, v] of Object.entries(specs)) {
+                specContainer.innerHTML += `
+                    <div class="spec-row">
+                        <input type="text" class="spec-key" value="${k}">
+                        <input type="text" class="spec-val" value="${v}">
+                    </div>`;
             }
         }
 
-        let foundAny = false;
-
-        if (title) {
-            document.getElementById('pName').value = title;
-            document.getElementById('pTitle').value = title;
-            foundAny = true;
-        }
-
-        if (price) {
-            const priceNum = parseInt(price);
-            document.getElementById('pPrice').value = priceNum;
-            document.getElementById('pMrp').value = Math.round(priceNum * 1.3);
-            foundAny = true;
-        }
-
-        if (description) {
-            document.getElementById('pDesc').value = "• " + description.replace(/\n/g, "\n• ");
-        }
-
-        if (image) {
-            const imageContainer = document.getElementById('imageInputs');
-            imageContainer.innerHTML = `<input type="text" class="p-img-link" value="${image}">`;
-            foundAny = true;
-        }
-
-        if (foundAny) {
-            let revMsg = extractedFetchedReviews.length > 0 
-                ? `<br><b style="color:#16a34a;">${extractedFetchedReviews.length} Reviews auto-extracted!</b>` 
-                : '<br><small style="color:#64748b;">No automatic reviews found, but product info loaded.</small>';
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Auto Fill Complete!',
-                html: 'Product details loaded successfully.' + revMsg
-            });
-        } else {
-            Swal.fire('Warning', 'Link loaded, but could not auto-extract details. Please fill manually.', 'warning');
-        }
+        Swal.fire({
+            icon: 'success',
+            title: 'Auto Fill Completed!',
+            text: 'Extracted details from description text successfully.'
+        });
 
     } catch (err) {
         console.error("Auto Fill Error:", err);
-        Swal.fire('Fetch Failed', 'Could not load details from this link. Make sure link is valid.', 'error');
+        Swal.fire('Error', 'Could not parse text details.', 'error');
     }
 };
 
@@ -784,7 +740,6 @@ window.saveProduct = () => {
 
         set(newRef, data)
             .then(async () => { 
-                // Auto-save extracted reviews to product node in Firebase
                 if (extractedFetchedReviews && extractedFetchedReviews.length > 0) {
                     const reviewsRef = ref(db, `products/${newProdKey}/reviews`);
                     for (let rev of extractedFetchedReviews) {
@@ -1283,7 +1238,7 @@ onValue(ref(db, 'products'), snap => {
     if (totalProdStat) totalProdStat.innerText = totalProductsCount;
 });
 
-/* UPDATED FUNCTION TO ADD PRODUCT REVIEWS MANUALLY WITH IMAGE SUPPORT */
+/* MANUAL ADD REVIEW MODAL */
 window.openAddReviewModal = async (productKey) => {
     const { value: formValues } = await Swal.fire({
         title: 'Add Product Review',
