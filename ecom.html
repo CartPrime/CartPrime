@@ -53,10 +53,25 @@
         .auto-fill-box textarea { flex: 1 1 250px; margin: 0; background: white; resize: vertical; }
         .auto-fill-box button { background: #ff9900; color: white; border: none; padding: 14px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; flex: 0 1 auto; height: fit-content; }
 
-        /* ImgBB Upload Box Styling */
-        .imgbb-upload-box { background: #eff6ff; border: 2px dashed #93c5fd; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .imgbb-upload-box label { font-size: 13px; font-weight: 800; color: #1e40af; display: block; margin-bottom: 8px; }
-        .imgbb-upload-box input[type="file"] { background: #fff; cursor: pointer; padding: 8px; }
+        /* Image Field with Inline Upload Button */
+        .img-input-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+        .img-input-row input[type="text"] { margin: 0; flex: 1; }
+        .btn-upload-inline { 
+            background: #2563eb; 
+            color: white; 
+            border: none; 
+            padding: 14px 16px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 13px; 
+            cursor: pointer; 
+            white-space: nowrap; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            transition: 0.2s;
+        }
+        .btn-upload-inline:hover { background: #1d4ed8; }
 
         .search-box { position: relative; margin-bottom: 20px; width: 100%; }
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
@@ -308,7 +323,7 @@
         </div>
     </div>
 
-    <!-- ADD PRODUCT TAB WITH IMGBB UPLOAD -->
+    <!-- ADD PRODUCT TAB WITH INLINE UPLOAD BUTTON -->
     <div id="addProduct" class="tab-content">
         <h2 class="tab-title" id="formTitle">Add New Item</h2>
         <div class="admin-card" style="max-width: 800px; margin: 0 auto;">
@@ -318,13 +333,6 @@
                 <button onclick="fetchMeeshoDetails()">
                     <i class="fa fa-wand-magic-sparkles"></i> Auto Fill Details
                 </button>
-            </div>
-
-            <!-- ImgBB Direct Image Upload Section -->
-            <div class="imgbb-upload-box">
-                <label><i class="fa fa-cloud-arrow-up"></i> UPLOAD IMAGES TO IMGBB (FREE HOSTING):</label>
-                <input type="file" id="imgbbFileInput" multiple accept="image/*" onchange="uploadToImgBB(event)">
-                <small style="color: #64748b; font-size: 11px; margin-top: 4px; display: block;">Select one or multiple images from your phone/PC. They will automatically upload and add links below!</small>
             </div>
 
             <input type="hidden" id="editKey">
@@ -368,7 +376,15 @@
             </div>
             <button class="btn-add" onclick="addSpecField()" style="margin-bottom: 15px;">+ Add Spec</button>
             
-            <div id="imageInputs"><input type="text" class="p-img-link" placeholder="IMAGE URL 1"></div>
+            <!-- IMAGE URL INPUT WITH DIRECT UPLOAD BUTTON -->
+            <div id="imageInputs">
+                <div class="img-input-row">
+                    <input type="text" class="p-img-link" placeholder="IMAGE URL 1">
+                    <button type="button" class="btn-upload-inline" onclick="triggerSingleUpload(this)">
+                        <i class="fa fa-cloud-arrow-up"></i> Upload
+                    </button>
+                </div>
+            </div>
             <button class="btn-add" onclick="addImageField()" style="margin-bottom: 15px;">+ Add Image</button>
             
             <div class="form-row" style="align-items:center;">
@@ -525,24 +541,25 @@ let earningsChartInstance = null;
 let globalOrdersCache = {};
 let extractedFetchedReviews = [];
 
-/* DIRECT IMGBB UPLOAD LOGIC */
-window.uploadToImgBB = async (event) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
+/* DIRECT UPLOAD TO IMGBB FROM INLINE BUTTON */
+window.triggerSingleUpload = (btn) => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
 
-    const apiKey = "https://api.imgbb.com/1/upload"; // ImgBB API Key
-    const imgContainer = document.getElementById('imageInputs');
+    fileInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-    Swal.fire({
-        title: 'Uploading Images...',
-        text: 'Please wait while images are being uploaded to ImgBB.',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); }
-    });
+        const apiKey = "https://api.imgbb.com/1/upload"; // ImgBB API Key
 
-    let uploadedCount = 0;
+        Swal.fire({
+            title: 'Uploading Image...',
+            text: 'Please wait while uploading to ImgBB...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
 
-    for (let file of files) {
         const formData = new FormData();
         formData.append("image", file);
 
@@ -556,42 +573,28 @@ window.uploadToImgBB = async (event) => {
 
             if (data && data.success) {
                 const directUrl = data.data.url;
-                
-                // First Empty Input ഉണ്ടെങ്കിൽ അവിടേക്ക് ഇടുക, അല്ലെങ്കിൽ പുതിയത് ക്രിയേറ്റ് ചെയ്യുക
-                const existingInputs = imgContainer.querySelectorAll('.p-img-link');
-                let placed = false;
-
-                for (let input of existingInputs) {
-                    if (input.value.trim() === "") {
-                        input.value = directUrl;
-                        placed = true;
-                        break;
-                    }
+                const inputField = btn.parentElement.querySelector('.p-img-link');
+                if (inputField) {
+                    inputField.value = directUrl;
                 }
 
-                if (!placed) {
-                    const newInput = document.createElement('input');
-                    newInput.type = "text";
-                    newInput.className = "p-img-link";
-                    newInput.value = directUrl;
-                    imgContainer.appendChild(newInput);
-                }
-
-                uploadedCount++;
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Uploaded!',
+                    text: 'Image uploaded & link added successfully.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire('Upload Failed', 'Could not upload image to ImgBB.', 'error');
             }
         } catch (err) {
-            console.error("ImgBB Upload error:", err);
+            console.error("Upload error:", err);
+            Swal.fire('Error', 'An error occurred during image upload.', 'error');
         }
-    }
+    };
 
-    Swal.fire({
-        icon: 'success',
-        title: 'Upload Finished!',
-        text: `Successfully uploaded ${uploadedCount} image(s) to ImgBB!`
-    });
-
-    // Reset File Input
-    event.target.value = "";
+    fileInput.click();
 };
 
 // FETCH SITE VISITS REAL-TIME
@@ -620,29 +623,23 @@ window.fetchMeeshoDetails = async () => {
         let specs = {};
         let extractedImageUrls = [];
 
-        // Image Link extraction Regex (http://, https://, or common image formats)
         const urlRegex = /(https?:\/\/[^\s]+)/gi;
 
-        // 1. Title/Name Identification
         if (lines.length > 0 && !lines[0].match(urlRegex)) {
             pName = lines[0].replace(/^(Name|Title)\s*:\s*/i, '').trim();
         }
 
-        // 2. Process Line by Line
         lines.forEach((line) => {
-            // Check if line is an Image Link
             let matchedUrls = line.match(urlRegex);
             if (matchedUrls) {
                 matchedUrls.forEach(url => {
-                    // Check if it looks like an image URL or Meesho image URL
                     if (url.match(/\.(jpeg|jpg|png|webp|gif)/i) || url.includes('images.meesho.com') || url.includes('ibb.co') || url.includes('imgur') || url.includes('googleusercontent')) {
                         extractedImageUrls.push(url);
                     }
                 });
-                return; // Do not add image links to product description text
+                return;
             }
 
-            // Price Extraction
             if (/price|rate|mrp|₹/i.test(line) && /\d+/.test(line)) {
                 let numbers = line.match(/\d+/g);
                 if (numbers) {
@@ -653,7 +650,6 @@ window.fetchMeeshoDetails = async () => {
                 }
             }
 
-            // Key-Value Extraction (e.g., Fabric: Cotton)
             if (line.includes(':')) {
                 let parts = line.split(':');
                 let key = parts[0].trim();
@@ -668,33 +664,27 @@ window.fetchMeeshoDetails = async () => {
                 }
             }
 
-            // Description Bullet formatting
             pDesc.push("• " + line);
         });
 
-        // Price & MRP Calculation
         if (pPrice) {
             pMrp = Math.round(pPrice * 1.3);
         }
 
-        // Fill Name & Title
         if (pName) {
             document.getElementById('pName').value = pName;
             document.getElementById('pTitle').value = pName;
         }
 
-        // Fill Price
         if (pPrice) {
             document.getElementById('pPrice').value = pPrice;
             document.getElementById('pMrp').value = pMrp;
         }
 
-        // Fill Description
         if (pDesc.length > 0) {
             document.getElementById('pDesc').value = pDesc.join('\n');
         }
 
-        // Fill Specifications
         const specContainer = document.getElementById('specInputs');
         if (specContainer && Object.keys(specs).length > 0) {
             specContainer.innerHTML = "";
@@ -707,12 +697,17 @@ window.fetchMeeshoDetails = async () => {
             }
         }
 
-        // Fill Extracted Image Links
         const imgContainer = document.getElementById('imageInputs');
         if (imgContainer && extractedImageUrls.length > 0) {
             imgContainer.innerHTML = "";
             extractedImageUrls.forEach(imgUrl => {
-                imgContainer.innerHTML += `<input type="text" class="p-img-link" value="${imgUrl}">`;
+                imgContainer.innerHTML += `
+                <div class="img-input-row">
+                    <input type="text" class="p-img-link" value="${imgUrl}">
+                    <button type="button" class="btn-upload-inline" onclick="triggerSingleUpload(this)">
+                        <i class="fa fa-cloud-arrow-up"></i> Upload
+                    </button>
+                </div>`;
             });
         }
 
@@ -1307,7 +1302,7 @@ window.shipOrderWithDate = async (path) => {
     }
 };
 
-/* READ PRODUCTS (WITH REAL-TIME VIEWS DISPLAY AND REVIEW BUTTON) */
+/* READ PRODUCTS */
 onValue(ref(db, 'products'), snap => {
     const list = document.getElementById('manageProductList');
     if (!list) return;
@@ -1467,9 +1462,23 @@ window.editProduct = (key) => {
         if (ic) {
             ic.innerHTML = "";
             if(p.images && p.images.length > 0) {
-                p.images.forEach(u => { ic.innerHTML += `<input type="text" class="p-img-link" value="${u}">`; });
+                p.images.forEach(u => { 
+                    ic.innerHTML += `
+                    <div class="img-input-row">
+                        <input type="text" class="p-img-link" value="${u}">
+                        <button type="button" class="btn-upload-inline" onclick="triggerSingleUpload(this)">
+                            <i class="fa fa-cloud-arrow-up"></i> Upload
+                        </button>
+                    </div>`; 
+                });
             } else {
-                ic.innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
+                ic.innerHTML = `
+                <div class="img-input-row">
+                    <input type="text" class="p-img-link" placeholder="IMAGE URL 1">
+                    <button type="button" class="btn-upload-inline" onclick="triggerSingleUpload(this)">
+                        <i class="fa fa-cloud-arrow-up"></i> Upload
+                    </button>
+                </div>`;
             }
         }
         
@@ -1498,7 +1507,13 @@ window.resetForm = () => {
     document.querySelectorAll('.p-size').forEach(cb => cb.checked = false);
 
     if (document.getElementById('specInputs')) document.getElementById('specInputs').innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
-    if (document.getElementById('imageInputs')) document.getElementById('imageInputs').innerHTML = `<input type="text" class="p-img-link" placeholder="IMAGE URL 1">`;
+    if (document.getElementById('imageInputs')) document.getElementById('imageInputs').innerHTML = `
+    <div class="img-input-row">
+        <input type="text" class="p-img-link" placeholder="IMAGE URL 1">
+        <button type="button" class="btn-upload-inline" onclick="triggerSingleUpload(this)">
+            <i class="fa fa-cloud-arrow-up"></i> Upload
+        </button>
+    </div>`;
     if (document.getElementById('formTitle')) document.getElementById('formTitle').innerText = "Add New Item";
     if (document.getElementById('saveBtn')) document.getElementById('saveBtn').innerText = "SAVE PRODUCT";
     if (document.getElementById('cancelEdit')) document.getElementById('cancelEdit').style.display = "none";
@@ -1511,8 +1526,15 @@ window.addSpecField = () => {
 };
 
 window.addImageField = () => {
-    const i = document.createElement('input'); i.className = 'p-img-link'; i.placeholder = "Image URL";
-    if (document.getElementById('imageInputs')) document.getElementById('imageInputs').appendChild(i);
+    const count = document.querySelectorAll('.img-input-row').length + 1;
+    const div = document.createElement('div');
+    div.className = 'img-input-row';
+    div.innerHTML = `
+        <input type="text" class="p-img-link" placeholder="IMAGE URL ${count}">
+        <button type="button" class="btn-upload-inline" onclick="triggerSingleUpload(this)">
+            <i class="fa fa-cloud-arrow-up"></i> Upload
+        </button>`;
+    if (document.getElementById('imageInputs')) document.getElementById('imageInputs').appendChild(div);
 };
 
 window.deleteItem = (p) => {
