@@ -627,16 +627,16 @@
                 }
             }
 
-            /* Calculate & Render Dynamic Reviews Section */
-            let reviewsListHTML = '';
-            let totalRatingSum = 0;
-            let reviewCount = 0;
-            let starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+            /* Calculate & Render Dynamic Reviews Section ONLY if reviews exist */
+            let reviewsBoxHTML = '';
 
-            if (reviews) {
+            if (reviews && Object.keys(reviews).length > 0) {
+                let reviewsListHTML = '';
+                let totalRatingSum = 0;
                 const reviewsArr = Object.values(reviews);
-                reviewCount = reviewsArr.length;
-                
+                const reviewCount = reviewsArr.length;
+                let starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+
                 reviewsArr.forEach(r => {
                     const ratingVal = parseInt(r.rating || 5);
                     totalRatingSum += ratingVal;
@@ -660,48 +660,48 @@
                         </div>
                     `;
                 });
-            }
 
-            const avgRating = reviewCount > 0 ? (totalRatingSum / reviewCount).toFixed(1) : 0;
+                const avgRating = (totalRatingSum / reviewCount).toFixed(1);
 
-            /* Progress Bars for Ratings Breakdown */
-            let ratingBarsHTML = '';
-            [5, 4, 3, 2, 1].forEach(starNum => {
-                const count = starCounts[starNum];
-                const pct = reviewCount > 0 ? Math.round((count / reviewCount) * 100) : 0;
-                const barColor = getBgColor(starNum);
+                /* Progress Bars for Ratings Breakdown */
+                let ratingBarsHTML = '';
+                [5, 4, 3, 2, 1].forEach(starNum => {
+                    const count = starCounts[starNum];
+                    const pct = Math.round((count / reviewCount) * 100);
+                    const barColor = getBgColor(starNum);
 
-                ratingBarsHTML += `
-                    <div class="bar-row">
-                        <span style="width: 15px;">${starNum}★</span>
-                        <div class="progress-bg">
-                            <div class="progress-fill" style="width: ${pct}%; background: ${barColor};"></div>
+                    ratingBarsHTML += `
+                        <div class="bar-row">
+                            <span style="width: 15px;">${starNum}★</span>
+                            <div class="progress-bg">
+                                <div class="progress-fill" style="width: ${pct}%; background: ${barColor};"></div>
+                            </div>
+                            <span style="width: 35px; text-align: right;">${pct}%</span>
                         </div>
-                        <span style="width: 35px; text-align: right;">${pct}%</span>
+                    `;
+                });
+
+                reviewsBoxHTML = `
+                    <div class="reviews-box">
+                        <div class="reviews-header">
+                            <h4 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; margin-bottom: 12px;">Ratings & Reviews</h4>
+                            <div class="rating-summary-container">
+                                <div class="avg-score-box">
+                                    <span class="avg-score">${avgRating}</span>
+                                    <div style="font-size: 0.85rem; margin: 4px 0;">${renderColorStars(avgRating)}</div>
+                                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">${reviewCount} Rating${reviewCount !== 1 ? 's' : ''}</span>
+                                </div>
+                                <div class="rating-bars">
+                                    ${ratingBarsHTML}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reviews-list">
+                            ${reviewsListHTML}
+                        </div>
                     </div>
                 `;
-            });
-
-            const reviewsBoxHTML = `
-                <div class="reviews-box">
-                    <div class="reviews-header">
-                        <h4 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; margin-bottom: 12px;">Ratings & Reviews</h4>
-                        <div class="rating-summary-container">
-                            <div class="avg-score-box">
-                                <span class="avg-score">${reviewCount > 0 ? avgRating : '0'}</span>
-                                <div style="font-size: 0.85rem; margin: 4px 0;">${renderColorStars(avgRating)}</div>
-                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">${reviewCount} Rating${reviewCount !== 1 ? 's' : ''}</span>
-                            </div>
-                            <div class="rating-bars">
-                                ${ratingBarsHTML}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="reviews-list">
-                        ${reviewCount > 0 ? reviewsListHTML : '<p style="color: var(--text-muted); font-size: 0.88rem; text-align: center; padding: 10px;">No reviews for this product yet.</p>'}
-                    </div>
-                </div>
-            `;
+            }
             
             const isOut = p.outOfStock === true; 
             const returnStatus = p.return ? (p.return.toString().toLowerCase().trim() === 'true' || p.return === true || p.return.toString().toLowerCase().trim() === 'available') : false;
