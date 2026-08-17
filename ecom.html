@@ -251,7 +251,6 @@
                 <h3>Total Products</h3>
                 <p id="stat-total-products">0</p>
             </div>
-            <!-- TOTAL VISITS UPDATE -->
             <div class="stat-card">
                 <i class="fa fa-eye"></i>
                 <h3>Total Visits</h3>
@@ -309,7 +308,7 @@
         <div class="admin-card" style="max-width: 800px; margin: 0 auto;">
             
             <div class="auto-fill-box">
-                <textarea id="meeshoUrl" placeholder="Paste Meesho Product Description / Details text here..." rows="3"></textarea>
+                <textarea id="meeshoUrl" placeholder="Paste Meesho Details & Image Links (http...) text here..." rows="4"></textarea>
                 <button onclick="fetchMeeshoDetails()">
                     <i class="fa fa-wand-magic-sparkles"></i> Auto Fill Details
                 </button>
@@ -521,11 +520,11 @@ onValue(ref(db, 'site_stats/total_visits'), (snapshot) => {
     }
 });
 
-/* MANUAL TEXT AUTO-FILL LOGIC (FROM MEESHO DESCRIPTION TEXT) */
+/* MANUAL TEXT AUTO-FILL LOGIC WITH IMAGE LINKS EXTRACTION */
 window.fetchMeeshoDetails = async () => {
     let inputData = document.getElementById('meeshoUrl').value.trim();
     if (!inputData) {
-        Swal.fire('Error', 'Please paste the Meesho product description text in the input box.', 'error');
+        Swal.fire('Error', 'Please paste the product description text and image links in the box.', 'error');
         return;
     }
 
@@ -537,14 +536,30 @@ window.fetchMeeshoDetails = async () => {
         let pMrp = "";
         let pDesc = [];
         let specs = {};
+        let extractedImageUrls = [];
 
-        // 1. Identify Title/Name from First Line
-        if (lines.length > 0) {
+        // Image Link extraction Regex (http://, https://, or common image formats)
+        const urlRegex = /(https?:\/\/[^\s]+)/gi;
+
+        // 1. Title/Name Identification
+        if (lines.length > 0 && !lines[0].match(urlRegex)) {
             pName = lines[0].replace(/^(Name|Title)\s*:\s*/i, '').trim();
         }
 
-        // 2. Process line-by-line for Price, Description, Key-Value Specs
+        // 2. Process Line by Line
         lines.forEach((line) => {
+            // Check if line is an Image Link
+            let matchedUrls = line.match(urlRegex);
+            if (matchedUrls) {
+                matchedUrls.forEach(url => {
+                    // Check if it looks like an image URL or Meesho image URL
+                    if (url.match(/\.(jpeg|jpg|png|webp|gif)/i) || url.includes('images.meesho.com') || url.includes('ibb.co') || url.includes('imgur') || url.includes('googleusercontent')) {
+                        extractedImageUrls.push(url);
+                    }
+                });
+                return; // Do not add image links to product description text
+            }
+
             // Price Extraction
             if (/price|rate|mrp|₹/i.test(line) && /\d+/.test(line)) {
                 let numbers = line.match(/\d+/g);
@@ -556,7 +571,7 @@ window.fetchMeeshoDetails = async () => {
                 }
             }
 
-            // Key-Value Extraction (e.g. Fabric: Cotton)
+            // Key-Value Extraction (e.g., Fabric: Cotton)
             if (line.includes(':')) {
                 let parts = line.split(':');
                 let key = parts[0].trim();
@@ -575,22 +590,24 @@ window.fetchMeeshoDetails = async () => {
             pDesc.push("• " + line);
         });
 
-        // Generate Price & MRP
+        // Price & MRP Calculation
         if (pPrice) {
             pMrp = Math.round(pPrice * 1.3);
         }
 
-        // Fill Form Fields
+        // Fill Name & Title
         if (pName) {
             document.getElementById('pName').value = pName;
             document.getElementById('pTitle').value = pName;
         }
 
+        // Fill Price
         if (pPrice) {
             document.getElementById('pPrice').value = pPrice;
             document.getElementById('pMrp').value = pMrp;
         }
 
+        // Fill Description
         if (pDesc.length > 0) {
             document.getElementById('pDesc').value = pDesc.join('\n');
         }
@@ -608,10 +625,19 @@ window.fetchMeeshoDetails = async () => {
             }
         }
 
+        // Fill Extracted Image Links
+        const imgContainer = document.getElementById('imageInputs');
+        if (imgContainer && extractedImageUrls.length > 0) {
+            imgContainer.innerHTML = "";
+            extractedImageUrls.forEach(imgUrl => {
+                imgContainer.innerHTML += `<input type="text" class="p-img-link" value="${imgUrl}">`;
+            });
+        }
+
         Swal.fire({
             icon: 'success',
             title: 'Auto Fill Completed!',
-            text: 'Extracted details from description text successfully.'
+            text: `Extracted product details & ${extractedImageUrls.length} image link(s) successfully.`
         });
 
     } catch (err) {
