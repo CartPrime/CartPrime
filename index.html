@@ -143,6 +143,9 @@
             font-size: 1.3rem;
             color: #22c55e;
         }
+        .stat-item i.fa-star {
+            color: #eab308;
+        }
         .stat-info {
             display: flex;
             flex-direction: column;
@@ -448,16 +451,10 @@
 
         .card-info { flex-grow: 1; display: flex; flex-direction: column; }
         .card h3 { 
-            font-size: 1rem; font-weight: 700; margin-bottom: 4px; color: var(--text-main);
+            font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-main);
             display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
             overflow: hidden; text-overflow: ellipsis; 
         }
-
-        .card-rating-ui {
-            display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: #eab308; margin-bottom: 8px;
-            min-height: 18px;
-        }
-        .card-rating-ui span { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; }
 
         .price-container { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
         .price { font-weight: 800; font-size: 1.2rem; color: var(--text-main); }
@@ -649,7 +646,7 @@
             
             .card { border-radius: 16px; padding: 8px; }
             .image-box { height: 160px; border-radius: 12px; margin-bottom: 10px; }
-            .card h3 { font-size: 0.85rem; margin-bottom: 4px; }
+            .card h3 { font-size: 0.85rem; margin-bottom: 8px; }
             .price-container { margin-bottom: 10px; gap: 5px; flex-wrap: wrap; }
             .price { font-size: 0.95rem; }
             .mrp { font-size: 0.75rem; }
@@ -721,7 +718,7 @@
             <div class="stat-item">
                 <i class="fa-solid fa-star"></i>
                 <div class="stat-info">
-                    <strong>4.9 / 5</strong>
+                    <strong>4.5 / 5</strong>
                     <span>Rating Score</span>
                 </div>
             </div>
@@ -782,7 +779,7 @@
         <h3><i class="fa-solid fa-lock"></i> 100% Safe & Secure Shopping Guarantee</h3>
         <div class="payment-badges">
             <span><i class="fa-solid fa-check"></i> Verified Merchant</span>
-            <span><i class="fa-solid fa-truck-ramp-box"></i> Live Order Tracking</span>
+            <span><i class="fa-solid fa-box-check"></i> 100% Genuine Products</span>
             <span><i class="fa-solid fa-wallet"></i> Cash on Delivery</span>
         </div>
     </div>
@@ -1211,34 +1208,6 @@
                 card.className = 'card';
                 card.style.animationDelay = `${animationDelayIndex * 0.08}s`;
                 animationDelayIndex++;
-                
-                const reviewRef = ref(db, `reviews/${p.id}`);
-                get(reviewRef).then((snapshot) => {
-                    if(snapshot.exists()) {
-                        const reviewsData = snapshot.val();
-                        let totalRating = 0;
-                        let count = 0;
-                        for(let key in reviewsData) {
-                            if(reviewsData[key].rating) {
-                                totalRating += parseFloat(reviewsData[key].rating);
-                                count++;
-                            }
-                        }
-                        if(count > 0) {
-                            const avgRating = (totalRating / count).toFixed(1);
-                            const ratingUi = card.querySelector('.card-rating-ui');
-                            if(ratingUi) {
-                                ratingUi.innerHTML = `<i class="fa-solid fa-star"></i> ${avgRating} <span>(${count} reviews)</span>`;
-                            }
-                        }
-                    } else {
-                        // Default High Rating for Trust
-                        const ratingUi = card.querySelector('.card-rating-ui');
-                        if(ratingUi) {
-                            ratingUi.innerHTML = `<i class="fa-solid fa-star"></i> 4.8 <span>(Verified)</span>`;
-                        }
-                    }
-                });
 
                 const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150';
 
@@ -1254,7 +1223,6 @@
                     </div>
                     <div class="card-info">
                         <h3>${p.name || 'No Title'}</h3>
-                        <div class="card-rating-ui"></div>
                         <div class="price-container">
                             <span class="price">₹${p.price}</span>
                             ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''}
