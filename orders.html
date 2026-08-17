@@ -11,25 +11,43 @@
     <style>
         :root { --primary: #000; --bg: #f8fafc; --white: #fff; --red: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg); padding: 20px 5%; }
-        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+        body { background: var(--bg); padding: 20px 5%; max-width: 800px; margin: 0 auto; }
+        
+        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
         .back-btn { text-decoration: none; color: #000; font-size: 1.2rem; }
         
+        /* Security Banner for Trust Look */
+        .security-banner {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 0.78rem;
+            color: #166534;
+            font-weight: 600;
+        }
+        .security-banner i { font-size: 1rem; color: #16a34a; }
+
         /* Compact Order Card Styles */
         .order-card { 
             background: var(--white); 
             border-radius: 16px; 
-            padding: 15px; 
+            padding: 16px; 
             margin-bottom: 15px; 
             border: 1px solid #e2e8f0; 
             cursor: pointer; 
             transition: all 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            position: relative;
         }
         .order-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
         .card-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .order-id-badge { font-size: 0.75rem; font-weight: 800; color: #64748b; }
+        .order-id-badge { font-size: 0.75rem; font-weight: 800; color: #64748b; display: flex; align-items: center; gap: 6px; }
 
         .order-status { font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; display: inline-block; }
         .status-shipped { background: #e0e7ff; color: #3730a3; }
@@ -91,11 +109,43 @@
         /* Multi-Color Dynamic Star Rating Style */
         .star-rating { display: flex; gap: 8px; justify-content: center; font-size: 1.8rem; margin: 15px 0; cursor: pointer; color: #cbd5e1; }
         .star-rating i { transition: color 0.2s ease; }
-        .star-rating[data-rating="1"] i.selected { color: #ef4444 !important; } /* Red */
-        .star-rating[data-rating="2"] i.selected { color: #f97316 !important; } /* Orange */
-        .star-rating[data-rating="3"] i.selected { color: #f59e0b !important; } /* Yellow */
+        .star-rating[data-rating="1"] i.selected { color: #ef4444 !important; }
+        .star-rating[data-rating="2"] i.selected { color: #f97316 !important; }
+        .star-rating[data-rating="3"] i.selected { color: #f59e0b !important; }
         .star-rating[data-rating="4"] i.selected,
-        .star-rating[data-rating="5"] i.selected { color: #16a34a !important; } /* Green */
+        .star-rating[data-rating="5"] i.selected { color: #16a34a !important; }
+
+        /* Trust Grid & Support Elements */
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 25px 0 15px 0;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .trust-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .trust-item i { font-size: 1.1rem; color: #0f172a; }
+        .trust-item span { font-size: 0.7rem; font-weight: 700; color: #64748b; line-height: 1.2; }
+
+        .support-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+        .support-info { display: flex; align-items: center; gap: 10px; }
+        .support-info i { font-size: 1.2rem; color: #2563eb; }
+        .support-text { display: flex; flex-direction: column; }
+        .support-text span:first-child { font-size: 0.8rem; font-weight: 800; color: #0f172a; }
+        .support-text span:last-child { font-size: 0.7rem; color: #64748b; font-weight: 600; }
 
         @media (max-width: 480px) {
             body { padding: 15px 4%; }
@@ -103,6 +153,8 @@
             .item-main-content img { width: 55px; height: 55px; }
             .item-info h3 { font-size: 0.85rem; }
             .delivery-text { font-size: 0.72rem; }
+            .trust-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px 8px; }
+            .trust-item span { font-size: 0.65rem; }
         }
     </style>
 </head>
@@ -111,9 +163,43 @@
         <a href="index.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
         <h1 style="font-weight: 800; letter-spacing: -1px;">My Orders</h1>
     </div>
+
+    <!-- Security Guarantee Banner -->
+    <div class="security-banner">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>100% Secure & Encrypted Order History with Buyer Protection</span>
+    </div>
     
     <div id="ordersList">
         <div class="empty-state">Loading your orders...</div>
+    </div>
+
+    <!-- Trust Badges Section -->
+    <div class="trust-grid">
+        <div class="trust-item">
+            <i class="fa-solid fa-badge-check"></i>
+            <span>100% Authentic</span>
+        </div>
+        <div class="trust-item">
+            <i class="fa-solid fa-truck-fast"></i>
+            <span>Live Tracking</span>
+        </div>
+        <div class="trust-item">
+            <i class="fa-solid fa-headset"></i>
+            <span>24/7 Support</span>
+        </div>
+    </div>
+
+    <!-- Help & Support Footer Banner -->
+    <div class="support-card">
+        <div class="support-info">
+            <i class="fa-solid fa-circle-question"></i>
+            <div class="support-text">
+                <span>Need Help with Orders?</span>
+                <span>Get quick resolution on returns & refunds</span>
+            </div>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.8rem; color: #94a3b8;"></i>
     </div>
 
     <script type="module">
@@ -167,8 +253,9 @@
         if (activeRef) off(activeRef);
         document.getElementById('ordersList').innerHTML = `
             <div class="phone-input-box">
+                <i class="fa-solid fa-lock" style="font-size:1.8rem; color:#0f172a; margin-bottom:10px;"></i>
                 <h3 style="font-weight:800; font-size:1.1rem; margin-bottom:5px;">Find Your Orders</h3>
-                <p style="font-size:0.8rem; color:#64748b;">Enter the phone number used during checkout to view your orders.</p>
+                <p style="font-size:0.8rem; color:#64748b;">Enter the mobile number used during checkout to view your orders safely.</p>
                 <input type="tel" id="inputPhoneNum" placeholder="Enter Mobile Number">
                 <button onclick="window.fetchOrdersByInput()">View Orders</button>
             </div>
@@ -200,8 +287,8 @@
             
             const activePhoneHeader = `
                 <div style="background:#fff; border:1px solid #e2e8f0; padding:12px 15px; border-radius:12px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.85rem; font-weight:700; color:#1e293b;">
-                        Orders for: <strong>${phone}</strong>
+                    <span style="font-size:0.85rem; font-weight:700; color:#1e293b; display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-circle-check" style="color:#16a34a;"></i> Orders for: <strong>${phone}</strong>
                     </span>
                     <button onclick="window.changePhoneNumber()" style="background:#fee2e2; color:#ef4444; border:none; padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.75rem; cursor:pointer;">
                         <i class="fa-solid fa-pen-to-square"></i> Change
@@ -252,7 +339,6 @@
 
             list.innerHTML = activePhoneHeader;
 
-            // നാളത്തെ തീയതി കൃത്യമായി കണക്കാക്കാൻ
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             
@@ -260,7 +346,7 @@
             const tMonth = tomorrow.toLocaleString('en-IN', { month: 'short' });
             const tYear = tomorrow.getFullYear();
             
-            const tomorrowStr1 = `${tDay} ${tMonth} ${tYear}`.toLowerCase(); // ഉദാഹരണത്തിന്: 16 aug 2026
+            const tomorrowStr1 = `${tDay} ${tMonth} ${tYear}`.toLowerCase(); 
             const tomorrowStr2 = `${tDay}-${tMonth}-${tYear}`.toLowerCase();
             const tomorrowStr3 = `${tDay}/${tMonth}/${tYear}`.toLowerCase();
 
@@ -271,7 +357,6 @@
                 let deliveryMsg = '';
                 const orderDateStr = order.deliveryDate ? order.deliveryDate.trim().toLowerCase() : '';
 
-                // തീയതി നാളത്തെതാണോ അല്ലെങ്കിൽ 'tomorrow' എന്ന് എഴുതിയിട്ടുണ്ടോ എന്ന് പരിശോധിക്കുന്നു
                 const isTomorrowDate = orderDateStr === tomorrowStr1 || 
                                        orderDateStr === tomorrowStr2 || 
                                        orderDateStr === tomorrowStr3 || 
@@ -326,7 +411,7 @@
                 list.innerHTML += `
                     <div class="order-card" onclick="window.showOrderDetails('${order.id}')">
                         <div class="card-top-bar">
-                            <span class="order-id-badge">ID: #${order.id}</span>
+                            <span class="order-id-badge"><i class="fa-solid fa-check-double" style="color:#2563eb;"></i> ID: #${order.id}</span>
                             <span class="order-status status-${displayStatus.toLowerCase().replace(/\s+/g, '')}">${displayStatus}</span>
                         </div>
                         <div class="item-main-content">
@@ -362,7 +447,7 @@
                 if (itemCanReturn) orderHasReturnableProduct = true;
                 
                 itemsListHtml += `
-                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:8px; border-radius:8px;">
+                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:8px; border-radius:8px; border:1px solid #f1f5f9;">
                         <img src="${item.image || 'https://via.placeholder.com/150'}" style="width:40px; height:40px; object-fit:contain; border-radius:6px; background:#fff;">
                         <div style="flex-grow:1;">
                             <div style="font-weight:700; font-size:0.8rem; color:#1e293b;">${item.name || 'Product'}</div>
@@ -375,7 +460,7 @@
             if (singleCanReturn) orderHasReturnableProduct = true;
 
             itemsListHtml = `
-                <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:8px; border-radius:8px;">
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:8px; border-radius:8px; border:1px solid #f1f5f9;">
                     <img src="${order.productImage || 'https://via.placeholder.com/150'}" style="width:40px; height:40px; object-fit:contain; border-radius:6px; background:#fff;">
                     <div style="flex-grow:1;">
                         <div style="font-weight:700; font-size:0.8rem; color:#1e293b;">${order.productName || 'Product'}</div>
@@ -399,7 +484,7 @@
             : `<p><strong>Status:</strong> ${statusBadgeHtml}</p>
                <p><strong>Expected Delivery:</strong> <span>${order.deliveryDate || 'Will update soon'}</span></p>`;
 
-        const paymentModeText = isCOD ? 'Cash on Delivery' : (isPaid ? 'Online Paid' : 'Pending');
+        const paymentModeText = isCOD ? 'Cash on Delivery' : (isPaid ? 'Online Paid (Secure)' : 'Pending');
 
         Swal.fire({
             title: `Order Details (#${order.id})`,
@@ -413,7 +498,7 @@
                     <p><strong>Order Date:</strong> <span>${order.date || 'N/A'}</span></p>
 
                     <div class="modal-section-title">Shipping Address</div>
-                    <div style="background:#f8fafc; padding:8px 10px; border-radius:8px; margin-top:4px;">
+                    <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-top:4px; border:1px solid #f1f5f9;">
                         <p style="font-weight:700; color:#1e293b; margin:0;">${order.customerName || 'Customer'}</p>
                         <p style="margin:2px 0; color:#64748b; font-size:0.8rem;">${order.address || 'N/A'}</p>
                         <p style="margin:0; color:#64748b; font-size:0.8rem;">Phone: ${order.customerPhone || order.phone || order.userPhone}</p>
