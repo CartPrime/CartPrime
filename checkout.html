@@ -37,14 +37,8 @@
             -webkit-tap-highlight-color: transparent;
         }
         
-        * {
-            outline: none !important;
-        }
-        *:focus {
-            outline: none !important;
-            box-shadow: none !important;
-        }
-
+        * { outline: none !important; }
+        *:focus { outline: none !important; box-shadow: none !important; }
         .hidden { display: none !important; }
         
         .swal-custom-popup {
@@ -80,9 +74,7 @@
             border-bottom: 1px solid #f1f5f9;
         }
         @media (max-width: 400px) {
-            .prod-item-row {
-                align-items: flex-start;
-            }
+            .prod-item-row { align-items: flex-start; }
         }
         .prod-item-row img {
             width: 60px;
@@ -108,10 +100,7 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .qty-btn:hover {
-            background: #e2e8f0;
-            color: #0f172a;
-        }
+        .qty-btn:hover { background: #e2e8f0; color: #0f172a; }
         .total-checkout-price {
             display: flex;
             justify-content: space-between;
@@ -138,14 +127,24 @@
         <p class="text-sm font-semibold text-slate-600 tracking-wide animate-pulse">Loading Checkout...</p>
     </div>
 
+    <!-- Header Banner -->
+    <div class="bg-blue-600 text-white text-xs font-semibold py-2 px-4 text-center flex items-center justify-center gap-2">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Safe & Secure Checkout • 7 Days Easy Returns Guarantee</span>
+    </div>
+
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 backdrop-blur-md bg-white/90">
         <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors font-medium">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
                 <span class="hidden sm:inline">Back</span>
             </a>
-            <h1 class="text-lg sm:text-xl font-bold text-slate-800 tracking-tight">Checkout</h1>
-            <div class="w-10"></div>
+            <h1 class="text-lg sm:text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+                <i class="fa-solid fa-lock text-emerald-600 text-sm"></i> Checkout
+            </h1>
+            <div class="flex items-center gap-1 text-emerald-600 text-xs font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                <i class="fa-solid fa-check"></i> SSL Secure
+            </div>
         </div>
     </header>
 
@@ -153,6 +152,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
             
             <div class="lg:col-span-7 space-y-6">
+                <!-- Delivery Address -->
                 <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm">
                     <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
                         <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -169,12 +169,12 @@
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Full Name</label>
-                                <input type="text" id="custName" placeholder="John Doe" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Full Name *</label>
+                                <input type="text" id="custName" placeholder="John Doe" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 transition-all text-sm font-medium">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Phone Number</label>
-                                <input type="tel" id="custPhone" maxlength="10" inputmode="numeric" pattern="[0-9]*" placeholder="10-digit number" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Phone Number *</label>
+                                <input type="tel" id="custPhone" maxlength="10" inputmode="numeric" pattern="[0-9]*" placeholder="10-digit number" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 transition-all text-sm font-medium">
                             </div>
                         </div>
 
@@ -186,21 +186,21 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">House No, Building, Street</label>
-                            <input type="text" id="house" placeholder="Flat/House No., Colony" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">House No, Building, Street *</label>
+                            <input type="text" id="house" placeholder="Flat/House No., Colony" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 transition-all text-sm font-medium">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Area, Colony, Road, Landmark</label>
-                            <input type="text" id="area" placeholder="Nearby landmark, local area" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
+                            <input type="text" id="area" placeholder="Nearby landmark, local area" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 transition-all text-sm font-medium">
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Town/City</label>
-                                <input type="text" id="city" placeholder="City name" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Town/City *</label>
+                                <input type="text" id="city" placeholder="City name" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 transition-all text-sm font-medium">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">State</label>
-                                <select id="state" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium text-slate-700">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">State *</label>
+                                <select id="state" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 transition-all text-sm font-medium text-slate-700">
                                     <option value="">Select State</option>
                                     <option value="Andhra Pradesh">Andhra Pradesh</option>
                                     <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -242,12 +242,13 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Pincode</label>
-                            <input type="text" id="pincode" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="6-digit PIN" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white transition-all text-sm font-medium">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Pincode *</label>
+                            <input type="text" id="pincode" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="6-digit PIN" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 transition-all text-sm font-medium">
                         </div>
                     </div>
                 </div>
 
+                <!-- Payment Method -->
                 <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm">
                     <h2 class="text-base sm:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-credit-card text-blue-600"></i> Payment Method
@@ -256,21 +257,24 @@
                     <div class="grid grid-cols-1 gap-4 mb-4">
                         <label id="codLabel" class="relative flex flex-col p-4 bg-emerald-50 border-2 border-emerald-600 rounded-xl cursor-default">
                             <input type="radio" name="paymentMethod" value="COD" id="codRadio" checked class="absolute top-4 right-4 text-emerald-600" disabled>
-                            <span class="font-bold text-sm text-slate-800 mb-1"><i class="fa-solid fa-truck-ramp-box mr-1 text-emerald-600"></i> Pay on Delivery</span>
-                            <span class="text-xs text-emerald-700 font-medium">Cash on Delivery (Online UPI is currently disabled)</span>
+                            <span class="font-bold text-sm text-slate-800 mb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-truck-ramp-box text-emerald-600"></i> Pay on Delivery (COD)
+                            </span>
+                            <span class="text-xs text-emerald-700 font-medium">Pay via Cash/UPI to delivery agent at your doorstep.</span>
                         </label>
                     </div>
 
-                    <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex items-start gap-3">
-                        <i class="fa-solid fa-circle-check text-emerald-600 mt-0.5 text-sm"></i>
+                    <div class="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-4 flex items-start gap-3">
+                        <i class="fa-solid fa-circle-check text-emerald-600 mt-0.5 text-base"></i>
                         <div>
-                            <h4 class="font-bold text-sm text-emerald-900">Cash on Delivery Selected</h4>
-                            <p class="text-xs text-emerald-700 font-medium mt-0.5">Please keep the exact amount ready at the time of delivery. No extra handling charges apply.</p>
+                            <h4 class="font-bold text-sm text-emerald-900">Zero Extra Charges</h4>
+                            <p class="text-xs text-emerald-700 font-medium mt-0.5">Free delivery applied! Pay only the exact product value upon package arrival.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Order Summary Sidebar -->
             <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
                 <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm">
                     <h2 class="text-base sm:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -279,11 +283,50 @@
                     
                     <div id="productPreview" class="space-y-1"></div>
 
+                    <!-- Trust Signals & Badges -->
+                    <div class="mt-5 pt-4 border-t border-slate-100 space-y-3">
+                        <div class="flex items-center gap-3 text-slate-700 text-xs font-semibold">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-shield-halved text-sm"></i>
+                            </div>
+                            <span>100% Safe & Verified Order Processing</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-slate-700 text-xs font-semibold">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-rotate-left text-sm"></i>
+                            </div>
+                            <span>7-Day Hassle-Free Replacement Policy</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-slate-700 text-xs font-semibold">
+                            <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-truck-fast text-sm"></i>
+                            </div>
+                            <span>Express Delivery across India</span>
+                        </div>
+                    </div>
+
                     <button onclick="placeOrder()" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base py-4 px-6 rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
                         <i class="fa-solid fa-bag-shopping"></i> Complete Order
                     </button>
                     
-                    <p class="text-center text-xs text-slate-400 font-medium mt-4"><i class="fa-solid fa-lock mr-1 text-slate-300"></i> Secure 256-bit SSL Encrypted Connection</p>
+                    <div class="flex items-center justify-center gap-2 mt-4 text-xs text-slate-500 font-medium">
+                        <i class="fa-solid fa-lock text-emerald-600"></i>
+                        <span>256-Bit Encryption Safe Checkout</span>
+                    </div>
+                </div>
+
+                <!-- Need Help Box -->
+                <div class="bg-slate-100 border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-sm shrink-0">
+                            <i class="fa-solid fa-headset text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs text-slate-800">Need Help with Checkout?</h4>
+                            <p class="text-[11px] text-slate-500">Contact our support team for assistance.</p>
+                        </div>
+                    </div>
+                    <a href="index.html" class="text-xs bg-white text-slate-700 font-bold py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-all">Support</a>
                 </div>
             </div>
 
@@ -319,6 +362,13 @@
         let currentUserId = null;
         let currentUserEmail = null; 
 
+        // Helper function for cleaning price string to safe Float number
+        const parsePrice = (priceStr) => {
+            if (!priceStr) return 0;
+            const cleaned = priceStr.toString().replace(/[^0-9.]/g, '');
+            return parseFloat(cleaned) || 0;
+        };
+
         const showAlert = (title, text, icon) => {
             Swal.fire({
                 title: title, text: text, icon: icon,
@@ -326,7 +376,7 @@
             });
         };
 
-        // --- CURRENT LOCATION (GPS) AUTO-FILL LOGIC (UPDATED & FIXED) ---
+        // --- CURRENT LOCATION (GPS) AUTO-FILL LOGIC ---
         window.getCurrentLocation = function() {
             const locBtnText = document.getElementById('locBtnText');
             
@@ -359,7 +409,6 @@
                             const localArea = [addr.road, addr.neighbourhood, addr.suburb].filter(Boolean).join(", ");
                             document.getElementById('area').value = localArea || city;
 
-                            // State Auto-Select Logic Enhanced
                             if (addr.state) {
                                 const stateSelect = document.getElementById('state');
                                 let apiState = addr.state.toLowerCase().replace(/^state of\s+/i, '').trim();
@@ -433,7 +482,7 @@
             if (orderInfo.orderType === "Cart" && Array.isArray(orderInfo.items)) {
                 orderInfo.items.forEach((item, idx) => {
                     let productImg = item.image || (item.images && item.images[0]) || "https://via.placeholder.com/150";
-                    let unitPrice = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
+                    let unitPrice = parsePrice(item.price);
                     let qty = parseInt(item.quantity) || 1;
                     let itemTotal = unitPrice * qty;
                     let itemSize = item.selectedSize || item.size || 'N/A';
@@ -442,7 +491,7 @@
 
                     previewHtml += `
                     <div class="prod-item-row">
-                        <img src="${productImg}">
+                        <img src="${productImg}" alt="Product">
                         <div class="prod-item-details" style="flex: 1; min-width: 0;">
                             <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name || item.title}</p>
                             <p style="color: #64748b; font-size: 0.82rem; font-weight: 600; margin-top: 2px;">
@@ -457,16 +506,22 @@
                         </div>
                     </div>`;
                 });
-                previewHtml += `<div class="total-checkout-price"><span>Total Payable:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
+                
+                previewHtml += `
+                <div class="space-y-2 mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-slate-600">
+                    <div class="flex justify-between"><span>Subtotal:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>
+                    <div class="flex justify-between text-emerald-600"><span>Delivery Charge:</span><span class="font-bold uppercase">FREE</span></div>
+                </div>
+                <div class="total-checkout-price"><span>Total Payable:</span><span class="text-blue-600">₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
             } else {
-                let unitPrice = parseFloat(orderInfo.price.toString().replace(/,/g, '')) || 0;
+                let unitPrice = parsePrice(orderInfo.price);
                 let qty = parseInt(orderInfo.quantity) || 1;
                 let itemSize = orderInfo.selectedSize || 'N/A';
                 finalPriceToPay = unitPrice * qty;
 
                 previewHtml = `
                 <div class="prod-item-row">
-                    <img src="${orderInfo.productImage}">
+                    <img src="${orderInfo.productImage}" alt="Product">
                     <div class="prod-item-details" style="flex: 1; min-width: 0;">
                         <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${orderInfo.productName}</p>
                         <p style="color: #64748b; font-size: 0.82rem; font-weight: 600; margin-top: 2px;">
@@ -480,7 +535,11 @@
                         <button onclick="changeQuantity(0, 1)" class="qty-btn">+</button>
                     </div>
                 </div>
-                <div class="total-checkout-price"><span>Total Payable:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
+                <div class="space-y-2 mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-slate-600">
+                    <div class="flex justify-between"><span>Subtotal:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>
+                    <div class="flex justify-between text-emerald-600"><span>Delivery Charge:</span><span class="font-bold uppercase">FREE</span></div>
+                </div>
+                <div class="total-checkout-price"><span>Total Payable:</span><span class="text-blue-600">₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
             }
             
             const previewContainer = document.getElementById('productPreview');
@@ -593,7 +652,7 @@
                         let calcTotal = 0;
                         
                         finalOrder.items = orderInfo.items.map(item => {
-                            let p = parseFloat(item.price.toString().replace(/,/g, '')) || 0;
+                            let p = parsePrice(item.price);
                             let q = parseInt(item.quantity) || 1;
                             calcTotal += (p * q);
                             return { 
@@ -610,7 +669,7 @@
                         finalOrder.price = calcTotal.toLocaleString('en-IN');
                         finalOrder.productName = orderInfo.items.map(i => `${i.name || i.title} (Size: ${i.selectedSize || i.size || 'N/A'}, Qty: ${i.quantity})`).join(', ');
                     } else {
-                        let unitPrice = parseFloat(orderInfo.price.toString().replace(/,/g, '')) || 0;
+                        let unitPrice = parsePrice(orderInfo.price);
                         let q = parseInt(orderInfo.quantity) || 1;
                         let calcTotal = unitPrice * q;
 
