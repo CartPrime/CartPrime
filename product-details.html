@@ -551,6 +551,21 @@
         const guestKey = localStorage.getItem('guestUserId') || 'guest_' + Math.random().toString(36).substring(2, 9);
         localStorage.setItem('guestUserId', guestKey);
 
+        function getEstimatedDeliveryDate() {
+            const today = new Date();
+            const startDate = new Date(today);
+            startDate.setDate(today.getDate() + 5);
+            
+            const endDate = new Date(today);
+            endDate.setDate(today.getDate() + 7);
+            
+            const options = { month: 'short', day: 'numeric' };
+            const startStr = startDate.toLocaleDateString('en-US', options);
+            const endStr = endDate.toLocaleDateString('en-US', options);
+            
+            return `Delivered by ${startStr} - ${endStr}`;
+        }
+
         function hideLoader() {
             const loader = document.getElementById('pageLoader');
             if (loader) {
@@ -751,6 +766,8 @@
                 </div>`;
             }
 
+            const estimatedDeliveryText = getEstimatedDeliveryDate();
+
             document.getElementById('productDetail').innerHTML = `
                 <div class="image-section">
                     <div class="main-img-container">
@@ -780,6 +797,10 @@
                     ${sizeHTML}
 
                     <div class="policy-container">
+                        <div class="policy-tag policy-yes">
+                            <i class="fa-solid fa-truck"></i> 
+                            <span>${estimatedDeliveryText}</span>
+                        </div>
                         <div class="policy-tag ${returnStatus ? 'policy-yes' : 'policy-no'}">
                             <i class="fa ${returnStatus ? 'fa-check-circle' : 'fa-times-circle'}"></i> 
                             ${returnStatus ? '7 Days Return Available' : 'No Return Policy'}
@@ -946,5 +967,5 @@
             location.href = 'checkout.html'; 
         };
     </script>
-</body> 
+</body>  
 </html>
