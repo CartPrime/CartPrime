@@ -140,7 +140,10 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
+        .support-card:hover { border-color: #cbd5e1; background: #fafafa; }
         .support-info { display: flex; align-items: center; gap: 10px; }
         .support-info i { font-size: 1.2rem; color: #2563eb; }
         .support-text { display: flex; flex-direction: column; }
@@ -191,12 +194,11 @@
     </div>
 
     <!-- Help & Support Footer Banner -->
-    <div class="support-card">
+    <div class="support-card" onclick="window.location.href='Complaint.html'">
         <div class="support-info">
             <i class="fa-solid fa-circle-question"></i>
             <div class="support-text">
-                <span>Need Help with Orders?<a href="index.html">Click Here to Visit Example</a>
-</span>
+                <span>Need Help with Orders? <a href="Complaint.html" style="color:#2563eb; text-decoration:none;">Click Here</a></span>
                 <span>Get quick resolution on returns & refunds</span>
             </div>
         </div>
