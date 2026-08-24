@@ -172,26 +172,6 @@
             text-align: center;
         }
 
-        /* Secret Admin Toggle Button */
-        .admin-toggle-wrapper {
-            margin-top: 3rem;
-            text-align: center;
-        }
-
-        .admin-toggle-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            cursor: pointer;
-            opacity: 0.5;
-            transition: opacity 0.3s;
-        }
-
-        .admin-toggle-btn:hover {
-            opacity: 1;
-        }
-
         /* Admin Dashboard Section */
         .admin-section {
             display: none;
@@ -262,7 +242,7 @@
         </div>
         <div class="card">
             <h3>Working Time</h3>
-            <p>Available Mon-Fri (5:00 PM - 12:00 PM) </p>
+            <p>Available Mon-Fri (5:00 PM - 12:00 PM)</p>
         </div>
         <div class="card">
             <h3>❓ FAQ & Resources</h3>
@@ -308,12 +288,7 @@
         </div>
     </div>
 
-    <!-- Secret Admin Toggle -->
-    <div class="admin-toggle-wrapper">
-        <button class="admin-toggle-btn" onclick="toggleAdmin()">🔒 Admin Portal</button>
-    </div>
-
-    <!-- Admin View (Only visible to admin) -->
+    <!-- Admin View (Hidden by default) -->
     <div id="adminSection" class="admin-section">
         <h2>Submitted Complaints (Admin View)</h2>
         <div style="overflow-x: auto;">
@@ -381,6 +356,31 @@
             adminSec.style.display = 'none';
         }
     }
+
+    // Secret Key Sequence Detection (C, C, H, H, H)
+    const secretPattern = ['c', 'c', 'h', 'h', 'h'];
+    let currentInputSequence = [];
+
+    document.addEventListener('keydown', function(e) {
+        // Ignore key presses if user is typing inside form fields
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+            return;
+        }
+
+        const key = e.key.toLowerCase();
+        currentInputSequence.push(key);
+
+        // Keep sequence matching the max required length
+        if (currentInputSequence.length > secretPattern.length) {
+            currentInputSequence.shift();
+        }
+
+        // Check matching pattern
+        if (currentInputSequence.join('') === secretPattern.join('')) {
+            toggleAdmin();
+            currentInputSequence = []; // Reset after trigger
+        }
+    });
 
     // Render Complaints for Admin View
     function renderComplaints() {
