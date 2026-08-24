@@ -181,6 +181,7 @@
         .submit-btn:disabled {
             background: #64748b;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         .alert {
@@ -188,11 +189,20 @@
             padding: 1rem;
             margin-top: 1.5rem;
             border-radius: 10px;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .alert-success {
             background: rgba(37, 99, 235, 0.15);
             border: 1px solid var(--primary);
             color: #60a5fa;
-            text-align: center;
-            font-size: 0.95rem;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid var(--danger);
+            color: #f87171;
         }
 
         /* CHATBOT STYLES */
@@ -426,9 +436,11 @@
             <button type="submit" class="submit-btn" id="submitBtn">Submit Complaint</button>
         </form>
         
-        <div id="successAlert" class="alert">
+        <div id="successAlert" class="alert alert-success">
             Your complaint has been successfully registered! Ticket ID: #<span id="ticketId"></span>
         </div>
+
+        <div id="errorAlert" class="alert alert-error"></div>
     </div>
 </div>
 
@@ -627,6 +639,13 @@
         e.preventDefault();
 
         const submitBtn = document.getElementById('submitBtn');
+        const successAlert = document.getElementById('successAlert');
+        const errorAlert = document.getElementById('errorAlert');
+
+        // Hide previous alert boxes
+        successAlert.style.display = 'none';
+        errorAlert.style.display = 'none';
+
         submitBtn.innerText = "Submitting...";
         submitBtn.disabled = true;
 
@@ -649,11 +668,12 @@
             });
 
             document.getElementById('ticketId').innerText = ticketId;
-            document.getElementById('successAlert').style.display = 'block';
+            successAlert.style.display = 'block';
             this.reset();
         } catch (error) {
-            console.error("Error saving complaint to Firestore:", error);
-            alert("Something went wrong! Failed to register complaint.");
+            console.error("Firestore Save Error:", error);
+            errorAlert.innerText = "❌ Error: " + error.message;
+            errorAlert.style.display = 'block';
         } finally {
             submitBtn.innerText = "Submit Complaint";
             submitBtn.disabled = false;
