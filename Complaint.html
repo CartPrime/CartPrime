@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Support & Help Center</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Header Section */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #a5b4fc, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Support Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .card h3 {
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Complaint Form Section */
+        .form-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-section h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #cbd5e1;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Alert Box */
+        .alert {
+            display: none;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 8px;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            color: #4ade80;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Customer Support Center</h1>
+        <p>Njangalkku ningale enganeyaanu sahāyikkēṇḍathu?</p>
+    </header>
+
+    <!-- Support Options -->
+    <div class="cards-grid">
+        <div class="card">
+            <h3>📧 Email Support</h3>
+            <p>support@company.com vazhi njangalkku mail cheyyaam.</p>
+        </div>
+        <div class="card">
+            <h3>📞 Direct Call</h3>
+            <p>Mon-Fri, 9am - 6pm vare 1800-123-4567-il vilikkaam.</p>
+        </div>
+        <div class="card">
+            <h3>💬 Live Chat</h3>
+            <p>24/7 live assistance-naayi chat support labhyamaan.</p>
+        </div>
+    </div>
+
+    <!-- Complaint Registration Form -->
+    <div class="form-section">
+        <h2>Register Your Complaint</h2>
+        <form id="complaintForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" class="form-control" placeholder="Ningalude peru nalkuga" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-control" placeholder="name@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" class="form-control" required>
+                    <option value="" disabled selected>Complaint type thiranjeduppukaya</option>
+                    <option value="technical">Technical Issue</option>
+                    <option value="billing">Billing & Payment</option>
+                    <option value="service">Service Quality</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Complaint Details</label>
+                <textarea id="message" class="form-control" placeholder="Prashnam enthaanennu vyakthamayezhuthuga..." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Complaint</button>
+        </form>
+        
+        <div id="successAlert" class="alert">
+            Ningalude complaint vijayakaramaayi register cheythittund! Ticket ID: #<span id="ticketId"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('complaintForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Random Ticket ID generation for demo
+        const ticket = Math.floor(100000 + Math.random() * 900000);
+        document.getElementById('ticketId').innerText = ticket;
+        
+        // Show success alert
+        const alertBox = document.getElementById('successAlert');
+        alertBox.style.display = 'block';
+        
+        // Reset form
+        this.reset();
+    });
+</script>
+
+</body>
+</html>
