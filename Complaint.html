@@ -93,7 +93,6 @@
             line-height: 1.5;
         }
 
-        /* Highlighted Email Box */
         .highlight-email {
             display: inline-block;
             margin-top: 0.6rem;
@@ -108,12 +107,6 @@
             letter-spacing: 0.5px;
             box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
             transition: all 0.3s ease;
-        }
-
-        .highlight-email:hover {
-            color: #60a5fa;
-            border-color: #60a5fa;
-            box-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
         }
 
         .form-section {
@@ -183,7 +176,6 @@
         .submit-btn:hover {
             background: linear-gradient(135deg, var(--primary-hover), #1d4ed8);
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
         }
 
         .alert {
@@ -211,9 +203,6 @@
         .admin-section h2 {
             color: #fca5a5;
             margin-bottom: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .complaint-table {
@@ -241,13 +230,142 @@
             padding: 0.4rem 0.8rem;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.85rem;
         }
 
         .empty-msg {
             text-align: center;
             color: var(--text-muted);
             padding: 2rem 0;
+        }
+
+        /* --- CHATBOT STYLES --- */
+        .chatbot-toggler {
+            position: fixed;
+            bottom: 30px;
+            right: 35px;
+            outline: none;
+            border: none;
+            height: 55px;
+            width: 55px;
+            display: flex;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--primary);
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+            z-index: 1000;
+        }
+
+        .chatbot-toggler svg {
+            fill: #fff;
+            width: 25px;
+            height: 25px;
+        }
+
+        .chatbot-container {
+            position: fixed;
+            right: 35px;
+            bottom: 95px;
+            width: 350px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.5);
+            transform-origin: bottom right;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        body.show-chatbot .chatbot-container {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+        }
+
+        .chat-header {
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), #1e40af);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h3 {
+            font-size: 1.1rem;
+        }
+
+        .chatbox {
+            overflow-y: auto;
+            height: 320px;
+            padding: 15px;
+            list-style: none;
+        }
+
+        .chatbox .chat {
+            display: flex;
+            list-style: none;
+            margin-bottom: 12px;
+        }
+
+        .chatbox .outgoing {
+            justify-content: flex-end;
+        }
+
+        .chatbox .chat p {
+            padding: 10px 14px;
+            border-radius: 10px;
+            max-width: 80%;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .chatbox .incoming p {
+            background: rgba(30, 41, 59, 0.8);
+            color: #fff;
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 2px;
+        }
+
+        .chatbox .outgoing p {
+            background: var(--primary);
+            color: #fff;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 5px;
+            padding: 10px;
+            border-top: 1px solid var(--border);
+            background: rgba(11, 15, 25, 0.8);
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        .chat-input-area button {
+            background: var(--primary);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -314,7 +432,7 @@
         </div>
     </div>
 
-    <!-- Admin View (Hidden by default) -->
+    <!-- Admin View -->
     <div id="adminSection" class="admin-section">
         <h2>Submitted Complaints (Admin View)</h2>
         <div style="overflow-x: auto;">
@@ -329,40 +447,55 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="complaintList">
-                    <!-- Complaints dynamically inserted here -->
-                </tbody>
+                <tbody id="complaintList"></tbody>
             </table>
         </div>
         <div id="emptyMsg" class="empty-msg" style="display: none;">No registered complaints found.</div>
     </div>
 </div>
 
+<!-- Chatbot Trigger Button -->
+<button class="chatbot-toggler" onclick="document.body.classList.toggle('show-chatbot')">
+    <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12C2,15.14 3.45,17.94 5.72,19.79L4.54,22.42C4.37,22.8 4.74,23.2 5.12,23.03L8.35,21.58C9.47,21.85 10.71,22 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
+</button>
+
+<!-- Chatbot Widget -->
+<div class="chatbot-container">
+    <div class="chat-header">
+        <h3>Support Assistant 🤖</h3>
+        <span style="cursor:pointer;" onclick="document.body.classList.remove('show-chatbot')">✕</span>
+    </div>
+    <ul class="chatbox" id="chatbox">
+        <li class="chat incoming">
+            <p>Hi there! 👋 How can I help you today? Ask me about working hours, email, or submitting complaints!</p>
+        </li>
+    </ul>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKeyPress(event)">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
 <script>
-    // Get complaints from LocalStorage
+    // LocalStorage Operations
     function getComplaints() {
         return JSON.parse(localStorage.getItem('userComplaints')) || [];
     }
 
-    // Handle Complaint Form Submission
     document.getElementById('complaintForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
         const ticketId = Math.floor(100000 + Math.random() * 900000);
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const category = document.getElementById('category').value;
         const message = document.getElementById('message').value;
 
-        const newComplaint = { ticketId, name, email, category, message };
-        
         const complaints = getComplaints();
-        complaints.push(newComplaint);
+        complaints.push({ ticketId, name, email, category, message });
         localStorage.setItem('userComplaints', JSON.stringify(complaints));
 
         document.getElementById('ticketId').innerText = ticketId;
         document.getElementById('successAlert').style.display = 'block';
-        
         this.reset();
         renderComplaints();
     });
@@ -372,7 +505,7 @@
         const adminSec = document.getElementById('adminSection');
         if (adminSec.style.display === 'none' || adminSec.style.display === '') {
             const pass = prompt("Enter Admin Password:");
-            if (pass === "cart.0022") { // Demo Password
+            if (pass === "admin123") {
                 adminSec.style.display = 'block';
                 renderComplaints();
             } else if (pass !== null) {
@@ -388,41 +521,25 @@
     let currentInputSequence = [];
 
     document.addEventListener('keydown', function(e) {
-        // Ignore key presses if user is typing inside form fields
-        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
-            return;
-        }
-
-        const key = e.key.toLowerCase();
-        currentInputSequence.push(key);
-
-        // Keep sequence matching the max required length
-        if (currentInputSequence.length > secretPattern.length) {
-            currentInputSequence.shift();
-        }
-
-        // Check matching pattern
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+        currentInputSequence.push(e.key.toLowerCase());
+        if (currentInputSequence.length > secretPattern.length) currentInputSequence.shift();
         if (currentInputSequence.join('') === secretPattern.join('')) {
             toggleAdmin();
-            currentInputSequence = []; // Reset after trigger
+            currentInputSequence = [];
         }
     });
 
-    // Render Complaints for Admin View
     function renderComplaints() {
         const complaints = getComplaints();
         const tbody = document.getElementById('complaintList');
         const emptyMsg = document.getElementById('emptyMsg');
-
         tbody.innerHTML = '';
-
         if (complaints.length === 0) {
             emptyMsg.style.display = 'block';
             return;
-        } else {
-            emptyMsg.style.display = 'none';
         }
-
+        emptyMsg.style.display = 'none';
         complaints.forEach((c, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -437,12 +554,53 @@
         });
     }
 
-    // Delete Complaint (Admin Action)
     function deleteComplaint(index) {
         let complaints = getComplaints();
         complaints.splice(index, 1);
         localStorage.setItem('userComplaints', JSON.stringify(complaints));
         renderComplaints();
+    }
+
+    // --- CHATBOT LOGIC ---
+    function handleChatKeyPress(e) {
+        if (e.key === 'Enter') sendMessage();
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        appendMessage(text, 'outgoing');
+        input.value = '';
+
+        setTimeout(() => {
+            const botReply = getBotResponse(text.toLowerCase());
+            appendMessage(botReply, 'incoming');
+        }, 500);
+    }
+
+    function appendMessage(msg, type) {
+        const chatbox = document.getElementById('chatbox');
+        const li = document.createElement('li');
+        li.classList.add('chat', type);
+        li.innerHTML = `<p>${msg}</p>`;
+        chatbox.appendChild(li);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function getBotResponse(userMsg) {
+        if (userMsg.includes('hi') || userMsg.includes('hello')) {
+            return "Hello! How can I assist you today?";
+        } else if (userMsg.includes('email') || userMsg.includes('contact')) {
+            return "You can email us directly at: cartprimeshop@gmail.com";
+        } else if (userMsg.includes('hour') || userMsg.includes('time')) {
+            return "Our working hours are Mon-Fri from 5:00 PM to 12:00 PM.";
+        } else if (userMsg.includes('complaint') || userMsg.includes('register') || userMsg.includes('ticket')) {
+            return "You can register a complaint using the form provided on this page.";
+        } else {
+            return "I'm sorry, I didn't quite catch that. Please send us an email at cartprimeshop@gmail.com for detailed assistance.";
+        }
     }
 </script>
 
