@@ -190,63 +190,7 @@
             font-size: 0.95rem;
         }
 
-        .admin-section {
-            display: none;
-            margin-top: 2rem;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            border-radius: 20px;
-            padding: clamp(1.2rem, 4vw, 2.5rem);
-            width: 100%;
-        }
-
-        .admin-section h2 {
-            color: #fca5a5;
-            margin-bottom: 1.5rem;
-            font-size: 1.4rem;
-        }
-
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .complaint-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-            min-width: 600px;
-        }
-
-        .complaint-table th, .complaint-table td {
-            padding: 0.8rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.9rem;
-        }
-
-        .complaint-table th {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--accent);
-        }
-
-        .delete-btn {
-            background: var(--danger);
-            color: #ffffff;
-            border: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .empty-msg {
-            text-align: center;
-            color: var(--text-muted);
-            padding: 2rem 0;
-        }
-
-        /* --- CHATBOT STYLES --- */
+        /* CHATBOT STYLES */
         .chatbot-toggler {
             position: fixed;
             bottom: 20px;
@@ -428,7 +372,6 @@
         <p>How can we assist you today?</p>
     </header>
 
-    <!-- Support Options -->
     <div class="cards-grid">
         <div class="card">
             <h3>📧 Email Support</h3>
@@ -482,32 +425,11 @@
             Your complaint has been successfully registered! Ticket ID: #<span id="ticketId"></span>
         </div>
     </div>
-
-    <!-- Admin View -->
-    <div id="adminSection" class="admin-section">
-        <h2>Submitted Complaints (Admin View)</h2>
-        <div class="table-wrapper">
-            <table class="complaint-table">
-                <thead>
-                    <tr>
-                        <th>Ticket ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Category</th>
-                        <th>Details</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="complaintList"></tbody>
-            </table>
-        </div>
-        <div id="emptyMsg" class="empty-msg" style="display: none;">No registered complaints found.</div>
-    </div>
 </div>
 
 <!-- Chatbot Trigger Button -->
 <button class="chatbot-toggler" onclick="document.body.classList.toggle('show-chatbot')">
-    <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12C2,15.14 3.45,17.94 5.72,19.79L4.54,22.42C4.37,22.8 4.74,23.2 5.12,23.03L8.35,21.58C9.47,21.85 10.71,22 12,22A10,10 0 0,0 12,2Z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12C2,15.14 3.45,17.94 5.72,19.79L4.54,22.42C4.37,22.8 4.74,23.2 5.12,23.03L8.35,21.58C9.47,21.85 10.71,22 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
 </button>
 
 <!-- Chatbot Widget -->
@@ -527,12 +449,10 @@
     </div>
 </div>
 
-<!-- FIREBASE INTEGRATION (MODULE SCRIPT) -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Your Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
         authDomain: "cartprime-shopping.firebaseapp.com",
@@ -543,14 +463,11 @@
         measurementId: "G-9GREWHMEYL"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // State Tracking
     let awaitingPhone = false;
 
-    // Window global functions for Chatbot & UI
     window.handleChatKeyPress = function(e) {
         if (e.key === 'Enter') sendMessage();
     };
@@ -581,7 +498,6 @@
         const chatbox = document.getElementById('chatbox');
         const lowerMsg = userMsg.toLowerCase();
 
-        // Checking Phone Number in Firestore
         if (awaitingPhone) {
             awaitingPhone = false;
             
@@ -594,12 +510,11 @@
             const cleanPhone = userMsg.trim();
 
             try {
-                // Query Firestore 'orders' collection where phone == cleanPhone
                 const ordersRef = collection(db, "orders");
                 const q = query(ordersRef, where("phone", "==", cleanPhone));
                 const querySnapshot = await getDocs(q);
 
-                loadingLi.remove(); // Remove loading state
+                loadingLi.remove();
 
                 const resultLi = document.createElement('li');
                 resultLi.classList.add('chat', 'incoming');
@@ -627,7 +542,7 @@
                 chatbox.appendChild(resultLi);
             } catch (error) {
                 console.error("Firebase Fetch Error:", error);
-                loadingLi.innerHTML = `<p>⚠️ Couldn't fetch orders. Please verify database connection or try again later.</p>`;
+                loadingLi.innerHTML = `<p>⚠️ Couldn't fetch orders. Please verify database connection.</p>`;
             }
 
             chatbox.scrollTop = chatbox.scrollHeight;
@@ -702,11 +617,7 @@
         }, 400);
     };
 
-    // Form Handling LocalStorage Operations
-    function getComplaints() {
-        return JSON.parse(localStorage.getItem('userComplaints')) || [];
-    }
-
+    // Save Complaints to LocalStorage
     document.getElementById('complaintForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const ticketId = Math.floor(100000 + Math.random() * 900000);
@@ -715,76 +626,14 @@
         const category = document.getElementById('category').value;
         const message = document.getElementById('message').value;
 
-        const complaints = getComplaints();
-        complaints.push({ ticketId, name, email, category, message });
+        const complaints = JSON.parse(localStorage.getItem('userComplaints')) || [];
+        complaints.push({ ticketId, name, email, category, message, date: new Date().toLocaleDateString() });
         localStorage.setItem('userComplaints', JSON.stringify(complaints));
 
         document.getElementById('ticketId').innerText = ticketId;
         document.getElementById('successAlert').style.display = 'block';
         this.reset();
-        renderComplaints();
     });
-
-    // Toggle Admin Dashboard
-    function toggleAdmin() {
-        const adminSec = document.getElementById('adminSection');
-        if (adminSec.style.display === 'none' || adminSec.style.display === '') {
-            const pass = prompt("Enter Admin Password:");
-            if (pass === "admin123") {
-                adminSec.style.display = 'block';
-                renderComplaints();
-            } else if (pass !== null) {
-                alert("Incorrect Password!");
-            }
-        } else {
-            adminSec.style.display = 'none';
-        }
-    }
-
-    // Secret Key Sequence Detection (C, C, H, H, H)
-    const secretPattern = ['c', 'c', 'h', 'h', 'h'];
-    let currentInputSequence = [];
-
-    document.addEventListener('keydown', function(e) {
-        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
-        currentInputSequence.push(e.key.toLowerCase());
-        if (currentInputSequence.length > secretPattern.length) currentInputSequence.shift();
-        if (currentInputSequence.join('') === secretPattern.join('')) {
-            toggleAdmin();
-            currentInputSequence = [];
-        }
-    });
-
-    function renderComplaints() {
-        const complaints = getComplaints();
-        const tbody = document.getElementById('complaintList');
-        const emptyMsg = document.getElementById('emptyMsg');
-        tbody.innerHTML = '';
-        if (complaints.length === 0) {
-            emptyMsg.style.display = 'block';
-            return;
-        }
-        emptyMsg.style.display = 'none';
-        complaints.forEach((c, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>#${c.ticketId}</td>
-                <td>${c.name}</td>
-                <td>${c.email}</td>
-                <td>${c.category}</td>
-                <td>${c.message}</td>
-                <td><button class="delete-btn" onclick="deleteComplaint(${index})">Delete</button></td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    window.deleteComplaint = function(index) {
-        let complaints = getComplaints();
-        complaints.splice(index, 1);
-        localStorage.setItem('userComplaints', JSON.stringify(complaints));
-        renderComplaints();
-    };
 </script>
 
 </body>
