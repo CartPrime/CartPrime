@@ -246,7 +246,7 @@
             padding: 2rem 0;
         }
 
-        /* --- CHATBOT RESPONSIVE STYLES --- */
+        /* --- CHATBOT STYLES --- */
         .chatbot-toggler {
             position: fixed;
             bottom: 20px;
@@ -410,6 +410,14 @@
             font-weight: 600;
             font-size: 0.85rem;
         }
+
+        .order-card-item {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--accent);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
@@ -499,7 +507,7 @@
 
 <!-- Chatbot Trigger Button -->
 <button class="chatbot-toggler" onclick="document.body.classList.toggle('show-chatbot')">
-    <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12C2,15.14 3.45,17.94 5.72,19.79L4.54,22.42C4.37,22.8 4.74,23.2 5.12,23.03L8.35,21.58C9.47,21.85 10.71,22 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12C2,15.14 3.45,17.94 5.72,19.79L4.54,22.42C4.37,22.8 4.74,23.2 5.12,23.03L8.35,21.58C9.47,21.85 10.71,22 12,22A10,10 0 0,0 12,2Z"/></svg>
 </button>
 
 <!-- Chatbot Widget -->
@@ -519,11 +527,182 @@
     </div>
 </div>
 
-<script>
-    // State Tracking Variables for Chatbot
-    let awaitingOrderNumber = false;
+<!-- FIREBASE INTEGRATION (MODULE SCRIPT) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // LocalStorage Operations
+    // Your Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+        authDomain: "cartprime-shopping.firebaseapp.com",
+        projectId: "cartprime-shopping",
+        storageBucket: "cartprime-shopping.firebasestorage.app",
+        messagingSenderId: "570068438689",
+        appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+        measurementId: "G-9GREWHMEYL"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // State Tracking
+    let awaitingPhone = false;
+
+    // Window global functions for Chatbot & UI
+    window.handleChatKeyPress = function(e) {
+        if (e.key === 'Enter') sendMessage();
+    };
+
+    window.sendMessage = function() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        appendUserMessage(text);
+        input.value = '';
+
+        setTimeout(() => {
+            handleBotResponse(text);
+        }, 400);
+    };
+
+    function appendUserMessage(msg) {
+        const chatbox = document.getElementById('chatbox');
+        const li = document.createElement('li');
+        li.classList.add('chat', 'outgoing');
+        li.innerHTML = `<p>${msg}</p>`;
+        chatbox.appendChild(li);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    async function handleBotResponse(userMsg) {
+        const chatbox = document.getElementById('chatbox');
+        const lowerMsg = userMsg.toLowerCase();
+
+        // Checking Phone Number in Firestore
+        if (awaitingPhone) {
+            awaitingPhone = false;
+            
+            const loadingLi = document.createElement('li');
+            loadingLi.classList.add('chat', 'incoming');
+            loadingLi.innerHTML = `<p>⏳ Searching database for <b>${userMsg}</b>...</p>`;
+            chatbox.appendChild(loadingLi);
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            const cleanPhone = userMsg.trim();
+
+            try {
+                // Query Firestore 'orders' collection where phone == cleanPhone
+                const ordersRef = collection(db, "orders");
+                const q = query(ordersRef, where("phone", "==", cleanPhone));
+                const querySnapshot = await getDocs(q);
+
+                loadingLi.remove(); // Remove loading state
+
+                const resultLi = document.createElement('li');
+                resultLi.classList.add('chat', 'incoming');
+
+                if (!querySnapshot.empty) {
+                    let orderHTML = `📱 Orders found for <b>${cleanPhone}</b>:<br>`;
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const orderId = data.orderId || doc.id;
+                        const orderDate = data.orderDate || data.createdAt || "N/A";
+                        const status = data.status || "Processing";
+
+                        orderHTML += `
+                            <div class="order-card-item">
+                                <b>Order ID:</b> #${orderId}<br>
+                                <b>Date:</b> ${orderDate}<br>
+                                <b>Status:</b> ${status}
+                            </div>`;
+                    });
+                    resultLi.innerHTML = `<p>${orderHTML}</p>`;
+                } else {
+                    resultLi.innerHTML = `<p>❌ No orders found for phone number: <b>${cleanPhone}</b>.</p>`;
+                }
+
+                chatbox.appendChild(resultLi);
+            } catch (error) {
+                console.error("Firebase Fetch Error:", error);
+                loadingLi.innerHTML = `<p>⚠️ Couldn't fetch orders. Please verify database connection or try again later.</p>`;
+            }
+
+            chatbox.scrollTop = chatbox.scrollHeight;
+            return;
+        }
+
+        if (lowerMsg === 'hi' || lowerMsg === 'hello' || lowerMsg === 'hey') {
+            const li = document.createElement('li');
+            li.classList.add('chat', 'incoming');
+            li.innerHTML = `
+                <p>Hello! Please select a service option below:</p>
+                <div class="option-container">
+                    <button class="option-btn" onclick="selectOption('Order Status')">📦 Order Status</button>
+                    <button class="option-btn" onclick="selectOption('Return & Refund Issue')">🔄 Return & Refund Issue</button>
+                    <button class="option-btn" onclick="selectOption('Site Issue')">🌐 Site Issue</button>
+                    <button class="option-btn" onclick="selectOption('Other')">❓ Other</button>
+                </div>
+            `;
+            chatbox.appendChild(li);
+        } else {
+            let reply = "For detailed assistance, please contact us at cartprimeshop@gmail.com or submit a complaint form above.";
+            const li = document.createElement('li');
+            li.classList.add('chat', 'incoming');
+            li.innerHTML = `<p>${reply}</p>`;
+            chatbox.appendChild(li);
+        }
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    window.selectOption = function(optionText) {
+        appendUserMessage(optionText);
+
+        setTimeout(() => {
+            const chatbox = document.getElementById('chatbox');
+            const li = document.createElement('li');
+            li.classList.add('chat', 'incoming');
+
+            if (optionText === 'Order Status') {
+                awaitingPhone = true;
+                li.innerHTML = `<p>Please enter your registered <b>Phone Number</b> to fetch order details:</p>`;
+            } 
+            else if (optionText === 'Return & Refund Issue') {
+                li.innerHTML = `
+                    <p>Please select the specific service you need assistance with:</p>
+                    <div class="option-container">
+                        <button class="option-btn" onclick="selectOption('Return')">↩️ Return Service</button>
+                        <button class="option-btn" onclick="selectOption('Refund')">💳 Refund Service</button>
+                    </div>
+                `;
+            } 
+            else if (optionText === 'Return') {
+                li.innerHTML = `<p>Redirecting you to the Orders page... 🚀</p>`;
+                chatbox.appendChild(li);
+                chatbox.scrollTop = chatbox.scrollHeight;
+                setTimeout(() => {
+                    window.location.href = "orders.html";
+                }, 1200);
+                return;
+            } 
+            else if (optionText === 'Refund') {
+                li.innerHTML = `<p>For refund requests, please contact our support team at:<br><br>✉️ <b>cartprimeshop@gmail.com</b></p>`;
+            } 
+            else if (optionText === 'Site Issue') {
+                li.innerHTML = `<p>If you're facing technical difficulties, please select 'Technical Issue' in the complaint form and describe the error.</p>`;
+            } 
+            else if (optionText === 'Other') {
+                li.innerHTML = `<p>How else can we help? Feel free to type your question or use the complaint form above.</p>`;
+            }
+
+            chatbox.appendChild(li);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }, 400);
+    };
+
+    // Form Handling LocalStorage Operations
     function getComplaints() {
         return JSON.parse(localStorage.getItem('userComplaints')) || [];
     }
@@ -600,122 +779,12 @@
         });
     }
 
-    function deleteComplaint(index) {
+    window.deleteComplaint = function(index) {
         let complaints = getComplaints();
         complaints.splice(index, 1);
         localStorage.setItem('userComplaints', JSON.stringify(complaints));
         renderComplaints();
-    }
-
-    // --- CHATBOT ADVANCED FLOW ---
-    function handleChatKeyPress(e) {
-        if (e.key === 'Enter') sendMessage();
-    }
-
-    function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const text = input.value.trim();
-        if (!text) return;
-
-        appendUserMessage(text);
-        input.value = '';
-
-        setTimeout(() => {
-            handleBotResponse(text);
-        }, 400);
-    }
-
-    function appendUserMessage(msg) {
-        const chatbox = document.getElementById('chatbox');
-        const li = document.createElement('li');
-        li.classList.add('chat', 'outgoing');
-        li.innerHTML = `<p>${msg}</p>`;
-        chatbox.appendChild(li);
-        chatbox.scrollTop = chatbox.scrollHeight;
-    }
-
-    function handleBotResponse(userMsg) {
-        const chatbox = document.getElementById('chatbox');
-        const lowerMsg = userMsg.toLowerCase();
-
-        // Check if bot was waiting for order ID/Number input
-        if (awaitingOrderNumber) {
-            awaitingOrderNumber = false;
-            const li = document.createElement('li');
-            li.classList.add('chat', 'incoming');
-            li.innerHTML = `<p>🔍 Details for Order ID <b>#${userMsg}</b>:<br><br><b>Status:</b> Out for Delivery 🚚<br><b>Expected Delivery:</b> 2-3 Business Days</p>`;
-            chatbox.appendChild(li);
-            chatbox.scrollTop = chatbox.scrollHeight;
-            return;
-        }
-
-        if (lowerMsg === 'hi' || lowerMsg === 'hello' || lowerMsg === 'hey') {
-            const li = document.createElement('li');
-            li.classList.add('chat', 'incoming');
-            li.innerHTML = `
-                <p>Hello! Please select a service option below:</p>
-                <div class="option-container">
-                    <button class="option-btn" onclick="selectOption('Order Status')">📦 Order Status</button>
-                    <button class="option-btn" onclick="selectOption('Return & Refund Issue')">🔄 Return & Refund Issue</button>
-                    <button class="option-btn" onclick="selectOption('Site Issue')">🌐 Site Issue</button>
-                    <button class="option-btn" onclick="selectOption('Other')">❓ Other</button>
-                </div>
-            `;
-            chatbox.appendChild(li);
-        } else {
-            let reply = "For detailed assistance, please contact us at cartprimeshop@gmail.com or submit a complaint form above.";
-            const li = document.createElement('li');
-            li.classList.add('chat', 'incoming');
-            li.innerHTML = `<p>${reply}</p>`;
-            chatbox.appendChild(li);
-        }
-        chatbox.scrollTop = chatbox.scrollHeight;
-    }
-
-    function selectOption(optionText) {
-        appendUserMessage(optionText);
-
-        setTimeout(() => {
-            const chatbox = document.getElementById('chatbox');
-            const li = document.createElement('li');
-            li.classList.add('chat', 'incoming');
-
-            if (optionText === 'Order Status') {
-                awaitingOrderNumber = true;
-                li.innerHTML = `<p>Please enter your <b>Order Number</b> to track your order:</p>`;
-            } 
-            else if (optionText === 'Return & Refund Issue') {
-                li.innerHTML = `
-                    <p>Please select the specific service you need assistance with:</p>
-                    <div class="option-container">
-                        <button class="option-btn" onclick="selectOption('Return')">↩️ Return Service</button>
-                        <button class="option-btn" onclick="selectOption('Refund')">💳 Refund Service</button>
-                    </div>
-                `;
-            } 
-            else if (optionText === 'Return') {
-                li.innerHTML = `<p>Redirecting you to the Orders page... 🚀</p>`;
-                chatbox.appendChild(li);
-                chatbox.scrollTop = chatbox.scrollHeight;
-                setTimeout(() => {
-                    window.location.href = "orders.html";
-                }, 1200);
-                return;
-            } 
-            else if (optionText === 'Refund') {
-                li.innerHTML = `<p>For refund requests, please contact our support team at:<br><br>✉️ <b>cartprimeshop@gmail.com</b></p>`;
-            } 
-            else if (optionText === 'Site Issue') {
-                li.innerHTML = `<p>If you're facing technical difficulties, please select 'Technical Issue' in the complaint form and describe the error.</p>`;
-            } 
-            else if (optionText === 'Other') {
-                li.innerHTML = `<p>How else can we help? Feel free to type your question or use the complaint form above.</p>`;
-            }
-
-            chatbox.appendChild(li);
-            chatbox.scrollTop = chatbox.scrollHeight;
-        }, 400);
-    }
+    };
 </script>
 
 </body>
