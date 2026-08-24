@@ -1,65 +1,65 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Support & Help Center</title>
+    <title>Customer Support Portal</title>
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --text-color: #f8fafc;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-color: #0b0f19;
+            --card-bg: rgba(23, 32, 54, 0.7);
+            --text-color: #f1f5f9;
             --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #06b6d4;
+            --danger: #ef4444;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
+            background: radial-gradient(circle at top, #1e1b4b 0%, var(--bg-color) 70%);
             color: var(--text-color);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem 1rem;
+            padding: 3rem 1rem;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 950px;
             width: 100%;
         }
 
-        /* Header Section */
         header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
         }
 
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #a5b4fc, #6366f1);
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(135deg, #818cf8, #38bdf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 1.1rem;
+            font-size: 1.15rem;
         }
 
-        /* Support Cards Grid */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 1.5rem;
             margin-bottom: 3rem;
         }
@@ -67,46 +67,50 @@
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            border-radius: 16px;
+            padding: 1.8rem;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .card:hover {
             transform: translateY(-5px);
-            border-color: var(--primary);
+            border-color: var(--accent);
+            box-shadow: 0 15px 35px rgba(6, 182, 212, 0.15);
         }
 
         .card h3 {
-            margin-bottom: 0.5rem;
-            color: #e2e8f0;
+            margin-bottom: 0.6rem;
+            color: #f8fafc;
+            font-size: 1.25rem;
         }
 
         .card p {
             color: var(--text-muted);
             font-size: 0.95rem;
+            line-height: 1.5;
         }
 
-        /* Complaint Form Section */
         .form-section {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 2.5rem;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         .form-section h2 {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
             font-size: 1.8rem;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.8rem;
+            color: #f8fafc;
         }
 
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.4rem;
         }
 
         .form-group label {
@@ -118,52 +122,127 @@
 
         .form-control {
             width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(15, 23, 42, 0.6);
+            padding: 0.9rem 1.2rem;
+            background: rgba(15, 23, 42, 0.7);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             color: #fff;
             font-size: 1rem;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .form-control:focus {
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
 
         textarea.form-control {
             resize: vertical;
-            min-height: 120px;
+            min-height: 130px;
         }
 
         .submit-btn {
             width: 100%;
-            padding: 0.9rem;
-            background: var(--primary);
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), #4338ca);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
         .submit-btn:hover {
-            background: var(--primary-hover);
+            opacity: 0.95;
+            transform: translateY(-1px);
         }
 
-        /* Alert Box */
         .alert {
             display: none;
             padding: 1rem;
-            margin-top: 1rem;
-            border-radius: 8px;
-            background: rgba(34, 197, 94, 0.2);
+            margin-top: 1.5rem;
+            border-radius: 10px;
+            background: rgba(34, 197, 94, 0.15);
             border: 1px solid #22c55e;
             color: #4ade80;
             text-align: center;
+        }
+
+        /* Secret Admin Toggle Button */
+        .admin-toggle-wrapper {
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .admin-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .admin-toggle-btn:hover {
+            opacity: 1;
+        }
+
+        /* Admin Dashboard Section */
+        .admin-section {
+            display: none;
+            margin-top: 2rem;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+        }
+
+        .admin-section h2 {
+            color: #fca5a5;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .complaint-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .complaint-table th, .complaint-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .complaint-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+        }
+
+        .delete-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 2rem 0;
         }
     </style>
 </head>
@@ -171,23 +250,23 @@
 
 <div class="container">
     <header>
-        <h1>Customer Support Center</h1>
-        <p>Njangalkku ningale enganeyaanu sahāyikkēṇḍathu?</p>
+        <h1>Help Center</h1>
+        <p>How can we assist you today?</p>
     </header>
 
     <!-- Support Options -->
     <div class="cards-grid">
         <div class="card">
             <h3>📧 Email Support</h3>
-            <p>support@company.com vazhi njangalkku mail cheyyaam.</p>
+            <p>Send your queries to support@company.com for prompt assistance.</p>
         </div>
         <div class="card">
-            <h3>📞 Direct Call</h3>
-            <p>Mon-Fri, 9am - 6pm vare 1800-123-4567-il vilikkaam.</p>
+            <h3>Working Time</h3>
+            <p>Available Mon-Fri (5:00 PM - 12:00 PM) </p>
         </div>
         <div class="card">
-            <h3>💬 Live Chat</h3>
-            <p>24/7 live assistance-naayi chat support labhyamaan.</p>
+            <h3>❓ FAQ & Resources</h3>
+            <p>Find answers to common questions and helpful user guides here.</p>
         </div>
     </div>
 
@@ -197,7 +276,7 @@
         <form id="complaintForm">
             <div class="form-group">
                 <label for="name">Full Name</label>
-                <input type="text" id="name" class="form-control" placeholder="Ningalude peru nalkuga" required>
+                <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
             </div>
 
             <div class="form-group">
@@ -208,43 +287,137 @@
             <div class="form-group">
                 <label for="category">Category</label>
                 <select id="category" class="form-control" required>
-                    <option value="" disabled selected>Complaint type thiranjeduppukaya</option>
-                    <option value="technical">Technical Issue</option>
-                    <option value="billing">Billing & Payment</option>
-                    <option value="service">Service Quality</option>
-                    <option value="other">Other</option>
+                    <option value="" disabled selected>Select complaint type</option>
+                    <option value="Technical Issue">Technical Issue</option>
+                    <option value="Billing & Payment">Billing & Payment</option>
+                    <option value="Service Quality">Service Quality</option>
+                    <option value="Other">Other</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="message">Complaint Details</label>
-                <textarea id="message" class="form-control" placeholder="Prashnam enthaanennu vyakthamayezhuthuga..." required></textarea>
+                <textarea id="message" class="form-control" placeholder="Describe your issue in detail..." required></textarea>
             </div>
 
             <button type="submit" class="submit-btn">Submit Complaint</button>
         </form>
         
         <div id="successAlert" class="alert">
-            Ningalude complaint vijayakaramaayi register cheythittund! Ticket ID: #<span id="ticketId"></span>
+            Your complaint has been successfully registered! Ticket ID: #<span id="ticketId"></span>
         </div>
+    </div>
+
+    <!-- Secret Admin Toggle -->
+    <div class="admin-toggle-wrapper">
+        <button class="admin-toggle-btn" onclick="toggleAdmin()">🔒 Admin Portal</button>
+    </div>
+
+    <!-- Admin View (Only visible to admin) -->
+    <div id="adminSection" class="admin-section">
+        <h2>Submitted Complaints (Admin View)</h2>
+        <div style="overflow-x: auto;">
+            <table class="complaint-table">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Category</th>
+                        <th>Details</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="complaintList">
+                    <!-- Complaints dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+        <div id="emptyMsg" class="empty-msg" style="display: none;">No registered complaints found.</div>
     </div>
 </div>
 
 <script>
+    // Get complaints from LocalStorage
+    function getComplaints() {
+        return JSON.parse(localStorage.getItem('userComplaints')) || [];
+    }
+
+    // Handle Complaint Form Submission
     document.getElementById('complaintForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Random Ticket ID generation for demo
-        const ticket = Math.floor(100000 + Math.random() * 900000);
-        document.getElementById('ticketId').innerText = ticket;
+        const ticketId = Math.floor(100000 + Math.random() * 900000);
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const category = document.getElementById('category').value;
+        const message = document.getElementById('message').value;
+
+        const newComplaint = { ticketId, name, email, category, message };
         
-        // Show success alert
-        const alertBox = document.getElementById('successAlert');
-        alertBox.style.display = 'block';
+        const complaints = getComplaints();
+        complaints.push(newComplaint);
+        localStorage.setItem('userComplaints', JSON.stringify(complaints));
+
+        document.getElementById('ticketId').innerText = ticketId;
+        document.getElementById('successAlert').style.display = 'block';
         
-        // Reset form
         this.reset();
+        renderComplaints();
     });
+
+    // Toggle Admin Dashboard
+    function toggleAdmin() {
+        const adminSec = document.getElementById('adminSection');
+        if (adminSec.style.display === 'none' || adminSec.style.display === '') {
+            const pass = prompt("Enter Admin Password:");
+            if (pass === "admin123") { // Demo Password
+                adminSec.style.display = 'block';
+                renderComplaints();
+            } else if (pass !== null) {
+                alert("Incorrect Password!");
+            }
+        } else {
+            adminSec.style.display = 'none';
+        }
+    }
+
+    // Render Complaints for Admin View
+    function renderComplaints() {
+        const complaints = getComplaints();
+        const tbody = document.getElementById('complaintList');
+        const emptyMsg = document.getElementById('emptyMsg');
+
+        tbody.innerHTML = '';
+
+        if (complaints.length === 0) {
+            emptyMsg.style.display = 'block';
+            return;
+        } else {
+            emptyMsg.style.display = 'none';
+        }
+
+        complaints.forEach((c, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>#${c.ticketId}</td>
+                <td>${c.name}</td>
+                <td>${c.email}</td>
+                <td>${c.category}</td>
+                <td>${c.message}</td>
+                <td><button class="delete-btn" onclick="deleteComplaint(${index})">Delete</button></td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Delete Complaint (Admin Action)
+    function deleteComplaint(index) {
+        let complaints = getComplaints();
+        complaints.splice(index, 1);
+        localStorage.setItem('userComplaints', JSON.stringify(complaints));
+        renderComplaints();
+    }
 </script>
 
 </body>
