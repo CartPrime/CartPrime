@@ -190,7 +190,6 @@
             font-size: 0.95rem;
         }
 
-        /* Admin Dashboard Section Responsive */
         .admin-section {
             display: none;
             margin-top: 2rem;
@@ -247,7 +246,7 @@
             padding: 2rem 0;
         }
 
-        /* --- CHATBOT RESPONSIVE & OPTIONS STYLES --- */
+        /* --- CHATBOT RESPONSIVE STYLES --- */
         .chatbot-toggler {
             position: fixed;
             bottom: 20px;
@@ -356,7 +355,6 @@
             border-bottom-right-radius: 2px;
         }
 
-        /* Option Buttons inside Chatbot */
         .option-container {
             display: flex;
             flex-direction: column;
@@ -522,6 +520,9 @@
 </div>
 
 <script>
+    // State Tracking Variables for Chatbot
+    let awaitingOrderNumber = false;
+
     // LocalStorage Operations
     function getComplaints() {
         return JSON.parse(localStorage.getItem('userComplaints')) || [];
@@ -606,7 +607,7 @@
         renderComplaints();
     }
 
-    // --- CHATBOT WITH INTERACTIVE OPTIONS ---
+    // --- CHATBOT ADVANCED FLOW ---
     function handleChatKeyPress(e) {
         if (e.key === 'Enter') sendMessage();
     }
@@ -620,7 +621,7 @@
         input.value = '';
 
         setTimeout(() => {
-            handleBotResponse(text.toLowerCase());
+            handleBotResponse(text);
         }, 400);
     }
 
@@ -635,8 +636,20 @@
 
     function handleBotResponse(userMsg) {
         const chatbox = document.getElementById('chatbox');
+        const lowerMsg = userMsg.toLowerCase();
 
-        if (userMsg === 'hi' || userMsg === 'hello' || userMsg === 'hey') {
+        // Check if bot was waiting for order ID/Number input
+        if (awaitingOrderNumber) {
+            awaitingOrderNumber = false;
+            const li = document.createElement('li');
+            li.classList.add('chat', 'incoming');
+            li.innerHTML = `<p>🔍 Details for Order ID <b>#${userMsg}</b>:<br><br><b>Status:</b> Out for Delivery 🚚<br><b>Expected Delivery:</b> 2-3 Business Days</p>`;
+            chatbox.appendChild(li);
+            chatbox.scrollTop = chatbox.scrollHeight;
+            return;
+        }
+
+        if (lowerMsg === 'hi' || lowerMsg === 'hello' || lowerMsg === 'hey') {
             const li = document.createElement('li');
             li.classList.add('chat', 'incoming');
             li.innerHTML = `
@@ -663,21 +676,42 @@
         appendUserMessage(optionText);
 
         setTimeout(() => {
-            let reply = "";
-            if (optionText === 'Order Status') {
-                reply = "To check your order status, please provide your Order ID via email to cartprimeshop@gmail.com.";
-            } else if (optionText === 'Return & Refund Issue') {
-                reply = "For Returns & Refunds, please register a complaint using the form above with your Ticket/Order details.";
-            } else if (optionText === 'Site Issue') {
-                reply = "If you're facing technical difficulties, select 'Technical Issue' in the complaint form and describe the error.";
-            } else if (optionText === 'Other') {
-                reply = "How else can we help? Feel free to type your question or use the complaint form above.";
-            }
-
             const chatbox = document.getElementById('chatbox');
             const li = document.createElement('li');
             li.classList.add('chat', 'incoming');
-            li.innerHTML = `<p>${reply}</p>`;
+
+            if (optionText === 'Order Status') {
+                awaitingOrderNumber = true;
+                li.innerHTML = `<p>Please enter your <b>Order Number</b> to track your order:</p>`;
+            } 
+            else if (optionText === 'Return & Refund Issue') {
+                li.innerHTML = `
+                    <p>Please select the specific service you need assistance with:</p>
+                    <div class="option-container">
+                        <button class="option-btn" onclick="selectOption('Return')">↩️ Return Service</button>
+                        <button class="option-btn" onclick="selectOption('Refund')">💳 Refund Service</button>
+                    </div>
+                `;
+            } 
+            else if (optionText === 'Return') {
+                li.innerHTML = `<p>Redirecting you to the Orders page... 🚀</p>`;
+                chatbox.appendChild(li);
+                chatbox.scrollTop = chatbox.scrollHeight;
+                setTimeout(() => {
+                    window.location.href = "orders.html";
+                }, 1200);
+                return;
+            } 
+            else if (optionText === 'Refund') {
+                li.innerHTML = `<p>For refund requests, please contact our support team at:<br><br>✉️ <b>cartprimeshop@gmail.com</b></p>`;
+            } 
+            else if (optionText === 'Site Issue') {
+                li.innerHTML = `<p>If you're facing technical difficulties, please select 'Technical Issue' in the complaint form and describe the error.</p>`;
+            } 
+            else if (optionText === 'Other') {
+                li.innerHTML = `<p>How else can we help? Feel free to type your question or use the complaint form above.</p>`;
+            }
+
             chatbox.appendChild(li);
             chatbox.scrollTop = chatbox.scrollHeight;
         }, 400);
