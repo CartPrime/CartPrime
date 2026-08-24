@@ -178,6 +178,11 @@
             background: linear-gradient(135deg, var(--primary-hover), #1d4ed8);
         }
 
+        .submit-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+
         .alert {
             display: none;
             padding: 1rem;
@@ -418,7 +423,7 @@
                 <textarea id="message" class="form-control" placeholder="Describe your issue in detail..." required></textarea>
             </div>
 
-            <button type="submit" class="submit-btn">Submit Complaint</button>
+            <button type="submit" class="submit-btn" id="submitBtn">Submit Complaint</button>
         </form>
         
         <div id="successAlert" class="alert">
@@ -451,7 +456,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -617,22 +622,42 @@
         }, 400);
     };
 
-    // Save Complaints to LocalStorage
-    document.getElementById('complaintForm').addEventListener('submit', function(e) {
+    // Save Complaints directly to Firebase Firestore
+    document.getElementById('complaintForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.innerText = "Submitting...";
+        submitBtn.disabled = true;
+
         const ticketId = Math.floor(100000 + Math.random() * 900000);
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const category = document.getElementById('category').value;
         const message = document.getElementById('message').value;
 
-        const complaints = JSON.parse(localStorage.getItem('userComplaints')) || [];
-        complaints.push({ ticketId, name, email, category, message, date: new Date().toLocaleDateString() });
-        localStorage.setItem('userComplaints', JSON.stringify(complaints));
+        try {
+            // Save data to Firebase Firestore 'complaints' collection
+            await addDoc(collection(db, "complaints"), {
+                ticketId: ticketId,
+                name: name,
+                email: email,
+                category: category,
+                message: message,
+                status: "Pending",
+                createdAt: serverTimestamp()
+            });
 
-        document.getElementById('ticketId').innerText = ticketId;
-        document.getElementById('successAlert').style.display = 'block';
-        this.reset();
+            document.getElementById('ticketId').innerText = ticketId;
+            document.getElementById('successAlert').style.display = 'block';
+            this.reset();
+        } catch (error) {
+            console.error("Error saving complaint to Firestore:", error);
+            alert("Something went wrong! Failed to register complaint.");
+        } finally {
+            submitBtn.innerText = "Submit Complaint";
+            submitBtn.disabled = false;
+        }
     });
 </script>
 
