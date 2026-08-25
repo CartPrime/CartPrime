@@ -468,11 +468,12 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getDatabase, ref, push, set, query, orderByChild, equalTo, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
         authDomain: "cartprime-shopping.firebaseapp.com",
+        databaseURL: "https://cartprime-shopping-default-rtdb.firebaseio.com",
         projectId: "cartprime-shopping",
         storageBucket: "cartprime-shopping.firebasestorage.app",
         messagingSenderId: "570068438689",
@@ -481,7 +482,7 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const db = getDatabase(app);
 
     let awaitingPhone = false;
 
@@ -527,20 +528,20 @@
             const cleanPhone = userMsg.trim();
 
             try {
-                const ordersRef = collection(db, "orders");
-                const q = query(ordersRef, where("phone", "==", cleanPhone));
-                const querySnapshot = await getDocs(q);
+                const ordersRef = ref(db, 'orders');
+                const phoneQuery = query(ordersRef, orderByChild('phone'), equalTo(cleanPhone));
+                const snapshot = await get(phoneQuery);
 
                 loadingLi.remove();
 
                 const resultLi = document.createElement('li');
                 resultLi.classList.add('chat', 'incoming');
 
-                if (!querySnapshot.empty) {
+                if (snapshot.exists()) {
                     let orderHTML = `📱 Orders found for <b>${cleanPhone}</b>:<br>`;
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        const orderId = data.orderId || doc.id;
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        const orderId = data.orderId || childSnapshot.key;
                         const orderDate = data.orderDate || data.createdAt || "N/A";
                         const status = data.status || "Processing";
 
@@ -634,7 +635,7 @@
         }, 400);
     };
 
-    // Save Complaints directly to Firebase Firestore ('userComplaints' Collection)
+    // Save Complaints to Realtime Database 'userComplaints' Node
     document.getElementById('complaintForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
@@ -655,8 +656,11 @@
         const message = document.getElementById('message').value;
 
         try {
-            // Firestore 'userComplaints' collection-ലേക്ക് Save ചെയ്യുന്നു
-            await addDoc(collection(db, "userComplaints"), {
+            // Realtime Database-ലെ 'userComplaints' ലേക്ക് Push ചെയ്യുന്നു
+            const complaintsRef = ref(db, 'userComplaints');
+            const newComplaintRef = push(complaintsRef);
+
+            await set(newComplaintRef, {
                 ticketId: ticketId,
                 name: name,
                 email: email,
@@ -664,14 +668,14 @@
                 message: message,
                 status: "Pending",
                 date: new Date().toLocaleDateString(),
-                createdAt: serverTimestamp()
+                timestamp: Date.now()
             });
 
             document.getElementById('ticketId').innerText = ticketId;
             successAlert.style.display = 'block';
             this.reset();
         } catch (error) {
-            console.error("Firestore Save Error:", error);
+            console.error("Realtime Database Save Error:", error);
             errorAlert.innerText = "❌ Error: " + error.message;
             errorAlert.style.display = 'block';
         } finally {
