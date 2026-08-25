@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Support Portal</title>
-    <!-- PDF Generation Library -->
+    <!-- HTML to PDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -20,389 +20,69 @@
             --success: #10b981;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { background: radial-gradient(circle at top, #0f172a 0%, var(--bg-color) 70%); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; }
+        .container { max-width: 950px; width: 100%; }
+        header { text-align: center; margin-bottom: 2.5rem; }
+        header h1 { font-size: clamp(2rem, 5vw, 2.8rem); margin-bottom: 0.8rem; background: linear-gradient(135deg, #ffffff 30%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header p { color: var(--text-muted); font-size: clamp(0.95rem, 3vw, 1.15rem); }
 
-        body {
-            background: radial-gradient(circle at top, #0f172a 0%, var(--bg-color) 70%);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem 1rem;
-        }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-bottom: 2.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+        .card h3 { margin-bottom: 0.6rem; color: #ffffff; font-size: 1.2rem; }
+        .card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+        .highlight-email { display: inline-block; margin-top: 0.6rem; padding: 0.45rem 0.85rem; background: rgba(37, 99, 235, 0.25); border: 1px solid rgba(96, 165, 250, 0.5); border-radius: 8px; color: #ffffff; font-weight: 600; font-family: monospace; }
 
-        .container {
-            max-width: 950px;
-            width: 100%;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        header h1 {
-            font-size: clamp(2rem, 5vw, 2.8rem);
-            margin-bottom: 0.8rem;
-            background: linear-gradient(135deg, #ffffff 30%, #60a5fa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: clamp(0.95rem, 3vw, 1.15rem);
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.2rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.25);
-        }
-
-        .card h3 {
-            margin-bottom: 0.6rem;
-            color: #ffffff;
-            font-size: 1.2rem;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.5;
-            word-break: break-word;
-        }
-
-        .highlight-email {
-            display: inline-block;
-            margin-top: 0.6rem;
-            padding: 0.45rem 0.85rem;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(96, 165, 250, 0.1));
-            border: 1px solid rgba(96, 165, 250, 0.5);
-            border-radius: 8px;
-            color: #ffffff;
-            font-weight: 600;
-            font-family: monospace;
-            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
-            letter-spacing: 0.5px;
-            box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
-            word-break: break-all;
-        }
-
-        .form-section {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: clamp(1.2rem, 4vw, 2.5rem);
-            backdrop-filter: blur(16px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-        }
-
-        .form-section h2 {
-            margin-bottom: 1.5rem;
-            font-size: clamp(1.4rem, 4vw, 1.8rem);
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.8rem;
-            color: #ffffff;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #e2e8f0;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: #ffffff;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 0.9rem;
-            background: linear-gradient(135deg, var(--primary), #1e40af);
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
-        }
-
-        .submit-btn:hover {
-            background: linear-gradient(135deg, var(--primary-hover), #1d4ed8);
-        }
-
-        .submit-btn:disabled {
-            background: #64748b;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .alert {
-            display: none;
-            padding: 1rem;
-            margin-top: 1.5rem;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            text-align: center;
-        }
-
-        .alert-success {
-            background: rgba(37, 99, 235, 0.15);
-            border: 1px solid var(--primary);
-            color: #60a5fa;
-        }
-
-        .alert-error {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid var(--danger);
-            color: #f87171;
-        }
+        .form-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: clamp(1.2rem, 4vw, 2.5rem); backdrop-filter: blur(16px); }
+        .form-section h2 { margin-bottom: 1.5rem; font-size: clamp(1.4rem, 4vw, 1.8rem); border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #e2e8f0; }
+        .form-control { width: 100%; padding: 0.8rem 1rem; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border); border-radius: 10px; color: #ffffff; font-size: 0.95rem; outline: none; }
+        textarea.form-control { resize: vertical; min-height: 120px; }
+        .submit-btn { width: 100%; padding: 0.9rem; background: linear-gradient(135deg, var(--primary), #1e40af); color: #ffffff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; }
 
         /* CHATBOT STYLES */
-        .chatbot-toggler {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            outline: none;
-            border: none;
-            height: 50px;
-            width: 50px;
-            display: flex;
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: var(--primary);
-            transition: all 0.2s ease;
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
-            z-index: 1000;
-        }
+        .chatbot-toggler { position: fixed; bottom: 20px; right: 20px; border: none; height: 50px; width: 50px; display: flex; cursor: pointer; align-items: center; justify-content: center; border-radius: 50%; background: var(--primary); box-shadow: 0 0 20px rgba(37, 99, 235, 0.5); z-index: 1000; }
+        .chatbot-toggler svg { fill: #fff; width: 24px; height: 24px; }
+        .chatbot-container { position: fixed; right: 20px; bottom: 80px; width: calc(100% - 40px); max-width: 380px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; opacity: 0; pointer-events: none; transform: scale(0.8); transform-origin: bottom right; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.7); backdrop-filter: blur(12px); z-index: 1000; }
+        body.show-chatbot .chatbot-container { opacity: 1; pointer-events: auto; transform: scale(1); }
+        .chat-header { padding: 14px; background: linear-gradient(135deg, var(--primary), #1e40af); color: #fff; display: flex; align-items: center; justify-content: space-between; }
+        .chatbox { overflow-y: auto; height: 340px; max-height: 55vh; padding: 15px; list-style: none; }
+        .chatbox .chat { display: flex; list-style: none; margin-bottom: 12px; flex-direction: column; }
+        .chatbox .outgoing { align-items: flex-end; }
+        .chatbox .incoming { align-items: flex-start; }
+        .chatbox .chat p { padding: 10px 14px; border-radius: 10px; max-width: 90%; font-size: 0.88rem; line-height: 1.4; }
+        .chatbox .incoming p { background: rgba(30, 41, 59, 0.85); color: #fff; border: 1px solid var(--border); border-bottom-left-radius: 2px; }
+        .chatbox .outgoing p { background: var(--primary); color: #fff; border-bottom-right-radius: 2px; }
 
-        .chatbot-toggler svg {
-            fill: #fff;
-            width: 24px;
-            height: 24px;
-        }
+        .option-container { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; width: 100%; max-width: 85%; }
+        .option-btn { background: rgba(37, 99, 235, 0.2); border: 1px solid rgba(96, 165, 250, 0.4); color: #60a5fa; padding: 8px 12px; border-radius: 8px; font-size: 0.82rem; text-align: left; cursor: pointer; }
+        .option-btn:hover { background: var(--primary); color: #ffffff; }
 
-        .chatbot-container {
-            position: fixed;
-            right: 20px;
-            bottom: 80px;
-            width: calc(100% - 40px);
-            max-width: 380px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            overflow: hidden;
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.8);
-            transform-origin: bottom right;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-        }
+        .chat-input-area { display: flex; gap: 5px; padding: 10px; border-top: 1px solid var(--border); background: rgba(11, 15, 25, 0.9); }
+        .chat-input-area input { flex: 1; background: transparent; border: none; outline: none; color: #fff; padding: 8px; font-size: 0.9rem; }
+        .chat-input-area button { background: var(--primary); border: none; color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; }
 
-        body.show-chatbot .chatbot-container {
-            opacity: 1;
-            pointer-events: auto;
-            transform: scale(1);
-        }
+        /* CHAT MINI CARD */
+        .chat-order-card { background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-top: 8px; width: 100%; }
+        .chat-order-card div { margin-bottom: 4px; font-size: 0.85rem; }
+        .download-pdf-btn { margin-top: 8px; width: 100%; padding: 8px; background: var(--success); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .download-pdf-btn:hover { background: #059669; }
 
-        .chat-header {
-            padding: 14px;
-            background: linear-gradient(135deg, var(--primary), #1e40af);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .chat-header h3 {
-            font-size: 1rem;
-        }
-
-        .chatbox {
-            overflow-y: auto;
-            height: 340px;
-            max-height: 55vh;
-            padding: 15px;
-            list-style: none;
-        }
-
-        .chatbox .chat {
-            display: flex;
-            list-style: none;
-            margin-bottom: 12px;
-            flex-direction: column;
-        }
-
-        .chatbox .outgoing {
-            align-items: flex-end;
-        }
-
-        .chatbox .incoming {
-            align-items: flex-start;
-        }
-
-        .chatbox .chat p {
-            padding: 10px 14px;
-            border-radius: 10px;
-            max-width: 90%;
-            font-size: 0.88rem;
-            line-height: 1.4;
-        }
-
-        .chatbox .incoming p {
-            background: rgba(30, 41, 59, 0.85);
-            color: #fff;
-            border: 1px solid var(--border);
-            border-bottom-left-radius: 2px;
-        }
-
-        .chatbox .outgoing p {
-            background: var(--primary);
-            color: #fff;
-            border-bottom-right-radius: 2px;
-        }
-
-        .option-container {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 8px;
-            width: 100%;
-            max-width: 85%;
-        }
-
-        .option-btn {
-            background: rgba(37, 99, 235, 0.2);
-            border: 1px solid rgba(96, 165, 250, 0.4);
-            color: #60a5fa;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.82rem;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .option-btn:hover {
-            background: var(--primary);
-            color: #ffffff;
-            border-color: var(--primary);
-        }
-
-        .chat-input-area {
-            display: flex;
-            gap: 5px;
-            padding: 10px;
-            border-top: 1px solid var(--border);
-            background: rgba(11, 15, 25, 0.9);
-        }
-
-        .chat-input-area input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: #fff;
-            padding: 8px;
-            font-size: 0.9rem;
-        }
-
-        .chat-input-area button {
-            background: var(--primary);
-            border: none;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .order-card-item {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid var(--accent);
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 8px;
-            color: #fff;
-            text-align: left;
-        }
-
-        .download-pdf-btn {
-            margin-top: 10px;
-            width: 100%;
-            padding: 6px 10px;
-            background: var(--success);
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .download-pdf-btn:hover {
-            background: #059669;
-        }
+        /* HIDDEN PRINTABLE RECEIPT (PDF LOOK) */
+        #pdf-receipt-template { display: none; }
+        .pdf-receipt-container { background: #ffffff; color: #1e293b; padding: 30px; font-family: 'Helvetica', sans-serif; max-width: 600px; margin: auto; }
+        .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #2563eb; padding-bottom: 15px; margin-bottom: 20px; }
+        .pdf-header h2 { color: #2563eb; font-size: 24px; text-transform: uppercase; }
+        .pdf-header p { font-size: 12px; color: #64748b; }
+        .pdf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; font-size: 13px; }
+        .pdf-box { background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0; }
+        .pdf-box h4 { color: #1e293b; font-size: 13px; margin-bottom: 6px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+        .pdf-table th { background: #2563eb; color: #ffffff; text-align: left; padding: 8px; }
+        .pdf-table td { padding: 8px; border-bottom: 1px solid #e2e8f0; color: #334155; }
+        .pdf-total { text-align: right; font-size: 16px; font-weight: bold; color: #2563eb; margin-top: 10px; }
+        .pdf-footer { text-align: center; margin-top: 30px; font-size: 11px; color: #94a3b8; border-top: 1px dashed #cbd5e1; padding-top: 10px; }
     </style>
 </head>
 <body>
@@ -429,7 +109,6 @@
         </div>
     </div>
 
-    <!-- Complaint Registration Form -->
     <div class="form-section">
         <h2>Register Your Complaint</h2>
         <form id="complaintForm">
@@ -437,12 +116,10 @@
                 <label for="name">Full Name</label>
                 <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
             </div>
-
             <div class="form-group">
                 <label for="email">Email Address</label>
                 <input type="email" id="email" class="form-control" placeholder="name@example.com" required>
             </div>
-
             <div class="form-group">
                 <label for="category">Category</label>
                 <select id="category" class="form-control" required>
@@ -453,29 +130,21 @@
                     <option value="Other">Other</option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label for="message">Complaint Details</label>
                 <textarea id="message" class="form-control" placeholder="Describe your issue in detail..." required></textarea>
             </div>
-
             <button type="submit" class="submit-btn" id="submitBtn">Submit Complaint</button>
         </form>
-        
-        <div id="successAlert" class="alert alert-success">
-            Your complaint has been successfully registered! Ticket ID: #<span id="ticketId"></span>
-        </div>
-
-        <div id="errorAlert" class="alert alert-error"></div>
     </div>
 </div>
 
-<!-- Chatbot Trigger Button -->
+<!-- Chatbot Button -->
 <button class="chatbot-toggler" onclick="document.body.classList.toggle('show-chatbot')">
-    <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12C2,15.14 3.45,17.94 5.72,19.79L4.54,22.42C4.37,22.8 4.74,23.2 5.12,23.03L8.35,21.58C9.47,21.85 10.71,22 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12C2,15.14 3.45,17.94 5.72,19.79L4.54,22.42C4.37,22.8 4.74,23.2 5.12,23.03L8.35,21.58C9.47,21.85 10.71,22 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,Z"/></svg>
 </button>
 
-<!-- Chatbot Widget -->
+<!-- Chatbot Window -->
 <div class="chatbot-container">
     <div class="chat-header">
         <h3>Support Assistant 🤖</h3>
@@ -489,6 +158,63 @@
     <div class="chat-input-area">
         <input type="text" id="chatInput" placeholder="Type 'Hi' or your query..." onkeypress="handleChatKeyPress(event)">
         <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<!-- Hidden PDF Receipt Structure -->
+<div id="pdf-receipt-template">
+    <div class="pdf-receipt-container" id="pdf-receipt-content">
+        <div class="pdf-header">
+            <div>
+                <h2>CartPrime</h2>
+                <p>Official Order Receipt</p>
+            </div>
+            <div style="text-align: right;">
+                <p><b>Receipt No:</b> <span id="pdf-rec-id"></span></p>
+                <p><b>Date:</b> <span id="pdf-rec-date"></span></p>
+            </div>
+        </div>
+
+        <div class="pdf-grid">
+            <div class="pdf-box">
+                <h4>Customer Details</h4>
+                <p><b>Name:</b> <span id="pdf-cust-name"></span></p>
+                <p><b>Phone:</b> <span id="pdf-cust-phone"></span></p>
+                <p><b>Address:</b> <span id="pdf-cust-address"></span></p>
+            </div>
+            <div class="pdf-box">
+                <h4>Payment Info</h4>
+                <p><b>Payment Method:</b> <span id="pdf-pay-method"></span></p>
+                <p><b>Payment Status:</b> <span id="pdf-pay-status"></span></p>
+                <p><b>Order Status:</b> <span id="pdf-order-status"></span></p>
+            </div>
+        </div>
+
+        <table class="pdf-table">
+            <thead>
+                <tr>
+                    <th>Item Description</th>
+                    <th>Type / Size</th>
+                    <th style="text-align: right;">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="pdf-item-name"></td>
+                    <td id="pdf-item-size"></td>
+                    <td style="text-align: right;" id="pdf-item-price"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="pdf-total">
+            Total Amount: ₹<span id="pdf-total-price"></span>
+        </div>
+
+        <div class="pdf-footer">
+            <p>Thank you for shopping with CartPrime!</p>
+            <p>For any queries, contact support: cartprimeshop@gmail.com</p>
+        </div>
     </div>
 </div>
 
@@ -511,26 +237,7 @@
     const db = getDatabase(app);
 
     let awaitingPhone = false;
-
-    // PDF Download Functionality
-    window.downloadOrderPDF = function(elementId, orderId) {
-        const element = document.getElementById(elementId);
-        
-        const opt = {
-            margin:       10,
-            filename:     `Order_Receipt_${orderId}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, backgroundColor: '#0f172a' },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        const btn = element.querySelector('.download-pdf-btn');
-        if(btn) btn.style.display = 'none';
-
-        html2pdf().set(opt).from(element).save().then(() => {
-            if(btn) btn.style.display = 'flex';
-        });
-    };
+    let fetchedOrders = {}; // Global object to hold full details for PDF generation
 
     window.handleChatKeyPress = function(e) {
         if (e.key === 'Enter') sendMessage();
@@ -567,14 +274,13 @@
             
             const loadingLi = document.createElement('li');
             loadingLi.classList.add('chat', 'incoming');
-            loadingLi.innerHTML = `<p>⏳ Searching database for <b>${userMsg}</b>...</p>`;
+            loadingLi.innerHTML = `<p>⏳ Fetching order details...</p>`;
             chatbox.appendChild(loadingLi);
             chatbox.scrollTop = chatbox.scrollHeight;
 
             const cleanPhoneStr = userMsg.trim();
 
             try {
-                // Direct reference to: orders/{phone}
                 const userOrdersRef = ref(db, `orders/${cleanPhoneStr}`);
                 const snapshot = await get(userOrdersRef);
 
@@ -585,30 +291,22 @@
 
                 if (snapshot.exists()) {
                     let orderHTML = `📱 Orders found for <b>${cleanPhoneStr}</b>:<br>`;
-                    let count = 0;
                     
                     snapshot.forEach((childSnapshot) => {
-                        count++;
                         const data = childSnapshot.val();
                         const orderId = data.orderId || childSnapshot.key;
-                        const orderDate = data.date || data.createdAt || "N/A";
-                        const status = data.status || "Processing";
-                        const items = data.productName || data.items || "N/A";
-                        const amount = data.price || data.amount || data.totalPrice || "N/A";
-                        const customerName = data.customerName || "Customer";
-                        const cardDomId = `order-pdf-card-${count}`;
+                        
+                        // Save data globally for PDF generator
+                        fetchedOrders[orderId] = data;
 
+                        // SHORT CHAT DISPLAY (വിവരങ്ങൾ ചുരുക്കി നൽകുന്നു)
                         orderHTML += `
-                            <div class="order-card-item" id="${cardDomId}">
-                                <div style="font-weight:bold; color:#60a5fa; border-bottom:1px solid #334155; padding-bottom:4px; margin-bottom:6px;">CartPrime Receipt</div>
-                                <b>Customer:</b> ${customerName}<br>
-                                <b>Order ID:</b> #${orderId}<br>
-                                <b>Product:</b> ${items}<br>
-                                <b>Amount:</b> ₹${amount}<br>
-                                <b>Date:</b> ${orderDate}<br>
-                                <b>Status:</b> <span style="color:#10b981;">${status}</span><br>
-                                <button class="download-pdf-btn" onclick="downloadOrderPDF('${cardDomId}', '${orderId}')">
-                                    📄 Download Receipt (PDF)
+                            <div class="chat-order-card">
+                                <div><b>Order ID:</b> #${orderId}</div>
+                                <div><b>Product:</b> ${data.productName || "N/A"}</div>
+                                <div><b>Status:</b> <span style="color:#10b981;">${data.status || "Processing"}</span></div>
+                                <button class="download-pdf-btn" onclick="generateAndDownloadPDF('${orderId}')">
+                                    📄 Download Full Receipt (PDF)
                                 </button>
                             </div>`;
                     });
@@ -619,8 +317,8 @@
 
                 chatbox.appendChild(resultLi);
             } catch (error) {
-                console.error("Firebase Fetch Error:", error);
-                loadingLi.innerHTML = `<p>⚠️ Couldn't fetch orders. Please try again.</p>`;
+                console.error("Firebase Error:", error);
+                loadingLi.innerHTML = `<p>⚠️ Failed to fetch details. Try again.</p>`;
             }
 
             chatbox.scrollTop = chatbox.scrollHeight;
@@ -631,7 +329,7 @@
             const li = document.createElement('li');
             li.classList.add('chat', 'incoming');
             li.innerHTML = `
-                <p>Hello! Please select a service option below:</p>
+                <p>Hello! How can I assist you today?</p>
                 <div class="option-container">
                     <button class="option-btn" onclick="selectOption('Order Status')">📦 Order Status</button>
                     <button class="option-btn" onclick="selectOption('Return & Refund Issue')">🔄 Return & Refund Issue</button>
@@ -641,10 +339,9 @@
             `;
             chatbox.appendChild(li);
         } else {
-            let reply = "For detailed assistance, please contact us at cartprimeshop@gmail.com or submit a complaint form above.";
             const li = document.createElement('li');
             li.classList.add('chat', 'incoming');
-            li.innerHTML = `<p>${reply}</p>`;
+            li.innerHTML = `<p>For assistance, please mail us at <b>cartprimeshop@gmail.com</b></p>`;
             chatbox.appendChild(li);
         }
         chatbox.scrollTop = chatbox.scrollHeight;
@@ -660,34 +357,11 @@
 
             if (optionText === 'Order Status') {
                 awaitingPhone = true;
-                li.innerHTML = `<p>Please enter your registered <b>Phone Number</b> to fetch order details:</p>`;
-            } 
-            else if (optionText === 'Return & Refund Issue') {
-                li.innerHTML = `
-                    <p>Please select the specific service you need assistance with:</p>
-                    <div class="option-container">
-                        <button class="option-btn" onclick="selectOption('Return')">↩️ Return Service</button>
-                        <button class="option-btn" onclick="selectOption('Refund')">💳 Refund Service</button>
-                    </div>
-                `;
-            } 
-            else if (optionText === 'Return') {
-                li.innerHTML = `<p>Redirecting you to the Orders page... 🚀</p>`;
-                chatbox.appendChild(li);
-                chatbox.scrollTop = chatbox.scrollHeight;
-                setTimeout(() => {
-                    window.location.href = "orders.html";
-                }, 1200);
-                return;
-            } 
-            else if (optionText === 'Refund') {
-                li.innerHTML = `<p>For refund requests, please contact our support team at:<br><br>✉️ <b>cartprimeshop@gmail.com</b></p>`;
-            } 
-            else if (optionText === 'Site Issue') {
-                li.innerHTML = `<p>If you're facing technical difficulties, please select 'Technical Issue' in the complaint form and describe the error.</p>`;
-            } 
-            else if (optionText === 'Other') {
-                li.innerHTML = `<p>How else can we help? Feel free to type your question or use the complaint form above.</p>`;
+                li.innerHTML = `<p>Please enter your registered <b>Phone Number</b>:</p>`;
+            } else if (optionText === 'Return & Refund Issue') {
+                li.innerHTML = `<p>For refunds/returns, contact support: <b>cartprimeshop@gmail.com</b></p>`;
+            } else {
+                li.innerHTML = `<p>How else can we help? Please describe your query.</p>`;
             }
 
             chatbox.appendChild(li);
@@ -695,52 +369,45 @@
         }, 400);
     };
 
-    // Save Complaints to Realtime Database
+    // GENERATE FULL RECEIPT PDF
+    window.generateAndDownloadPDF = function(orderId) {
+        const data = fetchedOrders[orderId];
+        if (!data) return alert("Order data missing!");
+
+        // Inject Full Details into PDF Receipt Template
+        document.getElementById('pdf-rec-id').innerText = data.orderId || orderId;
+        document.getElementById('pdf-rec-date').innerText = data.date || "N/A";
+        document.getElementById('pdf-cust-name').innerText = data.customerName || "N/A";
+        document.getElementById('pdf-cust-phone').innerText = data.customerPhone || data.phone || "N/A";
+        document.getElementById('pdf-cust-address').innerText = data.address || "N/A";
+        
+        document.getElementById('pdf-pay-method').innerText = data.paymentMethod || "COD";
+        document.getElementById('pdf-pay-status').innerText = data.paymentStatus || "COD";
+        document.getElementById('pdf-order-status').innerText = data.status || "Order Confirmed";
+
+        document.getElementById('pdf-item-name').innerText = data.productName || "Product";
+        document.getElementById('pdf-item-size').innerText = `${data.orderType || "Single"} (${data.selectedSize || "Free Size"})`;
+        document.getElementById('pdf-item-price').innerText = `₹${data.price || "0"}`;
+        document.getElementById('pdf-total-price').innerText = data.price || "0";
+
+        // Render PDF
+        const element = document.getElementById('pdf-receipt-content');
+        const opt = {
+            margin:       8,
+            filename:     `Receipt_${orderId}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+    };
+
+    // Form Submit logic
     document.getElementById('complaintForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-
-        const submitBtn = document.getElementById('submitBtn');
-        const successAlert = document.getElementById('successAlert');
-        const errorAlert = document.getElementById('errorAlert');
-
-        successAlert.style.display = 'none';
-        errorAlert.style.display = 'none';
-
-        submitBtn.innerText = "Submitting...";
-        submitBtn.disabled = true;
-
-        const ticketId = Math.floor(100000 + Math.random() * 900000);
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const category = document.getElementById('category').value;
-        const message = document.getElementById('message').value;
-
-        try {
-            const complaintsRef = ref(db, 'userComplaints');
-            const newComplaintRef = push(complaintsRef);
-
-            await set(newComplaintRef, {
-                ticketId: ticketId,
-                name: name,
-                email: email,
-                category: category,
-                message: message,
-                status: "Pending",
-                date: new Date().toLocaleDateString(),
-                timestamp: Date.now()
-            });
-
-            document.getElementById('ticketId').innerText = ticketId;
-            successAlert.style.display = 'block';
-            this.reset();
-        } catch (error) {
-            console.error("Realtime Database Save Error:", error);
-            errorAlert.innerText = "❌ Error: " + error.message;
-            errorAlert.style.display = 'block';
-        } finally {
-            submitBtn.innerText = "Submit Complaint";
-            submitBtn.disabled = false;
-        }
+        alert("Complaint submitted successfully!");
+        this.reset();
     });
 </script>
 
