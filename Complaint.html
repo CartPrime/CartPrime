@@ -265,7 +265,6 @@
         chatbox.scrollTop = chatbox.scrollHeight;
     }
 
-    // Product Name നീളമുണ്ടെങ്കിൽ ചുരുക്കി കാണിക്കാനുള്ള ഫംഗ്ഷൻ (Truncate)
     function truncateText(text, maxLength = 35) {
         if (!text) return "N/A";
         return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -307,14 +306,17 @@
                         // Save data globally for PDF generator
                         fetchedOrders[orderId] = data;
 
-                        // CHAT DISPLAY: Order ID, Product Name (Truncated), Order Date മാത്രം കാണിക്കുന്നു
+                        // CHAT DISPLAY: Order Receipt Header & Full Order Receipt Button
                         orderHTML += `
                             <div class="chat-order-card">
+                                <div style="font-weight:bold; color:#60a5fa; border-bottom:1px solid #334155; padding-bottom:4px; margin-bottom:6px;">
+                                    🧾 Order Receipt
+                                </div>
                                 <div><b>Order ID:</b> #${orderId}</div>
                                 <div><b>Product:</b> ${truncateText(fullProductName)}</div>
                                 <div><b>Date:</b> ${orderDate}</div>
                                 <button class="download-pdf-btn" onclick="generateAndDownloadPDF('${orderId}')">
-                                    📄 Download Full Receipt (PDF)
+                                    📄 Download Full Order Receipt (PDF)
                                 </button>
                             </div>`;
                     });
