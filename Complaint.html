@@ -21,7 +21,38 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        body { background: radial-gradient(circle at top, #0f172a 0%, var(--bg-color) 70%); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; }
+        
+        /* 1. PAGE LOAD ANIMATION STYLES */
+        #page-loader {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--bg-color);
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+            z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .loader-spinner {
+            width: 45px; height: 45px;
+            border: 4px solid rgba(96, 165, 250, 0.2);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        body { 
+            background: radial-gradient(circle at top, #0f172a 0%, var(--bg-color) 70%); 
+            color: var(--text-color); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 2rem 1rem;
+            opacity: 0;
+            animation: fadeInPage 0.8s ease forwards 0.3s;
+        }
+        @keyframes fadeInPage { to { opacity: 1; } }
+
         .container { max-width: 950px; width: 100%; }
         header { text-align: center; margin-bottom: 2.5rem; }
         header h1 { font-size: clamp(2rem, 5vw, 2.8rem); margin-bottom: 0.8rem; background: linear-gradient(135deg, #ffffff 30%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -55,6 +86,14 @@
         .chatbox .incoming p { background: rgba(30, 41, 59, 0.85); color: #fff; border: 1px solid var(--border); border-bottom-left-radius: 2px; }
         .chatbox .outgoing p { background: var(--primary); color: #fff; border-bottom-right-radius: 2px; }
 
+        /* 2. THREE DOTS TYPING ANIMATION STYLES */
+        .typing-indicator { display: flex; align-items: center; gap: 5px; padding: 12px 16px !important; }
+        .typing-dot { width: 7px; height: 7px; background: #60a5fa; border-radius: 50%; animation: typingBounce 1.4s infinite ease-in-out; }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-6px); opacity: 1; } }
+
         .option-container { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; width: 100%; max-width: 85%; }
         .option-btn { background: rgba(37, 99, 235, 0.2); border: 1px solid rgba(96, 165, 250, 0.4); color: #60a5fa; padding: 8px 12px; border-radius: 8px; font-size: 0.82rem; text-align: left; cursor: pointer; }
         .option-btn:hover { background: var(--primary); color: #ffffff; }
@@ -63,11 +102,9 @@
         .chat-input-area input { flex: 1; background: transparent; border: none; outline: none; color: #fff; padding: 8px; font-size: 0.9rem; }
         .chat-input-area button { background: var(--primary); border: none; color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; }
 
-        /* CHAT RECEIPT PROMPT */
         .download-pdf-btn { margin-top: 10px; width: 100%; padding: 9px; background: var(--success); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .download-pdf-btn:hover { background: #059669; }
 
-        /* VISIBLE CONTAINER FOR HTML2PDF RENDERING (POSITIONED OFF-SCREEN) */
         #pdf-receipt-wrapper { position: absolute; left: -9999px; top: -9999px; }
         .pdf-receipt-container { background: #ffffff; color: #0f172a; padding: 30px; font-family: sans-serif; width: 750px; }
         .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #2563eb; padding-bottom: 12px; margin-bottom: 15px; }
@@ -82,6 +119,11 @@
     </style>
 </head>
 <body>
+
+<!-- Page Preloader Screen -->
+<div id="page-loader">
+    <div class="loader-spinner"></div>
+</div>
 
 <div class="container">
     <header>
@@ -227,6 +269,13 @@
     let currentCustomerPhone = "";
     let fetchedOrdersList = []; 
 
+    // Hide Page Loader on window load
+    window.addEventListener('load', () => {
+        const loader = document.getElementById('page-loader');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 600);
+    });
+
     window.handleChatKeyPress = function(e) {
         if (e.key === 'Enter') sendMessage();
     };
@@ -239,9 +288,13 @@
         appendUserMessage(text);
         input.value = '';
 
+        // Show 3 dots animation before generating response
+        showTypingDots();
+
         setTimeout(() => {
+            removeTypingDots();
             handleBotResponse(text);
-        }, 400);
+        }, 1200);
     };
 
     function appendUserMessage(msg) {
@@ -253,27 +306,44 @@
         chatbox.scrollTop = chatbox.scrollHeight;
     }
 
+    // Three Dots typing animation helpers
+    function showTypingDots() {
+        const chatbox = document.getElementById('chatbox');
+        const li = document.createElement('li');
+        li.classList.add('chat', 'incoming');
+        li.id = 'bot-typing-dots';
+        li.innerHTML = `
+            <p class="typing-indicator">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+            </p>
+        `;
+        chatbox.appendChild(li);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function removeTypingDots() {
+        const dots = document.getElementById('bot-typing-dots');
+        if (dots) dots.remove();
+    }
+
     async function handleBotResponse(userMsg) {
         const chatbox = document.getElementById('chatbox');
         const lowerMsg = userMsg.toLowerCase();
 
         if (awaitingPhone) {
             awaitingPhone = false;
-            
-            const loadingLi = document.createElement('li');
-            loadingLi.classList.add('chat', 'incoming');
-            loadingLi.innerHTML = `<p>⏳ Fetching order details...</p>`;
-            chatbox.appendChild(loadingLi);
-            chatbox.scrollTop = chatbox.scrollHeight;
-
             const cleanPhoneStr = userMsg.trim();
             currentCustomerPhone = cleanPhoneStr;
+
+            showTypingDots();
 
             try {
                 const userOrdersRef = ref(db, `orders/${cleanPhoneStr}`);
                 const snapshot = await get(userOrdersRef);
 
-                loadingLi.remove();
+                removeTypingDots();
 
                 const resultLi = document.createElement('li');
                 resultLi.classList.add('chat', 'incoming');
@@ -291,7 +361,6 @@
                         });
                     });
 
-                    // CHAT RESPONSE REQUIREMENT: "Order receipt please download" with Download button
                     resultLi.innerHTML = `
                         <p>
                             ✅ Order receipt please download 👇
@@ -307,7 +376,11 @@
                 chatbox.appendChild(resultLi);
             } catch (error) {
                 console.error("Firebase Error:", error);
-                loadingLi.innerHTML = `<p>⚠️ Failed to fetch details. Try again.</p>`;
+                removeTypingDots();
+                const errLi = document.createElement('li');
+                errLi.classList.add('chat', 'incoming');
+                errLi.innerHTML = `<p>⚠️ Failed to fetch details. Try again.</p>`;
+                chatbox.appendChild(errLi);
             }
 
             chatbox.scrollTop = chatbox.scrollHeight;
@@ -338,8 +411,10 @@
 
     window.selectOption = function(optionText) {
         appendUserMessage(optionText);
+        showTypingDots();
 
         setTimeout(() => {
+            removeTypingDots();
             const chatbox = document.getElementById('chatbox');
             const li = document.createElement('li');
             li.classList.add('chat', 'incoming');
@@ -355,7 +430,7 @@
 
             chatbox.appendChild(li);
             chatbox.scrollTop = chatbox.scrollHeight;
-        }, 400);
+        }, 1000);
     };
 
     // GENERATE ALL ORDERS RECEIPT PDF
@@ -376,7 +451,6 @@
 
         let grandTotal = 0;
 
-        // Populating all order details clearly inside table rows for PDF
         fetchedOrdersList.forEach(order => {
             const rawPrice = order.price || order.amount || 0;
             const itemPrice = parseFloat(rawPrice);
@@ -403,7 +477,6 @@
 
         document.getElementById('pdf-grand-total').innerText = grandTotal;
 
-        // Render PDF safely
         const element = document.getElementById('pdf-receipt-content');
         const opt = {
             margin:       10,
