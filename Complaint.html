@@ -63,24 +63,22 @@
         .chat-input-area input { flex: 1; background: transparent; border: none; outline: none; color: #fff; padding: 8px; font-size: 0.9rem; }
         .chat-input-area button { background: var(--primary); border: none; color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; }
 
-        /* CHAT MINI CARD */
-        .chat-order-card { background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-top: 8px; width: 100%; }
-        .chat-order-card div { margin-bottom: 4px; font-size: 0.85rem; }
-        .download-pdf-btn { margin-top: 10px; width: 100%; padding: 9px; background: var(--success); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        /* CHAT RECEIPT PROMPT */
+        .download-pdf-btn { margin-top: 10px; width: 100%; padding: 9px; background: var(--success); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .download-pdf-btn:hover { background: #059669; }
 
-        /* HIDDEN PRINTABLE RECEIPT (ALL ORDERS PDF LOOK) */
-        #pdf-receipt-template { display: none; }
-        .pdf-receipt-container { background: #ffffff; color: #1e293b; padding: 30px; font-family: 'Helvetica', sans-serif; width: 700px; margin: auto; }
+        /* VISIBLE CONTAINER FOR HTML2PDF RENDERING (POSITIONED OFF-SCREEN) */
+        #pdf-receipt-wrapper { position: absolute; left: -9999px; top: -9999px; }
+        .pdf-receipt-container { background: #ffffff; color: #0f172a; padding: 30px; font-family: sans-serif; width: 750px; }
         .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #2563eb; padding-bottom: 12px; margin-bottom: 15px; }
-        .pdf-header h2 { color: #2563eb; font-size: 22px; text-transform: uppercase; }
-        .pdf-header p { font-size: 11px; color: #64748b; }
-        .pdf-box { background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 15px; font-size: 12px; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px; }
+        .pdf-header h2 { color: #2563eb; font-size: 24px; text-transform: uppercase; }
+        .pdf-header p { font-size: 11px; color: #475569; }
+        .pdf-box { background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 15px; font-size: 12px; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; }
         .pdf-table th { background: #2563eb; color: #ffffff; text-align: left; padding: 8px; }
-        .pdf-table td { padding: 8px; border-bottom: 1px solid #e2e8f0; color: #334155; }
-        .pdf-total { text-align: right; font-size: 14px; font-weight: bold; color: #2563eb; margin-top: 10px; }
-        .pdf-footer { text-align: center; margin-top: 25px; font-size: 10px; color: #94a3b8; border-top: 1px dashed #cbd5e1; padding-top: 8px; }
+        .pdf-table td { padding: 8px; border-bottom: 1px solid #e2e8f0; color: #1e293b; }
+        .pdf-total { text-align: right; font-size: 15px; font-weight: bold; color: #2563eb; margin-top: 10px; }
+        .pdf-footer { text-align: center; margin-top: 25px; font-size: 11px; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 8px; }
     </style>
 </head>
 <body>
@@ -159,25 +157,25 @@
     </div>
 </div>
 
-<!-- Hidden PDF Receipt Template (Consolidated for ALL Orders) -->
-<div id="pdf-receipt-template">
+<!-- Off-Screen Render Target for PDF Generation -->
+<div id="pdf-receipt-wrapper">
     <div class="pdf-receipt-container" id="pdf-receipt-content">
         <div class="pdf-header">
             <div>
                 <h2>CartPrime</h2>
-                <p>Consolidated Order Receipt Statement</p>
+                <p>Official Order Summary Statement</p>
             </div>
             <div style="text-align: right;">
-                <p><b>Statement Date:</b> <span id="pdf-statement-date"></span></p>
+                <p><b>Date:</b> <span id="pdf-statement-date"></span></p>
                 <p><b>Total Orders:</b> <span id="pdf-total-count"></span></p>
             </div>
         </div>
 
         <div class="pdf-box">
-            <h4>Customer Account Summary</h4>
+            <h4 style="border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 6px;">Customer Information</h4>
             <p><b>Phone Number:</b> <span id="pdf-cust-phone"></span></p>
             <p><b>Customer Name:</b> <span id="pdf-cust-name"></span></p>
-            <p><b>Address:</b> <span id="pdf-cust-address"></span></p>
+            <p><b>Shipping Address:</b> <span id="pdf-cust-address"></span></p>
         </div>
 
         <table class="pdf-table">
@@ -185,31 +183,31 @@
                 <tr>
                     <th>Order ID</th>
                     <th>Date</th>
-                    <th>Product & Size</th>
+                    <th>Item Description</th>
                     <th>Status</th>
                     <th>Payment</th>
                     <th style="text-align: right;">Amount</th>
                 </tr>
             </thead>
             <tbody id="pdf-orders-rows">
-                <!-- All orders populated dynamically -->
+                <!-- Orders dynamic rows -->
             </tbody>
         </table>
 
         <div class="pdf-total">
-            Total Grand Amount: ₹<span id="pdf-grand-total"></span>
+            Total Amount: ₹<span id="pdf-grand-total">0</span>
         </div>
 
         <div class="pdf-footer">
-            <p>Thank you for shopping with CartPrime!</p>
-            <p>For support contact: cartprimeshop@gmail.com</p>
+            <p>Thank you for your purchase with CartPrime!</p>
+            <p>Customer Support: cartprimeshop@gmail.com</p>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -255,11 +253,6 @@
         chatbox.scrollTop = chatbox.scrollHeight;
     }
 
-    function truncateText(text, maxLength = 35) {
-        if (!text) return "N/A";
-        return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
-    }
-
     async function handleBotResponse(userMsg) {
         const chatbox = document.getElementById('chatbox');
         const lowerMsg = userMsg.toLowerCase();
@@ -286,41 +279,27 @@
                 resultLi.classList.add('chat', 'incoming');
 
                 if (snapshot.exists()) {
-                    let orderHTML = `📱 Orders found for <b>${cleanPhoneStr}</b>:<br>`;
                     fetchedOrdersList = [];
                     
                     snapshot.forEach((childSnapshot) => {
                         const data = childSnapshot.val();
                         const orderId = data.orderId || childSnapshot.key;
-                        const orderDate = data.date || data.createdAt || "N/A";
-                        const fullProductName = data.productName || "Product";
                         
-                        // Array-ലേക്ക് മുഴുവൻ ഓർഡർ വിവരങ്ങളും സൂക്ഷിക്കുന്നു
                         fetchedOrdersList.push({
                             orderId: orderId,
                             ...data
                         });
-
-                        // ചാറ്റിൽ ലളിതമായി കാണിക്കുന്നു
-                        orderHTML += `
-                            <div class="chat-order-card">
-                                <div style="font-weight:bold; color:#60a5fa; border-bottom:1px solid #334155; padding-bottom:4px; margin-bottom:6px;">
-                                    🧾 Order Receipt
-                                </div>
-                                <div><b>Order ID:</b> #${orderId}</div>
-                                <div><b>Product:</b> ${truncateText(fullProductName)}</div>
-                                <div><b>Date:</b> ${orderDate}</div>
-                            </div>`;
                     });
 
-                    // എല്ലാ ഓർഡറുകളുടെയും സമ്പൂർണ്ണ PDF ഡൗൺലോഡ് ചെയ്യാനുള്ള ഒറ്റ ബട്ടൺ
-                    orderHTML += `
-                        <button class="download-pdf-btn" onclick="generateAllOrdersPDF()">
-                            📄 Download Full Order Receipt (All Orders PDF)
-                        </button>
+                    // CHAT RESPONSE REQUIREMENT: "Order receipt please download" with Download button
+                    resultLi.innerHTML = `
+                        <p>
+                            ✅ Order receipt please download 👇
+                            <button class="download-pdf-btn" onclick="generateAllOrdersPDF()">
+                                📄 Download Full Order Receipt (PDF)
+                            </button>
+                        </p>
                     `;
-
-                    resultLi.innerHTML = `<p>${orderHTML}</p>`;
                 } else {
                     resultLi.innerHTML = `<p>❌ No orders found for phone number: <b>${cleanPhoneStr}</b>.</p>`;
                 }
@@ -379,7 +358,7 @@
         }, 400);
     };
 
-    // GENERATE ALL ORDERS IN A SINGLE PDF RECEIPT
+    // GENERATE ALL ORDERS RECEIPT PDF
     window.generateAllOrdersPDF = function() {
         if (!fetchedOrdersList || fetchedOrdersList.length === 0) {
             return alert("No orders available to generate receipt!");
@@ -389,7 +368,7 @@
         document.getElementById('pdf-statement-date').innerText = new Date().toLocaleDateString();
         document.getElementById('pdf-total-count').innerText = fetchedOrdersList.length;
         document.getElementById('pdf-cust-phone').innerText = currentCustomerPhone;
-        document.getElementById('pdf-cust-name').innerText = firstOrder.customerName || "Customer";
+        document.getElementById('pdf-cust-name').innerText = firstOrder.customerName || firstOrder.name || "Customer";
         document.getElementById('pdf-cust-address').innerText = firstOrder.address || "N/A";
 
         const tbody = document.getElementById('pdf-orders-rows');
@@ -397,32 +376,40 @@
 
         let grandTotal = 0;
 
-        // എല്ലാ ഓർഡറുകളും PDF ടേബിളിലേക്ക് ചേർക്കുന്നു
+        // Populating all order details clearly inside table rows for PDF
         fetchedOrdersList.forEach(order => {
-            const itemPrice = parseFloat(order.price || order.amount || 0);
+            const rawPrice = order.price || order.amount || 0;
+            const itemPrice = parseFloat(rawPrice);
             grandTotal += isNaN(itemPrice) ? 0 : itemPrice;
+
+            const productName = order.productName || order.item || "Product";
+            const sizeInfo = order.selectedSize || order.size ? ` (${order.selectedSize || order.size})` : "";
+            const orderDate = order.date || order.createdAt || "N/A";
+            const orderStatus = order.status || "Confirmed";
+            const payMethod = order.paymentMethod || "COD";
+            const payStatus = order.paymentStatus || "Pending";
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>#${order.orderId}</td>
-                <td>${order.date || order.createdAt || "N/A"}</td>
-                <td>${order.productName || "Product"} (${order.selectedSize || order.size || "Free Size"})</td>
-                <td><span style="color:#10b981; font-weight:bold;">${order.status || "Confirmed"}</span></td>
-                <td>${order.paymentMethod || "COD"} (${order.paymentStatus || "Pending"})</td>
-                <td style="text-align: right;">₹${order.price || order.amount || "0"}</td>
+                <td>${orderDate}</td>
+                <td>${productName}${sizeInfo}</td>
+                <td><span style="color:#10b981; font-weight:bold;">${orderStatus}</span></td>
+                <td>${payMethod} (${payStatus})</td>
+                <td style="text-align: right;">₹${rawPrice}</td>
             `;
             tbody.appendChild(tr);
         });
 
         document.getElementById('pdf-grand-total').innerText = grandTotal;
 
-        // Render Single Multi-Page PDF Document
+        // Render PDF safely
         const element = document.getElementById('pdf-receipt-content');
         const opt = {
-            margin:       8,
-            filename:     `Full_Order_Receipt_${currentCustomerPhone}.pdf`,
+            margin:       10,
+            filename:     `Order_Receipt_${currentCustomerPhone}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
+            html2canvas:  { scale: 2, useCORS: true, logging: false },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
