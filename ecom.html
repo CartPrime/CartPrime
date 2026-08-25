@@ -466,7 +466,7 @@
         </div>
     </div>
 
-    <!-- COMPLAINTS TAB (NEW SECTION) -->
+    <!-- COMPLAINTS TAB -->
     <div id="complaints" class="tab-content">
         <h2 class="tab-title">User Complaints & Support</h2>
         <div class="admin-card">
@@ -1553,88 +1553,108 @@ window.deleteItem = (p) => {
     .then((res) => { if (res.isConfirmed) { remove(ref(db, p)); Swal.close(); } });
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    onValue(ref(db, 'users'), snap => {
-        const list = document.getElementById('userList');
-        
-        if (list) list.innerHTML = "";
-        
-        if(snap.exists()) {
-            snap.forEach(u => { 
-                const userData = u.val();
-                const userName = userData.name || 'N/A'; 
-                const phone = userData.phone || userData.email || u.key; 
+// READ REGISTERED USERS
+onValue(ref(db, 'users'), snap => {
+    const list = document.getElementById('userList');
+    if (!list) return;
+    list.innerHTML = "";
+    
+    if(snap.exists()) {
+        snap.forEach(u => { 
+            const userData = u.val();
+            const userName = userData.name || 'N/A'; 
+            const phone = userData.phone || userData.email || u.key; 
 
-                if (list) {
-                    list.innerHTML += `
-                        <tr>
-                            <td>${userName}</td>
-                            <td>${phone}</td>
-                        </tr>`; 
+            list.innerHTML += `
+                <tr>
+                    <td>${userName}</td>
+                    <td>${phone}</td>
+                </tr>`; 
+        });
+    }
+});
+
+/* FETCH & RENDER USER COMPLAINTS (HANDLES DIRECT AND NESTED DATA) */
+onValue(ref(db, 'complaints'), snap => {
+    const container = document.getElementById('complaintsListContainer');
+    if (!container) return;
+    container.innerHTML = "";
+
+    if (!snap.exists()) {
+        container.innerHTML = `<p style="color: #64748b; font-weight: 600;">No complaints reported yet.</p>`;
+        return;
+    }
+
+    let hasComplaints = false;
+
+    snap.forEach(child => {
+        const val = child.val();
+        
+        // Single Root Complaint Level
+        if (val.message || val.complaint || val.subject) {
+            hasComplaints = true;
+            renderComplaintCard(container, val, child.key);
+        } else {
+            // User-Nested Level (complaints/{userPhone}/{complaintId})
+            child.forEach(subChild => {
+                const subVal = subChild.val();
+                if (subVal && (subVal.message || subVal.complaint || subVal.subject)) {
+                    hasComplaints = true;
+                    renderComplaintCard(container, subVal, `${child.key}/${subChild.key}`);
                 }
             });
         }
     });
 
-    /* FETCH & RENDER USER COMPLAINTS */
-    onValue(ref(db, 'complaints'), snap => {
-        const container = document.getElementById('complaintsListContainer');
-        if (!container) return;
-        container.innerHTML = "";
-
-        if (!snap.exists()) {
-            container.innerHTML = `<p style="color: #64748b; font-weight: 600;">No complaints reported yet.</p>`;
-            return;
-        }
-
-        snap.forEach(child => {
-            const c = child.val();
-            const key = child.key;
-            const status = c.status || 'Pending';
-            const isResolved = status === 'Resolved';
-
-            container.innerHTML += `
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed #cbd5e1; padding-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                    <div>
-                        <h4 style="font-size: 16px; font-weight: 800; color: #0f172a;">${c.subject || 'General Complaint'}</h4>
-                        <p style="font-size: 13px; color: #64748b; margin-top: 2px;">
-                            <strong>User:</strong> ${c.userName || c.name || 'Anonymous'} | 
-                            <strong>Contact:</strong> ${c.phone || c.email || 'N/A'} 
-                            ${c.orderId ? ` | <strong>Order ID:</strong> #${c.orderId}` : ''}
-                        </p>
-                    </div>
-                    <div>
-                        <span style="font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px; background: ${isResolved ? '#dcfce7' : '#fee2e2'}; color: ${isResolved ? '#15803d' : '#b91c1c'}; text-transform: uppercase;">
-                            ${status}
-                        </span>
-                    </div>
-                </div>
-
-                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px;">
-                    <p style="font-size: 14px; color: #334155; line-height: 1.5; white-space: pre-line;">${c.message || c.complaint || 'No detail provided.'}</p>
-                </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px; flex-wrap: wrap; gap: 10px;">
-                    <small style="color: #94a3b8; font-weight: 600;"><i class="fa fa-clock"></i> ${c.date || c.timestamp || 'Date not recorded'}</small>
-                    <div style="display: flex; gap: 8px;">
-                        ${!isResolved ? `
-                            <button onclick="resolveComplaint('${key}')" style="background: #16a34a; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;">
-                                <i class="fa fa-check-circle"></i> Mark as Resolved
-                            </button>
-                        ` : ''}
-                        <button onclick="deleteItem('complaints/${key}')" style="background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;">
-                            <i class="fa fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </div>
-            </div>`;
-        });
-    });
+    if (!hasComplaints) {
+        container.innerHTML = `<p style="color: #64748b; font-weight: 600;">No complaints reported yet.</p>`;
+    }
 });
 
-window.resolveComplaint = (key) => {
-    update(ref(db, `complaints/${key}`), { status: 'Resolved' })
+function renderComplaintCard(container, c, pathKey) {
+    const status = c.status || 'Pending';
+    const isResolved = status === 'Resolved';
+
+    container.innerHTML += `
+    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed #cbd5e1; padding-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <div>
+                <h4 style="font-size: 16px; font-weight: 800; color: #0f172a;">${c.subject || 'General Complaint'}</h4>
+                <p style="font-size: 13px; color: #64748b; margin-top: 2px;">
+                    <strong>User:</strong> ${c.userName || c.name || 'Anonymous'} | 
+                    <strong>Contact:</strong> ${c.phone || c.email || 'N/A'} 
+                    ${c.orderId ? ` | <strong>Order ID:</strong> #${c.orderId}` : ''}
+                </p>
+            </div>
+            <div>
+                <span style="font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px; background: ${isResolved ? '#dcfce7' : '#fee2e2'}; color: ${isResolved ? '#15803d' : '#b91c1c'}; text-transform: uppercase;">
+                    ${status}
+                </span>
+            </div>
+        </div>
+
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px;">
+            <p style="font-size: 14px; color: #334155; line-height: 1.5; white-space: pre-line;">${c.message || c.complaint || 'No detail provided.'}</p>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px; flex-wrap: wrap; gap: 10px;">
+            <small style="color: #94a3b8; font-weight: 600;"><i class="fa fa-clock"></i> ${c.date || c.timestamp || 'Date not recorded'}</small>
+            <div style="display: flex; gap: 8px;">
+                ${!isResolved ? `
+                    <button onclick="resolveComplaint('${pathKey}')" style="background: #16a34a; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;">
+                        <i class="fa fa-check-circle"></i> Mark as Resolved
+                    </button>
+                ` : ''}
+                <button onclick="deleteItem('complaints/${pathKey}')" style="background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;">
+                    <i class="fa fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>`;
+}
+
+window.resolveComplaint = (pathKey) => {
+    update(ref(db, `complaints/${pathKey}`), { status: 'Resolved' })
     .then(() => {
         Swal.fire({
             toast: true,
