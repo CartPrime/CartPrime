@@ -237,7 +237,7 @@
     const db = getDatabase(app);
 
     let awaitingPhone = false;
-    let fetchedOrders = {}; // Global object to hold full details for PDF generation
+    let fetchedOrders = {}; 
 
     window.handleChatKeyPress = function(e) {
         if (e.key === 'Enter') sendMessage();
@@ -263,6 +263,12 @@
         li.innerHTML = `<p>${msg}</p>`;
         chatbox.appendChild(li);
         chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    // Product Name നീളമുണ്ടെങ്കിൽ ചുരുക്കി കാണിക്കാനുള്ള ഫംഗ്ഷൻ (Truncate)
+    function truncateText(text, maxLength = 35) {
+        if (!text) return "N/A";
+        return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
     }
 
     async function handleBotResponse(userMsg) {
@@ -295,16 +301,18 @@
                     snapshot.forEach((childSnapshot) => {
                         const data = childSnapshot.val();
                         const orderId = data.orderId || childSnapshot.key;
+                        const orderDate = data.date || data.createdAt || "N/A";
+                        const fullProductName = data.productName || "Product";
                         
                         // Save data globally for PDF generator
                         fetchedOrders[orderId] = data;
 
-                        // SHORT CHAT DISPLAY (വിവരങ്ങൾ ചുരുക്കി നൽകുന്നു)
+                        // CHAT DISPLAY: Order ID, Product Name (Truncated), Order Date മാത്രം കാണിക്കുന്നു
                         orderHTML += `
                             <div class="chat-order-card">
                                 <div><b>Order ID:</b> #${orderId}</div>
-                                <div><b>Product:</b> ${data.productName || "N/A"}</div>
-                                <div><b>Status:</b> <span style="color:#10b981;">${data.status || "Processing"}</span></div>
+                                <div><b>Product:</b> ${truncateText(fullProductName)}</div>
+                                <div><b>Date:</b> ${orderDate}</div>
                                 <button class="download-pdf-btn" onclick="generateAndDownloadPDF('${orderId}')">
                                     📄 Download Full Receipt (PDF)
                                 </button>
