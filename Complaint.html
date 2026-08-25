@@ -380,6 +380,7 @@
             border-radius: 8px;
             margin-top: 8px;
             color: #fff;
+            text-align: left;
         }
 
         .download-pdf-btn {
@@ -493,7 +494,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, query, orderByChild, equalTo, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -511,7 +512,7 @@
 
     let awaitingPhone = false;
 
-    // PDF Download Function
+    // PDF Download Functionality
     window.downloadOrderPDF = function(elementId, orderId) {
         const element = document.getElementById(elementId);
         
@@ -571,20 +572,11 @@
             chatbox.scrollTop = chatbox.scrollHeight;
 
             const cleanPhoneStr = userMsg.trim();
-            const cleanPhoneNum = Number(cleanPhoneStr);
 
             try {
-                const ordersRef = ref(db, 'orders');
-                
-                // 1. Check String format first
-                let phoneQuery = query(ordersRef, orderByChild('phone'), equalTo(cleanPhoneStr));
-                let snapshot = await get(phoneQuery);
-
-                // 2. If not found, check Number format
-                if (!snapshot.exists() && !isNaN(cleanPhoneNum)) {
-                    phoneQuery = query(ordersRef, orderByChild('phone'), equalTo(cleanPhoneNum));
-                    snapshot = await get(phoneQuery);
-                }
+                // Direct reference to: orders/{phone}
+                const userOrdersRef = ref(db, `orders/${cleanPhoneStr}`);
+                const snapshot = await get(userOrdersRef);
 
                 loadingLi.remove();
 
@@ -594,21 +586,24 @@
                 if (snapshot.exists()) {
                     let orderHTML = `📱 Orders found for <b>${cleanPhoneStr}</b>:<br>`;
                     let count = 0;
+                    
                     snapshot.forEach((childSnapshot) => {
                         count++;
                         const data = childSnapshot.val();
                         const orderId = data.orderId || childSnapshot.key;
-                        const orderDate = data.orderDate || data.createdAt || "N/A";
+                        const orderDate = data.date || data.createdAt || "N/A";
                         const status = data.status || "Processing";
-                        const items = data.items || data.productName || "N/A";
-                        const amount = data.amount || data.totalPrice || "N/A";
+                        const items = data.productName || data.items || "N/A";
+                        const amount = data.price || data.amount || data.totalPrice || "N/A";
+                        const customerName = data.customerName || "Customer";
                         const cardDomId = `order-pdf-card-${count}`;
 
                         orderHTML += `
                             <div class="order-card-item" id="${cardDomId}">
                                 <div style="font-weight:bold; color:#60a5fa; border-bottom:1px solid #334155; padding-bottom:4px; margin-bottom:6px;">CartPrime Receipt</div>
+                                <b>Customer:</b> ${customerName}<br>
                                 <b>Order ID:</b> #${orderId}<br>
-                                <b>Items:</b> ${items}<br>
+                                <b>Product:</b> ${items}<br>
                                 <b>Amount:</b> ₹${amount}<br>
                                 <b>Date:</b> ${orderDate}<br>
                                 <b>Status:</b> <span style="color:#10b981;">${status}</span><br>
@@ -625,7 +620,7 @@
                 chatbox.appendChild(resultLi);
             } catch (error) {
                 console.error("Firebase Fetch Error:", error);
-                loadingLi.innerHTML = `<p>⚠️ Couldn't fetch orders. Check console or database rules.</p>`;
+                loadingLi.innerHTML = `<p>⚠️ Couldn't fetch orders. Please try again.</p>`;
             }
 
             chatbox.scrollTop = chatbox.scrollHeight;
@@ -700,7 +695,7 @@
         }, 400);
     };
 
-    // Save Complaints to Realtime Database 'userComplaints' Node
+    // Save Complaints to Realtime Database
     document.getElementById('complaintForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
