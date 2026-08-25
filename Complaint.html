@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Support Portal</title>
+    <!-- PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -15,6 +17,7 @@
             --border: rgba(255, 255, 255, 0.1);
             --accent: #60a5fa;
             --danger: #ef4444;
+            --success: #10b981;
         }
 
         * {
@@ -236,7 +239,7 @@
             right: 20px;
             bottom: 80px;
             width: calc(100% - 40px);
-            max-width: 360px;
+            max-width: 380px;
             background: rgba(15, 23, 42, 0.95);
             border: 1px solid var(--border);
             border-radius: 15px;
@@ -272,8 +275,8 @@
 
         .chatbox {
             overflow-y: auto;
-            height: 320px;
-            max-height: 50vh;
+            height: 340px;
+            max-height: 55vh;
             padding: 15px;
             list-style: none;
         }
@@ -296,7 +299,7 @@
         .chatbox .chat p {
             padding: 10px 14px;
             border-radius: 10px;
-            max-width: 85%;
+            max-width: 90%;
             font-size: 0.88rem;
             line-height: 1.4;
         }
@@ -370,12 +373,35 @@
             font-size: 0.85rem;
         }
 
+        /* Order Card Style with PDF Button */
         .order-card-item {
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.95);
             border: 1px solid var(--accent);
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             margin-top: 8px;
+            color: #fff;
+        }
+
+        .download-pdf-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 6px 10px;
+            background: var(--success);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .download-pdf-btn:hover {
+            background: #059669;
         }
     </style>
 </head>
@@ -486,6 +512,28 @@
 
     let awaitingPhone = false;
 
+    // Window global-ലേക്ക് PDF ഡൗൺലോഡ് ഫംഗ്ഷൻ മാറ്റുന്നു
+    window.downloadOrderPDF = function(elementId, orderId) {
+        const element = document.getElementById(elementId);
+        
+        // PDF options
+        const opt = {
+            margin:       10,
+            filename:     `Order_Receipt_${orderId}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, backgroundColor: '#0f172a' },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // ബട്ടൺ താൽക്കാലികമായി മറച്ച് PDF ആക്കുന്നു
+        const btn = element.querySelector('.download-pdf-btn');
+        if(btn) btn.style.display = 'none';
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            if(btn) btn.style.display = 'flex';
+        });
+    };
+
     window.handleChatKeyPress = function(e) {
         if (e.key === 'Enter') sendMessage();
     };
@@ -539,17 +587,28 @@
 
                 if (snapshot.exists()) {
                     let orderHTML = `📱 Orders found for <b>${cleanPhone}</b>:<br>`;
+                    let count = 0;
                     snapshot.forEach((childSnapshot) => {
+                        count++;
                         const data = childSnapshot.val();
                         const orderId = data.orderId || childSnapshot.key;
                         const orderDate = data.orderDate || data.createdAt || "N/A";
                         const status = data.status || "Processing";
+                        const items = data.items || data.productName || "N/A";
+                        const amount = data.amount || data.totalPrice || "N/A";
+                        const cardDomId = `order-pdf-card-${count}`;
 
                         orderHTML += `
-                            <div class="order-card-item">
+                            <div class="order-card-item" id="${cardDomId}">
+                                <div style="font-weight:bold; color:#60a5fa; border-bottom:1px solid #334155; padding-bottom:4px; margin-bottom:6px;">CartPrime Receipt</div>
                                 <b>Order ID:</b> #${orderId}<br>
+                                <b>Items:</b> ${items}<br>
+                                <b>Amount:</b> ₹${amount}<br>
                                 <b>Date:</b> ${orderDate}<br>
-                                <b>Status:</b> ${status}
+                                <b>Status:</b> <span style="color:#10b981;">${status}</span><br>
+                                <button class="download-pdf-btn" onclick="downloadOrderPDF('${cardDomId}', '${orderId}')">
+                                    📄 Download Receipt (PDF)
+                                </button>
                             </div>`;
                     });
                     resultLi.innerHTML = `<p>${orderHTML}</p>`;
@@ -656,7 +715,6 @@
         const message = document.getElementById('message').value;
 
         try {
-            // Realtime Database-ലെ 'userComplaints' ലേക്ക് Push ചെയ്യുന്നു
             const complaintsRef = ref(db, 'userComplaints');
             const newComplaintRef = push(complaintsRef);
 
