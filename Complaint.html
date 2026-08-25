@@ -634,7 +634,7 @@
         }, 400);
     };
 
-    // Save Complaints directly to Firebase Firestore
+    // Save Complaints directly to Firebase Firestore ('userComplaints' Collection)
     document.getElementById('complaintForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
@@ -642,7 +642,6 @@
         const successAlert = document.getElementById('successAlert');
         const errorAlert = document.getElementById('errorAlert');
 
-        // Hide previous alert boxes
         successAlert.style.display = 'none';
         errorAlert.style.display = 'none';
 
@@ -656,14 +655,15 @@
         const message = document.getElementById('message').value;
 
         try {
-            // Save data to Firebase Firestore 'complaints' collection
-            await addDoc(collection(db, "complaints"), {
+            // Firestore 'userComplaints' collection-ലേക്ക് Save ചെയ്യുന്നു
+            await addDoc(collection(db, "userComplaints"), {
                 ticketId: ticketId,
                 name: name,
                 email: email,
                 category: category,
                 message: message,
                 status: "Pending",
+                date: new Date().toLocaleDateString(),
                 createdAt: serverTimestamp()
             });
 
