@@ -90,10 +90,8 @@
         .status-Delivered { background: #dbeafe; color: #1e40af; }
         .status-Rejected { background: #fee2e2; color: #b91c1c; }
 
-        /* View Badge */
         .views-badge { font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 800; background: #f1f5f9; color: #475569; display: inline-flex; align-items: center; gap: 4px; }
 
-        /* Order Actions Buttons */
         .order-actions-btn { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
         .order-actions-btn button { padding: 8px 12px; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; color: white; transition: 0.2s; }
         .order-actions-btn button:hover { opacity: 0.85; }
@@ -160,12 +158,10 @@
             background: #f8fafc !important;
         }
 
-        /* Detail Modal Custom Styles */
         .order-detail-popup { text-align: left; font-size: 13px; color: #1e293b; max-height: 75vh; overflow-y: auto; padding-right: 5px; }
         .order-detail-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
         .order-detail-title { font-weight: 800; font-size: 12px; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
 
-        /* Copy Address Box */
         .address-box {
             background: #fff;
             border: 1px solid #cbd5e1;
@@ -324,7 +320,7 @@
         </div>
     </div>
 
-    <!-- ADD PRODUCT TAB WITH INLINE UPLOAD BUTTON -->
+    <!-- ADD PRODUCT TAB -->
     <div id="addProduct" class="tab-content">
         <h2 class="tab-title" id="formTitle">Add New Item</h2>
         <div class="admin-card" style="max-width: 800px; margin: 0 auto;">
@@ -377,7 +373,6 @@
             </div>
             <button class="btn-add" onclick="addSpecField()" style="margin-bottom: 15px;">+ Add Spec</button>
             
-            <!-- IMAGE URL INPUT WITH DIRECT UPLOAD BUTTON -->
             <div id="imageInputs">
                 <div class="img-input-row">
                     <input type="text" class="p-img-link" placeholder="IMAGE URL 1">
@@ -562,7 +557,7 @@ window.triggerSingleUpload = (btn) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const apiKey = "e36981daea3ee446f2be8344ced85ce1"; // ImgBB API Key
+        const apiKey = "e36981daea3ee446f2be8344ced85ce1";
 
         Swal.fire({
             title: 'Uploading Image...',
@@ -1574,8 +1569,8 @@ onValue(ref(db, 'users'), snap => {
     }
 });
 
-/* FETCH & RENDER USER COMPLAINTS (HANDLES DIRECT AND NESTED DATA) */
-onValue(ref(db, 'complaints'), snap => {
+/* FETCH & RENDER USER COMPLAINTS (FETCHES EXCLUSIVELY FROM 'userComplaints') */
+onValue(ref(db, 'userComplaints'), snap => {
     const container = document.getElementById('complaintsListContainer');
     if (!container) return;
     container.innerHTML = "";
@@ -1590,15 +1585,15 @@ onValue(ref(db, 'complaints'), snap => {
     snap.forEach(child => {
         const val = child.val();
         
-        // Single Root Complaint Level
-        if (val.message || val.complaint || val.subject) {
+        // Root Level Item under userComplaints (e.g., userComplaints/{pushId})
+        if (val && (val.message || val.complaint || val.category || val.subject)) {
             hasComplaints = true;
             renderComplaintCard(container, val, child.key);
         } else {
-            // User-Nested Level (complaints/{userPhone}/{complaintId})
+            // Nested User Sub-Node Level (e.g., userComplaints/{userPhone}/{pushId})
             child.forEach(subChild => {
                 const subVal = subChild.val();
-                if (subVal && (subVal.message || subVal.complaint || subVal.subject)) {
+                if (subVal && (subVal.message || subVal.complaint || subVal.category || subVal.subject)) {
                     hasComplaints = true;
                     renderComplaintCard(container, subVal, `${child.key}/${subChild.key}`);
                 }
@@ -1614,16 +1609,17 @@ onValue(ref(db, 'complaints'), snap => {
 function renderComplaintCard(container, c, pathKey) {
     const status = c.status || 'Pending';
     const isResolved = status === 'Resolved';
+    const ticketStr = c.ticketId ? `<strong>Ticket ID:</strong> #${c.ticketId}` : '';
 
     container.innerHTML += `
     <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed #cbd5e1; padding-bottom: 12px; flex-wrap: wrap; gap: 8px;">
             <div>
-                <h4 style="font-size: 16px; font-weight: 800; color: #0f172a;">${c.subject || 'General Complaint'}</h4>
+                <h4 style="font-size: 16px; font-weight: 800; color: #0f172a;">${c.category || c.subject || 'General Complaint'}</h4>
                 <p style="font-size: 13px; color: #64748b; margin-top: 2px;">
-                    <strong>User:</strong> ${c.userName || c.name || 'Anonymous'} | 
-                    <strong>Contact:</strong> ${c.phone || c.email || 'N/A'} 
-                    ${c.orderId ? ` | <strong>Order ID:</strong> #${c.orderId}` : ''}
+                    <strong>User:</strong> ${c.name || c.userName || 'Anonymous'} | 
+                    <strong>Email/Contact:</strong> ${c.email || c.phone || 'N/A'} 
+                    ${ticketStr ? ` | ${ticketStr}` : ''}
                 </p>
             </div>
             <div>
@@ -1645,7 +1641,7 @@ function renderComplaintCard(container, c, pathKey) {
                         <i class="fa fa-check-circle"></i> Mark as Resolved
                     </button>
                 ` : ''}
-                <button onclick="deleteItem('complaints/${pathKey}')" style="background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;">
+                <button onclick="deleteItem('userComplaints/${pathKey}')" style="background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;">
                     <i class="fa fa-trash"></i> Delete
                 </button>
             </div>
@@ -1654,7 +1650,7 @@ function renderComplaintCard(container, c, pathKey) {
 }
 
 window.resolveComplaint = (pathKey) => {
-    update(ref(db, `complaints/${pathKey}`), { status: 'Resolved' })
+    update(ref(db, `userComplaints/${pathKey}`), { status: 'Resolved' })
     .then(() => {
         Swal.fire({
             toast: true,
