@@ -373,7 +373,6 @@
             font-size: 0.85rem;
         }
 
-        /* Order Card Style with PDF Button */
         .order-card-item {
             background: rgba(15, 23, 42, 0.95);
             border: 1px solid var(--accent);
@@ -512,11 +511,10 @@
 
     let awaitingPhone = false;
 
-    // Window global-ലേക്ക് PDF ഡൗൺലോഡ് ഫംഗ്ഷൻ മാറ്റുന്നു
+    // PDF Download Function
     window.downloadOrderPDF = function(elementId, orderId) {
         const element = document.getElementById(elementId);
         
-        // PDF options
         const opt = {
             margin:       10,
             filename:     `Order_Receipt_${orderId}.pdf`,
@@ -525,7 +523,6 @@
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        // ബട്ടൺ താൽക്കാലികമായി മറച്ച് PDF ആക്കുന്നു
         const btn = element.querySelector('.download-pdf-btn');
         if(btn) btn.style.display = 'none';
 
@@ -573,12 +570,21 @@
             chatbox.appendChild(loadingLi);
             chatbox.scrollTop = chatbox.scrollHeight;
 
-            const cleanPhone = userMsg.trim();
+            const cleanPhoneStr = userMsg.trim();
+            const cleanPhoneNum = Number(cleanPhoneStr);
 
             try {
                 const ordersRef = ref(db, 'orders');
-                const phoneQuery = query(ordersRef, orderByChild('phone'), equalTo(cleanPhone));
-                const snapshot = await get(phoneQuery);
+                
+                // 1. Check String format first
+                let phoneQuery = query(ordersRef, orderByChild('phone'), equalTo(cleanPhoneStr));
+                let snapshot = await get(phoneQuery);
+
+                // 2. If not found, check Number format
+                if (!snapshot.exists() && !isNaN(cleanPhoneNum)) {
+                    phoneQuery = query(ordersRef, orderByChild('phone'), equalTo(cleanPhoneNum));
+                    snapshot = await get(phoneQuery);
+                }
 
                 loadingLi.remove();
 
@@ -586,7 +592,7 @@
                 resultLi.classList.add('chat', 'incoming');
 
                 if (snapshot.exists()) {
-                    let orderHTML = `📱 Orders found for <b>${cleanPhone}</b>:<br>`;
+                    let orderHTML = `📱 Orders found for <b>${cleanPhoneStr}</b>:<br>`;
                     let count = 0;
                     snapshot.forEach((childSnapshot) => {
                         count++;
@@ -613,13 +619,13 @@
                     });
                     resultLi.innerHTML = `<p>${orderHTML}</p>`;
                 } else {
-                    resultLi.innerHTML = `<p>❌ No orders found for phone number: <b>${cleanPhone}</b>.</p>`;
+                    resultLi.innerHTML = `<p>❌ No orders found for phone number: <b>${cleanPhoneStr}</b>.</p>`;
                 }
 
                 chatbox.appendChild(resultLi);
             } catch (error) {
                 console.error("Firebase Fetch Error:", error);
-                loadingLi.innerHTML = `<p>⚠️ Couldn't fetch orders. Please verify database connection.</p>`;
+                loadingLi.innerHTML = `<p>⚠️ Couldn't fetch orders. Check console or database rules.</p>`;
             }
 
             chatbox.scrollTop = chatbox.scrollHeight;
