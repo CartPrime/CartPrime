@@ -455,7 +455,7 @@
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <input type="tel" id="retPhone" class="form-control" placeholder="Enter Phone Number" required>
+                    <input type="tel" id="retPhone" class="form-control" placeholder="Enter Registered Phone" required>
                 </div>
                 <div class="form-group">
                     <label>Email Address</label>
@@ -523,7 +523,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -543,6 +543,7 @@
     let awaitingReturnOrderId = false;
     let currentCustomerPhone = "";
     let fetchedOrdersList = []; 
+    let selectedOrderForReturn = null; // റിട്ടേൺ ചെയ്യാനായി സെലക്ട് ചെയ്ത ഓർഡറിന്റെ ഡാറ്റ സൂക്ഷിക്കാൻ
 
     window.addEventListener('load', () => {
         const loader = document.getElementById('page-loader');
@@ -614,7 +615,7 @@
         const chatbox = document.getElementById('chatbox');
         const lowerMsg = userMsg.toLowerCase();
 
-        // 1. Handling Order Status Phone Input
+        // 1. Order Status Phone Check
         if (awaitingPhone) {
             awaitingPhone = false;
             const cleanPhoneStr = userMsg.trim();
@@ -636,7 +637,7 @@
                     snapshot.forEach((childSnapshot) => {
                         const data = childSnapshot.val();
                         const orderId = data.orderId || childSnapshot.key;
-                        fetchedOrdersList.push({ orderId: orderId, ...data });
+                        fetchedOrdersList.push({ orderId: orderId, key: childSnapshot.key, ...data });
                     });
 
                     resultLi.innerHTML = `
@@ -665,7 +666,7 @@
             return;
         }
 
-        // 2. Handling Return Order ID Input
+        // 2. Return & Refund Order ID Check
         if (awaitingReturnOrderId) {
             awaitingReturnOrderId = false;
             const enteredOrderId = userMsg.trim();
@@ -679,6 +680,9 @@
                 removeTypingDots();
 
                 let foundOrder = null;
+                let foundPhoneKey = "";
+                let foundOrderKey = "";
+
                 if (snapshot.exists()) {
                     snapshot.forEach((phoneGroup) => {
                         phoneGroup.forEach((orderSnap) => {
@@ -686,6 +690,8 @@
                             const currentId = val.orderId || orderSnap.key;
                             if (currentId.toString().toLowerCase() === enteredOrderId.toLowerCase()) {
                                 foundOrder = { orderId: currentId, ...val };
+                                foundPhoneKey = phoneGroup.key;
+                                foundOrderKey = orderSnap.key;
                             }
                         });
                     });
@@ -695,20 +701,41 @@
                 resultLi.classList.add('chat', 'incoming');
 
                 if (foundOrder) {
+                    selectedOrderForReturn = {
+                        ...foundOrder,
+                        phoneKey: foundPhoneKey,
+                        orderKey: foundOrderKey
+                    };
+
                     const prodName = foundOrder.productName || foundOrder.item || "Product";
                     const price = foundOrder.price || foundOrder.amount || "N/A";
+                    const status = foundOrder.status || "Pending";
 
-                    resultLi.innerHTML = `
-                        <p>
-                            📦 <b>Order Found!</b><br>
-                            <b>ID:</b> #${foundOrder.orderId}<br>
-                            <b>Item:</b> ${prodName}<br>
-                            <b>Price:</b> ₹${price}<br><br>
-                            <button class="download-pdf-btn" onclick="openReturnModal('${foundOrder.orderId}')">
-                                🔄 Request Return
-                            </button>
-                        </p>
-                    `;
+                    // CHECK STATUS: ഡെലിവറി ആയാൽ മാത്രം റിട്ടേൺ അനുവദിക്കുക
+                    if (status.toLowerCase() === "delivered") {
+                        resultLi.innerHTML = `
+                            <p>
+                                📦 <b>Order Found!</b><br>
+                                <b>ID:</b> #${foundOrder.orderId}<br>
+                                <b>Item:</b> ${prodName}<br>
+                                <b>Status:</b> <span style="color:green; font-weight:bold;">${status}</span><br>
+                                <b>Price:</b> ₹${price}<br><br>
+                                <button class="download-pdf-btn" onclick="openReturnModal('${foundOrder.orderId}')">
+                                    🔄 Request Return
+                                </button>
+                            </p>
+                        `;
+                    } else if (status.toLowerCase() === "return requested") {
+                        resultLi.innerHTML = `<p>⚠️ Return request is already submitted for Order ID: <b>#${foundOrder.orderId}</b>.</p>`;
+                    } else {
+                        resultLi.innerHTML = `
+                            <p>
+                                🚫 <b>Return Not Allowed Yet!</b><br>
+                                Order #${foundOrder.orderId} Status is <b>${status}</b>.<br>
+                                Product delivery ആയാൽ മാത്രമേ return request കൊടുക്കാൻ സാധിക്കുകയുള്ളൂ.
+                            </p>
+                        `;
+                    }
                 } else {
                     resultLi.innerHTML = `<p>❌ Invalid Order ID! Please check and try again.</p>`;
                 }
@@ -777,6 +804,9 @@
     // Modal Control Functions
     window.openReturnModal = function(orderId) {
         document.getElementById('retOrderId').value = orderId;
+        if(selectedOrderForReturn && selectedOrderForReturn.phoneKey){
+            document.getElementById('retPhone').value = selectedOrderForReturn.phoneKey;
+        }
         document.getElementById('returnModal').classList.add('active');
     };
 
@@ -784,23 +814,61 @@
         document.getElementById('returnModal').classList.remove('active');
     };
 
-    window.submitReturnRequest = function(e) {
+    // Submit Return Request to Firebase Database
+    window.submitReturnRequest = async function(e) {
         e.preventDefault();
+        
         const orderId = document.getElementById('retOrderId').value;
+        const phone = document.getElementById('retPhone').value.trim();
+        const email = document.getElementById('retEmail').value.trim();
+        const upi = document.getElementById('retUpi').value.trim();
+        const reason = document.getElementById('retReason').value.trim();
+
         closeReturnModal();
 
         const chatbox = document.getElementById('chatbox');
-        const li = document.createElement('li');
-        li.classList.add('chat', 'incoming');
-        li.innerHTML = `
-            <p>
-                ✅ <b>Return Request Submitted!</b><br>
-                Your request for Order ID <b>#${orderId}</b> has been received. Our team will verify and initiate refund shortly.
-            </p>
-        `;
-        chatbox.appendChild(li);
+        const statusLi = document.createElement('li');
+        statusLi.classList.add('chat', 'incoming');
+        statusLi.innerHTML = `<p>⏳ Processing your return request...</p>`;
+        chatbox.appendChild(statusLi);
         chatbox.scrollTop = chatbox.scrollHeight;
-        document.getElementById('returnForm').reset();
+
+        try {
+            // 1. Save Return Request to Firebase (Admin-ന് കാണാനായി)
+            const returnRef = ref(db, `return_requests/${orderId}`);
+            await set(returnRef, {
+                orderId: orderId,
+                phone: phone,
+                email: email,
+                upiId: upi,
+                reason: reason,
+                requestedAt: new Date().toISOString(),
+                productName: selectedOrderForReturn ? (selectedOrderForReturn.productName || selectedOrderForReturn.item || "Product") : "N/A",
+                amount: selectedOrderForReturn ? (selectedOrderForReturn.price || selectedOrderForReturn.amount || 0) : 0,
+                status: "Pending Admin Approval"
+            });
+
+            // 2. My Order Page-ൽ Status 'Return Requested' എന്ന് അപ്‌ഡേറ്റ് ചെയ്യുക
+            if (selectedOrderForReturn && selectedOrderForReturn.phoneKey && selectedOrderForReturn.orderKey) {
+                const orderStatusRef = ref(db, `orders/${selectedOrderForReturn.phoneKey}/${selectedOrderForReturn.orderKey}`);
+                await update(orderStatusRef, {
+                    status: "Return Requested"
+                });
+            }
+
+            statusLi.innerHTML = `
+                <p>
+                    ✅ <b>Return Request Submitted Successfully!</b><br>
+                    Order ID <b>#${orderId}</b> status has been updated to <b>Return Requested</b>.<br>
+                    Our team will verify and process your refund to <b>${upi}</b> shortly.
+                </p>
+            `;
+            document.getElementById('returnForm').reset();
+        } catch (error) {
+            console.error("Return Request Error:", error);
+            statusLi.innerHTML = `<p>❌ Failed to submit return request. Please try again.</p>`;
+        }
+        chatbox.scrollTop = chatbox.scrollHeight;
     };
 
     // PDF Export Function
