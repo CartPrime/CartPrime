@@ -543,7 +543,7 @@
     let awaitingReturnOrderId = false;
     let currentCustomerPhone = "";
     let fetchedOrdersList = []; 
-    let selectedOrderForReturn = null; // റിട്ടേൺ ചെയ്യാനായി സെലക്ട് ചെയ്ത ഓർഡറിന്റെ ഡാറ്റ സൂക്ഷിക്കാൻ
+    let selectedOrderForReturn = null;
 
     window.addEventListener('load', () => {
         const loader = document.getElementById('page-loader');
@@ -642,7 +642,7 @@
 
                     resultLi.innerHTML = `
                         <p>
-                            ✅ Order receipt please download 👇
+                            ✅ Order receipt is ready to download 👇
                             <button class="download-pdf-btn" onclick="generateAllOrdersPDF()">
                                 📄 Download Full Order Receipt (PDF)
                             </button>
@@ -711,7 +711,7 @@
                     const price = foundOrder.price || foundOrder.amount || "N/A";
                     const status = foundOrder.status || "Pending";
 
-                    // CHECK STATUS: ഡെലിവറി ആയാൽ മാത്രം റിട്ടേൺ അനുവദിക്കുക
+                    // CHECK STATUS: Allow return only if status is "Delivered"
                     if (status.toLowerCase() === "delivered") {
                         resultLi.innerHTML = `
                             <p>
@@ -731,8 +731,8 @@
                         resultLi.innerHTML = `
                             <p>
                                 🚫 <b>Return Not Allowed Yet!</b><br>
-                                Order #${foundOrder.orderId} Status is <b>${status}</b>.<br>
-                                Product delivery ആയാൽ മാത്രമേ return request കൊടുക്കാൻ സാധിക്കുകയുള്ളൂ.
+                                Order #${foundOrder.orderId} status is <b>${status}</b>.<br>
+                                You can only request a return once the product has been delivered.
                             </p>
                         `;
                     }
@@ -834,7 +834,7 @@
         chatbox.scrollTop = chatbox.scrollHeight;
 
         try {
-            // 1. Save Return Request to Firebase (Admin-ന് കാണാനായി)
+            // 1. Save Return Request to Firebase
             const returnRef = ref(db, `return_requests/${orderId}`);
             await set(returnRef, {
                 orderId: orderId,
@@ -848,7 +848,7 @@
                 status: "Pending Admin Approval"
             });
 
-            // 2. My Order Page-ൽ Status 'Return Requested' എന്ന് അപ്‌ഡേറ്റ് ചെയ്യുക
+            // 2. Update status in My Order page to 'Return Requested'
             if (selectedOrderForReturn && selectedOrderForReturn.phoneKey && selectedOrderForReturn.orderKey) {
                 const orderStatusRef = ref(db, `orders/${selectedOrderForReturn.phoneKey}/${selectedOrderForReturn.orderKey}`);
                 await update(orderStatusRef, {
