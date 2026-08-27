@@ -296,7 +296,6 @@
         </div>
     </div>
 
-    <!-- ORDERS TAB -->
     <div id="orders" class="tab-content">
         <h2 class="tab-title">Order Management</h2>
         <div class="admin-card">
@@ -320,7 +319,6 @@
         </div>
     </div>
 
-    <!-- ADD PRODUCT TAB -->
     <div id="addProduct" class="tab-content">
         <h2 class="tab-title" id="formTitle">Add New Item</h2>
         <div class="admin-card" style="max-width: 800px; margin: 0 auto;">
@@ -407,7 +405,6 @@
         </div>
     </div>
 
-    <!-- INVENTORY TAB -->
     <div id="manageProducts" class="tab-content">
         <h2 class="tab-title">Inventory</h2>
         <div class="admin-card">
@@ -461,7 +458,6 @@
         </div>
     </div>
 
-    <!-- COMPLAINTS TAB -->
     <div id="complaints" class="tab-content">
         <h2 class="tab-title">User Complaints & Support</h2>
         <div class="admin-card">
@@ -1610,6 +1606,7 @@ function renderComplaintCard(container, c, pathKey) {
     const status = c.status || 'Pending';
     const isResolved = status === 'Resolved';
     const ticketStr = c.ticketId ? `<strong>Ticket ID:</strong> #${c.ticketId}` : '';
+    const userIdStr = c.userId ? ` | <strong>User ID:</strong> ${c.userId}` : '';
 
     container.innerHTML += `
     <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
@@ -1620,6 +1617,7 @@ function renderComplaintCard(container, c, pathKey) {
                     <strong>User:</strong> ${c.name || c.userName || 'Anonymous'} | 
                     <strong>Email/Contact:</strong> ${c.email || c.phone || 'N/A'} 
                     ${ticketStr ? ` | ${ticketStr}` : ''}
+                    ${userIdStr}
                 </p>
             </div>
             <div>
