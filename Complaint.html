@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Support Portal</title>
-    <!-- HTML to PDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* Default: Light Theme */
         :root {
             --bg-color: #ffffff;
             --card-bg: #f8fafc;
@@ -18,15 +16,10 @@
             --chat-bg: #ffffff;
             --chat-header-bg: #f1f5f9;
             --chat-header-text: #000000;
-            
-            /* Blue Buttons */
             --primary-blue: #2563eb;
             --primary-blue-hover: #1d4ed8;
-            --success-blue: #0284c7;
-            --success-blue-hover: #0369a1;
         }
 
-        /* Dark Theme Styles */
         body.dark-theme {
             --bg-color: #000000;
             --card-bg: #111111;
@@ -39,329 +32,116 @@
             --chat-header-text: #ffffff;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
 
-        /* Page Loader Overlay */
         #page-loader {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--bg-color);
-            display: flex; justify-content: center; align-items: center; flex-direction: column;
-            z-index: 9999;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--bg-color); display: flex; justify-content: center; align-items: center; flex-direction: column; z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s;
         }
-        
-        .modern-loader-ring {
-            position: relative;
-            width: 70px; height: 70px;
-            display: flex; justify-content: center; align-items: center;
-        }
+        .modern-loader-ring { position: relative; width: 70px; height: 70px; }
         .modern-loader-ring div {
-            box-sizing: border-box;
-            display: block;
-            position: absolute;
-            width: 56px; height: 56px;
-            margin: 6px;
-            border: 3px solid transparent;
-            border-radius: 50%;
-            animation: ringRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            box-sizing: border-box; display: block; position: absolute; width: 56px; height: 56px; margin: 6px;
+            border: 3px solid transparent; border-radius: 50%; animation: ringRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
             border-color: var(--primary-blue) transparent transparent transparent;
         }
-        .modern-loader-ring div:nth-child(1) { animation-delay: -0.45s; }
-        .modern-loader-ring div:nth-child(2) { animation-delay: -0.3s; }
-        .modern-loader-ring div:nth-child(3) { animation-delay: -0.15s; }
         @keyframes ringRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loader-text { margin-top: 15px; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-color); font-weight: 600; }
 
-        .loader-text {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-color);
-            font-weight: 600;
-            animation: pulseText 1.5s ease-in-out infinite alternate;
-        }
-        @keyframes pulseText { 0% { opacity: 0.4; } 100% { opacity: 1; } }
-
-        body { 
-            background: var(--bg-color); 
-            color: var(--text-color); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 2rem 1rem;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .theme-toggle-container {
-            width: 100%;
-            max-width: 950px;
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 1rem;
-        }
-
-        .theme-toggle-btn {
-            background: var(--card-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            outline: none;
-        }
-        .theme-toggle-btn:hover { border-color: var(--primary-blue); }
-
-        .container { 
-            max-width: 950px; 
-            width: 100%;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s;
-        }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-
+        body { background: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; transition: background 0.3s, color 0.3s; }
+        .theme-toggle-container { width: 100%; max-width: 950px; display: flex; justify-content: flex-end; margin-bottom: 1rem; }
+        .theme-toggle-btn { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; }
+        
+        .container { max-width: 950px; width: 100%; }
         header { text-align: center; margin-bottom: 2.5rem; }
-        header h1 { font-size: clamp(2rem, 5vw, 2.8rem); margin-bottom: 0.8rem; color: var(--text-color); font-weight: 700; }
-        header p { color: var(--text-muted); font-size: clamp(0.95rem, 3vw, 1.15rem); }
-
+        header h1 { font-size: 2.5rem; margin-bottom: 0.8rem; }
+        
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-bottom: 2.5rem; }
-        .card { 
-            background: var(--card-bg); 
-            border: 1px solid var(--border); 
-            border-radius: 16px; 
-            padding: 1.5rem; 
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-        .card:hover { transform: translateY(-4px); border-color: var(--primary-blue); }
-        .card h3 { margin-bottom: 0.6rem; color: var(--text-color); font-size: 1.2rem; }
-        .card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
-        .highlight-email { display: inline-block; margin-top: 0.6rem; padding: 0.45rem 0.85rem; background: var(--bg-color); border: 1px solid var(--border); border-radius: 8px; color: var(--text-color); font-weight: 600; font-family: monospace; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+        .card h3 { margin-bottom: 0.6rem; }
+        .highlight-email { display: inline-block; margin-top: 0.6rem; padding: 0.45rem 0.85rem; background: var(--bg-color); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; font-family: monospace; }
 
-        .form-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: clamp(1.2rem, 4vw, 2.5rem); }
-        .form-section h2 { margin-bottom: 1.5rem; font-size: clamp(1.4rem, 4vw, 1.8rem); border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; color: var(--text-color); }
+        .form-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; }
+        .form-section h2 { margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; }
         .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-color); }
-        .form-control { width: 100%; padding: 0.8rem 1rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text-color); font-size: 0.95rem; outline: none; transition: border 0.3s ease; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-control { width: 100%; padding: 0.8rem 1rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text-color); font-size: 0.95rem; outline: none; }
         .form-control:focus { border-color: var(--primary-blue); }
         textarea.form-control { resize: vertical; min-height: 120px; }
         
-        .submit-btn { 
-            width: 100%; 
-            padding: 0.9rem; 
-            background: var(--primary-blue); 
-            color: #ffffff; 
-            border: none; 
-            border-radius: 10px; 
-            font-size: 1rem; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: background 0.3s ease; 
-            outline: none; 
-        }
+        .submit-btn { width: 100%; padding: 0.9rem; background: var(--primary-blue); color: #ffffff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; }
         .submit-btn:hover { background: var(--primary-blue-hover); }
 
-        /* FIXED CHAT TOGGLER BUTTON */
-        .chatbot-toggler { 
-            position: fixed; 
-            bottom: 25px; 
-            right: 25px; 
-            border: none; 
-            height: 56px; 
-            width: 56px; 
-            display: flex; 
-            cursor: pointer; 
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 50%; 
-            background: var(--primary-blue); 
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4); 
-            z-index: 1000; 
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease; 
-            padding: 0;
-            overflow: hidden;
-            outline: none;
-        }
-        .chatbot-toggler:hover { transform: scale(1.1); background: var(--primary-blue-hover); }
-        
-        .chatbot-toggler svg { 
-            fill: none; 
-            stroke: #ffffff; 
-            stroke-width: 2; 
-            stroke-linecap: round; 
-            stroke-linejoin: round; 
-            width: 28px; 
-            height: 28px; 
-            display: block;
-        }
-
-        .chatbot-container { position: fixed; right: 20px; bottom: 90px; width: calc(100% - 40px); max-width: 380px; background: var(--chat-bg); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.95); transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.15); z-index: 1000; }
-        body.show-chatbot .chatbot-container { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
-        .chat-header { padding: 14px 18px; background: var(--chat-header-bg); color: var(--chat-header-text); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
-        .chatbox { overflow-y: auto; height: 340px; max-height: 55vh; padding: 15px; list-style: none; background: var(--chat-bg); }
-        .chatbox .chat { display: flex; list-style: none; margin-bottom: 12px; flex-direction: column; }
-        .chatbox .outgoing { align-items: flex-end; }
-        .chatbox .incoming { align-items: flex-start; }
-        .chatbox .chat p { padding: 10px 14px; border-radius: 12px; max-width: 90%; font-size: 0.88rem; line-height: 1.4; animation: msgFade 0.3s ease forwards; }
-        @keyframes msgFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .chatbox .incoming p { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); border-bottom-left-radius: 3px; }
-        .chatbox .outgoing p { background: var(--primary-blue); color: #fff; border-bottom-right-radius: 3px; }
-
-        .typing-bubble { 
-            display: flex !important; 
-            align-items: center !important; 
-            gap: 6px !important; 
-            padding: 12px 18px !important; 
-            background: var(--card-bg) !important;
-            border: 1px solid var(--border) !important;
-        }
-        .glow-dot { 
-            width: 8px; 
-            height: 8px; 
-            background: var(--text-color); 
-            border-radius: 50%; 
-            animation: glowingWave 1.4s infinite ease-in-out; 
-        }
-        .glow-dot:nth-child(1) { animation-delay: 0s; }
-        .glow-dot:nth-child(2) { animation-delay: 0.2s; }
-        .glow-dot:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes glowingWave {
-            0%, 100% { transform: translateY(0) scale(0.85); opacity: 0.3; }
-            50% { transform: translateY(-8px) scale(1.2); opacity: 1; background: var(--primary-blue); box-shadow: 0 0 10px var(--primary-blue); }
-        }
-
-        .option-container { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; width: 100%; max-width: 85%; }
-        
-        .option-btn { 
-            background: var(--card-bg); 
-            border: 1px solid var(--primary-blue); 
-            color: var(--primary-blue); 
-            padding: 8px 12px; 
-            border-radius: 8px; 
-            font-size: 0.82rem; 
-            text-align: left; 
-            cursor: pointer; 
-            transition: all 0.2s ease; 
-            outline: none; 
-            font-weight: 500;
-        }
-        .option-btn:hover { background: var(--primary-blue); color: #ffffff; transform: translateX(3px); }
-
-        .chat-input-area { display: flex; gap: 5px; padding: 10px; border-top: 1px solid var(--border); background: var(--chat-header-bg); }
-        .chat-input-area input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-color); padding: 8px; font-size: 0.9rem; }
-        .chat-input-area button { background: var(--primary-blue); border: none; color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; outline: none; }
-        .chat-input-area button:hover { background: var(--primary-blue-hover); }
-
-        .download-pdf-btn { 
-            margin-top: 10px; 
-            width: 100%; 
-            padding: 9px; 
-            background: var(--primary-blue); 
-            color: #fff; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 0.85rem; 
-            font-weight: 600; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px; 
-            transition: background 0.2s ease;
-            outline: none !important;
-        }
-        .download-pdf-btn:hover { background: var(--primary-blue-hover); }
-
-        .download-status-tab {
-            margin-top: 8px;
-            padding: 8px 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--primary-blue);
-            border-radius: 6px;
-            color: var(--text-color);
-            font-size: 0.82rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* RETURN MODAL POPUP STYLES */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 99999;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-
-        .modal-card {
+        /* COMPLAINT HISTORY SECTION STYLES */
+        .history-card {
             background: var(--bg-color);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            width: 90%; max-width: 400px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
         }
-        .modal-overlay.active .modal-card { transform: translateY(0); }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-Pending { background: #fee2e2; color: #dc2626; }
+        .status-InProgress { background: #fef3c7; color: #d97706; }
+        .status-Solved { background: #dcfce7; color: #16a34a; }
 
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-        .modal-header h3 { font-size: 1.1rem; color: var(--text-color); }
-        .modal-close { cursor: pointer; font-weight: bold; font-size: 1.2rem; color: var(--text-color); }
+        /* CHATBOT STYLES */
+        .chatbot-toggler { position: fixed; bottom: 25px; right: 25px; border: none; height: 56px; width: 56px; display: flex; cursor: pointer; align-items: center; justify-content: center; border-radius: 50%; background: var(--primary-blue); z-index: 1000; }
+        .chatbot-toggler svg { fill: none; stroke: #ffffff; stroke-width: 2; width: 28px; height: 28px; }
 
-        .modal-body .form-group { margin-bottom: 10px; }
-        .modal-body label { font-size: 0.85rem; }
-        .modal-body input { padding: 0.6rem; font-size: 0.85rem; }
+        .chatbot-container { position: fixed; right: 20px; bottom: 90px; width: calc(100% - 40px); max-width: 380px; background: var(--chat-bg); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; opacity: 0; pointer-events: none; transform: translateY(20px); transition: all 0.35s ease; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        body.show-chatbot .chatbot-container { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .chat-header { padding: 14px 18px; background: var(--chat-header-bg); color: var(--chat-header-text); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+        .chatbox { overflow-y: auto; height: 340px; padding: 15px; list-style: none; }
+        .chatbox .chat { display: flex; margin-bottom: 12px; flex-direction: column; }
+        .chatbox .outgoing { align-items: flex-end; }
+        .chatbox .incoming { align-items: flex-start; }
+        .chatbox .chat p { padding: 10px 14px; border-radius: 12px; max-width: 90%; font-size: 0.88rem; line-height: 1.4; }
+        .chatbox .incoming p { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); }
+        .chatbox .outgoing p { background: var(--primary-blue); color: #fff; }
+
+        .typing-bubble { display: flex !important; gap: 6px !important; padding: 12px 18px !important; background: var(--card-bg) !important; border: 1px solid var(--border) !important; }
+        .glow-dot { width: 8px; height: 8px; background: var(--text-color); border-radius: 50%; animation: glowingWave 1.4s infinite ease-in-out; }
+        .glow-dot:nth-child(2) { animation-delay: 0.2s; } .glow-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes glowingWave { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; background: var(--primary-blue); } }
+
+        .option-container { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; width: 100%; }
+        .option-btn { background: var(--card-bg); border: 1px solid var(--primary-blue); color: var(--primary-blue); padding: 8px 12px; border-radius: 8px; font-size: 0.82rem; text-align: left; cursor: pointer; }
+        .option-btn:hover { background: var(--primary-blue); color: #ffffff; }
+
+        .chat-input-area { display: flex; gap: 5px; padding: 10px; border-top: 1px solid var(--border); background: var(--chat-header-bg); }
+        .chat-input-area input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-color); padding: 8px; }
+        .chat-input-area button { background: var(--primary-blue); border: none; color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-card { background: var(--bg-color); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 400px; padding: 20px; }
+        .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 
         #pdf-receipt-wrapper { position: absolute; left: -9999px; top: -9999px; }
         .pdf-receipt-container { background: #ffffff; color: #000000; padding: 30px; font-family: sans-serif; width: 750px; }
         .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000000; padding-bottom: 12px; margin-bottom: 15px; }
-        .pdf-header h2 { color: #000000; font-size: 24px; text-transform: uppercase; font-weight: 800; }
-        .pdf-header p { font-size: 11px; color: #555555; }
-        .pdf-box { background: #f4f4f5; padding: 12px; border-radius: 6px; border: 1px solid #e4e4e7; margin-bottom: 15px; font-size: 12px; }
         .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; }
-        .pdf-table th { background: #000000; color: #ffffff; text-align: left; padding: 8px; }
-        .pdf-table td { padding: 8px; border-bottom: 1px solid #e4e4e7; color: #000000; }
-        .pdf-total { text-align: right; font-size: 15px; font-weight: bold; color: #000000; margin-top: 10px; }
-        .pdf-footer { text-align: center; margin-top: 25px; font-size: 11px; color: #666666; border-top: 1px dashed #cccccc; padding-top: 8px; }
+        .pdf-table th { background: #000000; color: #ffffff; padding: 8px; }
+        .pdf-table td { padding: 8px; border-bottom: 1px solid #e4e4e7; }
     </style>
 </head>
 <body>
 
-<!-- Page Loader -->
 <div id="page-loader">
-    <div class="modern-loader-ring">
-        <div></div><div></div><div></div><div></div>
-    </div>
+    <div class="modern-loader-ring"><div></div><div></div><div></div><div></div></div>
     <div class="loader-text">Loading Portal...</div>
 </div>
 
-<!-- Theme Change Button -->
 <div class="theme-toggle-container">
-    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">
-        🌙 Switch Theme
-    </button>
+    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Switch Theme</button>
 </div>
 
 <div class="container">
@@ -373,16 +153,16 @@
     <div class="cards-grid">
         <div class="card">
             <h3>📧 Email Support</h3>
-            <p>Send your queries for prompt assistance to:</p>
+            <p>Send queries for prompt assistance to:</p>
             <span class="highlight-email">cartprimeshop@gmail.com</span>
         </div>
         <div class="card">
             <h3>Working Time</h3>
-            <p>Available Mon-Fri (5:00 PM - 12:00 PM)</p>
+            <p>Mon-Fri (5:00 PM - 12:00 PM)</p>
         </div>
         <div class="card">
             <h3>❓ FAQ & Resources</h3>
-            <p>Find answers to common questions and helpful user guides here.</p>
+            <p>Find answers to common questions here.</p>
         </div>
     </div>
 
@@ -392,6 +172,10 @@
             <div class="form-group">
                 <label for="name">Full Name</label>
                 <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="complaintPhone">Phone Number</label>
+                <input type="tel" id="complaintPhone" class="form-control" placeholder="Enter registered phone number" required>
             </div>
             <div class="form-group">
                 <label for="email">Email Address</label>
@@ -414,16 +198,25 @@
             <button type="submit" class="submit-btn" id="submitBtn">Submit Complaint</button>
         </form>
     </div>
+
+    <div class="form-section">
+        <h2>📋 Check Your Complaint History</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">
+            Enter your registered phone number to check the status of your previous complaints.
+        </p>
+        <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+            <input type="tel" id="searchPhoneInput" class="form-control" placeholder="Enter Registered Mobile Number">
+            <button type="button" class="submit-btn" style="width: auto; padding: 0 1.5rem;" onclick="fetchComplaintHistory()">Search</button>
+        </div>
+        <div id="historyResultContainer">
+            </div>
+    </div>
 </div>
 
-<!-- Chatbot Toggler Button -->
 <button class="chatbot-toggler" onclick="document.body.classList.toggle('show-chatbot')">
-    <svg viewBox="0 0 24 24">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-    </svg>
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
 </button>
 
-<!-- Chatbot Window -->
 <div class="chatbot-container">
     <div class="chat-header">
         <h3>Support Assistant 🤖</h3>
@@ -440,42 +233,38 @@
     </div>
 </div>
 
-<!-- RETURN REQUEST POPUP MODAL -->
 <div class="modal-overlay" id="returnModal">
     <div class="modal-card">
         <div class="modal-header">
             <h3>Return & Refund Request</h3>
-            <span class="modal-close" onclick="closeReturnModal()">✕</span>
+            <span style="cursor:pointer;" onclick="closeReturnModal()">✕</span>
         </div>
-        <div class="modal-body">
-            <form id="returnForm" onsubmit="submitReturnRequest(event)">
-                <div class="form-group">
-                    <label>Order ID</label>
-                    <input type="text" id="retOrderId" class="form-control" readonly style="background:var(--border);">
-                </div>
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" id="retPhone" class="form-control" placeholder="Enter Registered Phone" required>
-                </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="retEmail" class="form-control" placeholder="Enter Email Address" required>
-                </div>
-                <div class="form-group">
-                    <label>UPI ID (For Refund)</label>
-                    <input type="text" id="retUpi" class="form-control" placeholder="example@upi" required>
-                </div>
-                <div class="form-group">
-                    <label>Reason for Return</label>
-                    <input type="text" id="retReason" class="form-control" placeholder="Defective, Size issue, etc." required>
-                </div>
-                <button type="submit" class="submit-btn" style="margin-top: 10px;">Submit Return Request</button>
-            </form>
-        </div>
+        <form id="returnForm" onsubmit="submitReturnRequest(event)">
+            <div class="form-group">
+                <label>Order ID</label>
+                <input type="text" id="retOrderId" class="form-control" readonly style="background:var(--border);">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="retPhone" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="retEmail" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>UPI ID (For Refund)</label>
+                <input type="text" id="retUpi" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Reason for Return</label>
+                <input type="text" id="retReason" class="form-control" required>
+            </div>
+            <button type="submit" class="submit-btn">Submit Return Request</button>
+        </form>
     </div>
 </div>
 
-<!-- Off-Screen Render Target for PDF Generation -->
 <div id="pdf-receipt-wrapper">
     <div class="pdf-receipt-container" id="pdf-receipt-content">
         <div class="pdf-header">
@@ -485,39 +274,21 @@
             </div>
             <div style="text-align: right;">
                 <p><b>Date:</b> <span id="pdf-statement-date"></span></p>
-                <p><b>Total Orders:</b> <span id="pdf-total-count"></span></p>
             </div>
         </div>
-
-        <div class="pdf-box">
-            <h4 style="border-bottom: 1px solid #cccccc; padding-bottom: 4px; margin-bottom: 6px;">Customer Information</h4>
+        <div style="background:#f4f4f5; padding:10px; margin-bottom:15px;">
             <p><b>Phone Number:</b> <span id="pdf-cust-phone"></span></p>
             <p><b>Customer Name:</b> <span id="pdf-cust-name"></span></p>
-            <p><b>Shipping Address:</b> <span id="pdf-cust-address"></span></p>
         </div>
-
         <table class="pdf-table">
             <thead>
                 <tr>
-                    <th>Order ID</th>
-                    <th>Date</th>
-                    <th>Item Description</th>
-                    <th>Status</th>
-                    <th>Payment</th>
-                    <th style="text-align: right;">Amount</th>
+                    <th>Order ID</th><th>Date</th><th>Item Description</th><th>Status</th><th>Amount</th>
                 </tr>
             </thead>
             <tbody id="pdf-orders-rows"></tbody>
         </table>
-
-        <div class="pdf-total">
-            Total Amount: ₹<span id="pdf-grand-total">0</span>
-        </div>
-
-        <div class="pdf-footer">
-            <p>Thank you for your purchase with CartPrime!</p>
-            <p>Customer Support: cartprimeshop@gmail.com</p>
-        </div>
+        <div style="text-align:right; font-weight:bold;">Total Amount: ₹<span id="pdf-grand-total">0</span></div>
     </div>
 </div>
 
@@ -541,6 +312,7 @@
 
     let awaitingPhone = false;
     let awaitingReturnOrderId = false;
+    let awaitingComplaintPhone = false;
     let currentCustomerPhone = "";
     let fetchedOrdersList = []; 
     let selectedOrderForReturn = null;
@@ -553,11 +325,56 @@
 
     window.toggleTheme = function() {
         document.body.classList.toggle('dark-theme');
-        const btn = document.getElementById('themeToggleBtn');
-        if (document.body.classList.contains('dark-theme')) {
-            btn.innerHTML = '☀️ Switch Light Mode';
-        } else {
-            btn.innerHTML = '🌙 Switch Dark Mode';
+    };
+
+    // SEARCH COMPLAINT HISTORY DIRECTLY ON PAGE
+    window.fetchComplaintHistory = async function() {
+        const phoneInput = document.getElementById('searchPhoneInput').value.trim();
+        const container = document.getElementById('historyResultContainer');
+
+        if (!phoneInput) {
+            alert("Please enter a phone number!");
+            return;
+        }
+
+        container.innerHTML = "<p>Fetching your complaints...</p>";
+
+        try {
+            const snapshot = await get(ref(db, 'complaints'));
+            let complaintsList = [];
+
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    const data = child.val();
+                    if (data.phone === phoneInput) {
+                        complaintsList.push(data);
+                    }
+                });
+            }
+
+            if (complaintsList.length > 0) {
+                let html = "";
+                complaintsList.forEach(c => {
+                    const statusClass = (c.status || 'Pending').replace(/\s+/g, '');
+                    html += `
+                        <div class="history-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <strong>Ticket #${c.complaintId}</strong>
+                                <span class="status-badge status-${statusClass}">${c.status}</span>
+                            </div>
+                            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:6px;"><b>Category:</b> ${c.category} | <b>Date:</b> ${c.createdAt}</p>
+                            <p style="font-size:0.9rem; margin-bottom:8px;"><b>Message:</b> ${c.message}</p>
+                            ${c.adminReply ? `<div style="background:var(--card-bg); padding:8px 12px; border-left:3px solid var(--primary-blue); font-size:0.85rem;"><b>Admin Reply:</b> ${c.adminReply}</div>` : ''}
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<p style="color:red;">No complaints found for phone number: <b>${phoneInput}</b></p>`;
+            }
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = "<p style='color:red;'>Error fetching history. Please try again.</p>";
         }
     };
 
@@ -572,7 +389,6 @@
 
         appendUserMessage(text);
         input.value = '';
-
         showTypingDots();
 
         setTimeout(() => {
@@ -595,13 +411,7 @@
         const li = document.createElement('li');
         li.classList.add('chat', 'incoming');
         li.id = 'bot-typing-dots';
-        li.innerHTML = `
-            <p class="typing-bubble">
-                <span class="glow-dot"></span>
-                <span class="glow-dot"></span>
-                <span class="glow-dot"></span>
-            </p>
-        `;
+        li.innerHTML = `<p class="typing-bubble"><span class="glow-dot"></span><span class="glow-dot"></span><span class="glow-dot"></span></p>`;
         chatbox.appendChild(li);
         chatbox.scrollTop = chatbox.scrollHeight;
     }
@@ -615,83 +425,94 @@
         const chatbox = document.getElementById('chatbox');
         const lowerMsg = userMsg.toLowerCase();
 
-        // 1. Order Status Phone Check
+        // 1. Order Status Check
         if (awaitingPhone) {
             awaitingPhone = false;
-            const cleanPhoneStr = userMsg.trim();
-            currentCustomerPhone = cleanPhoneStr;
-
+            currentCustomerPhone = userMsg.trim();
             showTypingDots();
 
             try {
-                const userOrdersRef = ref(db, `orders/${cleanPhoneStr}`);
-                const snapshot = await get(userOrdersRef);
-
+                const snapshot = await get(ref(db, `orders/${currentCustomerPhone}`));
                 removeTypingDots();
-
                 const resultLi = document.createElement('li');
                 resultLi.classList.add('chat', 'incoming');
 
                 if (snapshot.exists()) {
                     fetchedOrdersList = [];
-                    snapshot.forEach((childSnapshot) => {
-                        const data = childSnapshot.val();
-                        const orderId = data.orderId || childSnapshot.key;
-                        fetchedOrdersList.push({ orderId: orderId, key: childSnapshot.key, ...data });
-                    });
-
-                    resultLi.innerHTML = `
-                        <p>
-                            ✅ Order receipt is ready to download 👇
-                            <button class="download-pdf-btn" onclick="generateAllOrdersPDF()">
-                                📄 Download Full Order Receipt (PDF)
-                            </button>
-                        </p>
-                    `;
+                    snapshot.forEach((child) => fetchedOrdersList.push({ orderId: child.key, ...child.val() }));
+                    resultLi.innerHTML = `<p>✅ Order receipt is ready to download 👇<button class="submit-btn" style="margin-top:5px;" onclick="generateAllOrdersPDF()">📄 Download PDF Receipt</button></p>`;
                 } else {
-                    resultLi.innerHTML = `<p>❌ No orders found for phone number: <b>${cleanPhoneStr}</b>.</p>`;
+                    resultLi.innerHTML = `<p>❌ No orders found for phone number: <b>${currentCustomerPhone}</b>.</p>`;
                 }
-
                 chatbox.appendChild(resultLi);
             } catch (error) {
-                console.error("Firebase Error:", error);
                 removeTypingDots();
-                const errLi = document.createElement('li');
-                errLi.classList.add('chat', 'incoming');
-                errLi.innerHTML = `<p>⚠️ Failed to fetch details. Try again.</p>`;
-                chatbox.appendChild(errLi);
             }
-
             chatbox.scrollTop = chatbox.scrollHeight;
             return;
         }
 
-        // 2. Return & Refund Order ID Check
-        if (awaitingReturnOrderId) {
-            awaitingReturnOrderId = false;
-            const enteredOrderId = userMsg.trim();
-
+        // 2. Complaint Status Check
+        if (awaitingComplaintPhone) {
+            awaitingComplaintPhone = false;
+            const phoneInput = userMsg.trim();
             showTypingDots();
 
             try {
-                const ordersRef = ref(db, `orders`);
-                const snapshot = await get(ordersRef);
-
+                const snapshot = await get(ref(db, `complaints`));
                 removeTypingDots();
+                const resultLi = document.createElement('li');
+                resultLi.classList.add('chat', 'incoming');
+                let userComplaints = [];
 
+                if (snapshot.exists()) {
+                    snapshot.forEach((child) => {
+                        const data = child.val();
+                        if (data.phone === phoneInput) userComplaints.push(data);
+                    });
+                }
+
+                if (userComplaints.length > 0) {
+                    let htmlContent = `<b>📋 Your Complaint History:</b><br><br>`;
+                    userComplaints.forEach((c) => {
+                        let color = c.status === "Solved" ? "green" : (c.status === "In Progress" ? "orange" : "red");
+                        htmlContent += `
+                            <b>ID:</b> #${c.complaintId}<br>
+                            <b>Category:</b> ${c.category}<br>
+                            <b>Status:</b> <span style="color:${color}; font-weight:bold;">${c.status}</span><br>
+                            ${c.adminReply ? `<b>Reply:</b> ${c.adminReply}<br>` : ''}
+                            <hr style="border:0.5px solid var(--border); margin:5px 0;">
+                        `;
+                    });
+                    resultLi.innerHTML = `<p>${htmlContent}</p>`;
+                } else {
+                    resultLi.innerHTML = `<p>❌ No complaints found for phone: <b>${phoneInput}</b></p>`;
+                }
+                chatbox.appendChild(resultLi);
+            } catch (err) {
+                removeTypingDots();
+            }
+            chatbox.scrollTop = chatbox.scrollHeight;
+            return;
+        }
+
+        // 3. Return & Refund Request Check
+        if (awaitingReturnOrderId) {
+            awaitingReturnOrderId = false;
+            const enteredOrderId = userMsg.trim();
+            showTypingDots();
+
+            try {
+                const snapshot = await get(ref(db, `orders`));
+                removeTypingDots();
                 let foundOrder = null;
-                let foundPhoneKey = "";
-                let foundOrderKey = "";
 
                 if (snapshot.exists()) {
                     snapshot.forEach((phoneGroup) => {
                         phoneGroup.forEach((orderSnap) => {
                             const val = orderSnap.val();
-                            const currentId = val.orderId || orderSnap.key;
-                            if (currentId.toString().toLowerCase() === enteredOrderId.toLowerCase()) {
-                                foundOrder = { orderId: currentId, ...val };
-                                foundPhoneKey = phoneGroup.key;
-                                foundOrderKey = orderSnap.key;
+                            if ((val.orderId || orderSnap.key).toString().toLowerCase() === enteredOrderId.toLowerCase()) {
+                                foundOrder = { orderId: orderSnap.key, phoneKey: phoneGroup.key, ...val };
                             }
                         });
                     });
@@ -701,55 +522,19 @@
                 resultLi.classList.add('chat', 'incoming');
 
                 if (foundOrder) {
-                    selectedOrderForReturn = {
-                        ...foundOrder,
-                        phoneKey: foundPhoneKey,
-                        orderKey: foundOrderKey
-                    };
-
-                    const prodName = foundOrder.productName || foundOrder.item || "Product";
-                    const price = foundOrder.price || foundOrder.amount || "N/A";
-                    const status = foundOrder.status || "Pending";
-
-                    // CHECK STATUS: Allow return only if status is "Delivered"
-                    if (status.toLowerCase() === "delivered") {
-                        resultLi.innerHTML = `
-                            <p>
-                                📦 <b>Order Found!</b><br>
-                                <b>ID:</b> #${foundOrder.orderId}<br>
-                                <b>Item:</b> ${prodName}<br>
-                                <b>Status:</b> <span style="color:green; font-weight:bold;">${status}</span><br>
-                                <b>Price:</b> ₹${price}<br><br>
-                                <button class="download-pdf-btn" onclick="openReturnModal('${foundOrder.orderId}')">
-                                    🔄 Request Return
-                                </button>
-                            </p>
-                        `;
-                    } else if (status.toLowerCase() === "return requested") {
-                        resultLi.innerHTML = `<p>⚠️ Return request is already submitted for Order ID: <b>#${foundOrder.orderId}</b>.</p>`;
+                    selectedOrderForReturn = foundOrder;
+                    if ((foundOrder.status || '').toLowerCase() === "delivered") {
+                        resultLi.innerHTML = `<p>📦 Order Found (#${foundOrder.orderId})<br>Status: Delivered<br><br><button class="submit-btn" onclick="openReturnModal('${foundOrder.orderId}')">🔄 Request Return</button></p>`;
                     } else {
-                        resultLi.innerHTML = `
-                            <p>
-                                🚫 <b>Return Not Allowed Yet!</b><br>
-                                Order #${foundOrder.orderId} status is <b>${status}</b>.<br>
-                                You can only request a return once the product has been delivered.
-                            </p>
-                        `;
+                        resultLi.innerHTML = `<p>🚫 Return allowed only for delivered orders. Current Status: <b>${foundOrder.status || 'Pending'}</b></p>`;
                     }
                 } else {
-                    resultLi.innerHTML = `<p>❌ Invalid Order ID! Please check and try again.</p>`;
+                    resultLi.innerHTML = `<p>❌ Invalid Order ID!</p>`;
                 }
-
                 chatbox.appendChild(resultLi);
             } catch (error) {
-                console.error(error);
                 removeTypingDots();
-                const errLi = document.createElement('li');
-                errLi.classList.add('chat', 'incoming');
-                errLi.innerHTML = `<p>⚠️ Something went wrong searching for order.</p>`;
-                chatbox.appendChild(errLi);
             }
-
             chatbox.scrollTop = chatbox.scrollHeight;
             return;
         }
@@ -761,8 +546,8 @@
                 <p>Hello! How can I assist you today?</p>
                 <div class="option-container">
                     <button class="option-btn" onclick="selectOption('Order Status')">📦 Order Status</button>
+                    <button class="option-btn" onclick="selectOption('Check Complaint Status')">📋 Check Complaint Status</button>
                     <button class="option-btn" onclick="selectOption('Return & Refund Issue')">🔄 Return & Refund Issue</button>
-                    <button class="option-btn" onclick="selectOption('Site Issue')">🌐 Site Issue</button>
                     <button class="option-btn" onclick="selectOption('Other')">❓ Other</button>
                 </div>
             `;
@@ -789,6 +574,9 @@
             if (optionText === 'Order Status') {
                 awaitingPhone = true;
                 li.innerHTML = `<p>Please enter your registered <b>Phone Number</b>:</p>`;
+            } else if (optionText === 'Check Complaint Status') {
+                awaitingComplaintPhone = true;
+                li.innerHTML = `<p>Please enter your <b>Phone Number</b> to check Complaint Status:</p>`;
             } else if (optionText === 'Return & Refund Issue') {
                 awaitingReturnOrderId = true;
                 li.innerHTML = `<p>Please enter your <b>Order ID</b> to proceed with return:</p>`;
@@ -801,155 +589,91 @@
         }, 1000);
     };
 
-    // Modal Control Functions
-    window.openReturnModal = function(orderId) {
-        document.getElementById('retOrderId').value = orderId;
-        if(selectedOrderForReturn && selectedOrderForReturn.phoneKey){
-            document.getElementById('retPhone').value = selectedOrderForReturn.phoneKey;
+    // Submitting Complaint to Firebase
+    document.getElementById('complaintForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.innerText = "Submitting...";
+        submitBtn.disabled = true;
+
+        const complaintId = "CMP" + Math.floor(100000 + Math.random() * 900000);
+        const data = {
+            complaintId: complaintId,
+            name: document.getElementById('name').value.trim(),
+            phone: document.getElementById('complaintPhone').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            category: document.getElementById('category').value,
+            message: document.getElementById('message').value.trim(),
+            status: "Pending",
+            adminReply: "",
+            createdAt: new Date().toLocaleString()
+        };
+
+        try {
+            await set(ref(db, `complaints/${complaintId}`), data);
+            alert(`Complaint Submitted!\nYour Complaint ID: ${complaintId}`);
+            this.reset();
+        } catch (err) {
+            alert("Failed to submit complaint.");
+        } finally {
+            submitBtn.innerText = "Submit Complaint";
+            submitBtn.disabled = false;
         }
+    });
+
+    // Modal & Return Submit
+    window.openReturnModal = function(id) {
+        document.getElementById('retOrderId').value = id;
         document.getElementById('returnModal').classList.add('active');
     };
-
     window.closeReturnModal = function() {
         document.getElementById('returnModal').classList.remove('active');
     };
 
-    // Submit Return Request to Firebase Database
     window.submitReturnRequest = async function(e) {
         e.preventDefault();
-        
         const orderId = document.getElementById('retOrderId').value;
         const phone = document.getElementById('retPhone').value.trim();
-        const email = document.getElementById('retEmail').value.trim();
-        const upi = document.getElementById('retUpi').value.trim();
-        const reason = document.getElementById('retReason').value.trim();
-
-        closeReturnModal();
-
-        const chatbox = document.getElementById('chatbox');
-        const statusLi = document.createElement('li');
-        statusLi.classList.add('chat', 'incoming');
-        statusLi.innerHTML = `<p>⏳ Processing your return request...</p>`;
-        chatbox.appendChild(statusLi);
-        chatbox.scrollTop = chatbox.scrollHeight;
 
         try {
-            // 1. Save Return Request to Firebase
-            const returnRef = ref(db, `return_requests/${orderId}`);
-            await set(returnRef, {
+            await set(ref(db, `return_requests/${orderId}`), {
                 orderId: orderId,
                 phone: phone,
-                email: email,
-                upiId: upi,
-                reason: reason,
-                requestedAt: new Date().toISOString(),
-                productName: selectedOrderForReturn ? (selectedOrderForReturn.productName || selectedOrderForReturn.item || "Product") : "N/A",
-                amount: selectedOrderForReturn ? (selectedOrderForReturn.price || selectedOrderForReturn.amount || 0) : 0,
+                email: document.getElementById('retEmail').value.trim(),
+                upiId: document.getElementById('retUpi').value.trim(),
+                reason: document.getElementById('retReason').value.trim(),
                 status: "Pending Admin Approval"
             });
-
-            // 2. Update status in My Order page to 'Return Requested'
-            if (selectedOrderForReturn && selectedOrderForReturn.phoneKey && selectedOrderForReturn.orderKey) {
-                const orderStatusRef = ref(db, `orders/${selectedOrderForReturn.phoneKey}/${selectedOrderForReturn.orderKey}`);
-                await update(orderStatusRef, {
-                    status: "Return Requested"
-                });
+            if(selectedOrderForReturn) {
+                await update(ref(db, `orders/${selectedOrderForReturn.phoneKey}/${selectedOrderForReturn.orderId}`), { status: "Return Requested" });
             }
-
-            statusLi.innerHTML = `
-                <p>
-                    ✅ <b>Return Request Submitted Successfully!</b><br>
-                    Order ID <b>#${orderId}</b> status has been updated to <b>Return Requested</b>.<br>
-                    Our team will verify and process your refund to <b>${upi}</b> shortly.
-                </p>
-            `;
-            document.getElementById('returnForm').reset();
-        } catch (error) {
-            console.error("Return Request Error:", error);
-            statusLi.innerHTML = `<p>❌ Failed to submit return request. Please try again.</p>`;
+            alert("Return request submitted!");
+            closeReturnModal();
+        } catch (err) {
+            alert("Error submitting return request.");
         }
-        chatbox.scrollTop = chatbox.scrollHeight;
     };
 
-    // PDF Export Function
+    // PDF Generator
     window.generateAllOrdersPDF = async function() {
-        if (!fetchedOrdersList || fetchedOrdersList.length === 0) {
-            return alert("No orders available to generate receipt!");
-        }
-
-        const chatbox = document.getElementById('chatbox');
-        const statusLi = document.createElement('li');
-        statusLi.classList.add('chat', 'incoming');
-        statusLi.innerHTML = `
-            <div class="download-status-tab">
-                <span class="glow-dot" style="width:6px; height:6px;"></span> 
-                ⏳ Generating & Downloading PDF... Please wait.
-            </div>
-        `;
-        chatbox.appendChild(statusLi);
-        chatbox.scrollTop = chatbox.scrollHeight;
-
-        const firstOrder = fetchedOrdersList[0];
+        if (!fetchedOrdersList.length) return alert("No orders found!");
         document.getElementById('pdf-statement-date').innerText = new Date().toLocaleDateString();
-        document.getElementById('pdf-total-count').innerText = fetchedOrdersList.length;
         document.getElementById('pdf-cust-phone').innerText = currentCustomerPhone;
-        document.getElementById('pdf-cust-name').innerText = firstOrder.customerName || firstOrder.name || "Customer";
-        document.getElementById('pdf-cust-address').innerText = firstOrder.address || "N/A";
-
+        
         const tbody = document.getElementById('pdf-orders-rows');
         tbody.innerHTML = "";
-
         let grandTotal = 0;
 
-        fetchedOrdersList.forEach(order => {
-            const rawPrice = order.price || order.amount || 0;
-            const itemPrice = parseFloat(rawPrice);
-            grandTotal += isNaN(itemPrice) ? 0 : itemPrice;
-
-            const productName = order.productName || order.item || "Product";
-            const sizeInfo = order.selectedSize || order.size ? ` (${order.selectedSize || order.size})` : "";
-            const orderDate = order.date || order.createdAt || "N/A";
-            const orderStatus = order.status || "Confirmed";
-            const payMethod = order.paymentMethod || "COD";
-            const payStatus = order.paymentStatus || "Pending";
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>#${order.orderId}</td>
-                <td>${orderDate}</td>
-                <td>${productName}${sizeInfo}</td>
-                <td><span style="color:#000000; font-weight:bold;">${orderStatus}</span></td>
-                <td>${payMethod} (${payStatus})</td>
-                <td style="text-align: right;">₹${rawPrice}</td>
-            `;
-            tbody.appendChild(tr);
+        fetchedOrdersList.forEach(o => {
+            const price = parseFloat(o.price || o.amount || 0);
+            grandTotal += isNaN(price) ? 0 : price;
+            tbody.innerHTML += `<tr><td>#${o.orderId}</td><td>${o.date || 'N/A'}</td><td>${o.productName || 'Product'}</td><td>${o.status || 'Pending'}</td><td>₹${price}</td></tr>`;
         });
-
         document.getElementById('pdf-grand-total').innerText = grandTotal;
 
-        const element = document.getElementById('pdf-receipt-content');
-        const opt = {
-            margin:       10,
-            filename:     `Order_Receipt_${currentCustomerPhone}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, logging: false },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        try {
-            await html2pdf().set(opt).from(element).save();
-            statusLi.querySelector('.download-status-tab').innerHTML = `✅ Download Complete!`;
-        } catch (err) {
-            console.error("PDF Download error:", err);
-            statusLi.querySelector('.download-status-tab').innerHTML = `❌ Failed to download PDF.`;
-        }
+        const opt = { margin: 10, filename: `Order_Receipt_${currentCustomerPhone}.pdf`, html2canvas: { scale: 2 }, jsPDF: { format: 'a4' } };
+        html2pdf().set(opt).from(document.getElementById('pdf-receipt-content')).save();
     };
-
-    document.getElementById('complaintForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        alert("Complaint submitted successfully!");
-        this.reset();
-    });
 </script>
 
 </body>
