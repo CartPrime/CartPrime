@@ -49,8 +49,11 @@
         .loader-text { margin-top: 15px; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-color); font-weight: 600; }
 
         body { background: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; transition: background 0.3s, color 0.3s; }
-        .theme-toggle-container { width: 100%; max-width: 950px; display: flex; justify-content: flex-end; margin-bottom: 1rem; }
-        .theme-toggle-btn { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; }
+        
+        /* HEADER TOP BUTTONS AREA */
+        .top-action-bar { width: 100%; max-width: 950px; display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 1rem; }
+        .action-btn { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .action-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
         
         .container { max-width: 950px; width: 100%; }
         header { text-align: center; margin-bottom: 2.5rem; }
@@ -72,22 +75,15 @@
         .submit-btn { width: 100%; padding: 0.9rem; background: var(--primary-blue); color: #ffffff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; }
         .submit-btn:hover { background: var(--primary-blue-hover); }
 
-        /* COMPLAINT HISTORY SECTION STYLES */
-        .history-card {
-            background: var(--bg-color);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 15px;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+        /* MODAL STYLES */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-card { background: var(--bg-color); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 480px; padding: 20px; max-height: 85vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+
+        /* COMPLAINT HISTORY STYLES */
+        .history-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-top: 10px; text-align: left; }
+        .status-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
         .status-Pending { background: #fee2e2; color: #dc2626; }
         .status-InProgress { background: #fef3c7; color: #d97706; }
         .status-Solved { background: #dcfce7; color: #16a34a; }
@@ -120,11 +116,6 @@
         .chat-input-area input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-color); padding: 8px; }
         .chat-input-area button { background: var(--primary-blue); border: none; color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-card { background: var(--bg-color); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 400px; padding: 20px; }
-        .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-
         #pdf-receipt-wrapper { position: absolute; left: -9999px; top: -9999px; }
         .pdf-receipt-container { background: #ffffff; color: #000000; padding: 30px; font-family: sans-serif; width: 750px; }
         .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000000; padding-bottom: 12px; margin-bottom: 15px; }
@@ -140,8 +131,9 @@
     <div class="loader-text">Loading Portal...</div>
 </div>
 
-<div class="theme-toggle-container">
-    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Switch Theme</button>
+<div class="top-action-bar">
+    <button class="action-btn" onclick="openHistoryModal()">📋 My Complaints</button>
+    <button class="action-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Switch Theme</button>
 </div>
 
 <div class="container">
@@ -198,18 +190,25 @@
             <button type="submit" class="submit-btn" id="submitBtn">Submit Complaint</button>
         </form>
     </div>
+</div>
 
-    <div class="form-section">
-        <h2>📋 Check Your Complaint History</h2>
-        <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">
-            Enter your registered phone number to check the status of your previous complaints.
-        </p>
-        <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
-            <input type="tel" id="searchPhoneInput" class="form-control" placeholder="Enter Registered Mobile Number">
-            <button type="button" class="submit-btn" style="width: auto; padding: 0 1.5rem;" onclick="fetchComplaintHistory()">Search</button>
+<div class="modal-overlay" id="complaintHistoryModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>📋 My Complaint History</h3>
+            <span style="cursor:pointer;" onclick="closeHistoryModal()">✕</span>
         </div>
-        <div id="historyResultContainer">
+        <div>
+            <div class="form-group">
+                <label>Registered Phone Number</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="tel" id="modalSearchPhone" class="form-control" placeholder="Enter phone number">
+                    <button type="button" class="submit-btn" style="width: auto; padding: 0 1rem;" onclick="fetchModalComplaintHistory()">Search</button>
+                </div>
             </div>
+            <div id="modalHistoryContainer">
+                </div>
+        </div>
     </div>
 </div>
 
@@ -327,54 +326,58 @@
         document.body.classList.toggle('dark-theme');
     };
 
-    // SEARCH COMPLAINT HISTORY DIRECTLY ON PAGE
-    window.fetchComplaintHistory = async function() {
-        const phoneInput = document.getElementById('searchPhoneInput').value.trim();
-        const container = document.getElementById('historyResultContainer');
+    // HISTORY MODAL LOGIC
+    window.openHistoryModal = function() {
+        document.getElementById('complaintHistoryModal').classList.add('active');
+    };
+    window.closeHistoryModal = function() {
+        document.getElementById('complaintHistoryModal').classList.remove('active');
+    };
 
-        if (!phoneInput) {
+    window.fetchModalComplaintHistory = async function() {
+        const phone = document.getElementById('modalSearchPhone').value.trim();
+        const container = document.getElementById('modalHistoryContainer');
+
+        if (!phone) {
             alert("Please enter a phone number!");
             return;
         }
 
-        container.innerHTML = "<p>Fetching your complaints...</p>";
+        container.innerHTML = "<p style='margin-top:10px;'>Searching...</p>";
 
         try {
             const snapshot = await get(ref(db, 'complaints'));
-            let complaintsList = [];
+            let complaints = [];
 
             if (snapshot.exists()) {
                 snapshot.forEach((child) => {
                     const data = child.val();
-                    if (data.phone === phoneInput) {
-                        complaintsList.push(data);
-                    }
+                    if (data.phone === phone) complaints.push(data);
                 });
             }
 
-            if (complaintsList.length > 0) {
+            if (complaints.length > 0) {
                 let html = "";
-                complaintsList.forEach(c => {
+                complaints.forEach(c => {
                     const statusClass = (c.status || 'Pending').replace(/\s+/g, '');
                     html += `
                         <div class="history-card">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <div style="display:flex; justify-space-between; align-items:center; margin-bottom:6px;">
                                 <strong>Ticket #${c.complaintId}</strong>
                                 <span class="status-badge status-${statusClass}">${c.status}</span>
                             </div>
-                            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:6px;"><b>Category:</b> ${c.category} | <b>Date:</b> ${c.createdAt}</p>
-                            <p style="font-size:0.9rem; margin-bottom:8px;"><b>Message:</b> ${c.message}</p>
-                            ${c.adminReply ? `<div style="background:var(--card-bg); padding:8px 12px; border-left:3px solid var(--primary-blue); font-size:0.85rem;"><b>Admin Reply:</b> ${c.adminReply}</div>` : ''}
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;"><b>Date:</b> ${c.createdAt}</p>
+                            <p style="font-size:0.85rem; margin-bottom:6px;"><b>Message:</b> ${c.message}</p>
+                            ${c.adminReply ? `<div style="background:var(--bg-color); padding:6px; border-left:3px solid var(--primary-blue); font-size:0.8rem;"><b>Reply:</b> ${c.adminReply}</div>` : ''}
                         </div>
                     `;
                 });
                 container.innerHTML = html;
             } else {
-                container.innerHTML = `<p style="color:red;">No complaints found for phone number: <b>${phoneInput}</b></p>`;
+                container.innerHTML = `<p style="color:red; margin-top:10px;">No complaints found for <b>${phone}</b></p>`;
             }
         } catch (err) {
-            console.error(err);
-            container.innerHTML = "<p style='color:red;'>Error fetching history. Please try again.</p>";
+            container.innerHTML = "<p style='color:red; margin-top:10px;'>Error fetching history!</p>";
         }
     };
 
