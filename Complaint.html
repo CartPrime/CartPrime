@@ -207,7 +207,7 @@
                 </div>
             </div>
             <div id="modalHistoryContainer">
-                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -309,6 +309,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // GOOGLE APPS SCRIPT WEB APP URL (ഇവിടെ നിങ്ങളുടെ URL നൽകുക)
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzdGGnoOADVEFxnMx6jwu5N4hVIav911tf0VC4MlZ57sbAyCGNxxsPSE9C7Zxx6IRQWWg/exec";
+
     let awaitingPhone = false;
     let awaitingReturnOrderId = false;
     let awaitingComplaintPhone = false;
@@ -334,6 +337,7 @@
         document.getElementById('complaintHistoryModal').classList.remove('active');
     };
 
+    // SEARCH COMPLAINTS FROM GOOGLE SHEETS
     window.fetchModalComplaintHistory = async function() {
         const phone = document.getElementById('modalSearchPhone').value.trim();
         const container = document.getElementById('modalHistoryContainer');
@@ -343,26 +347,19 @@
             return;
         }
 
-        container.innerHTML = "<p style='margin-top:10px;'>Searching...</p>";
+        container.innerHTML = "<p style='margin-top:10px;'>Searching Excel Database...</p>";
 
         try {
-            const snapshot = await get(ref(db, 'complaints'));
-            let complaints = [];
+            const response = await fetch(`${GOOGLE_SCRIPT_URL}?phone=${phone}`);
+            const complaints = await response.json();
 
-            if (snapshot.exists()) {
-                snapshot.forEach((child) => {
-                    const data = child.val();
-                    if (data.phone === phone) complaints.push(data);
-                });
-            }
-
-            if (complaints.length > 0) {
+            if (complaints && complaints.length > 0) {
                 let html = "";
                 complaints.forEach(c => {
                     const statusClass = (c.status || 'Pending').replace(/\s+/g, '');
                     html += `
                         <div class="history-card">
-                            <div style="display:flex; justify-space-between; align-items:center; margin-bottom:6px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                                 <strong>Ticket #${c.complaintId}</strong>
                                 <span class="status-badge status-${statusClass}">${c.status}</span>
                             </div>
@@ -377,7 +374,7 @@
                 container.innerHTML = `<p style="color:red; margin-top:10px;">No complaints found for <b>${phone}</b></p>`;
             }
         } catch (err) {
-            container.innerHTML = "<p style='color:red; margin-top:10px;'>Error fetching history!</p>";
+            container.innerHTML = "<p style='color:red; margin-top:10px;'>Error fetching status from Excel!</p>";
         }
     };
 
@@ -455,27 +452,20 @@
             return;
         }
 
-        // 2. Complaint Status Check
+        // 2. Complaint Status Check (Using Google Sheets Data)
         if (awaitingComplaintPhone) {
             awaitingComplaintPhone = false;
             const phoneInput = userMsg.trim();
             showTypingDots();
 
             try {
-                const snapshot = await get(ref(db, `complaints`));
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?phone=${phoneInput}`);
+                const userComplaints = await response.json();
                 removeTypingDots();
                 const resultLi = document.createElement('li');
                 resultLi.classList.add('chat', 'incoming');
-                let userComplaints = [];
 
-                if (snapshot.exists()) {
-                    snapshot.forEach((child) => {
-                        const data = child.val();
-                        if (data.phone === phoneInput) userComplaints.push(data);
-                    });
-                }
-
-                if (userComplaints.length > 0) {
+                if (userComplaints && userComplaints.length > 0) {
                     let htmlContent = `<b>📋 Your Complaint History:</b><br><br>`;
                     userComplaints.forEach((c) => {
                         let color = c.status === "Solved" ? "green" : (c.status === "In Progress" ? "orange" : "red");
@@ -592,7 +582,7 @@
         }, 1000);
     };
 
-    // Submitting Complaint to Firebase
+    // SUBMIT COMPLAINT TO GOOGLE SHEETS & FIREBASE
     document.getElementById('complaintForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const submitBtn = document.getElementById('submitBtn');
@@ -613,7 +603,17 @@
         };
 
         try {
+            // Post to Google Sheets
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            // Save to Firebase (Backup)
             await set(ref(db, `complaints/${complaintId}`), data);
+
             alert(`Complaint Submitted!\nYour Complaint ID: ${complaintId}`);
             this.reset();
         } catch (err) {
