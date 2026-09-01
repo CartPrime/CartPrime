@@ -84,10 +84,31 @@
       font-weight: bold;
     }
 
-    .filters {
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 15px;
       margin-bottom: 20px;
+    }
+
+    .filters {
       display: flex;
       gap: 10px;
+    }
+
+    .search-box input {
+      background: var(--card-bg);
+      color: var(--text-white);
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: 4px;
+      outline: none;
+      width: 250px;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary-yellow);
     }
 
     .filter-btn {
@@ -201,10 +222,15 @@
       </div>
     </div>
 
-    <div class="filters">
-      <button class="filter-btn active" onclick="filterComplaints('all', this)">All</button>
-      <button class="filter-btn" onclick="filterComplaints('Pending', this)">Pending</button>
-      <button class="filter-btn" onclick="filterComplaints('Resolved', this)">Resolved</button>
+    <div class="controls">
+      <div class="filters">
+        <button class="filter-btn active" id="btn-all">All</button>
+        <button class="filter-btn" id="btn-pending">Pending</button>
+        <button class="filter-btn" id="btn-resolved">Resolved</button>
+      </div>
+      <div class="search-box">
+        <input type="text" id="search-phone" placeholder="Search by Phone Number...">
+      </div>
     </div>
 
     <div class="table-container">
@@ -212,7 +238,7 @@
         <thead>
           <tr>
             <th>Ticket ID</th>
-            <th>Customer</th>
+            <th>Customer Phone</th>
             <th>Issue Title</th>
             <th>Date</th>
             <th>Status</th>
@@ -220,82 +246,140 @@
           </tr>
         </thead>
         <tbody id="complaint-table-body">
-          <!-- Rows will be dynamically loaded via JavaScript -->
+          <tr><td colspan="6" style="text-align: center;">Loading complaints...</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <script>
-    const complaints = [
-      { id: "CP-1001", customer: "Rahul Kumar", issue: "Item received damaged", date: "2026-08-30", status: "Pending" },
-      { id: "CP-1002", customer: "Anjali Nair", issue: "Payment deducted, order not placed", date: "2026-08-31", status: "Pending" },
-      { id: "CP-1003", customer: "Vijay Joseph", issue: "Wrong item delivered", date: "2026-08-29", status: "Resolved" },
-      { id: "CP-1004", customer: "Sreya P", issue: "Delay in refund process", date: "2026-09-01", status: "Pending" }
-    ];
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+      authDomain: "cartprime-shopping.firebaseapp.com",
+      databaseURL: "https://cartprime-shopping-default-rtdb.firebaseio.com",
+      projectId: "cartprime-shopping",
+      storageBucket: "cartprime-shopping.firebasestorage.app",
+      messagingSenderId: "570068438689",
+      appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+      measurementId: "G-9GREWHMEYL"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    let allComplaints = [];
+    let currentFilter = 'All';
+
+    // Firebase-il ninnu Complaints load cheyyunnu
+    const complaintsRef = ref(database, 'complaints');
+    onValue(complaintsRef, (snapshot) => {
+      const data = snapshot.val();
+      allComplaints = [];
+      
+      if (data) {
+        Object.keys(data).forEach(key => {
+          allComplaints.push({
+            id: key,
+            phone: data[key].phone || data[key].userPhone || data[key].number || 'N/A',
+            issue: data[key].issue || data[key].complaint || 'No Details',
+            date: data[key].date || 'N/A',
+            status: data[key].status || 'Pending'
+          });
+        });
+      }
+      applyFiltersAndRender();
+    });
 
     function renderTable(data) {
       const tbody = document.getElementById("complaint-table-body");
       tbody.innerHTML = "";
 
-      data.forEach((item, index) => {
-        const row = document.createElement("tr");
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No complaints found</td></tr>`;
+        return;
+      }
 
+      data.forEach((item) => {
+        const row = document.createElement("tr");
         const statusClass = item.status === "Pending" ? "badge-pending" : "badge-resolved";
         const isResolved = item.status === "Resolved";
 
         row.innerHTML = `
           <td><strong>${item.id}</strong></td>
-          <td>${item.customer}</td>
+          <td>${item.phone}</td>
           <td>${item.issue}</td>
           <td>${item.date}</td>
           <td><span class="badge ${statusClass}">${item.status}</span></td>
           <td>
-            <button class="action-btn" ${isResolved ? "disabled" : ""} onclick="resolveComplaint('${item.id}')">
+            <button class="action-btn" ${isResolved ? "disabled" : ""} data-id="${item.id}">
               ${isResolved ? "Solved" : "Mark Solved"}
             </button>
           </td>
         `;
+
+        const btn = row.querySelector('.action-btn');
+        if (!isResolved) {
+          btn.addEventListener('click', () => resolveComplaint(item.id));
+        }
+
         tbody.appendChild(row);
       });
 
       updateStats();
     }
 
+    // Status maattan (Resolved aakkan)
     function resolveComplaint(id) {
-      const target = complaints.find(item => item.id === id);
-      if (target) {
-        target.status = "Resolved";
-        const activeFilter = document.querySelector(".filter-btn.active").innerText;
-        
-        if (activeFilter === "All") {
-          renderTable(complaints);
-        } else {
-          filterComplaints(activeFilter, document.querySelector(".filter-btn.active"));
-        }
-      }
+      const complaintRef = ref(database, 'complaints/' + id);
+      update(complaintRef, { status: 'Resolved' })
+        .then(() => {
+          alert('Complaint marked as Resolved!');
+        })
+        .catch((error) => {
+          console.error("Error updating status: ", error);
+        });
     }
 
-    function filterComplaints(status, btnElement) {
-      document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
-      if(btnElement) btnElement.classList.add("active");
+    function applyFiltersAndRender() {
+      const searchQuery = document.getElementById("search-phone").value.trim().toLowerCase();
+      
+      let filtered = allComplaints;
 
-      if (status === 'all' || status === 'All') {
-        renderTable(complaints);
-      } else {
-        const filtered = complaints.filter(c => c.status === status);
-        renderTable(filtered);
+      if (currentFilter !== 'All') {
+        filtered = filtered.filter(c => c.status === currentFilter);
       }
+
+      if (searchQuery !== '') {
+        filtered = filtered.filter(c => String(c.phone).toLowerCase().includes(searchQuery));
+      }
+
+      renderTable(filtered);
     }
 
     function updateStats() {
-      document.getElementById("total-count").innerText = complaints.length;
-      document.getElementById("pending-count").innerText = complaints.filter(c => c.status === "Pending").length;
-      document.getElementById("resolved-count").innerText = complaints.filter(c => c.status === "Resolved").length;
+      document.getElementById("total-count").innerText = allComplaints.length;
+      document.getElementById("pending-count").innerText = allComplaints.filter(c => c.status === "Pending").length;
+      document.getElementById("resolved-count").innerText = allComplaints.filter(c => c.status === "Resolved").length;
     }
 
-    // Initial render
-    renderTable(complaints);
+    // Event Listeners for Filters
+    document.getElementById("btn-all").addEventListener("click", (e) => setFilter('All', e.target));
+    document.getElementById("btn-pending").addEventListener("click", (e) => setFilter('Pending', e.target));
+    document.getElementById("btn-resolved").addEventListener("click", (e) => setFilter('Resolved', e.target));
+
+    function setFilter(status, element) {
+      currentFilter = status;
+      document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+      element.classList.add("active");
+      applyFiltersAndRender();
+    }
+
+    // Event Listener for Phone Search
+    document.getElementById("search-phone").addEventListener("input", applyFiltersAndRender);
+
   </script>
 </body>
 </html>
