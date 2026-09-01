@@ -17,6 +17,8 @@
       --status-resolved: #2ecc71;
       --btn-delete: #d9534f;
       --btn-delete-hover: #c9302c;
+      --btn-reply: #2563eb;
+      --btn-reply-hover: #1d4ed8;
     }
 
     * {
@@ -360,6 +362,41 @@
       margin-top: 5px;
       white-space: pre-wrap;
     }
+
+    .reply-input-box {
+      width: 100%;
+      background: #121212;
+      border: 1px solid var(--border-color);
+      color: var(--text-white);
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 5px;
+      resize: vertical;
+      min-height: 80px;
+      outline: none;
+    }
+
+    .reply-input-box:focus {
+      border-color: var(--primary-yellow);
+    }
+
+    .save-reply-btn {
+      background-color: var(--btn-reply);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 8px;
+      width: 100%;
+      transition: 0.2s;
+    }
+
+    .save-reply-btn:hover {
+      background-color: var(--btn-reply-hover);
+    }
   </style>
 </head>
 <body>
@@ -440,6 +477,11 @@
           <label>Full Complaint Message</label>
           <div class="full-msg-box" id="modal-message">-</div>
         </div>
+        <div class="modal-field">
+          <label>Admin Reply / Resolution Details</label>
+          <textarea id="modal-reply-input" class="reply-input-box" placeholder="Write reply or resolution details for the customer..."></textarea>
+          <button id="modal-save-reply" class="save-reply-btn">Save Reply</button>
+        </div>
       </div>
     </div>
   </div>
@@ -464,6 +506,7 @@
 
     let allComplaints = [];
     let currentFilter = 'All';
+    let activeTicketId = null;
 
     // Helper: Date format cheyan
     function parseDate(itemData) {
@@ -488,6 +531,7 @@
             id: key,
             phone: item.phone || item.userPhone || item.number || item.phoneNumber || 'N/A',
             message: item.message || item.issue || item.complaint || 'No Message Available',
+            adminReply: item.adminReply || '',
             date: parseDate(item),
             status: item.status || 'Pending'
           });
@@ -507,8 +551,8 @@
 
       data.forEach((item) => {
         const row = document.createElement("tr");
-        const statusClass = item.status === "Pending" ? "badge-pending" : "badge-resolved";
-        const isResolved = item.status === "Resolved";
+        const isResolved = item.status === "Resolved" || item.status === "Solved";
+        const statusClass = isResolved ? "badge-resolved" : "badge-pending";
 
         row.innerHTML = `
           <td><strong>${item.id}</strong></td>
@@ -518,7 +562,7 @@
           <td><span class="badge ${statusClass}">${item.status}</span></td>
           <td>
             <div class="action-group">
-              <button class="view-btn">View</button>
+              <button class="view-btn">View / Reply</button>
               <button class="action-btn resolve-btn" ${isResolved ? "disabled" : ""}>
                 ${isResolved ? "Solved" : "Solve"}
               </button>
@@ -549,12 +593,28 @@
 
     // Open Modal
     function openModal(item) {
+      activeTicketId = item.id;
       document.getElementById('modal-ticket-id').innerText = item.id;
       document.getElementById('modal-phone').innerText = item.phone;
       document.getElementById('modal-date').innerText = item.date;
       document.getElementById('modal-message').innerText = item.message;
+      document.getElementById('modal-reply-input').value = item.adminReply || '';
       document.getElementById('message-modal').style.display = 'flex';
     }
+
+    // Save Reply
+    document.getElementById('modal-save-reply').addEventListener('click', () => {
+      if (!activeTicketId) return;
+      const replyText = document.getElementById('modal-reply-input').value.trim();
+      const targetRef = ref(database, 'complaints/' + activeTicketId);
+      
+      update(targetRef, { adminReply: replyText })
+        .then(() => {
+          alert("Reply saved successfully!");
+          document.getElementById('message-modal').style.display = 'none';
+        })
+        .catch((error) => console.error("Reply save failed: ", error));
+    });
 
     // Close Modal
     document.getElementById('modal-close').addEventListener('click', () => {
@@ -590,7 +650,12 @@
       let filtered = allComplaints;
 
       if (currentFilter !== 'All') {
-        filtered = filtered.filter(c => c.status === currentFilter);
+        filtered = filtered.filter(c => {
+          if (currentFilter === 'Resolved') {
+            return c.status === 'Resolved' || c.status === 'Solved';
+          }
+          return c.status === currentFilter;
+        });
       }
 
       if (searchQuery !== '') {
@@ -603,7 +668,7 @@
     function updateStats() {
       document.getElementById("total-count").innerText = allComplaints.length;
       document.getElementById("pending-count").innerText = allComplaints.filter(c => c.status === "Pending").length;
-      document.getElementById("resolved-count").innerText = allComplaints.filter(c => c.status === "Resolved").length;
+      document.getElementById("resolved-count").innerText = allComplaints.filter(c => c.status === "Resolved" || c.status === "Solved").length;
     }
 
     // Filter Buttons
