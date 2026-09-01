@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CartPrime - Complaint Management Dashboard</title>
+  <title>CartPrime - Admin Dashboard</title>
   <style>
     :root {
       --bg-dark: #121212;
@@ -15,6 +15,8 @@
       --border-color: #333333;
       --status-pending: #e74c3c;
       --status-resolved: #2ecc71;
+      --btn-delete: #d9534f;
+      --btn-delete-hover: #c9302c;
     }
 
     * {
@@ -27,16 +29,24 @@
     body {
       background-color: var(--bg-dark);
       color: var(--text-white);
-      padding: 20px;
+      padding: 15px;
     }
 
     header {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 10px;
       border-bottom: 2px solid var(--border-color);
       padding-bottom: 15px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 600px) {
+      header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
     }
 
     .logo-container {
@@ -46,7 +56,7 @@
     }
 
     .logo-text {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: bold;
     }
 
@@ -61,50 +71,74 @@
 
     .dashboard-summary {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 25px;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
     }
 
     .stat-card {
       background: var(--card-bg);
       border-left: 4px solid var(--primary-yellow);
-      padding: 15px 20px;
+      padding: 12px 16px;
       border-radius: 6px;
     }
 
     .stat-card h3 {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
       margin-bottom: 5px;
     }
 
     .stat-card p {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: bold;
     }
 
     .controls {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 15px;
+      flex-direction: column;
+      gap: 12px;
       margin-bottom: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .controls {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
 
     .filters {
       display: flex;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .search-box {
+        width: auto;
+      }
     }
 
     .search-box input {
       background: var(--card-bg);
       color: var(--text-white);
       border: 1px solid var(--border-color);
-      padding: 8px 14px;
+      padding: 10px 14px;
       border-radius: 4px;
       outline: none;
-      width: 250px;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .search-box input {
+        width: 260px;
+      }
     }
 
     .search-box input:focus {
@@ -115,10 +149,18 @@
       background: var(--card-bg);
       color: var(--text-white);
       border: 1px solid var(--border-color);
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 4px;
       cursor: pointer;
       transition: 0.3s;
+      flex: 1;
+      text-align: center;
+    }
+
+    @media (min-width: 600px) {
+      .filter-btn {
+        flex: none;
+      }
     }
 
     .filter-btn.active, .filter-btn:hover {
@@ -138,11 +180,13 @@
       width: 100%;
       border-collapse: collapse;
       text-align: left;
+      min-width: 650px;
     }
 
     th, td {
-      padding: 14px 16px;
+      padding: 12px 14px;
       border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
     }
 
     th {
@@ -175,13 +219,19 @@
       border: 1px solid var(--status-resolved);
     }
 
+    .action-group {
+      display: flex;
+      gap: 6px;
+    }
+
     .action-btn {
       background-color: var(--primary-yellow);
       color: var(--bg-dark);
       border: none;
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 4px;
       font-weight: bold;
+      font-size: 12px;
       cursor: pointer;
       transition: 0.2s;
     }
@@ -195,6 +245,27 @@
       color: #888;
       cursor: not-allowed;
     }
+
+    .delete-btn {
+      background-color: var(--btn-delete);
+      color: var(--text-white);
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .delete-btn:hover {
+      background-color: var(--btn-delete-hover);
+    }
+
+    .msg-cell {
+      max-width: 250px;
+      word-wrap: break-word;
+    }
   </style>
 </head>
 <body>
@@ -204,7 +275,7 @@
       <div class="logo-container">
         <div class="logo-text">Cart<span>Prime</span> Admin</div>
       </div>
-      <div>Complaint Resolution Portal</div>
+      <div style="color: var(--text-muted); font-size: 14px;">Complaint Resolution Portal</div>
     </header>
 
     <div class="dashboard-summary">
@@ -239,10 +310,10 @@
           <tr>
             <th>Ticket ID</th>
             <th>Customer Phone</th>
-            <th>Issue Title</th>
+            <th>Complaint Message</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Action</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody id="complaint-table-body">
@@ -254,7 +325,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -273,7 +344,17 @@
     let allComplaints = [];
     let currentFilter = 'All';
 
-    // Firebase-il ninnu Complaints load cheyyunnu
+    // Helper: Date format cheyan
+    function parseDate(itemData) {
+      if (itemData.date) return itemData.date;
+      if (itemData.createdAt) return itemData.createdAt;
+      if (itemData.timestamp) {
+        return new Date(itemData.timestamp).toLocaleDateString();
+      }
+      return 'N/A';
+    }
+
+    // Firebase Data Listener
     const complaintsRef = ref(database, 'complaints');
     onValue(complaintsRef, (snapshot) => {
       const data = snapshot.val();
@@ -281,12 +362,13 @@
       
       if (data) {
         Object.keys(data).forEach(key => {
+          const item = data[key];
           allComplaints.push({
             id: key,
-            phone: data[key].phone || data[key].userPhone || data[key].number || 'N/A',
-            issue: data[key].issue || data[key].complaint || 'No Details',
-            date: data[key].date || 'N/A',
-            status: data[key].status || 'Pending'
+            phone: item.phone || item.userPhone || item.number || item.phoneNumber || 'N/A',
+            message: item.message || item.issue || item.complaint || 'No Message',
+            date: parseDate(item),
+            status: item.status || 'Pending'
           });
         });
       }
@@ -310,20 +392,26 @@
         row.innerHTML = `
           <td><strong>${item.id}</strong></td>
           <td>${item.phone}</td>
-          <td>${item.issue}</td>
+          <td class="msg-cell">${item.message}</td>
           <td>${item.date}</td>
           <td><span class="badge ${statusClass}">${item.status}</span></td>
           <td>
-            <button class="action-btn" ${isResolved ? "disabled" : ""} data-id="${item.id}">
-              ${isResolved ? "Solved" : "Mark Solved"}
-            </button>
+            <div class="action-group">
+              <button class="action-btn resolve-btn" ${isResolved ? "disabled" : ""}>
+                ${isResolved ? "Solved" : "Solve"}
+              </button>
+              <button class="delete-btn">Delete</button>
+            </div>
           </td>
         `;
 
-        const btn = row.querySelector('.action-btn');
+        const resolveBtn = row.querySelector('.resolve-btn');
         if (!isResolved) {
-          btn.addEventListener('click', () => resolveComplaint(item.id));
+          resolveBtn.addEventListener('click', () => resolveComplaint(item.id));
         }
+
+        const deleteBtn = row.querySelector('.delete-btn');
+        deleteBtn.addEventListener('click', () => deleteComplaint(item.id));
 
         tbody.appendChild(row);
       });
@@ -331,21 +419,24 @@
       updateStats();
     }
 
-    // Status maattan (Resolved aakkan)
+    // Mark Resolved
     function resolveComplaint(id) {
-      const complaintRef = ref(database, 'complaints/' + id);
-      update(complaintRef, { status: 'Resolved' })
-        .then(() => {
-          alert('Complaint marked as Resolved!');
-        })
-        .catch((error) => {
-          console.error("Error updating status: ", error);
-        });
+      const targetRef = ref(database, 'complaints/' + id);
+      update(targetRef, { status: 'Resolved' })
+        .catch((error) => console.error("Update failed: ", error));
+    }
+
+    // Delete Complaint
+    function deleteComplaint(id) {
+      if (confirm("Ee complaint delete cheyyanam enn urappanao?")) {
+        const targetRef = ref(database, 'complaints/' + id);
+        remove(targetRef)
+          .catch((error) => console.error("Delete failed: ", error));
+      }
     }
 
     function applyFiltersAndRender() {
       const searchQuery = document.getElementById("search-phone").value.trim().toLowerCase();
-      
       let filtered = allComplaints;
 
       if (currentFilter !== 'All') {
@@ -365,7 +456,7 @@
       document.getElementById("resolved-count").innerText = allComplaints.filter(c => c.status === "Resolved").length;
     }
 
-    // Event Listeners for Filters
+    // Filter Buttons
     document.getElementById("btn-all").addEventListener("click", (e) => setFilter('All', e.target));
     document.getElementById("btn-pending").addEventListener("click", (e) => setFilter('Pending', e.target));
     document.getElementById("btn-resolved").addEventListener("click", (e) => setFilter('Resolved', e.target));
@@ -377,9 +468,8 @@
       applyFiltersAndRender();
     }
 
-    // Event Listener for Phone Search
+    // Live Phone Search Input
     document.getElementById("search-phone").addEventListener("input", applyFiltersAndRender);
-
   </script>
 </body>
 </html>
