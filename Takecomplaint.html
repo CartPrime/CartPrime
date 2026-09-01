@@ -180,7 +180,7 @@
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      min-width: 650px;
+      min-width: 700px;
     }
 
     th, td {
@@ -246,6 +246,22 @@
       cursor: not-allowed;
     }
 
+    .view-btn {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .view-btn:hover {
+      background-color: #2980b9;
+    }
+
     .delete-btn {
       background-color: var(--btn-delete);
       color: var(--text-white);
@@ -262,9 +278,87 @@
       background-color: var(--btn-delete-hover);
     }
 
-    .msg-cell {
-      max-width: 250px;
-      word-wrap: break-word;
+    .msg-preview {
+      max-width: 180px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--primary-yellow);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .modal-header h2 {
+      font-size: 18px;
+      color: var(--primary-yellow);
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-white);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .modal-field {
+      margin-bottom: 12px;
+    }
+
+    .modal-field label {
+      color: var(--text-muted);
+      font-size: 12px;
+      display: block;
+    }
+
+    .modal-field span, .modal-field div {
+      color: var(--text-white);
+      font-size: 15px;
+    }
+
+    .full-msg-box {
+      background: #121212;
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 5px;
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -310,7 +404,7 @@
           <tr>
             <th>Ticket ID</th>
             <th>Customer Phone</th>
-            <th>Complaint Message</th>
+            <th>Complaint Preview</th>
             <th>Date</th>
             <th>Status</th>
             <th>Actions</th>
@@ -320,6 +414,33 @@
           <tr><td colspan="6" style="text-align: center;">Loading complaints...</td></tr>
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="message-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Complaint Details</h2>
+        <button class="close-btn" id="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <label>Ticket ID</label>
+          <span id="modal-ticket-id">-</span>
+        </div>
+        <div class="modal-field">
+          <label>Phone Number</label>
+          <span id="modal-phone">-</span>
+        </div>
+        <div class="modal-field">
+          <label>Date</label>
+          <span id="modal-date">-</span>
+        </div>
+        <div class="modal-field">
+          <label>Full Complaint Message</label>
+          <div class="full-msg-box" id="modal-message">-</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -366,7 +487,7 @@
           allComplaints.push({
             id: key,
             phone: item.phone || item.userPhone || item.number || item.phoneNumber || 'N/A',
-            message: item.message || item.issue || item.complaint || 'No Message',
+            message: item.message || item.issue || item.complaint || 'No Message Available',
             date: parseDate(item),
             status: item.status || 'Pending'
           });
@@ -392,11 +513,12 @@
         row.innerHTML = `
           <td><strong>${item.id}</strong></td>
           <td>${item.phone}</td>
-          <td class="msg-cell">${item.message}</td>
+          <td><div class="msg-preview">${item.message}</div></td>
           <td>${item.date}</td>
           <td><span class="badge ${statusClass}">${item.status}</span></td>
           <td>
             <div class="action-group">
+              <button class="view-btn">View</button>
               <button class="action-btn resolve-btn" ${isResolved ? "disabled" : ""}>
                 ${isResolved ? "Solved" : "Solve"}
               </button>
@@ -405,11 +527,17 @@
           </td>
         `;
 
+        // View Button
+        const viewBtn = row.querySelector('.view-btn');
+        viewBtn.addEventListener('click', () => openModal(item));
+
+        // Mark Resolved Button
         const resolveBtn = row.querySelector('.resolve-btn');
         if (!isResolved) {
           resolveBtn.addEventListener('click', () => resolveComplaint(item.id));
         }
 
+        // Delete Button
         const deleteBtn = row.querySelector('.delete-btn');
         deleteBtn.addEventListener('click', () => deleteComplaint(item.id));
 
@@ -418,6 +546,28 @@
 
       updateStats();
     }
+
+    // Open Modal
+    function openModal(item) {
+      document.getElementById('modal-ticket-id').innerText = item.id;
+      document.getElementById('modal-phone').innerText = item.phone;
+      document.getElementById('modal-date').innerText = item.date;
+      document.getElementById('modal-message').innerText = item.message;
+      document.getElementById('message-modal').style.display = 'flex';
+    }
+
+    // Close Modal
+    document.getElementById('modal-close').addEventListener('click', () => {
+      document.getElementById('message-modal').style.display = 'none';
+    });
+
+    // Close Modal on Overlay Click
+    window.addEventListener('click', (e) => {
+      const modal = document.getElementById('message-modal');
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
 
     // Mark Resolved
     function resolveComplaint(id) {
