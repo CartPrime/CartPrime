@@ -79,6 +79,14 @@
         .modal-card { background: var(--bg-color); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 480px; padding: 20px; max-height: 85vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 
+        /* Custom Alert Popup Box Styling */
+        .alert-modal-card { text-align: center; max-width: 400px; padding: 24px 20px; }
+        .alert-icon-box { font-size: 2.2rem; margin-bottom: 10px; }
+        .alert-title { font-size: 1.2rem; margin-bottom: 8px; font-weight: 700; color: var(--text-color); }
+        .alert-message { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; white-space: pre-line; }
+        .alert-close-btn { width: 100%; padding: 10px; background: var(--primary-blue); color: #ffffff; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+        .alert-close-btn:hover { background: var(--primary-blue-hover); }
+
         .history-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-top: 10px; text-align: left; }
         .status-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
         .status-Pending { background: #fee2e2; color: #dc2626; }
@@ -260,6 +268,15 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="customAlertModal">
+    <div class="modal-card alert-modal-card">
+        <div class="alert-icon-box" id="alertIcon">🔔</div>
+        <div class="alert-title" id="alertTitle">Notification</div>
+        <div class="alert-message" id="alertMessage">Message goes here...</div>
+        <button class="alert-close-btn" onclick="closeCustomAlert()">OK</button>
+    </div>
+</div>
+
 <div id="pdf-receipt-wrapper">
     <div class="pdf-receipt-container" id="pdf-receipt-content">
         <div class="pdf-header">
@@ -312,6 +329,18 @@
     let fetchedOrdersList = []; 
     let selectedOrderForReturn = null;
 
+    // CUSTOM DESIGNED ALERT SYSTEM FUNCTION
+    window.showCustomAlert = function(title, message, icon = '🔔') {
+        document.getElementById('alertIcon').innerText = icon;
+        document.getElementById('alertTitle').innerText = title;
+        document.getElementById('alertMessage').innerText = message;
+        document.getElementById('customAlertModal').classList.add('active');
+    };
+
+    window.closeCustomAlert = function() {
+        document.getElementById('customAlertModal').classList.remove('active');
+    };
+
     window.addEventListener('load', () => {
         const loader = document.getElementById('page-loader');
         loader.style.opacity = '0';
@@ -322,12 +351,14 @@
         document.body.classList.toggle('dark-theme');
     };
 
-    // HISTORY MODAL LOGIC
+    // HISTORY MODAL LOGIC (AUTO RELOAD ON CLOSE)
     window.openHistoryModal = function() {
         document.getElementById('complaintHistoryModal').classList.add('active');
     };
     window.closeHistoryModal = function() {
         document.getElementById('complaintHistoryModal').classList.remove('active');
+        // Auto reload page when modal is closed
+        location.reload();
     };
 
     // SEARCH COMPLAINTS FROM FIREBASE DATABASE
@@ -336,7 +367,7 @@
         const container = document.getElementById('modalHistoryContainer');
 
         if (!phone) {
-            alert("Please enter a phone number!");
+            showCustomAlert("Attention", "Please enter a valid phone number to search!", "⚠️");
             return;
         }
 
@@ -464,7 +495,7 @@
             return;
         }
 
-        // 2. Complaint Status Check (Using Firebase Data)
+        // 2. Complaint Status Check
         if (awaitingComplaintPhone) {
             awaitingComplaintPhone = false;
             const phoneInput = userMsg.trim();
@@ -627,13 +658,11 @@
         };
 
         try {
-            // Firebase-ile `complaints` node-ilekk dynamic ID aayi store cheyyunnu
             await set(ref(db, `complaints/${complaintId}`), data);
-
-            alert(`Complaint Submitted Successfully!\nYour Ticket ID: ${complaintId}`);
+            showCustomAlert("Success", `Complaint Submitted Successfully!\nYour Ticket ID: ${complaintId}`, "✅");
             this.reset();
         } catch (err) {
-            alert("Failed to submit complaint.");
+            showCustomAlert("Error", "Failed to submit complaint. Please try again later.", "❌");
         } finally {
             submitBtn.innerText = "Submit Complaint";
             submitBtn.disabled = false;
@@ -666,16 +695,19 @@
             if(selectedOrderForReturn) {
                 await update(ref(db, `orders/${selectedOrderForReturn.phoneKey}/${selectedOrderForReturn.orderId}`), { status: "Return Requested" });
             }
-            alert("Return request submitted!");
             closeReturnModal();
+            showCustomAlert("Request Sent", "Return request submitted successfully!", "🔄");
         } catch (err) {
-            alert("Error submitting return request.");
+            showCustomAlert("Error", "Error submitting return request. Please try again.", "❌");
         }
     };
 
     // PDF Generator
     window.generateAllOrdersPDF = async function() {
-        if (!fetchedOrdersList.length) return alert("No orders found!");
+        if (!fetchedOrdersList.length) {
+            showCustomAlert("No Data", "No orders found to generate PDF receipt!", "📄");
+            return;
+        }
         document.getElementById('pdf-statement-date').innerText = new Date().toLocaleDateString();
         document.getElementById('pdf-cust-phone').innerText = currentCustomerPhone;
         
