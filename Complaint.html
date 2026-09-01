@@ -50,7 +50,6 @@
 
         body { background: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; transition: background 0.3s, color 0.3s; }
         
-        /* HEADER TOP BUTTONS AREA */
         .top-action-bar { width: 100%; max-width: 950px; display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 1rem; }
         .action-btn { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: 0.2s; }
         .action-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
@@ -75,20 +74,17 @@
         .submit-btn { width: 100%; padding: 0.9rem; background: var(--primary-blue); color: #ffffff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; }
         .submit-btn:hover { background: var(--primary-blue-hover); }
 
-        /* MODAL STYLES */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-card { background: var(--bg-color); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 480px; padding: 20px; max-height: 85vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 
-        /* COMPLAINT HISTORY STYLES */
         .history-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-top: 10px; text-align: left; }
         .status-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
         .status-Pending { background: #fee2e2; color: #dc2626; }
         .status-InProgress { background: #fef3c7; color: #d97706; }
-        .status-Solved { background: #dcfce7; color: #16a34a; }
+        .status-Resolved, .status-Solved { background: #dcfce7; color: #16a34a; }
 
-        /* CHATBOT STYLES */
         .chatbot-toggler { position: fixed; bottom: 25px; right: 25px; border: none; height: 56px; width: 56px; display: flex; cursor: pointer; align-items: center; justify-content: center; border-radius: 50%; background: var(--primary-blue); z-index: 1000; }
         .chatbot-toggler svg { fill: none; stroke: #ffffff; stroke-width: 2; width: 28px; height: 28px; }
 
@@ -309,9 +305,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // GOOGLE APPS SCRIPT WEB APP URL (ഇവിടെ നിങ്ങളുടെ URL നൽകുക)
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQUaf44RHz2RGhNH5YmDDYndxGYhxH1uSkxpg3Uj_klyf-SOBtNVCQr6ZT3P9S_55x8A/exec";
-
     let awaitingPhone = false;
     let awaitingReturnOrderId = false;
     let awaitingComplaintPhone = false;
@@ -337,7 +330,7 @@
         document.getElementById('complaintHistoryModal').classList.remove('active');
     };
 
-    // SEARCH COMPLAINTS FROM GOOGLE SHEETS
+    // SEARCH COMPLAINTS FROM FIREBASE DATABASE
     window.fetchModalComplaintHistory = async function() {
         const phone = document.getElementById('modalSearchPhone').value.trim();
         const container = document.getElementById('modalHistoryContainer');
@@ -347,25 +340,43 @@
             return;
         }
 
-        container.innerHTML = "<p style='margin-top:10px;'>Searching Excel Database...</p>";
+        container.innerHTML = "<p style='margin-top:10px;'>Searching Database...</p>";
 
         try {
-            const response = await fetch(`${GOOGLE_SCRIPT_URL}?phone=${phone}`);
-            const complaints = await response.json();
+            const snapshot = await get(ref(db, 'complaints'));
+            let complaints = [];
 
-            if (complaints && complaints.length > 0) {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                Object.keys(data).forEach(key => {
+                    const c = data[key];
+                    const itemPhone = String(c.phone || c.userPhone || c.number || c.phoneNumber || '').trim();
+                    if (itemPhone === phone) {
+                        complaints.push({
+                            complaintId: key,
+                            ...c
+                        });
+                    }
+                });
+            }
+
+            if (complaints.length > 0) {
                 let html = "";
                 complaints.forEach(c => {
-                    const statusClass = (c.status || 'Pending').replace(/\s+/g, '');
+                    const status = c.status || 'Pending';
+                    const statusClass = status.replace(/\s+/g, '');
+                    const messageText = c.message || c.issue || c.complaint || 'No Message';
+                    const dateText = c.date || c.createdAt || 'N/A';
+                    
                     html += `
                         <div class="history-card">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                                 <strong>Ticket #${c.complaintId}</strong>
-                                <span class="status-badge status-${statusClass}">${c.status}</span>
+                                <span class="status-badge status-${statusClass}">${status}</span>
                             </div>
-                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;"><b>Date:</b> ${c.createdAt}</p>
-                            <p style="font-size:0.85rem; margin-bottom:6px;"><b>Message:</b> ${c.message}</p>
-                            ${c.adminReply ? `<div style="background:var(--bg-color); padding:6px; border-left:3px solid var(--primary-blue); font-size:0.8rem;"><b>Reply:</b> ${c.adminReply}</div>` : ''}
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;"><b>Date:</b> ${dateText}</p>
+                            <p style="font-size:0.85rem; margin-bottom:6px;"><b>Message:</b> ${messageText}</p>
+                            ${c.adminReply ? `<div style="background:var(--bg-color); padding:6px; border-left:3px solid var(--primary-blue); font-size:0.8rem; margin-top:5px;"><b>Reply:</b> ${c.adminReply}</div>` : ''}
                         </div>
                     `;
                 });
@@ -374,7 +385,8 @@
                 container.innerHTML = `<p style="color:red; margin-top:10px;">No complaints found for <b>${phone}</b></p>`;
             }
         } catch (err) {
-            container.innerHTML = "<p style='color:red; margin-top:10px;'>Error fetching status from Excel!</p>";
+            console.error(err);
+            container.innerHTML = "<p style='color:red; margin-top:10px;'>Error fetching status from Database!</p>";
         }
     };
 
@@ -452,27 +464,39 @@
             return;
         }
 
-        // 2. Complaint Status Check (Using Google Sheets Data)
+        // 2. Complaint Status Check (Using Firebase Data)
         if (awaitingComplaintPhone) {
             awaitingComplaintPhone = false;
             const phoneInput = userMsg.trim();
             showTypingDots();
 
             try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?phone=${phoneInput}`);
-                const userComplaints = await response.json();
+                const snapshot = await get(ref(db, 'complaints'));
                 removeTypingDots();
                 const resultLi = document.createElement('li');
                 resultLi.classList.add('chat', 'incoming');
 
-                if (userComplaints && userComplaints.length > 0) {
+                let userComplaints = [];
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    Object.keys(data).forEach(key => {
+                        const c = data[key];
+                        const itemPhone = String(c.phone || c.userPhone || c.number || c.phoneNumber || '').trim();
+                        if (itemPhone === phoneInput) {
+                            userComplaints.push({ complaintId: key, ...c });
+                        }
+                    });
+                }
+
+                if (userComplaints.length > 0) {
                     let htmlContent = `<b>📋 Your Complaint History:</b><br><br>`;
                     userComplaints.forEach((c) => {
-                        let color = c.status === "Solved" ? "green" : (c.status === "In Progress" ? "orange" : "red");
+                        const status = c.status || 'Pending';
+                        let color = (status === "Solved" || status === "Resolved") ? "green" : (status === "In Progress" ? "orange" : "red");
                         htmlContent += `
                             <b>ID:</b> #${c.complaintId}<br>
-                            <b>Category:</b> ${c.category}<br>
-                            <b>Status:</b> <span style="color:${color}; font-weight:bold;">${c.status}</span><br>
+                            <b>Category:</b> ${c.category || 'General'}<br>
+                            <b>Status:</b> <span style="color:${color}; font-weight:bold;">${status}</span><br>
                             ${c.adminReply ? `<b>Reply:</b> ${c.adminReply}<br>` : ''}
                             <hr style="border:0.5px solid var(--border); margin:5px 0;">
                         `;
@@ -582,7 +606,7 @@
         }, 1000);
     };
 
-    // SUBMIT COMPLAINT TO GOOGLE SHEETS & FIREBASE
+    // SUBMIT COMPLAINT DIRECTLY TO FIREBASE
     document.getElementById('complaintForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const submitBtn = document.getElementById('submitBtn');
@@ -599,22 +623,14 @@
             message: document.getElementById('message').value.trim(),
             status: "Pending",
             adminReply: "",
-            createdAt: new Date().toLocaleString()
+            date: new Date().toLocaleDateString()
         };
 
         try {
-            // Post to Google Sheets
-            await fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            });
-
-            // Save to Firebase (Backup)
+            // Firebase-ile `complaints` node-ilekk dynamic ID aayi store cheyyunnu
             await set(ref(db, `complaints/${complaintId}`), data);
 
-            alert(`Complaint Submitted!\nYour Complaint ID: ${complaintId}`);
+            alert(`Complaint Submitted Successfully!\nYour Ticket ID: ${complaintId}`);
             this.reset();
         } catch (err) {
             alert("Failed to submit complaint.");
