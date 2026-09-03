@@ -1325,6 +1325,34 @@ window.updateStatus = (path, s) => {
     });
 };
 
+/* APPROVE OR REJECT EARN PARTNER REQUEST FUNCTION (GLOBAL SCOPE) */
+window.updateAffiliateStatus = async (requestId, userId, newStatus) => {
+    try {
+        await update(ref(db, `earn_partners/${requestId}`), { 
+            status: newStatus,
+            updatedAt: new Date().toISOString()
+        });
+
+        if (userId && userId !== 'undefined' && userId !== '') {
+            await update(ref(db, `users/${userId}`), {
+                isAffiliate: newStatus === 'Approved',
+                affiliateStatus: newStatus
+            }).catch(err => console.log("User status update skipped/failed:", err));
+        }
+
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: `Earn Partner request ${newStatus.toLowerCase()} successfully!`,
+            showConfirmButton: false,
+            timer: 2000
+        });
+    } catch (error) {
+        Swal.fire('Error', 'Action failed: ' + error.message, 'error');
+    }
+};
+
 /* REAL-TIME EARN PARTNERS LISTENER */
 onValue(ref(db, 'earn_partners'), snap => {
     const list = document.getElementById('affiliateRequestList');
@@ -1340,6 +1368,7 @@ onValue(ref(db, 'earn_partners'), snap => {
         const req = child.val();
         const reqId = child.key;
         const status = req.status || "Pending";
+        const targetUserId = req.userId || reqId;
         
         let statusBadgeClass = "pay-Pending";
         if (status === "Approved") statusBadgeClass = "pay-Approved";
@@ -1349,7 +1378,7 @@ onValue(ref(db, 'earn_partners'), snap => {
         <tr>
             <td>
                 <strong style="color:#0f172a; font-size:14px;">${req.name || 'User'}</strong><br>
-                <small style="color:#64748b;">UID: ${req.userId || reqId}</small>
+                <small style="color:#64748b;">UID: ${targetUserId}</small>
             </td>
             <td>${req.phone || req.email || 'N/A'}</td>
             <td>
@@ -1357,11 +1386,14 @@ onValue(ref(db, 'earn_partners'), snap => {
             </td>
             <td>
                 ${status === 'Pending' ? `
-                    <button style="background:#16a34a; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="updateAffiliateStatus('${reqId}', '${req.userId || ''}', 'Approved')" title="Approve Request">
+                    <button style="background:#16a34a; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="window.updateAffiliateStatus('${reqId}', '${targetUserId}', 'Approved')" title="Approve Request">
                         <i class="fa fa-check"></i> Approve
                     </button>
+                    <button style="background:#dc2626; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:4px;" onclick="window.updateAffiliateStatus('${reqId}', '${targetUserId}', 'Rejected')" title="Reject Request">
+                        <i class="fa fa-times"></i> Reject
+                    </button>
                 ` : `
-                    <span style="font-size:12px; font-weight:bold; color:#16a34a;">Approved</span>
+                    <span style="font-size:12px; font-weight:bold; color:${status === 'Approved' ? '#16a34a' : '#dc2626'};">${status}</span>
                 `}
             </td>
             <td>
@@ -1374,34 +1406,6 @@ onValue(ref(db, 'earn_partners'), snap => {
         </tr>`;
     });
 });
-
-/* APPROVE OR REJECT EARN PARTNER REQUEST FUNCTION */
-window.updateAffiliateStatus = async (requestId, userId, newStatus) => {
-    try {
-        await update(ref(db, `earn_partners/${requestId}`), { 
-            status: newStatus,
-            updatedAt: new Date().toISOString()
-        });
-
-        if (userId) {
-            await update(ref(db, `users/${userId}`), {
-                isAffiliate: newStatus === 'Approved',
-                affiliateStatus: newStatus
-            });
-        }
-
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: `Earn Partner request ${newStatus.toLowerCase()} successfully!`,
-            showConfirmButton: false,
-            timer: 2000
-        });
-    } catch (error) {
-        Swal.fire('Error', 'Action failed: ' + error.message, 'error');
-    }
-};
 
 /* 7 DAYS REFERRAL COMMISSION AUTOMATION */
 window.checkAndCreditCommissions = async () => {
