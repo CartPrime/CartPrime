@@ -358,7 +358,7 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        let orderInfo = JSON.parse(localStorage.getItem('pendingOrder'));
+        let orderInfo = JSON.parse(localStorage.getItem('pendingOrder')) || {};
         let currentUserId = null;
         let currentUserEmail = null; 
 
@@ -471,7 +471,7 @@
         };
 
         function renderOrderPreview() {
-            if (!orderInfo) {
+            if (!orderInfo || Object.keys(orderInfo).length === 0) {
                 location.href = 'index.html';
                 return;
             }
@@ -634,6 +634,10 @@
                 if(res.isConfirmed) {
                     const orderId = Date.now(); 
                     
+                    // Fetch Referral Info from Order or LocalStorage
+                    const refUser = orderInfo.referredBy || localStorage.getItem('referredBy') || null;
+                    const commAmt = orderInfo.commissionAmount || localStorage.getItem('commissionAmount') || 0;
+
                     let finalOrder = { 
                         customerName: fields.name, 
                         customerPhone: fields.phone, 
@@ -644,7 +648,9 @@
                         status: "Order Confirmed", 
                         paymentStatus: "COD",
                         paymentMethod: "COD",
-                        orderId: orderId
+                        orderId: orderId,
+                        referredBy: refUser,
+                        commissionAmount: parseFloat(commAmt) || 0
                     };
 
                     if (orderInfo.orderType === "Cart" && orderInfo.items) {
@@ -696,7 +702,12 @@
                         if (emailToSend) window.sendOrderEmail(finalOrder, emailToSend);
 
                         if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
+                        
+                        // Storage ൽ നിന്ന് ആക്റ്റീവ് ആയുള്ള ഓർഡർ & റെഫറൽ ഡാറ്റാസ് ഡിലീറ്റ് ചെയ്യുക
                         localStorage.removeItem('pendingOrder');
+                        localStorage.removeItem('referredBy');
+                        localStorage.removeItem('commissionAmount');
+
                         showAlert('Success', 'Order Placed Successfully!', 'success');
                         setTimeout(() => location.href = 'orders.html', 1500);
                     }).catch(() => showAlert('Error', 'Order could not be saved.', 'error'));
