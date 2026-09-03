@@ -236,7 +236,7 @@
     <button onclick="openTab('addProduct', this)" class="tablinks" id="btn-addProduct" title="Add Product"><i class="fa fa-plus"></i> <span>Add Product</span></button>
     <button onclick="openTab('manageProducts', this)" class="tablinks" id="btn-manageProducts" title="Inventory"><i class="fa fa-layer-group"></i> <span>Inventory</span></button>
     <button onclick="openTab('banners', this)" class="tablinks" id="btn-banners" title="Banners"><i class="fa fa-images"></i> <span>Banners</span></button>
-    <button onclick="openTab('affiliates', this)" class="tablinks" id="btn-affiliates" title="Affiliates"><i class="fa fa-handshake"></i> <span>Affiliates</span></button>
+    <button onclick="openTab('affiliates', this)" class="tablinks" id="btn-affiliates" title="Earn Partners"><i class="fa fa-handshake"></i> <span>Earn Partners</span></button>
     <button onclick="openTab('users', this)" class="tablinks" id="btn-users" title="Users"><i class="fa fa-user-friends"></i> <span>Users</span></button>
     <button onclick="openTab('complaints', this)" class="tablinks" id="btn-complaints" title="Complaints"><i class="fa fa-triangle-exclamation"></i> <span>Complaints</span></button>
     <a href="index.html" title="Back to Store"><i class="fa fa-arrow-left"></i> <span>Back Store</span></a>
@@ -451,7 +451,7 @@
     </div>
 
     <div id="affiliates" class="tab-content">
-        <h2 class="tab-title">Affiliate Applications & Requests</h2>
+        <h2 class="tab-title">Earn Partners Applications & Requests</h2>
         <div class="admin-card">
             <div class="table-responsive">
                 <table>
@@ -465,7 +465,7 @@
                         </tr>
                     </thead>
                     <tbody id="affiliateRequestList">
-                        <tr><td colspan="5" style="text-align:center; color:#64748b;">Loading Affiliate requests...</td></tr>
+                        <tr><td colspan="5" style="text-align:center; color:#64748b;">Loading Earn Partner requests...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1325,14 +1325,14 @@ window.updateStatus = (path, s) => {
     });
 };
 
-/* REAL-TIME AFFILIATE REQUESTS LISTENER */
+/* REAL-TIME EARN PARTNERS LISTENER */
 onValue(ref(db, 'earn_partners'), snap => {
-    const list = document.getElementById('earn_partners');
+    const list = document.getElementById('affiliateRequestList');
     if (!list) return;
     list.innerHTML = "";
 
     if (!snap.exists()) {
-        list.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No affiliate requests found.</td></tr>`;
+        list.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No Earn Partner requests found.</td></tr>`;
         return;
     }
 
@@ -1368,7 +1368,7 @@ onValue(ref(db, 'earn_partners'), snap => {
                     ` : `
                         <span style="font-size:12px; font-weight:bold; color:#64748b;">Processed</span>
                     `}
-                    <button style="background:#333;" onclick="deleteItem('affiliateRequests/${reqId}')" title="Delete">
+                    <button style="background:#333;" onclick="deleteItem('earn_partners/${reqId}')" title="Delete">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
@@ -1377,10 +1377,10 @@ onValue(ref(db, 'earn_partners'), snap => {
     });
 });
 
-/* APPROVE OR REJECT AFFILIATE REQUEST FUNCTION */
+/* APPROVE OR REJECT EARN PARTNER REQUEST FUNCTION */
 window.updateAffiliateStatus = async (requestId, userId, newStatus) => {
     try {
-        await update(ref(db, `affiliateRequests/${requestId}`), { 
+        await update(ref(db, `earn_partners/${requestId}`), { 
             status: newStatus,
             updatedAt: new Date().toISOString()
         });
@@ -1396,7 +1396,7 @@ window.updateAffiliateStatus = async (requestId, userId, newStatus) => {
             toast: true,
             position: 'top-end',
             icon: 'success',
-            title: `Affiliate request ${newStatus.toLowerCase()} successfully!`,
+            title: `Earn Partner request ${newStatus.toLowerCase()} successfully!`,
             showConfirmButton: false,
             timer: 2000
         });
