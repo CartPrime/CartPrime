@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Digital Wallet</title>
+    <title>Cartprime - Wallet & Sales Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -23,57 +23,93 @@
 
         .wallet-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 450px;
             background: #ffffff;
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             padding: 24px;
         }
 
-        .header {
+        /* Branding Header */
+        .brand-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .header h2 {
-            font-size: 20px;
-            color: #2b3674;
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+        .brand-logo h1 {
+            font-size: 22px;
+            color: #4318ff;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-badge {
+            background: #e9e3ff;
+            color: #4318ff;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        /* Virtual Card */
         .card {
             background: linear-gradient(135deg, #4318ff 0%, #868CFF 100%);
             border-radius: 20px;
             padding: 20px;
             color: white;
             box-shadow: 0 10px 20px rgba(67, 24, 255, 0.2);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: "CARTPRIME";
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 32px;
+            font-weight: 900;
+            opacity: 0.1;
+            letter-spacing: 2px;
         }
 
         .card .balance-title {
-            font-size: 14px;
-            opacity: 0.8;
+            font-size: 13px;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .card .balance {
             font-size: 32px;
             font-weight: bold;
-            margin: 8px 0 20px 0;
+            margin: 8px 0 16px 0;
         }
 
         .card-details {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
+            font-size: 13px;
             letter-spacing: 1px;
+            opacity: 0.9;
         }
 
+        /* Actions */
         .actions {
             display: flex;
-            justify-content: space-between;
+            gap: 10px;
             margin-bottom: 24px;
-            gap: 12px;
         }
 
         .btn {
@@ -83,7 +119,17 @@
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s ease-in-out;
+            font-size: 14px;
+        }
+
+        .btn-sell {
+            background-color: #05cd99;
+            color: white;
+        }
+
+        .btn-sell:hover {
+            background-color: #04b385;
         }
 
         .btn-add {
@@ -95,117 +141,115 @@
             background-color: #3311cc;
         }
 
-        .btn-send {
-            background-color: #f4f7fe;
-            color: #2b3674;
-        }
-
-        .btn-send:hover {
-            background-color: #e2e8f0;
-        }
-
-        .transactions h3 {
-            font-size: 16px;
-            color: #2b3674;
-            margin-bottom: 16px;
-        }
-
-        .transaction-list {
-            list-style: none;
-        }
-
-        .transaction-item {
+        /* History Section */
+        .history-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 12px;
         }
 
-        .transaction-item:last-child {
-            border-bottom: none;
+        .section-title {
+            font-size: 15px;
+            color: #2b3674;
+            font-weight: 700;
         }
 
-        .item-info {
+        .product-list {
+            list-style: none;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: 1px solid #edf2f7;
+        }
+
+        .product-info {
             display: flex;
             flex-direction: column;
         }
 
-        .item-title {
+        .product-name {
             font-weight: 600;
             color: #2b3674;
             font-size: 14px;
         }
 
-        .item-date {
+        .product-meta {
             font-size: 12px;
-            color: #a3edd9;
             color: #a3aed0;
+            margin-top: 2px;
         }
 
-        .amount {
-            font-weight: 600;
+        .product-price {
+            font-weight: bold;
             font-size: 14px;
-        }
-
-        .credit {
             color: #05cd99;
-        }
-
-        .debit {
-            color: #ee5d50;
         }
     </style>
 </head>
 <body>
 
     <div class="wallet-container">
-        <!-- Header -->
-        <div class="header">
-            <h2>My Wallet</h2>
-            <span style="font-size: 20px;">🔔</span>
+        <!-- Cartprime Header -->
+        <div class="brand-header">
+            <div class="brand-logo">
+                <h1>Cartprime</h1>
+                <span class="brand-badge">Pay</span>
+            </div>
+            <span style="font-size: 20px; cursor: pointer;">🔔</span>
         </div>
 
-        <!-- Virtual Card -->
+        <!-- Cartprime Virtual Balance Card -->
         <div class="card">
-            <div class="balance-title">Total Balance</div>
-            <div class="balance">₹ <span id="total-balance">24,500.00</span></div>
+            <div class="balance-title">Cartprime Balance</div>
+            <div class="balance">₹ <span id="total-balance">45,200.00</span></div>
             <div class="card-details">
-                <span>**** **** **** 4821</span>
-                <span>12/28</span>
+                <span>Acc: **** 4821</span>
+                <span>Active</span>
             </div>
         </div>
 
-        <!-- Quick Actions -->
+        <!-- Action Buttons -->
         <div class="actions">
-            <button class="btn btn-add" onclick="addMoney()">+ Add Money</button>
-            <button class="btn btn-send" onclick="sendMoney()">- Send</button>
+            <button class="btn btn-sell" onclick="sellProduct()">+ New Sale</button>
+            <button class="btn btn-add" onclick="addMoney()">+ Add Funds</button>
         </div>
 
-        <!-- Transaction History -->
-        <div class="transactions">
-            <h3>Recent Transactions</h3>
-            <ul class="transaction-list" id="transaction-list">
-                <li class="transaction-item">
-                    <div class="item-info">
-                        <span class="item-title">Salary Credit</span>
-                        <span class="item-date">01 Sep 2026</span>
+        <!-- Sales History -->
+        <div class="history-section">
+            <div class="history-header">
+                <div class="section-title">Cartprime Sales History</div>
+            </div>
+            <ul class="product-list" id="product-list">
+                <li class="product-item">
+                    <div class="product-info">
+                        <span class="product-name">Wireless Headphones</span>
+                        <span class="product-meta">Qty: 1 • 03 Sep 2026</span>
                     </div>
-                    <span class="amount credit">+ ₹30,000.00</span>
+                    <span class="product-price">+ ₹2,500.00</span>
                 </li>
-                <li class="transaction-item">
-                    <div class="item-info">
-                        <span class="item-title">Shopping</span>
-                        <span class="item-date">02 Sep 2026</span>
+                <li class="product-item">
+                    <div class="product-info">
+                        <span class="product-name">Smart Watch</span>
+                        <span class="product-meta">Qty: 2 • 02 Sep 2026</span>
                     </div>
-                    <span class="amount debit">- ₹5,500.00</span>
+                    <span class="product-price">+ ₹7,000.00</span>
                 </li>
             </ul>
         </div>
     </div>
 
     <script>
-        let currentBalance = 24500.00;
+        let currentBalance = 45200.00;
 
         function updateBalanceDisplay() {
             document.getElementById('total-balance').innerText = currentBalance.toLocaleString('en-IN', {
@@ -214,46 +258,44 @@
             });
         }
 
+        function sellProduct() {
+            let name = prompt("Enter Product Name:", "E.g., Wireless Mouse");
+            if (!name) return;
+
+            let qty = prompt("Enter Quantity:", "1");
+            let price = prompt("Enter Sale Price (₹):", "1200");
+
+            if (price && !isNaN(price) && Number(price) > 0) {
+                price = parseFloat(price);
+                currentBalance += price;
+                updateBalanceDisplay();
+
+                addProductHistory(name, qty || 1, price);
+            }
+        }
+
         function addMoney() {
-            let amount = prompt("Enter amount to add:", "1000");
+            let amount = prompt("Enter amount to add to Cartprime Wallet:", "1000");
             if (amount && !isNaN(amount) && Number(amount) > 0) {
                 amount = parseFloat(amount);
                 currentBalance += amount;
                 updateBalanceDisplay();
-                addTransaction("Money Added", amount, "credit");
             }
         }
 
-        function sendMoney() {
-            let amount = prompt("Enter amount to send:", "500");
-            if (amount && !isNaN(amount) && Number(amount) > 0) {
-                amount = parseFloat(amount);
-                if (amount <= currentBalance) {
-                    currentBalance -= amount;
-                    updateBalanceDisplay();
-                    addTransaction("Transfer Out", amount, "debit");
-                } else {
-                    alert("Insufficient balance!");
-                }
-            }
-        }
-
-        function addTransaction(title, amount, type) {
-            const list = document.getElementById('transaction-list');
+        function addProductHistory(name, qty, price) {
+            const list = document.getElementById('product-list');
             const li = document.createElement('li');
-            li.className = 'transaction-item';
+            li.className = 'product-item';
             
-            const isCredit = type === 'credit';
-            const sign = isCredit ? '+' : '-';
-            const amountClass = isCredit ? 'credit' : 'debit';
             const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
             li.innerHTML = `
-                <div class="item-info">
-                    <span class="item-title">${title}</span>
-                    <span class="item-date">${today}</span>
+                <div class="product-info">
+                    <span class="product-name">${name}</span>
+                    <span class="product-meta">Qty: ${qty} • ${today}</span>
                 </div>
-                <span class="amount ${amountClass}">${sign} ₹${amount.toFixed(2)}</span>
+                <span class="product-price">+ ₹${price.toFixed(2)}</span>
             `;
             
             list.prepend(li);
