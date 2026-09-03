@@ -63,6 +63,17 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        /* --- Global Button Touch & Interactive Reset --- */
+        button, .category-btn, .icon-btn, .cookie-btn, .earn-btn {
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:active, .category-btn:active, .icon-btn:active {
+            transform: scale(0.96) !important;
+        }
+
         /* --- Navigation --- */
         nav {
             display: flex; 
@@ -213,6 +224,7 @@
             overflow-x: auto;
             white-space: nowrap;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
         .category-bar::-webkit-scrollbar {
             display: none;
@@ -226,9 +238,14 @@
             font-weight: 600;
             cursor: pointer;
             border: 1px solid var(--border);
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             text-transform: capitalize;
             user-select: none;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
         }
         .category-btn:hover, .category-btn.active {
             background: var(--primary);
@@ -291,8 +308,8 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             background: var(--card-bg);
             color: var(--text-main);
             border: 1px solid var(--border);
@@ -309,7 +326,7 @@
         .banner-arrow:hover {
             background: var(--primary);
             color: var(--bg);
-            transform: translateY(-50%) scale(1.1);
+            transform: translateY(-50%) scale(1.08);
         }
         .banner-arrow.prev { left: -12px; }
         .banner-arrow.next { right: -12px; }
@@ -322,8 +339,8 @@
             margin-top: 12px;
         }
         .dot {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             background: var(--border);
             border-radius: 50%;
             transition: all 0.3s ease;
@@ -331,7 +348,7 @@
         }
         .dot.active {
             background: var(--primary);
-            width: 18px;
+            width: 20px;
             border-radius: 4px;
         }
 
@@ -344,15 +361,16 @@
             background: var(--surface);
             border: 1px solid var(--border);
             color: var(--text-main);
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-size: 1.1rem;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
         }
         .theme-toggle-btn:hover {
             background: var(--border);
@@ -364,15 +382,18 @@
             background: #2563eb;
             color: #ffffff;
             border: none;
-            padding: 8px 14px;
-            border-radius: 10px;
+            padding: 8px 16px;
+            border-radius: 12px;
             font-weight: 700;
             font-size: 0.85rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
-            transition: background 0.2s ease;
+            transition: background 0.2s ease, transform 0.2s ease;
+            min-height: 40px;
+            white-space: nowrap;
         }
 
         .earn-btn:hover {
@@ -391,6 +412,7 @@
             z-index: 10000;
             align-items: center;
             justify-content: center;
+            padding: 15px;
         }
 
         .earn-modal-card {
@@ -398,7 +420,7 @@
             color: var(--text-main);
             padding: 25px;
             border-radius: 20px;
-            width: 90%;
+            width: 100%;
             max-width: 400px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             border: 1px solid var(--border);
@@ -412,12 +434,13 @@
         }
 
         .earn-input {
-            padding: 10px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 10px;
             border: 1px solid var(--border);
             background: var(--surface);
             color: var(--text-main);
             font-size: 0.9rem;
+            width: 100%;
         }
 
         .earn-btn-group {
@@ -428,24 +451,32 @@
 
         .earn-btn-cancel {
             flex: 1;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 10px;
             border: 1px solid var(--border);
             background: transparent;
             color: var(--text-main);
             cursor: pointer;
             font-weight: 600;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .earn-btn-submit {
             flex: 1;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 10px;
             border: none;
             background: #2563eb;
             color: #fff;
             font-weight: 700;
             cursor: pointer;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* --- Slide Up Animation --- */
@@ -506,9 +537,9 @@
             position: absolute;
             top: 12px;
             right: 12px;
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.9);
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.92);
             border: 1px solid var(--border);
             border-radius: 50%;
             display: flex;
@@ -517,7 +548,7 @@
             cursor: pointer;
             z-index: 12;
             color: #64748b;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: all 0.2s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
@@ -532,7 +563,7 @@
 
         /* Adjust discount badge position if wishlist button exists */
         .discount-badge.with-wishlist {
-            right: 52px;
+            right: 56px;
         }
 
         .card-info { flex-grow: 1; display: flex; flex-direction: column; }
@@ -547,20 +578,48 @@
         .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.85rem; }
 
         .buy-btn {
-            width: 100%; padding: 14px; background: var(--primary); color: var(--bg); border: none;
-            border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;
-            font-size: 0.9rem; margin-top: auto;
+            width: 100%; 
+            padding: 12px 14px; 
+            background: var(--primary); 
+            color: var(--bg); 
+            border: none;
+            border-radius: 14px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: 0.25s ease;
+            font-size: 0.9rem; 
+            margin-top: auto;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
 
         .nav-right { display: flex; align-items: center; gap: 12px; position: relative; flex-shrink: 0; }
-        .icon-btn { position: relative; font-size: 1.25rem; color: var(--text-main); cursor: pointer; text-decoration: none; transition: 0.2s; }
+        .icon-btn { 
+            position: relative; 
+            font-size: 1.25rem; 
+            color: var(--text-main); 
+            cursor: pointer; 
+            text-decoration: none; 
+            transition: 0.2s; 
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
         .icon-btn:hover { color: var(--accent); }
         
         .badge {
-            position: absolute; top: -8px; right: -8px; background: #ef4444; color: white;
-            font-size: 0.6rem; font-weight: 800; border-radius: 50%; min-width: 16px;
-            height: 16px; display: flex; align-items: center; justify-content: center; padding: 2px;
+            position: absolute; top: -4px; right: -4px; background: #ef4444; color: white;
+            font-size: 0.6rem; font-weight: 800; border-radius: 50%; min-width: 18px;
+            height: 18px; display: flex; align-items: center; justify-content: center; padding: 2px;
+            border: 2px solid var(--card-bg);
         }
 
         /* --- Skeleton Loading Placeholder Cards --- */
@@ -670,13 +729,17 @@
             justify-content: flex-end;
         }
         .cookie-btn {
-            padding: 8px 18px;
+            padding: 10px 20px;
             border-radius: 10px;
             font-size: 0.8rem;
             font-weight: 700;
             cursor: pointer;
             border: none;
             transition: 0.2s;
+            min-height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .cookie-accept {
             background: var(--primary);
@@ -698,62 +761,77 @@
         .footer-contact a:hover { opacity: 0.8; }
         .footer-bottom { border-top: 1px solid #1e293b; margin-top: 20px; padding-top: 15px; text-align: center; color: #94a3b8; font-size: 0.85rem; }
 
+        /* --- Comprehensive Responsive Styles --- */
         @media (max-width: 768px) {
-            nav { padding: 12px 4%; flex-wrap: wrap; justify-content: space-between; }
+            nav { padding: 10px 4%; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
             .logo { font-size: 1.2rem; order: 1; }
             
             .nav-right { order: 2; gap: 8px; flex-shrink: 0; }
-            .icon-btn { font-size: 1.15rem; }
+            .icon-btn, .theme-toggle-btn { width: 36px; height: 36px; font-size: 1rem; }
+            .earn-btn { padding: 6px 12px; font-size: 0.78rem; min-height: 36px; border-radius: 10px; }
             
-            .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin: 8px 0 2px 0; }
-            
-            .hero { padding: 20px 4% 5px; flex-direction: column; align-items: flex-start; gap: 15px; }
-            .hero-text h1 { font-size: 1.8rem; }
-            .hero-text p { font-size: 0.85rem; }
+            .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin: 4px 0 2px 0; }
+            .search-container input { padding: 8px 12px 8px 36px; font-size: 0.85rem; border-radius: 10px; }
+            .search-container i { left: 12px; }
+
+            .hero { padding: 16px 4% 5px; flex-direction: column; align-items: flex-start; gap: 12px; }
+            .hero-text h1 { font-size: 1.7rem; }
+            .hero-text p { font-size: 0.82rem; }
 
             .trust-stats { width: 100%; justify-content: space-around; padding: 10px; }
-            .trust-bar-section { padding: 10px 4%; }
-            .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
+            .trust-bar-section { padding: 8px 4%; }
+            .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
 
-            .category-bar { padding: 10px 4%; gap: 8px; }
-            .category-btn { padding: 8px 16px; font-size: 0.8rem; }
+            .category-bar { padding: 8px 4%; gap: 6px; }
+            .category-btn { padding: 8px 16px; font-size: 0.8rem; min-height: 36px; }
 
-            .banner-section { padding: 8px 4% 8px 4%; }
-            .banner-item { flex: 0 0 100%; max-height: 160px; border-radius: 12px; }
-            .banner-item img { border-radius: 12px; }
-            .banner-arrow { width: 30px; height: 30px; font-size: 0.8rem; }
-            .banner-arrow.prev { left: -5px; }
-            .banner-arrow.next { right: -5px; }
+            .banner-section { padding: 8px 4%; }
+            .banner-item { flex: 0 0 100%; max-height: 160px; border-radius: 14px; }
+            .banner-item img { border-radius: 14px; }
+            .banner-arrow { width: 32px; height: 32px; font-size: 0.75rem; }
+            .banner-arrow.prev { left: 2px; }
+            .banner-arrow.next { right: 2px; }
             .dot { width: 6px; height: 6px; }
             .dot.active { width: 14px; }
             
-            .container { padding: 10px 4% 20px; }
-            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .container { padding: 8px 4% 20px; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             
             .card { border-radius: 16px; padding: 8px; }
-            .image-box { height: 160px; border-radius: 12px; margin-bottom: 10px; }
-            .card h3 { font-size: 0.85rem; margin-bottom: 8px; }
-            .price-container { margin-bottom: 10px; gap: 5px; flex-wrap: wrap; }
+            .image-box { height: 160px; border-radius: 12px; margin-bottom: 8px; }
+            .card h3 { font-size: 0.82rem; margin-bottom: 6px; }
+            .price-container { margin-bottom: 8px; gap: 4px; flex-wrap: wrap; }
             .price { font-size: 0.95rem; }
             .mrp { font-size: 0.75rem; }
-            .buy-btn { padding: 10px; font-size: 0.8rem; border-radius: 10px; }
+            .buy-btn { padding: 10px 8px; font-size: 0.8rem; border-radius: 10px; min-height: 38px; }
             
             .stock-badge, .discount-badge { padding: 3px 8px; font-size: 0.6rem; border-radius: 6px; top: 8px; }
             .stock-badge { left: 8px; }
             .discount-badge { right: 8px; }
             .discount-badge.with-wishlist { right: 44px; }
-            .card-wishlist-btn { width: 28px; height: 28px; font-size: 0.8rem; top: 8px; right: 8px; }
+            .card-wishlist-btn { width: 30px; height: 30px; font-size: 0.8rem; top: 8px; right: 8px; }
 
             .safe-checkout-box { margin: 10px 4% 25px; padding: 15px; }
 
             .skeleton-card { border-radius: 16px; padding: 8px; height: 280px; }
             .skeleton-img { height: 140px; border-radius: 12px; }
             
-            .cookie-banner { left: 10px; right: 10px; bottom: 10px; padding: 14px; }
+            .cookie-banner { left: 10px; right: 10px; bottom: 10px; padding: 14px; width: auto; max-width: 100%; }
+            .cookie-actions { width: 100%; }
+            .cookie-btn { width: 100%; min-height: 40px; }
+
+            .earn-btn-group { flex-direction: flex-row; }
 
             footer { padding: 25px 4%; }
             .footer-content { flex-direction: column; text-align: center; gap: 15px; }
             .footer-contact { align-items: center; }
+        }
+
+        @media (max-width: 380px) {
+            .grid { grid-template-columns: 1fr; }
+            .earn-btn span { display: none; }
+            .earn-btn { padding: 6px 10px; }
+            .earn-btn i { margin: 0; }
         }
     </style>
 </head>
@@ -768,7 +846,7 @@
         </div>
         <div class="nav-right">
             <button id="earnMoneyBtn" class="earn-btn">
-                <i class="fa-solid fa-wallet"></i> Earn Money
+                <i class="fa-solid fa-wallet"></i> <span>Earn Money</span>
             </button>
 
             <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Theme">
