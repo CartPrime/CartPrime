@@ -359,6 +359,95 @@
             transform: rotate(15deg);
         }
 
+        /* --- Earn Money Navigation Button --- */
+        .earn-btn {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .earn-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* --- Earn Money Verification Modal --- */
+        .earn-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .earn-modal-card {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 25px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+        }
+
+        .earn-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .earn-input {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .earn-btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .earn-btn-cancel {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-main);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .earn-btn-submit {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         /* --- Slide Up Animation --- */
         @keyframes slideUpFade {
             0% { opacity: 0; transform: translateY(30px); }
@@ -678,7 +767,10 @@
             <div id="searchSuggestions" class="search-suggestions-box"></div>
         </div>
         <div class="nav-right">
-            <!-- Global Theme Switcher Toggle Button -->
+            <button id="earnMoneyBtn" class="earn-btn">
+                <i class="fa-solid fa-wallet"></i> Earn Money
+            </button>
+
             <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Theme">
                 <i class="fa-regular fa-moon"></i>
             </button>
@@ -695,6 +787,24 @@
         </div>
     </nav>
 
+    <div id="earnModal" class="earn-modal-overlay">
+        <div class="earn-modal-card">
+            <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Earn Money Partner</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Register your details to start earning commission on referrals.</p>
+            
+            <form id="earnForm" class="earn-form">
+                <input type="text" id="partnerName" class="earn-input" placeholder="Full Name" required>
+                <input type="tel" id="partnerPhone" class="earn-input" placeholder="Mobile / WhatsApp Number" required>
+                <input type="text" id="partnerUpi" class="earn-input" placeholder="UPI ID / GPay Number for Payouts" required>
+                
+                <div class="earn-btn-group">
+                    <button type="button" id="closeEarnModal" class="earn-btn-cancel">Cancel</button>
+                    <button type="submit" class="earn-btn-submit">Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <header class="hero">
         <div class="hero-text">
             <h1>Welcome To <br> CartPrime </h1>
@@ -702,7 +812,6 @@
             <p>100% Verified & Premium Quality Shopping Store.</p>
         </div>
 
-        <!-- Dynamic Trust Badge Stats Widget -->
         <div class="trust-stats">
             <div class="stat-item">
                 <i class="fa-solid fa-shield-check"></i>
@@ -722,7 +831,6 @@
         </div>
     </header>
 
-    <!-- Trust Features Bar -->
     <div class="trust-bar-section">
         <div class="trust-bar-grid">
             <div class="trust-card">
@@ -771,7 +879,6 @@
         <div class="grid" id="productGrid"></div>
     </div>
 
-    <!-- Safe Checkout Box -->
     <div class="safe-checkout-box">
         <h3><i class="fa-solid fa-lock"></i> 100% Safe & Secure Shopping Guarantee</h3>
         <div class="payment-badges">
@@ -781,7 +888,6 @@
         </div>
     </div>
 
-    <!-- Cookies Consent Banner -->
     <div class="cookie-banner" id="cookieBanner" style="display: none;">
         <p><strong>We use cookies!</strong> We use cookies to enhance your shopping experience and analyze our website traffic.</p>
         <div class="cookie-actions">
@@ -870,6 +976,52 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
+
+        // --- EARN MONEY MODAL LOGIC ---
+        const earnModal = document.getElementById('earnModal');
+        const earnMoneyBtn = document.getElementById('earnMoneyBtn');
+        const closeEarnModal = document.getElementById('closeEarnModal');
+        const earnForm = document.getElementById('earnForm');
+
+        if (earnMoneyBtn) {
+            earnMoneyBtn.addEventListener('click', () => {
+                earnModal.style.display = 'flex';
+            });
+        }
+
+        if (closeEarnModal) {
+            closeEarnModal.addEventListener('click', () => {
+                earnModal.style.display = 'none';
+            });
+        }
+
+        if (earnForm) {
+            earnForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('partnerName').value.trim();
+                const phone = document.getElementById('partnerPhone').value.trim();
+                const upi = document.getElementById('partnerUpi').value.trim();
+
+                if (name && phone && upi) {
+                    const partnerRef = ref(db, `earn_partners/${phone}`);
+                    
+                    set(partnerRef, {
+                        name: name,
+                        phone: phone,
+                        upi: upi,
+                        status: "Pending Verification",
+                        timestamp: Date.now()
+                    }).then(() => {
+                        alert("Your verification request has been submitted successfully! Admin will review and activate your account.");
+                        earnForm.reset();
+                        earnModal.style.display = 'none';
+                    }).catch((err) => {
+                        alert("Error submitting request: " + err.message);
+                    });
+                }
+            });
+        }
 
         let allProducts = [];
         let activeCategory = "All";
