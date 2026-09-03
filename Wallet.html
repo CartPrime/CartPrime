@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartprime - Wallet & Sales Dashboard</title>
+    <title>Cartprime - Affiliate Wallet & Sales</title>
     <style>
         * {
             margin: 0;
@@ -23,14 +23,13 @@
 
         .wallet-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
             background: #ffffff;
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             padding: 24px;
         }
 
-        /* Branding Header */
         .brand-header {
             display: flex;
             justify-content: space-between;
@@ -38,14 +37,8 @@
             margin-bottom: 20px;
         }
 
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         .brand-logo h1 {
-            font-size: 22px;
+            font-size: 24px;
             color: #4318ff;
             font-weight: 800;
             letter-spacing: -0.5px;
@@ -54,18 +47,17 @@
         .brand-badge {
             background: #e9e3ff;
             color: #4318ff;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
             text-transform: uppercase;
         }
 
-        /* Virtual Card */
         .card {
             background: linear-gradient(135deg, #4318ff 0%, #868CFF 100%);
             border-radius: 20px;
-            padding: 20px;
+            padding: 22px;
             color: white;
             box-shadow: 0 10px 20px rgba(67, 24, 255, 0.2);
             margin-bottom: 20px;
@@ -85,7 +77,7 @@
         }
 
         .card .balance-title {
-            font-size: 13px;
+            font-size: 12px;
             opacity: 0.85;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -94,18 +86,17 @@
         .card .balance {
             font-size: 32px;
             font-weight: bold;
-            margin: 8px 0 16px 0;
+            margin: 6px 0 16px 0;
         }
 
-        .card-details {
+        .card-stats {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
-            letter-spacing: 1px;
-            opacity: 0.9;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 12px;
+            font-size: 12px;
         }
 
-        /* Actions */
         .actions {
             display: flex;
             gap: 10px;
@@ -120,44 +111,37 @@
             font-weight: 600;
             cursor: pointer;
             transition: 0.2s ease-in-out;
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        .btn-sell {
+        .btn-sale {
             background-color: #05cd99;
             color: white;
         }
 
-        .btn-sell:hover {
+        .btn-sale:hover {
             background-color: #04b385;
         }
 
-        .btn-add {
+        .btn-withdraw {
             background-color: #4318ff;
             color: white;
         }
 
-        .btn-add:hover {
+        .btn-withdraw:hover {
             background-color: #3311cc;
-        }
-
-        /* History Section */
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
         }
 
         .section-title {
             font-size: 15px;
             color: #2b3674;
             font-weight: 700;
+            margin-bottom: 12px;
         }
 
         .product-list {
             list-style: none;
-            max-height: 280px;
+            max-height: 260px;
             overflow-y: auto;
         }
 
@@ -180,19 +164,27 @@
         .product-name {
             font-weight: 600;
             color: #2b3674;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .product-meta {
-            font-size: 12px;
+            font-size: 11px;
             color: #a3aed0;
             margin-top: 2px;
         }
 
-        .product-price {
+        .commission-amt {
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             color: #05cd99;
+            text-align: right;
+        }
+
+        .sale-amt {
+            font-size: 11px;
+            color: #a3aed0;
+            display: block;
+            text-align: right;
         }
     </style>
 </head>
@@ -203,87 +195,117 @@
         <div class="brand-header">
             <div class="brand-logo">
                 <h1>Cartprime</h1>
-                <span class="brand-badge">Pay</span>
             </div>
-            <span style="font-size: 20px; cursor: pointer;">🔔</span>
+            <span class="brand-badge">Affiliate Partner</span>
         </div>
 
-        <!-- Cartprime Virtual Balance Card -->
+        <!-- Wallet Balance Card -->
         <div class="card">
-            <div class="balance-title">Cartprime Balance</div>
-            <div class="balance">₹ <span id="total-balance">45,200.00</span></div>
-            <div class="card-details">
-                <span>Acc: **** 4821</span>
-                <span>Active</span>
+            <div class="balance-title">Available Commission Balance</div>
+            <div class="balance">₹ <span id="total-balance">12,500.00</span></div>
+            <div class="card-stats">
+                <div>Pending: <b>₹ <span id="pending-amt">3,200.00</span></b></div>
+                <div>Withdrawn: <b>₹ <span id="withdrawn-amt">45,000.00</span></b></div>
             </div>
         </div>
 
         <!-- Action Buttons -->
         <div class="actions">
-            <button class="btn btn-sell" onclick="sellProduct()">+ New Sale</button>
-            <button class="btn btn-add" onclick="addMoney()">+ Add Funds</button>
+            <button class="btn btn-sale" onclick="simulateAffiliateSale()">+ Record Sale</button>
+            <button class="btn btn-withdraw" onclick="requestWithdrawal()">Payout Request</button>
         </div>
 
         <!-- Sales History -->
         <div class="history-section">
-            <div class="history-header">
-                <div class="section-title">Cartprime Sales History</div>
-            </div>
+            <div class="section-title">Cartprime Sales & Earnings</div>
             <ul class="product-list" id="product-list">
                 <li class="product-item">
                     <div class="product-info">
                         <span class="product-name">Wireless Headphones</span>
-                        <span class="product-meta">Qty: 1 • 03 Sep 2026</span>
+                        <span class="product-meta">Qty: 1 • Rate: 10% • 03 Sep 2026</span>
                     </div>
-                    <span class="product-price">+ ₹2,500.00</span>
+                    <div>
+                        <span class="commission-amt">+ ₹250.00</span>
+                        <span class="sale-amt">Sale: ₹2,500</span>
+                    </div>
                 </li>
                 <li class="product-item">
                     <div class="product-info">
                         <span class="product-name">Smart Watch</span>
-                        <span class="product-meta">Qty: 2 • 02 Sep 2026</span>
+                        <span class="product-meta">Qty: 2 • Rate: 10% • 02 Sep 2026</span>
                     </div>
-                    <span class="product-price">+ ₹7,000.00</span>
+                    <div>
+                        <span class="commission-amt">+ ₹700.00</span>
+                        <span class="sale-amt">Sale: ₹7,000</span>
+                    </div>
                 </li>
             </ul>
         </div>
     </div>
 
     <script>
-        let currentBalance = 45200.00;
+        // System State Data
+        let walletData = {
+            balance: 12500.00,
+            pending: 3200.00,
+            withdrawn: 45000.00,
+            commissionRate: 0.10 // 10% Affiliate Commission Rate
+        };
 
-        function updateBalanceDisplay() {
-            document.getElementById('total-balance').innerText = currentBalance.toLocaleString('en-IN', {
+        // Update UI Function
+        function updateUI() {
+            document.getElementById('total-balance').innerText = walletData.balance.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.getElementById('pending-amt').innerText = walletData.pending.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.getElementById('withdrawn-amt').innerText = walletData.withdrawn.toLocaleString('en-IN', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
         }
 
-        function sellProduct() {
-            let name = prompt("Enter Product Name:", "E.g., Wireless Mouse");
-            if (!name) return;
+        // Record New Product Sale
+        function simulateAffiliateSale() {
+            let productName = prompt("Enter Sold Product Name:", "Bluetooth Speaker");
+            if (!productName) return;
 
-            let qty = prompt("Enter Quantity:", "1");
-            let price = prompt("Enter Sale Price (₹):", "1200");
+            let saleAmount = prompt("Enter Product Total Price (₹):", "1500");
+            
+            if (saleAmount && !isNaN(saleAmount) && Number(saleAmount) > 0) {
+                saleAmount = parseFloat(saleAmount);
+                
+                // Calculating Commission (10%)
+                let commission = saleAmount * walletData.commissionRate;
 
-            if (price && !isNaN(price) && Number(price) > 0) {
-                price = parseFloat(price);
-                currentBalance += price;
-                updateBalanceDisplay();
+                walletData.balance += commission;
+                updateUI();
 
-                addProductHistory(name, qty || 1, price);
+                addSalesHistory(productName, 1, saleAmount, commission);
             }
         }
 
-        function addMoney() {
-            let amount = prompt("Enter amount to add to Cartprime Wallet:", "1000");
+        // Payout Request Functionality
+        function requestWithdrawal() {
+            let amount = prompt("Enter withdrawal amount (₹):", walletData.balance);
             if (amount && !isNaN(amount) && Number(amount) > 0) {
                 amount = parseFloat(amount);
-                currentBalance += amount;
-                updateBalanceDisplay();
+                if (amount <= walletData.balance) {
+                    walletData.balance -= amount;
+                    walletData.withdrawn += amount;
+                    updateUI();
+                    alert("Payout request submitted successfully!");
+                } else {
+                    alert("Insufficient commission balance!");
+                }
             }
         }
 
-        function addProductHistory(name, qty, price) {
+        // Append Sold Product to List
+        function addSalesHistory(name, qty, saleAmt, commission) {
             const list = document.getElementById('product-list');
             const li = document.createElement('li');
             li.className = 'product-item';
@@ -293,9 +315,12 @@
             li.innerHTML = `
                 <div class="product-info">
                     <span class="product-name">${name}</span>
-                    <span class="product-meta">Qty: ${qty} • ${today}</span>
+                    <span class="product-meta">Qty: ${qty} • Rate: 10% • ${today}</span>
                 </div>
-                <span class="product-price">+ ₹${price.toFixed(2)}</span>
+                <div>
+                    <span class="commission-amt">+ ₹${commission.toFixed(2)}</span>
+                    <span class="sale-amt">Sale: ₹${saleAmt.toFixed(2)}</span>
+                </div>
             `;
             
             list.prepend(li);
