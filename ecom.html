@@ -459,8 +459,8 @@
                         <tr>
                             <th>User Details</th>
                             <th>Contact / Email</th>
-                            <th>Requested Date</th>
                             <th>Status</th>
+                            <th>Approve</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -1352,22 +1352,20 @@ onValue(ref(db, 'earn_partners'), snap => {
                 <small style="color:#64748b;">UID: ${req.userId || reqId}</small>
             </td>
             <td>${req.phone || req.email || 'N/A'}</td>
-            <td>${req.date || 'N/A'}</td>
             <td>
                 <span class="pay-badge ${statusBadgeClass}">${status}</span>
             </td>
             <td>
+                ${status === 'Pending' ? `
+                    <button style="background:#16a34a; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="updateAffiliateStatus('${reqId}', '${req.userId || ''}', 'Approved')" title="Approve Request">
+                        <i class="fa fa-check"></i> Approve
+                    </button>
+                ` : `
+                    <span style="font-size:12px; font-weight:bold; color:#16a34a;">Approved</span>
+                `}
+            </td>
+            <td>
                 <div class="order-actions-btn">
-                    ${status === 'Pending' ? `
-                        <button style="background:#16a34a;" onclick="updateAffiliateStatus('${reqId}', '${req.userId || ''}', 'Approved')" title="Approve Request">
-                            <i class="fa fa-check"></i> Approve
-                        </button>
-                        <button style="background:#ef4444;" onclick="updateAffiliateStatus('${reqId}', '${req.userId || ''}', 'Rejected')" title="Reject Request">
-                            <i class="fa fa-xmark"></i> Reject
-                        </button>
-                    ` : `
-                        <span style="font-size:12px; font-weight:bold; color:#64748b;">Processed</span>
-                    `}
                     <button style="background:#333;" onclick="deleteItem('earn_partners/${reqId}')" title="Delete">
                         <i class="fa fa-trash"></i>
                     </button>
