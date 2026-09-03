@@ -1433,16 +1433,43 @@ footer {
   const earnMoneyBtn = document.getElementById('earnMoneyBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
   const earnForm = document.getElementById('earnForm'); 
+  
   if (earnMoneyBtn) { 
     earnMoneyBtn.addEventListener('click', () => { 
-      earnModal.style.display = 'flex'; 
+      const registeredPhone = localStorage.getItem('partnerPhone');
+      if (registeredPhone) {
+        const partnerRef = ref(db, `earn_partners/${registeredPhone}`);
+        get(partnerRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const status = (data.status || "").toLowerCase();
+            if (status === 'approved') {
+              window.location.href = "/wallet";
+            } else {
+              showCustomAlert(
+                "Request Pending", 
+                "Your partner verification is pending approval. Please wait for admin verification.", 
+                false
+              );
+            }
+          } else {
+            earnModal.style.display = 'flex';
+          }
+        }).catch(() => {
+          earnModal.style.display = 'flex';
+        });
+      } else {
+        earnModal.style.display = 'flex'; 
+      }
     }); 
   } 
+
   if (closeEarnModal) { 
     closeEarnModal.addEventListener('click', () => { 
       earnModal.style.display = 'none'; 
     }); 
   } 
+
   if (earnForm) { 
     earnForm.addEventListener('submit', (e) => { 
       e.preventDefault(); 
@@ -1451,27 +1478,45 @@ footer {
       const upi = document.getElementById('partnerUpi').value.trim(); 
       if (name && phone && upi) { 
         const partnerRef = ref(db, `earn_partners/${phone}`); 
-        set(partnerRef, { 
-          name: name, 
-          phone: phone, 
-          upi: upi, 
-          status: "Pending Verification", 
-          timestamp: Date.now() 
-        }).then(() => { 
-          earnForm.reset(); 
-          earnModal.style.display = 'none'; 
-          showCustomAlert(
-            "Request Submitted!", 
-            "Your verification request has been submitted successfully! Admin will review and activate your account.", 
-            true
-          ); 
-        }).catch((err) => { 
-          showCustomAlert(
-            "Submission Failed", 
-            "Error submitting request: " + err.message, 
-            false
-          ); 
-        }); 
+        get(partnerRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const status = (data.status || "").toLowerCase();
+            if (status === 'approved') {
+              localStorage.setItem('partnerPhone', phone);
+              window.location.href = "/wallet";
+            } else {
+              showCustomAlert(
+                "Already Registered", 
+                "This number is already registered and is currently pending approval.", 
+                false
+              );
+            }
+          } else {
+            set(partnerRef, { 
+              name: name, 
+              phone: phone, 
+              upi: upi, 
+              status: "Pending Verification", 
+              timestamp: Date.now() 
+            }).then(() => { 
+              localStorage.setItem('partnerPhone', phone);
+              earnForm.reset(); 
+              earnModal.style.display = 'none'; 
+              showCustomAlert(
+                "Request Submitted!", 
+                "Your verification request has been submitted successfully! Admin will review and activate your account.", 
+                true
+              ); 
+            }).catch((err) => { 
+              showCustomAlert(
+                "Submission Failed", 
+                "Error submitting request: " + err.message, 
+                false
+              ); 
+            }); 
+          }
+        });
       } 
     }); 
   } 
