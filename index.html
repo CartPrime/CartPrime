@@ -13,13 +13,13 @@
         :root {
             --primary: #000000;
             --accent: #2563eb;
-            --bg: #ffffff;
-            --surface: #f8fafc;
+            --bg: #f8fafc;
+            --surface: #ffffff;
             --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --nav-bg: rgba(255, 255, 255, 0.85);
+            --nav-bg: rgba(255, 255, 255, 0.9);
             --skeleton-start: #f1f5f9;
             --skeleton-mid: #e2e8f0;
         }
@@ -34,7 +34,7 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #334155;
-            --nav-bg: rgba(15, 23, 42, 0.85);
+            --nav-bg: rgba(15, 23, 42, 0.9);
             --skeleton-start: #1e293b;
             --skeleton-mid: #334155;
         }
@@ -63,7 +63,6 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* --- Global Button Touch & Interactive Reset --- */
         button, .category-btn, .icon-btn, .cookie-btn, .earn-btn {
             touch-action: manipulation;
             user-select: none;
@@ -101,7 +100,6 @@
         .search-container input:focus { border-color: var(--primary); background: var(--card-bg); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .search-container i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
 
-        /* --- Compact Search Suggestion Box --- */
         .search-suggestions-box {
             position: absolute; top: calc(100% + 8px); left: 0; right: 0;
             background: var(--card-bg); border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);
@@ -123,102 +121,37 @@
         }
         .suggestion-item p { font-size: 0.75rem; color: var(--accent); font-weight: 700; margin: 0; }
 
-        /* --- Header / Hero --- */
+        /* --- Hero --- */
         .hero { 
-            padding: 30px 6% 10px; 
+            padding: 25px 6% 10px; 
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
             flex-wrap: wrap;
             gap: 20px;
         }
-        .hero-text h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; color: var(--text-main); }
-        .hero-text p { color: var(--text-muted); margin-top: 8px; font-size: 0.95rem; }
+        .hero-text h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; line-height: 1.1; color: var(--text-main); }
+        .hero-text p { color: var(--text-muted); margin-top: 6px; font-size: 0.9rem; }
 
-        /* Updated Trust Stats Widget */
         .trust-stats {
             display: flex;
             align-items: center;
             gap: 20px;
             background: var(--surface);
-            padding: 12px 20px;
-            border-radius: 16px;
+            padding: 10px 18px;
+            border-radius: 14px;
             border: 1px solid var(--border);
         }
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .stat-item i {
-            font-size: 1.3rem;
-            color: #2563eb;
-        }
-        .stat-info {
-            display: flex;
-            flex-direction: column;
-        }
-        .stat-info strong {
-            font-size: 0.88rem;
-            font-weight: 800;
-            color: var(--text-main);
-        }
-        .stat-info span {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        .stat-divider {
-            width: 1px;
-            height: 25px;
-            background: var(--border);
-        }
+        .stat-item { display: flex; align-items: center; gap: 10px; }
+        .stat-item i { font-size: 1.2rem; color: #2563eb; }
+        .stat-info { display: flex; flex-direction: column; }
+        .stat-info strong { font-size: 0.85rem; font-weight: 800; color: var(--text-main); }
+        .stat-info span { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+        .stat-divider { width: 1px; height: 22px; background: var(--border); }
 
-        /* --- Trust Badges Grid Bar --- */
-        .trust-bar-section {
-            padding: 10px 6% 15px 6%;
-        }
-        .trust-bar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 16px;
-            border-radius: 18px;
-        }
-        .trust-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .trust-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            color: var(--primary);
-            flex-shrink: 0;
-        }
-        .trust-details h4 {
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 2px;
-        }
-        .trust-details p {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-        }
-
-        /* --- Category Bar Styling --- */
+        /* --- Category Bar --- */
         .category-bar {
-            padding: 10px 6% 5px 6%;
+            padding: 15px 6% 10px 6%;
             display: flex;
             gap: 10px;
             overflow-x: auto;
@@ -226,320 +159,133 @@
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
         }
-        .category-bar::-webkit-scrollbar {
-            display: none;
-        }
+        .category-bar::-webkit-scrollbar { display: none; }
         .category-btn {
             background: var(--surface);
             color: var(--text-main);
-            padding: 10px 22px;
-            border-radius: 50px;
+            padding: 8px 18px;
+            border-radius: 30px;
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             border: 1px solid var(--border);
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
             text-transform: capitalize;
             user-select: none;
             flex-shrink: 0;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 40px;
         }
         .category-btn:hover, .category-btn.active {
             background: var(--primary);
             color: var(--bg);
             border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* --- Dynamic Banner Slider --- */
-        .banner-section {
-            padding: 15px 6% 10px 6%;
-            position: relative;
-            width: 100%;
-        }
-        .banner-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+        /* --- Banner Slider --- */
+        .banner-section { padding: 10px 6%; position: relative; width: 100%; }
+        .banner-wrapper { position: relative; display: flex; align-items: center; }
         .banner-slider {
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none;
-            scroll-behavior: smooth;
-            align-items: center;
-            width: 100%;
+            display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
+            scrollbar-width: none; scroll-behavior: smooth; align-items: center; width: 100%;
         }
-        .banner-slider::-webkit-scrollbar {
-            display: none;
-        }
+        .banner-slider::-webkit-scrollbar { display: none; }
         .banner-item {
-            flex: 0 0 calc(50% - 8px);
-            scroll-snap-align: start;
-            border-radius: 20px;
+            flex: 0 0 calc(50% - 8px); scroll-snap-align: start; border-radius: 16px;
+            overflow: hidden; max-height: 200px; background: var(--surface);
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04); transition: transform 0.2s ease;
+        }
+        .banner-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
+
+        .banner-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px;
+            background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .banner-arrow.prev { left: -10px; }
+        .banner-arrow.next { right: -10px; }
+
+        .banner-dots { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; }
+        .dot { width: 7px; height: 7px; background: var(--border); border-radius: 50%; transition: all 0.3s ease; cursor: pointer; }
+        .dot.active { background: var(--primary); width: 18px; border-radius: 4px; }
+
+        /* --- Classic Product Grid & Cards --- */
+        .container { padding: 15px 6% 40px; flex: 1; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 20px; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 12px;
+            position: relative;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            cursor: pointer;
+            animation: fadeIn 0.4s ease forwards;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            border-color: var(--border);
+        }
+
+        .image-box {
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
             overflow: hidden;
-            height: auto;
-            max-height: 220px;
             background: var(--surface);
+            margin-bottom: 12px;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
         }
-        .banner-item:hover {
-            transform: scale(1.005);
-        }
-        .banner-item img {
+
+        .card img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            border-radius: 20px;
+            transition: transform 0.3s ease;
         }
 
-        /* Banner Navigation Arrows */
-        .banner-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            background: var(--card-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            transition: all 0.2s ease;
-            backdrop-filter: blur(4px);
+        .card:hover .image-box img {
+            transform: scale(1.03);
         }
-        .banner-arrow:hover {
-            background: var(--primary);
-            color: var(--bg);
-            transform: translateY(-50%) scale(1.08);
-        }
-        .banner-arrow.prev { left: -12px; }
-        .banner-arrow.next { right: -12px; }
-
-        .banner-dots {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            margin-top: 12px;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            background: var(--border);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .dot.active {
-            background: var(--primary);
-            width: 20px;
-            border-radius: 4px;
-        }
-
-        /* --- Product Grid --- */
-        .container { padding: 10px 6% 40px; flex: 1; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
-
-        /* --- Dynamic Theme Toggle Button --- */
-        .theme-toggle-btn {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.25s ease;
-            flex-shrink: 0;
-        }
-        .theme-toggle-btn:hover {
-            background: var(--border);
-            transform: rotate(15deg);
-        }
-
-        /* --- Earn Money Navigation Button --- */
-        .earn-btn {
-            background: #2563eb;
-            color: #ffffff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: background 0.2s ease, transform 0.2s ease;
-            min-height: 40px;
-            white-space: nowrap;
-        }
-
-        .earn-btn:hover {
-            background: #1d4ed8;
-        }
-
-        /* --- Earn Money Verification Modal --- */
-        .earn-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-        }
-
-        .earn-modal-card {
-            background: var(--card-bg);
-            color: var(--text-main);
-            padding: 25px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            border: 1px solid var(--border);
-        }
-
-        .earn-form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .earn-input {
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text-main);
-            font-size: 0.9rem;
-            width: 100%;
-        }
-
-        .earn-btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .earn-btn-cancel {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text-main);
-            cursor: pointer;
-            font-weight: 600;
-            min-height: 44px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .earn-btn-submit {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            background: #2563eb;
-            color: #fff;
-            font-weight: 700;
-            cursor: pointer;
-            min-height: 44px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* --- Slide Up Animation --- */
-        @keyframes slideUpFade {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- Card Styling --- */
-        .card {
-            background: var(--card-bg); border-radius: 24px; padding: 12px;
-            position: relative; border: 1px solid var(--border);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            display: flex; flex-direction: column; height: 100%;
-            cursor: pointer;
-            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease;
-        }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
-        
-        .image-box { 
-            width: 100%; height: 260px; border-radius: 18px; 
-            overflow: hidden; background: var(--surface); margin-bottom: 12px; position: relative;
-        }
-        .card img { width: 100%; height: 100%; object-fit: contain; transition: 0.5s; }
 
         .stock-badge {
-            position: absolute; top: 12px; left: 12px; background: #000;
-            color: white; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; z-index: 10;
+            position: absolute; top: 10px; left: 10px; background: #000000;
+            color: #ffffff; padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; z-index: 10;
         }
         .discount-badge {
-            position: absolute; top: 12px; right: 12px; background: #22c55e;
-            color: white; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; z-index: 10;
+            position: absolute; top: 10px; left: 10px; background: #16a34a;
+            color: #ffffff; padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; z-index: 10;
         }
 
-        /* Genuine Guarantee Tag on Product Image */
-        .verified-tag {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            background: rgba(255, 255, 255, 0.92);
-            color: #0f172a;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        .verified-tag i { color: #2563eb; }
-
-        /* --- Product Card Wishlist Button --- */
         .card-wishlist-btn {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 36px;
-            height: 36px;
-            background: rgba(255, 255, 255, 0.92);
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.9);
             border: 1px solid var(--border);
             border-radius: 50%;
             display: flex;
@@ -548,290 +294,186 @@
             cursor: pointer;
             z-index: 12;
             color: #64748b;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         }
-        .card-wishlist-btn:hover {
-            transform: scale(1.1);
-            color: #ef4444;
-        }
-        .card-wishlist-btn.active {
-            color: #ef4444;
-            background: #fff;
-        }
+        .card-wishlist-btn:hover { transform: scale(1.1); color: #ef4444; }
+        .card-wishlist-btn.active { color: #ef4444; background: #ffffff; }
 
-        /* Adjust discount badge position if wishlist button exists */
-        .discount-badge.with-wishlist {
-            right: 56px;
+        .card-info { 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
         }
-
-        .card-info { flex-grow: 1; display: flex; flex-direction: column; }
+        
         .card h3 { 
-            font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-main);
-            display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
-            overflow: hidden; text-overflow: ellipsis; 
+            font-size: 0.92rem; 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            color: var(--text-main);
+            display: -webkit-box; 
+            -webkit-line-clamp: 2; 
+            -webkit-box-orient: vertical;
+            overflow: hidden; 
+            line-height: 1.35;
         }
 
-        .price-container { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-        .price { font-weight: 800; font-size: 1.2rem; color: var(--text-main); }
-        .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.85rem; }
+        .price-container { 
+            display: flex; 
+            align-items: baseline; 
+            gap: 8px; 
+            margin-bottom: 12px; 
+        }
+        .price { font-weight: 800; font-size: 1.1rem; color: var(--text-main); }
+        .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.8rem; }
 
         .buy-btn {
             width: 100%; 
-            padding: 12px 14px; 
+            padding: 10px; 
             background: var(--primary); 
             color: var(--bg); 
             border: none;
-            border-radius: 14px; 
+            border-radius: 10px; 
             font-weight: 700; 
             cursor: pointer; 
-            transition: 0.25s ease;
-            font-size: 0.9rem; 
-            margin-top: auto;
-            min-height: 44px;
+            transition: opacity 0.2s ease;
+            font-size: 0.85rem; 
+            min-height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
+        .buy-btn:hover { opacity: 0.9; }
+        .buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; opacity: 1; }
 
-        .nav-right { display: flex; align-items: center; gap: 12px; position: relative; flex-shrink: 0; }
-        .icon-btn { 
+        /* --- Header Buttons --- */
+        .nav-right { display: flex; align-items: center; gap: 10px; position: relative; flex-shrink: 0; }
+        .icon-btn, .theme-toggle-btn { 
             position: relative; 
-            font-size: 1.25rem; 
+            font-size: 1.1rem; 
             color: var(--text-main); 
             cursor: pointer; 
             text-decoration: none; 
-            transition: 0.2s; 
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             background: var(--surface);
             border: 1px solid var(--border);
+            transition: all 0.2s ease;
         }
-        .icon-btn:hover { color: var(--accent); }
+        .icon-btn:hover, .theme-toggle-btn:hover { border-color: var(--text-muted); }
         
         .badge {
-            position: absolute; top: -4px; right: -4px; background: #ef4444; color: white;
-            font-size: 0.6rem; font-weight: 800; border-radius: 50%; min-width: 18px;
-            height: 18px; display: flex; align-items: center; justify-content: center; padding: 2px;
+            position: absolute; top: -3px; right: -3px; background: #ef4444; color: white;
+            font-size: 0.60rem; font-weight: 800; border-radius: 50%; min-width: 16px;
+            height: 16px; display: flex; align-items: center; justify-content: center; padding: 2px;
             border: 2px solid var(--card-bg);
         }
 
-        /* --- Skeleton Loading Placeholder Cards --- */
+        .earn-btn {
+            background: #2563eb; color: #ffffff; border: none; padding: 8px 14px;
+            border-radius: 10px; font-weight: 700; font-size: 0.82rem; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            min-height: 38px; white-space: nowrap; transition: background 0.2s ease;
+        }
+        .earn-btn:hover { background: #1d4ed8; }
+
+        /* --- Skeletons --- */
         .skeleton-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 12px;
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            height: 380px;
+            background: var(--card-bg); border-radius: 16px; padding: 12px;
+            border: 1px solid var(--border); display: flex; flex-direction: column; height: 320px;
         }
-
         .skeleton-img {
-            width: 100%;
-            height: 220px;
-            border-radius: 18px;
+            width: 100%; height: 180px; border-radius: 12px;
             background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%);
-            background-size: 200% 100%;
-            animation: skeletonLoading 1.5s infinite;
-            margin-bottom: 15px;
+            background-size: 200% 100%; animation: skeletonLoading 1.5s infinite; margin-bottom: 12px;
         }
-
         .skeleton-line {
-            height: 14px;
-            background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%);
-            background-size: 200% 100%;
-            animation: skeletonLoading 1.5s infinite;
-            border-radius: 6px;
+            height: 12px; background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%);
+            background-size: 200% 100%; animation: skeletonLoading 1.5s infinite; border-radius: 6px; margin-bottom: 8px;
         }
+        @keyframes skeletonLoading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        @keyframes skeletonLoading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        /* --- Earn Modal --- */
+        .earn-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; padding: 15px;
         }
+        .earn-modal-card {
+            background: var(--card-bg); color: var(--text-main); padding: 24px;
+            border-radius: 18px; width: 100%; max-width: 380px; border: 1px solid var(--border);
+        }
+        .earn-form { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .earn-input { padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text-main); font-size: 0.85rem; }
+        .earn-btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .earn-btn-cancel, .earn-btn-submit { flex: 1; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 0.85rem; }
+        .earn-btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .earn-btn-submit { background: #2563eb; color: #fff; }
 
-        /* --- Safe Checkout Assurance Section --- */
+        /* --- Footer & Safe Checkout --- */
         .safe-checkout-box {
-            margin: 20px 6% 40px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
+            margin: 10px 6% 30px; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
-        .safe-checkout-box h3 {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .safe-checkout-box h3 i { color: #22c55e; }
-        .payment-badges {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-muted);
-        }
-        .payment-badges span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--card-bg);
-            padding: 6px 14px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
+        .safe-checkout-box h3 { font-size: 0.88rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+        .safe-checkout-box h3 i { color: #16a34a; }
+        .payment-badges { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+        .payment-badges span { display: flex; align-items: center; gap: 5px; background: var(--card-bg); padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); }
 
-        /* --- Cookies Consent Banner --- */
         .cookie-banner {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            max-width: 450px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            border-radius: 18px;
-            padding: 18px 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            transition: all 0.3s ease;
+            position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 400px;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+            padding: 16px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        .cookie-banner p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-        .cookie-banner p strong {
-            color: var(--text-main);
-        }
-        .cookie-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-        .cookie-btn {
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            transition: 0.2s;
-            min-height: 38px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .cookie-accept {
-            background: var(--primary);
-            color: var(--bg);
-        }
-        .cookie-accept:hover {
-            opacity: 0.9;
-        }
+        .cookie-banner p { font-size: 0.8rem; color: var(--text-muted); }
+        .cookie-actions { display: flex; justify-content: flex-end; }
+        .cookie-btn { padding: 8px 16px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; border: none; background: var(--primary); color: var(--bg); }
 
-        footer { 
-            background: #000; color: #fff; padding: 30px 6%; 
-            margin-top: auto; width: 100%; border-top: 1px solid #1e293b;
-        }
+        footer { background: #000; color: #fff; padding: 25px 6%; margin-top: auto; border-top: 1px solid #1e293b; }
         .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .footer-logo { font-weight: 800; font-size: 1.5rem; }
+        .footer-logo { font-weight: 800; font-size: 1.3rem; }
         .footer-logo span { color: #64748b; }
-        .footer-contact { display: flex; flex-direction: column; gap: 8px; }
-        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 9px; transition: opacity 0.2s; }
-        .footer-contact a:hover { opacity: 0.8; }
-        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 20px; padding-top: 15px; text-align: center; color: #94a3b8; font-size: 0.85rem; }
+        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
+        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 15px; padding-top: 12px; text-align: center; color: #94a3b8; font-size: 0.78rem; }
 
-        /* --- Comprehensive Responsive Styles --- */
+        /* --- Responsive Viewports --- */
         @media (max-width: 768px) {
-            nav { padding: 10px 4%; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+            nav { padding: 10px 4%; flex-wrap: wrap; gap: 8px; }
             .logo { font-size: 1.2rem; order: 1; }
+            .nav-right { order: 2; gap: 6px; }
+            .icon-btn, .theme-toggle-btn { width: 34px; height: 34px; font-size: 0.95rem; }
+            .earn-btn { padding: 6px 10px; font-size: 0.75rem; min-height: 34px; }
             
-            .nav-right { order: 2; gap: 8px; flex-shrink: 0; }
-            .icon-btn, .theme-toggle-btn { width: 36px; height: 36px; font-size: 1rem; }
-            .earn-btn { padding: 6px 12px; font-size: 0.78rem; min-height: 36px; border-radius: 10px; }
-            
-            .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin: 4px 0 2px 0; }
-            .search-container input { padding: 8px 12px 8px 36px; font-size: 0.85rem; border-radius: 10px; }
-            .search-container i { left: 12px; }
+            .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin-top: 2px; }
+            .search-container input { padding: 8px 12px 8px 34px; font-size: 0.82rem; }
 
-            .hero { padding: 16px 4% 5px; flex-direction: column; align-items: flex-start; gap: 12px; }
-            .hero-text h1 { font-size: 1.7rem; }
-            .hero-text p { font-size: 0.82rem; }
+            .hero { padding: 15px 4% 5px; flex-direction: column; align-items: flex-start; gap: 10px; }
+            .hero-text h1 { font-size: 1.6rem; }
+            .trust-stats { width: 100%; justify-content: space-around; padding: 8px; }
 
-            .trust-stats { width: 100%; justify-content: space-around; padding: 10px; }
-            .trust-bar-section { padding: 8px 4%; }
-            .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
-
-            .category-bar { padding: 8px 4%; gap: 6px; }
-            .category-btn { padding: 8px 16px; font-size: 0.8rem; min-height: 36px; }
+            .category-bar { padding: 10px 4% 5px; gap: 6px; }
+            .category-btn { padding: 6px 14px; font-size: 0.78rem; }
 
             .banner-section { padding: 8px 4%; }
-            .banner-item { flex: 0 0 100%; max-height: 160px; border-radius: 14px; }
-            .banner-item img { border-radius: 14px; }
-            .banner-arrow { width: 32px; height: 32px; font-size: 0.75rem; }
-            .banner-arrow.prev { left: 2px; }
-            .banner-arrow.next { right: 2px; }
-            .dot { width: 6px; height: 6px; }
-            .dot.active { width: 14px; }
+            .banner-item { flex: 0 0 100%; max-height: 150px; }
             
-            .container { padding: 8px 4% 20px; }
-            .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .container { padding: 10px 4% 30px; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             
-            .card { border-radius: 16px; padding: 8px; }
-            .image-box { height: 160px; border-radius: 12px; margin-bottom: 8px; }
+            .card { padding: 8px; border-radius: 12px; }
+            .image-box { height: 150px; border-radius: 10px; margin-bottom: 8px; }
             .card h3 { font-size: 0.82rem; margin-bottom: 6px; }
-            .price-container { margin-bottom: 8px; gap: 4px; flex-wrap: wrap; }
             .price { font-size: 0.95rem; }
-            .mrp { font-size: 0.75rem; }
-            .buy-btn { padding: 10px 8px; font-size: 0.8rem; border-radius: 10px; min-height: 38px; }
-            
-            .stock-badge, .discount-badge { padding: 3px 8px; font-size: 0.6rem; border-radius: 6px; top: 8px; }
-            .stock-badge { left: 8px; }
-            .discount-badge { right: 8px; }
-            .discount-badge.with-wishlist { right: 44px; }
-            .card-wishlist-btn { width: 30px; height: 30px; font-size: 0.8rem; top: 8px; right: 8px; }
+            .mrp { font-size: 0.72rem; }
+            .buy-btn { padding: 8px; font-size: 0.78rem; min-height: 36px; border-radius: 8px; }
 
-            .safe-checkout-box { margin: 10px 4% 25px; padding: 15px; }
-
-            .skeleton-card { border-radius: 16px; padding: 8px; height: 280px; }
-            .skeleton-img { height: 140px; border-radius: 12px; }
-            
-            .cookie-banner { left: 10px; right: 10px; bottom: 10px; padding: 14px; width: auto; max-width: 100%; }
-            .cookie-actions { width: 100%; }
-            .cookie-btn { width: 100%; min-height: 40px; }
-
-            .earn-btn-group { flex-direction: flex-row; }
-
-            footer { padding: 25px 4%; }
-            .footer-content { flex-direction: column; text-align: center; gap: 15px; }
-            .footer-contact { align-items: center; }
-        }
-
-        @media (max-width: 380px) {
-            .grid { grid-template-columns: 1fr; }
-            .earn-btn span { display: none; }
-            .earn-btn { padding: 6px 10px; }
-            .earn-btn i { margin: 0; }
+            .card-wishlist-btn { width: 28px; height: 28px; font-size: 0.75rem; top: 6px; right: 6px; }
+            .discount-badge, .stock-badge { top: 6px; left: 6px; padding: 3px 6px; font-size: 0.6rem; }
         }
     </style>
 </head>
@@ -867,8 +509,8 @@
 
     <div id="earnModal" class="earn-modal-overlay">
         <div class="earn-modal-card">
-            <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Earn Money Partner</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Register your details to start earning commission on referrals.</p>
+            <h3 style="margin: 0 0 6px 0; font-size: 1.1rem;">Earn Money Partner</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Register your details to start earning commission on referrals.</p>
             
             <form id="earnForm" class="earn-form">
                 <input type="text" id="partnerName" class="earn-input" placeholder="Full Name" required>
@@ -885,8 +527,7 @@
 
     <header class="hero">
         <div class="hero-text">
-            <h1>Welcome To <br> CartPrime </h1>
-            <h1 style="color: rgb(65, 155, 65);">Online Shop</h1>
+            <h1>Welcome To <br> CartPrime</h1>
             <p>100% Verified & Premium Quality Shopping Store.</p>
         </div>
 
@@ -909,39 +550,6 @@
         </div>
     </header>
 
-    <div class="trust-bar-section">
-        <div class="trust-bar-grid">
-            <div class="trust-card">
-                <div class="trust-icon"><i class="fa-solid fa-truck-fast"></i></div>
-                <div class="trust-details">
-                    <h4>Fast Shipping</h4>
-                    <p>Free Delivery</p>
-                </div>
-            </div>
-            <div class="trust-card">
-                <div class="trust-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                <div class="trust-details">
-                    <h4>Buyer Protection</h4>
-                    <p>7 Days Easy Returns</p>
-                </div>
-            </div>
-            <div class="trust-card">
-                <div class="trust-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-                <div class="trust-details">
-                    <h4>COD Available</h4>
-                    <p>Pay Upon Delivery</p>
-                </div>
-            </div>
-            <div class="trust-card">
-                <div class="trust-icon"><i class="fa-solid fa-headset"></i></div>
-                <div class="trust-details">
-                    <h4>Dedicated Support</h4>
-                    <p>Quick Help Support</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="category-bar" id="categoryBar"></div>
 
     <div class="banner-section" id="bannerSection" style="display: none;">
@@ -961,15 +569,15 @@
         <h3><i class="fa-solid fa-lock"></i> 100% Safe & Secure Shopping Guarantee</h3>
         <div class="payment-badges">
             <span><i class="fa-solid fa-check"></i> Verified Merchant</span>
-            <span><i class="fa-solid fa-box-check"></i> 100% Genuine Products</span>
+            <span><i class="fa-solid fa-box-check"></i> Genuine Products</span>
             <span><i class="fa-solid fa-wallet"></i> Cash on Delivery</span>
         </div>
     </div>
 
     <div class="cookie-banner" id="cookieBanner" style="display: none;">
-        <p><strong>We use cookies!</strong> We use cookies to enhance your shopping experience and analyze our website traffic.</p>
+        <p><strong>We use cookies!</strong> We use cookies to enhance your shopping experience.</p>
         <div class="cookie-actions">
-            <button class="cookie-btn cookie-accept" id="acceptCookiesBtn">Accept Cookies</button>
+            <button class="cookie-btn" id="acceptCookiesBtn">Accept Cookies</button>
         </div>
     </div>
 
@@ -978,12 +586,10 @@
             <div class="footer-logo">CART<span>PRIME</span></div>
             <div class="footer-contact">
                 <a href="mailto:cartprimeshopping@gmail.com">
-                    <i class="fa-regular fa-envelope"></i>
-                    cartprimeshopping@gmail.com
+                    <i class="fa-regular fa-envelope"></i> cartprimeshopping@gmail.com
                 </a>
                 <a href="https://www.instagram.com/cartprimeonlinestore?igsh=MWFmYTkzdHhyOXoyYQ==" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-brands fa-instagram" style="font-size: 1.1rem; color: #e1306c;"></i>
-                    @cartprimeonlinestore
+                    <i class="fa-brands fa-instagram" style="color: #e1306c;"></i> @cartprimeonlinestore
                 </a>
             </div>
         </div>
@@ -997,7 +603,6 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue, get, set, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // --- AFFILIATE TRACKING LOGIC ---
         (function handleAffiliateTracking() {
             const urlParams = new URLSearchParams(window.location.search);
             const affId = urlParams.get('ref') || urlParams.get('aff');
@@ -1006,7 +611,6 @@
             }
         })();
 
-        // --- COOKIES CONSENT LOGIC ---
         const cookieBanner = document.getElementById('cookieBanner');
         const acceptCookiesBtn = document.getElementById('acceptCookiesBtn');
 
@@ -1019,7 +623,6 @@
             cookieBanner.style.display = 'none';
         });
 
-        // --- GLOBAL THEME LOGIC ---
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const themeIcon = themeToggleBtn.querySelector('i');
 
@@ -1040,7 +643,6 @@
             themeIcon.className = targetTheme === 'dark' ? 'fa-regular fa-sun' : 'fa-regular fa-moon';
         });
 
-        // --- FIREBASE INITIALIZATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
             authDomain: "cartprime-shopping.firebaseapp.com",
@@ -1055,35 +657,23 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // --- EARN MONEY MODAL LOGIC ---
         const earnModal = document.getElementById('earnModal');
         const earnMoneyBtn = document.getElementById('earnMoneyBtn');
         const closeEarnModal = document.getElementById('closeEarnModal');
         const earnForm = document.getElementById('earnForm');
 
-        if (earnMoneyBtn) {
-            earnMoneyBtn.addEventListener('click', () => {
-                earnModal.style.display = 'flex';
-            });
-        }
-
-        if (closeEarnModal) {
-            closeEarnModal.addEventListener('click', () => {
-                earnModal.style.display = 'none';
-            });
-        }
+        if (earnMoneyBtn) earnMoneyBtn.addEventListener('click', () => { earnModal.style.display = 'flex'; });
+        if (closeEarnModal) closeEarnModal.addEventListener('click', () => { earnModal.style.display = 'none'; });
 
         if (earnForm) {
             earnForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                
                 const name = document.getElementById('partnerName').value.trim();
                 const phone = document.getElementById('partnerPhone').value.trim();
                 const upi = document.getElementById('partnerUpi').value.trim();
 
                 if (name && phone && upi) {
                     const partnerRef = ref(db, `earn_partners/${phone}`);
-                    
                     set(partnerRef, {
                         name: name,
                         phone: phone,
@@ -1091,12 +681,10 @@
                         status: "Pending Verification",
                         timestamp: Date.now()
                     }).then(() => {
-                        alert("Your verification request has been submitted successfully! Admin will review and activate your account.");
+                        alert("Your request has been submitted successfully!");
                         earnForm.reset();
                         earnModal.style.display = 'none';
-                    }).catch((err) => {
-                        alert("Error submitting request: " + err.message);
-                    });
+                    }).catch((err) => { alert("Error: " + err.message); });
                 }
             });
         }
@@ -1116,12 +704,9 @@
                 grid.innerHTML += `
                     <div class="skeleton-card">
                         <div class="skeleton-img"></div>
-                        <div class="skeleton-info">
-                            <div class="skeleton-line" style="width: 80%;"></div>
-                            <div class="skeleton-line" style="width: 40%;"></div>
-                            <div class="skeleton-line" style="width: 60%; margin-top: auto;"></div>
-                            <div class="skeleton-line" style="height: 40px; border-radius: 12px;"></div>
-                        </div>
+                        <div class="skeleton-line" style="width: 80%;"></div>
+                        <div class="skeleton-line" style="width: 40%;"></div>
+                        <div class="skeleton-line" style="height: 36px; margin-top: auto; border-radius: 8px;"></div>
                     </div>
                 `;
             }
@@ -1163,40 +748,28 @@
             window.history.replaceState(null, '', cleanPath + window.location.search);
         }
 
-        document.getElementById('navLogo').addEventListener('click', () => {
-            window.location.href = "/";
-        });
+        document.getElementById('navLogo').addEventListener('click', () => { window.location.href = "/"; });
 
-        // --- UPDATED BADGES & WISHLIST LOGIC ---
         function updateBadges(user) {
             const wishlistBadge = document.getElementById('wishlistBadge');
             const ordersBadge = document.getElementById('ordersBadge');
 
             if (user) {
-                // Logged-in user: Fetch from Firebase
                 onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => {
-                    if (snapshot.exists()) {
-                        userWishlistIds = snapshot.val();
-                    } else {
-                        userWishlistIds = {};
-                    }
+                    userWishlistIds = snapshot.exists() ? snapshot.val() : {};
                     updateWishlistUIAndBadge(wishlistBadge);
                 });
             } else {
-                // Guest user: Fetch from localStorage
-                let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}");
-                userWishlistIds = localWishlist;
+                userWishlistIds = JSON.parse(localStorage.getItem('guestWishlist') || "{}");
                 updateWishlistUIAndBadge(wishlistBadge);
             }
 
-            // Orders Count Logic
             const phoneSources = [
                 localStorage.getItem('userPhone'),
                 localStorage.getItem('cartPrime_LastOrderPhone'),
                 localStorage.getItem('cartPrime_Phone'),
                 user ? user.phoneNumber : null
             ];
-
             let targetPhone = phoneSources.find(p => p && p.trim() !== "");
 
             if (targetPhone) {
@@ -1267,35 +840,27 @@
                     if (imgUrl) {
                         const item = document.createElement('div');
                         item.className = 'banner-item';
-                        item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner">`;
+                        item.innerHTML = `<img src="${imgUrl}" alt="Banner">`;
 
                         const targetLink = bannerData.redirectLink || bannerData.link || bannerData.targetUrl || bannerData.url || bannerData.redirectUrl;
 
                         item.addEventListener('click', () => {
                             if (targetLink && targetLink.toString().trim() !== "") {
                                 let linkStr = targetLink.toString().trim();
-                                if (linkStr.startsWith('http://') || linkStr.startsWith('https://')) {
-                                    window.location.href = linkStr;
-                                } else {
-                                    window.location.href = linkStr.startsWith('/') ? linkStr : `/${linkStr}`;
-                                }
-                            } 
-                            else if (bannerData.productId) {
+                                window.location.href = (linkStr.startsWith('http://') || linkStr.startsWith('https/')) ? linkStr : (linkStr.startsWith('/') ? linkStr : `/${linkStr}`);
+                            } else if (bannerData.productId) {
                                 trackProductClickAndRedirect(bannerData.productId);
-                            } 
-                            else if (bannerData.category) {
+                            } else if (bannerData.category) {
                                 activeCategory = bannerData.category;
                                 const filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
                                 renderProducts(filtered);
                                 document.querySelectorAll('.category-btn').forEach(b => {
-                                    if(b.getAttribute('data-cat').toLowerCase() === activeCategory.toLowerCase()) b.classList.add('active');
-                                    else b.classList.remove('active');
+                                    b.classList.toggle('active', b.getAttribute('data-cat').toLowerCase() === activeCategory.toLowerCase());
                                 });
                             }
                         });
 
                         bannerSlider.appendChild(item);
-
                         const dot = document.createElement('div');
                         dot.className = `dot ${index === 0 ? 'active' : ''}`;
                         dot.setAttribute('data-index', index);
@@ -1328,18 +893,10 @@
             const startAutoScroll = () => {
                 autoScrollInterval = setInterval(() => {
                     const width = slider.clientWidth;
-                    const currentScroll = slider.scrollLeft;
-                    let nextIndex = Math.round(currentScroll / width) + 1;
-
-                    if (nextIndex >= totalBanners) {
-                        nextIndex = 0;
-                    }
-
-                    slider.scrollTo({
-                        left: nextIndex * width,
-                        behavior: 'smooth'
-                    });
-                }, 3000);
+                    let nextIndex = Math.round(slider.scrollLeft / width) + 1;
+                    if (nextIndex >= totalBanners) nextIndex = 0;
+                    slider.scrollTo({ left: nextIndex * width, behavior: 'smooth' });
+                }, 3500);
             };
 
             startAutoScroll();
@@ -1347,45 +904,20 @@
             if (prevBtn && nextBtn) {
                 prevBtn.onclick = () => {
                     clearInterval(autoScrollInterval);
-                    const width = slider.clientWidth;
-                    slider.scrollBy({ left: -width, behavior: 'smooth' });
+                    slider.scrollBy({ left: -slider.clientWidth, behavior: 'smooth' });
                     startAutoScroll();
                 };
-
                 nextBtn.onclick = () => {
                     clearInterval(autoScrollInterval);
-                    const width = slider.clientWidth;
-                    slider.scrollBy({ left: width, behavior: 'smooth' });
+                    slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' });
                     startAutoScroll();
                 };
             }
 
             slider.addEventListener('scroll', () => {
-                const width = slider.clientWidth;
-                const scrollLeft = slider.scrollLeft;
-                const activeIndex = Math.round(scrollLeft / width);
-
-                dots.forEach((dot, idx) => {
-                    if (idx === activeIndex) dot.classList.add('active');
-                    else dot.classList.remove('active');
-                });
+                const activeIndex = Math.round(slider.scrollLeft / slider.clientWidth);
+                dots.forEach((dot, idx) => dot.classList.toggle('active', idx === activeIndex));
             });
-
-            dots.forEach(dot => {
-                dot.addEventListener('click', (e) => {
-                    clearInterval(autoScrollInterval);
-                    const idx = parseInt(e.target.getAttribute('data-index'));
-                    const width = slider.clientWidth;
-                    slider.scrollTo({
-                        left: idx * width,
-                        behavior: 'smooth'
-                    });
-                    startAutoScroll();
-                });
-            });
-
-            slider.addEventListener('touchstart', () => clearInterval(autoScrollInterval));
-            slider.addEventListener('touchend', () => startAutoScroll());
         }
 
         function renderCategoryBar() {
@@ -1399,7 +931,6 @@
             });
 
             let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All">All</div>`;
-            
             categories.forEach(cat => {
                 barHtml += `<div class="category-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`;
             });
@@ -1423,8 +954,6 @@
         function renderProducts(products) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = "";
-            
-            let animationDelayIndex = 0;
 
             products.forEach((p) => {
                 if (p.showOnHome === false) return;
@@ -1434,37 +963,32 @@
                 const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr);
                 
                 let discTag = "";
-                let hasDisc = false;
                 if(mr > pr) {
                     const disc = Math.round(((mr - pr) / mr) * 100);
-                    hasDisc = true;
-                    discTag = `<div class="discount-badge ${hasDisc ? 'with-wishlist' : ''}">${disc}% OFF</div>`;
+                    discTag = `<div class="discount-badge">${disc}% OFF</div>`;
                 }
 
                 const isWishlisted = userWishlistIds[p.id] ? true : false;
-
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.style.animationDelay = `${animationDelayIndex * 0.08}s`;
-                animationDelayIndex++;
 
                 const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150';
 
                 card.innerHTML = `
-                    ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''}
-                    ${!isOut ? discTag : ''}
+                    ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : discTag}
                     <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist" data-id="${p.id}">
                         <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                     </button>
                     <div class="image-box">
                         <img src="${productMainImg}" alt="${p.name || 'Product'}" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}">
-                        <div class="verified-tag"><i class="fa-solid fa-shield-check"></i> Quality Assured</div>
                     </div>
                     <div class="card-info">
-                        <h3>${p.name || 'No Title'}</h3>
-                        <div class="price-container">
-                            <span class="price">₹${p.price}</span>
-                            ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''}
+                        <div>
+                            <h3>${p.name || 'No Title'}</h3>
+                            <div class="price-container">
+                                <span class="price">₹${p.price}</span>
+                                ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''}
+                            </div>
                         </div>
                         <button class="buy-btn" ${isOut ? 'disabled' : ''}>
                             ${isOut ? 'Unavailable' : 'View Product'}
@@ -1472,7 +996,6 @@
                     </div>
                 `;
 
-                // Wishlist Button Toggle Handler
                 const wishlistBtn = card.querySelector('.card-wishlist-btn');
                 wishlistBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1538,22 +1061,14 @@
             let matchedProducts = allProducts.filter(p => {
                 const productName = (p.name || "").toLowerCase();
                 const productCat = (p.category || "").toLowerCase();
-                const productDesc = (p.description || "").toLowerCase();
-                
-                return searchWords.some(word => 
-                    productName.includes(word) || 
-                    productCat.includes(word) || 
-                    productDesc.includes(word)
-                );
+                return searchWords.some(word => productName.includes(word) || productCat.includes(word));
             });
 
             if (matchedProducts.length > 0) {
                 suggestionsBox.style.display = 'block';
-                
-                matchedProducts.slice(0, 10).forEach(p => {
+                matchedProducts.slice(0, 8).forEach(p => {
                     const div = document.createElement('div');
                     div.className = 'suggestion-item';
-                    
                     const productImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/50';
                     
                     div.innerHTML = `
@@ -1563,9 +1078,7 @@
                             <p>₹${p.price || '0'}</p>
                         </div>
                     `;
-                    div.addEventListener('click', () => {
-                        trackProductClickAndRedirect(p.id);
-                    });
+                    div.addEventListener('click', () => trackProductClickAndRedirect(p.id));
                     suggestionsBox.appendChild(div);
                 });
             } else {
@@ -1576,12 +1089,10 @@
         searchInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const searchVal = searchInput.value.trim();
-
                 if (searchVal.toLowerCase() === "cartecom@com") {
                     window.location.href = "/ecom";
                     return;
                 }
-
                 if (searchVal.length >= 1) {
                     window.location.href = `/search?q=${encodeURIComponent(searchVal)}`;
                 }
