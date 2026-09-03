@@ -98,7 +98,6 @@
             box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
         }
 
-        /* --- Theme Toggle Button --- */
         .theme-toggle-btn {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -114,7 +113,6 @@
         }
 
         .nav-right { display: flex; align-items: center; gap: 12px; position: relative; }
-        .icon-btn { position: relative; font-size: 1.25rem; color: var(--text-main); text-decoration: none; }
 
         /* --- Header / Hero --- */
         .hero { 
@@ -137,9 +135,8 @@
             border: 1px solid var(--border); display: flex; flex-direction: column; height: 100%;
         }
         .image-box { width: 100%; height: 200px; border-radius: 18px; background: var(--surface); margin-bottom: 12px; }
-        .image-box img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* --- MODAL POPUPS --- */
+        /* --- MODAL OVERLAYS --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
@@ -151,13 +148,14 @@
             background: var(--card-bg); width: 100%; max-width: 440px;
             border-radius: 24px; padding: 24px; border: 1px solid var(--border);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative;
+            max-height: 90vh; overflow-y: auto;
         }
 
         .modal-close {
             position: absolute; top: 16px; right: 16px; background: var(--surface);
             border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            color: var(--text-main);
+            color: var(--text-main); font-size: 0.9rem;
         }
 
         .form-group { margin-bottom: 14px; text-align: left; }
@@ -177,7 +175,27 @@
             font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px;
         }
         .status-pending { background: #fef3c7; color: #d97706; }
-        .status-approved { background: #d1fae5; color: #059669; }
+
+        /* --- AFFILIATE DASHBOARD STYLING (RESTORED) --- */
+        .aff-card {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 20px; padding: 20px; color: white; margin: 15px 0;
+        }
+        .aff-card .aff-title { font-size: 11px; opacity: 0.85; text-transform: uppercase; }
+        .aff-card .aff-balance { font-size: 28px; font-weight: 800; margin: 4px 0 12px 0; }
+        .aff-card-stats { display: flex; justify-content: space-between; border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 10px; font-size: 12px; }
+
+        .aff-actions { display: flex; gap: 10px; margin-bottom: 20px; }
+        .aff-btn { flex: 1; padding: 10px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 12px; }
+        .aff-btn-sale { background: #10b981; color: white; }
+        .aff-btn-withdraw { background: #2563eb; color: white; }
+
+        .aff-history-list { list-style: none; }
+        .aff-history-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 12px; background: var(--surface); border-radius: 12px;
+            margin-bottom: 8px; border: 1px solid var(--border); font-size: 12px;
+        }
 
         footer { background: #000; color: #fff; padding: 25px 6%; margin-top: auto; text-align: center; font-size: 0.85rem; }
 
@@ -214,7 +232,7 @@
         <div class="grid" id="productGrid"></div>
     </div>
 
-    <!-- 1. VERIFICATION REQUEST FORM MODAL -->
+    <!-- 1. VERIFICATION FORM MODAL -->
     <div class="modal-overlay" id="verificationModal">
         <div class="modal-card">
             <button class="modal-close" onclick="closeModal('verificationModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -255,20 +273,40 @@
         </div>
     </div>
 
-    <!-- 3. APPROVED AFFILIATE DASHBOARD MODAL -->
+    <!-- 3. RESTORED FULL AFFILIATE DASHBOARD MODAL -->
     <div class="modal-overlay" id="dashboardModal">
         <div class="modal-card">
             <button class="modal-close" onclick="closeModal('dashboardModal')"><i class="fa-solid fa-xmark"></i></button>
-            <span class="status-badge status-approved"><i class="fa-solid fa-circle-check"></i> Verified Partner</span>
-            <h3>Affiliate Dashboard</h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Welcome back! Track your earnings here.</p>
             
-            <div style="background: linear-gradient(135deg, #2563eb, #1d4ed8); padding: 18px; border-radius: 16px; color: white; margin-bottom: 15px;">
-                <div style="font-size: 0.75rem; opacity: 0.8;">Available Balance</div>
-                <div style="font-size: 1.8rem; font-weight: 800;">₹ <span id="affBalance">0.00</span></div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-wallet" style="color: #2563eb; font-size: 1.2rem;"></i>
+                <h3 style="font-size: 1.1rem; color: var(--text-main);">CartPrime Affiliate</h3>
             </div>
 
-            <button class="submit-btn" style="background: #10b981;" onclick="alert('Withdrawal feature enabled!')">Request Payout</button>
+            <div class="aff-card">
+                <div class="aff-title">Available Commission</div>
+                <div class="aff-balance">₹ <span id="aff-balance-amt">12,500.00</span></div>
+                <div class="aff-card-stats">
+                    <div>Pending: <b>₹ <span id="aff-pending-amt">3,200.00</span></b></div>
+                    <div>Withdrawn: <b>₹ <span id="aff-withdrawn-amt">45,000.00</span></b></div>
+                </div>
+            </div>
+
+            <div class="aff-actions">
+                <button class="aff-btn aff-btn-sale" onclick="addSimulatedSale()">+ Record Sale</button>
+                <button class="aff-btn aff-btn-withdraw" onclick="requestAffiliateWithdraw()">Payout Request</button>
+            </div>
+
+            <h4 style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 10px;">Recent Sales History</h4>
+            <ul class="aff-history-list" id="affHistoryList">
+                <li class="aff-history-item">
+                    <div>
+                        <strong>Wireless Headphones</strong><br>
+                        <small style="color: var(--text-muted);">10% Commission</small>
+                    </div>
+                    <span style="color: #10b981; font-weight: 800;">+ ₹250.00</span>
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -304,10 +342,39 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        // Handle Earn Money Click
+        // --- RESTORED DASHBOARD FUNCTIONS ---
+        let affData = { balance: 12500, pending: 3200, withdrawn: 45000 };
+
+        window.addSimulatedSale = function() {
+            let pName = prompt("Enter Sold Product Name:", "Smart Watch");
+            let pAmt = prompt("Enter Product Sale Amount (₹):", "3500");
+            if (pName && pAmt && !isNaN(pAmt)) {
+                let commission = parseFloat(pAmt) * 0.10;
+                affData.balance += commission;
+                document.getElementById('aff-balance-amt').innerText = affData.balance.toFixed(2);
+                
+                let list = document.getElementById('affHistoryList');
+                let li = document.createElement('li');
+                li.className = 'aff-history-item';
+                li.innerHTML = `<div><strong>${pName}</strong><br><small style="color: var(--text-muted);">10% Commission</small></div><span style="color: #10b981; font-weight: 800;">+ ₹${commission.toFixed(2)}</span>`;
+                list.prepend(li);
+            }
+        };
+
+        window.requestAffiliateWithdraw = function() {
+            let amt = prompt("Enter Payout Amount (₹):", affData.balance);
+            if (amt && !isNaN(amt) && parseFloat(amt) <= affData.balance) {
+                affData.balance -= parseFloat(amt);
+                affData.withdrawn += parseFloat(amt);
+                document.getElementById('aff-balance-amt').innerText = affData.balance.toFixed(2);
+                document.getElementById('aff-withdrawn-amt').innerText = affData.withdrawn.toFixed(2);
+                alert("Withdrawal request submitted successfully!");
+            }
+        };
+
+        // Handle Earn Money Button Click
         document.getElementById('openAffiliateBtn').addEventListener('click', async () => {
-            // Simulated User ID (Replace with currentUser.uid if auth enabled)
-            const userId = currentUser ? currentUser.uid : "USER_" + Math.floor(Math.random() * 10000);
+            const userId = currentUser ? currentUser.uid : "USER_DEMO";
 
             const dbRef = ref(db);
             try {
@@ -315,7 +382,6 @@
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     if (data.status === 'approved') {
-                        document.getElementById('affBalance').innerText = data.balance || '0.00';
                         document.getElementById('dashboardModal').style.display = 'flex';
                     } else {
                         document.getElementById('pendingModal').style.display = 'flex';
@@ -328,13 +394,13 @@
             }
         });
 
-        // Handle Verification Form Submission (Sends to Admin Database)
+        // Submit Verification Data to Admin
         document.getElementById('affiliateVerifyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('applicantName').value;
             const phone = document.getElementById('applicantPhone').value;
             const upi = document.getElementById('applicantUpi').value;
-            const userId = currentUser ? currentUser.uid : "USER_" + Date.now();
+            const userId = currentUser ? currentUser.uid : "USER_DEMO";
 
             try {
                 await set(ref(db, 'affiliate_requests/' + userId), {
@@ -342,8 +408,8 @@
                     name: name,
                     phone: phone,
                     upi: upi,
-                    status: 'pending', // Pending Admin approval
-                    balance: 0,
+                    status: 'pending',
+                    balance: 12500,
                     appliedAt: new Date().toISOString()
                 });
 
@@ -354,7 +420,7 @@
             }
         });
 
-        // Theme Toggle
+        // Theme Switch
         document.getElementById('themeToggleBtn').addEventListener('click', () => {
             let current = document.documentElement.getAttribute('data-theme');
             document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
