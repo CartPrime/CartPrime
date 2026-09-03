@@ -1326,8 +1326,8 @@ window.updateStatus = (path, s) => {
 };
 
 /* REAL-TIME AFFILIATE REQUESTS LISTENER */
-onValue(ref(db, 'affiliateRequests'), snap => {
-    const list = document.getElementById('affiliateRequestList');
+onValue(ref(db, 'earn_partners'), snap => {
+    const list = document.getElementById('earn_partners');
     if (!list) return;
     list.innerHTML = "";
 
