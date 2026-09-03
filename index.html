@@ -538,6 +538,100 @@ nav {
   align-items: center; 
   justify-content: center; 
 } 
+
+/* --- Premium Custom Notification Modal --- */
+.custom-toast-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 20000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.custom-toast-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 30px 24px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-icon-wrap {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+}
+
+.toast-icon-wrap.success {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.toast-icon-wrap.error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.custom-toast-card h4 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.custom-toast-card p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.toast-close-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: var(--bg);
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* --- Slide Up Animation --- */ 
 @keyframes slideUpFade { 
   0% { opacity: 0; transform: translateY(30px); } 
@@ -1224,6 +1318,16 @@ footer {
     <button class="cookie-btn cookie-accept" id="acceptCookiesBtn">Accept Cookies</button> 
   </div> 
 </div> 
+<div id="customToast" class="custom-toast-overlay">
+  <div class="custom-toast-card">
+    <div id="toastIcon" class="toast-icon-wrap success">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <h4 id="toastTitle">Success</h4>
+    <p id="toastMessage">Your request has been submitted.</p>
+    <button id="toastCloseBtn" class="toast-close-btn">Continue</button>
+  </div>
+</div>
 <footer> 
   <div class="footer-content"> 
     <div class="footer-logo">CART<span>PRIME</span></div> 
@@ -1244,6 +1348,32 @@ footer {
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"; 
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"; 
   import { getDatabase, ref, onValue, get, set, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js"; 
+
+  // --- PREMIUM TOAST NOTIFICATION FUNCTION ---
+  function showCustomAlert(title, message, isSuccess = true) {
+    const toastModal = document.getElementById('customToast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+    const toastCloseBtn = document.getElementById('toastCloseBtn');
+
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+
+    if (isSuccess) {
+      toastIcon.className = 'toast-icon-wrap success';
+      toastIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    } else {
+      toastIcon.className = 'toast-icon-wrap error';
+      toastIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+    }
+
+    toastModal.style.display = 'flex';
+
+    toastCloseBtn.onclick = () => {
+      toastModal.style.display = 'none';
+    };
+  }
 
   // --- AFFILIATE TRACKING LOGIC --- 
   (function handleAffiliateTracking() { 
@@ -1328,11 +1458,19 @@ footer {
           status: "Pending Verification", 
           timestamp: Date.now() 
         }).then(() => { 
-          alert("Your verification request has been submitted successfully! Admin will review and activate your account."); 
           earnForm.reset(); 
           earnModal.style.display = 'none'; 
+          showCustomAlert(
+            "Request Submitted!", 
+            "Your verification request has been submitted successfully! Admin will review and activate your account.", 
+            true
+          ); 
         }).catch((err) => { 
-          alert("Error submitting request: " + err.message); 
+          showCustomAlert(
+            "Submission Failed", 
+            "Error submitting request: " + err.message, 
+            false
+          ); 
         }); 
       } 
     }); 
