@@ -20,6 +20,8 @@
             --text-muted: #64748b;
             --border: #e2e8f0;
             --nav-bg: rgba(255, 255, 255, 0.85);
+            --skeleton-start: #f1f5f9;
+            --skeleton-mid: #e2e8f0;
         }
 
         /* --- Dark Theme Variables --- */
@@ -33,6 +35,8 @@
             --text-muted: #94a3b8;
             --border: #334155;
             --nav-bg: rgba(15, 23, 42, 0.85);
+            --skeleton-start: #1e293b;
+            --skeleton-mid: #334155;
         }
 
         * { 
@@ -43,6 +47,11 @@
             outline: none !important;
         }
 
+        *:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        
         body { 
             background-color: var(--bg); 
             color: var(--text-main);
@@ -50,6 +59,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            -webkit-tap-highlight-color: transparent;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
@@ -65,54 +75,42 @@
             z-index: 1000;
             border-bottom: 1px solid var(--border);
             gap: 15px;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
-        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; color: var(--text-main); }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; user-select: none; color: var(--text-main); }
         .logo span { color: var(--text-muted); font-weight: 300; }
 
         .search-container { flex: 1; max-width: 500px; position: relative; }
         .search-container input {
             width: 100%; padding: 10px 15px 10px 40px; border-radius: 12px;
-            border: 1px solid var(--border); background: var(--surface); color: var(--text-main); font-size: 0.9rem;
+            border: 1px solid var(--border); background: var(--surface); color: var(--text-main); outline: none;
+            transition: 0.3s; font-size: 0.9rem;
         }
+        .search-container input:focus { border-color: var(--primary); background: var(--card-bg); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .search-container i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
 
-        /* --- Earn Money Button --- */
-        .earn-money-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: #ffffff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.82rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
-            transition: all 0.3s ease;
-        }
-        .earn-money-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        /* --- Compact Search Suggestion Box --- */
+        .search-suggestions-box {
+            position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+            background: var(--card-bg); border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            max-height: 350px; overflow-y: auto; z-index: 2000; display: none; border: 1px solid var(--border);
         }
 
-        .theme-toggle-btn {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.1rem;
+        .suggestion-item {
+            display: flex; align-items: center; padding: 12px; gap: 15px;
+            cursor: pointer; border-bottom: 1px solid var(--border); transition: 0.2s;
         }
-
-        .nav-right { display: flex; align-items: center; gap: 12px; position: relative; }
+        .suggestion-item:hover { background: var(--surface); }
+        .suggestion-item img { 
+            width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
+        }
+        .suggestion-info { display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
+        .suggestion-item h4 { 
+            font-size: 0.85rem; font-weight: 600; margin: 0; color: var(--text-main);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .suggestion-item p { font-size: 0.75rem; color: var(--accent); font-weight: 700; margin: 0; }
 
         /* --- Header / Hero --- */
         .hero { 
@@ -126,304 +124,1242 @@
         .hero-text h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; color: var(--text-main); }
         .hero-text p { color: var(--text-muted); margin-top: 8px; font-size: 0.95rem; }
 
+        /* Updated Trust Stats Widget */
+        .trust-stats {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: var(--surface);
+            padding: 12px 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .stat-item i {
+            font-size: 1.3rem;
+            color: #2563eb;
+        }
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-info strong {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        .stat-info span {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .stat-divider {
+            width: 1px;
+            height: 25px;
+            background: var(--border);
+        }
+
+        /* --- Trust Badges Grid Bar --- */
+        .trust-bar-section {
+            padding: 10px 6% 15px 6%;
+        }
+        .trust-bar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 18px;
+        }
+        .trust-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .trust-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        .trust-details h4 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+        .trust-details p {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        /* --- Category Bar Styling --- */
+        .category-bar {
+            padding: 10px 6% 5px 6%;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .category-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .category-btn {
+            background: var(--surface);
+            color: var(--text-main);
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+            user-select: none;
+        }
+        .category-btn:hover, .category-btn.active {
+            background: var(--primary);
+            color: var(--bg);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* --- Dynamic Banner Slider --- */
+        .banner-section {
+            padding: 15px 6% 10px 6%;
+            position: relative;
+            width: 100%;
+        }
+        .banner-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .banner-slider {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+            align-items: center;
+            width: 100%;
+        }
+        .banner-slider::-webkit-scrollbar {
+            display: none;
+        }
+        .banner-item {
+            flex: 0 0 calc(50% - 8px);
+            scroll-snap-align: start;
+            border-radius: 20px;
+            overflow: hidden;
+            height: auto;
+            max-height: 220px;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .banner-item:hover {
+            transform: scale(1.005);
+        }
+        .banner-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 20px;
+        }
+
+        /* Banner Navigation Arrows */
+        .banner-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+        .banner-arrow:hover {
+            background: var(--primary);
+            color: var(--bg);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .banner-arrow.prev { left: -12px; }
+        .banner-arrow.next { right: -12px; }
+
+        .banner-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+        }
+        .dot {
+            width: 7px;
+            height: 7px;
+            background: var(--border);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .dot.active {
+            background: var(--primary);
+            width: 18px;
+            border-radius: 4px;
+        }
+
         /* --- Product Grid --- */
-        .container { padding: 20px 6% 40px; flex: 1; }
+        .container { padding: 10px 6% 40px; flex: 1; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
 
+        /* --- Dynamic Theme Toggle Button --- */
+        .theme-toggle-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .theme-toggle-btn:hover {
+            background: var(--border);
+            transform: rotate(15deg);
+        }
+
+        /* --- Slide Up Animation --- */
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Card Styling --- */
         .card {
             background: var(--card-bg); border-radius: 24px; padding: 12px;
-            border: 1px solid var(--border); display: flex; flex-direction: column; height: 100%;
+            position: relative; border: 1px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; height: 100%;
+            cursor: pointer;
+            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease;
         }
-        .image-box { width: 100%; height: 200px; border-radius: 18px; background: var(--surface); margin-bottom: 12px; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+        
+        .image-box { 
+            width: 100%; height: 260px; border-radius: 18px; 
+            overflow: hidden; background: var(--surface); margin-bottom: 12px; position: relative;
+        }
+        .card img { width: 100%; height: 100%; object-fit: contain; transition: 0.5s; }
 
-        /* --- MODAL OVERLAYS --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
-            z-index: 99999; display: none; justify-content: center; align-items: center;
+        .stock-badge {
+            position: absolute; top: 12px; left: 12px; background: #000;
+            color: white; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; z-index: 10;
+        }
+        .discount-badge {
+            position: absolute; top: 12px; right: 12px; background: #22c55e;
+            color: white; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; z-index: 10;
+        }
+
+        /* Genuine Guarantee Tag on Product Image */
+        .verified-tag {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(255, 255, 255, 0.92);
+            color: #0f172a;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .verified-tag i { color: #2563eb; }
+
+        /* --- Product Card Wishlist Button --- */
+        .card-wishlist-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 12;
+            color: #64748b;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .card-wishlist-btn:hover {
+            transform: scale(1.1);
+            color: #ef4444;
+        }
+        .card-wishlist-btn.active {
+            color: #ef4444;
+            background: #fff;
+        }
+
+        /* Adjust discount badge position if wishlist button exists */
+        .discount-badge.with-wishlist {
+            right: 52px;
+        }
+
+        .card-info { flex-grow: 1; display: flex; flex-direction: column; }
+        .card h3 { 
+            font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-main);
+            display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+            overflow: hidden; text-overflow: ellipsis; 
+        }
+
+        .price-container { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .price { font-weight: 800; font-size: 1.2rem; color: var(--text-main); }
+        .mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.85rem; }
+
+        .buy-btn {
+            width: 100%; padding: 14px; background: var(--primary); color: var(--bg); border: none;
+            border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;
+            font-size: 0.9rem; margin-top: auto;
+        }
+        .buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
+
+        .nav-right { display: flex; align-items: center; gap: 12px; position: relative; flex-shrink: 0; }
+        .icon-btn { position: relative; font-size: 1.25rem; color: var(--text-main); cursor: pointer; text-decoration: none; transition: 0.2s; }
+        .icon-btn:hover { color: var(--accent); }
+        
+        .badge {
+            position: absolute; top: -8px; right: -8px; background: #ef4444; color: white;
+            font-size: 0.6rem; font-weight: 800; border-radius: 50%; min-width: 16px;
+            height: 16px; display: flex; align-items: center; justify-content: center; padding: 2px;
+        }
+
+        /* --- Skeleton Loading Placeholder Cards --- */
+        .skeleton-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 380px;
+        }
+
+        .skeleton-img {
+            width: 100%;
+            height: 220px;
+            border-radius: 18px;
+            background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            margin-bottom: 15px;
+        }
+
+        .skeleton-line {
+            height: 14px;
+            background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            border-radius: 6px;
+        }
+
+        @keyframes skeletonLoading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* --- Safe Checkout Assurance Section --- */
+        .safe-checkout-box {
+            margin: 20px 6% 40px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
             padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .safe-checkout-box h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .safe-checkout-box h3 i { color: #22c55e; }
+        .payment-badges {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+        .payment-badges span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--card-bg);
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
         }
 
-        .modal-card {
-            background: var(--card-bg); width: 100%; max-width: 440px;
-            border-radius: 24px; padding: 24px; border: 1px solid var(--border);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative;
-            max-height: 90vh; overflow-y: auto;
+        /* --- Cookies Consent Banner --- */
+        .cookie-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            max-width: 450px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 18px;
+            padding: 18px 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+        .cookie-banner p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .cookie-banner p strong {
+            color: var(--text-main);
+        }
+        .cookie-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .cookie-btn {
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+        .cookie-accept {
+            background: var(--primary);
+            color: var(--bg);
+        }
+        .cookie-accept:hover {
+            opacity: 0.9;
         }
 
-        .modal-close {
-            position: absolute; top: 16px; right: 16px; background: var(--surface);
-            border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            color: var(--text-main); font-size: 0.9rem;
+        footer { 
+            background: #000; color: #fff; padding: 30px 6%; 
+            margin-top: auto; width: 100%; border-top: 1px solid #1e293b;
         }
-
-        .form-group { margin-bottom: 14px; text-align: left; }
-        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; color: var(--text-main); }
-        .form-group input {
-            width: 100%; padding: 10px 14px; border-radius: 10px;
-            border: 1px solid var(--border); background: var(--surface); color: var(--text-main); font-size: 0.9rem;
-        }
-
-        .submit-btn {
-            width: 100%; padding: 12px; background: var(--accent); color: white;
-            border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px;
-        }
-
-        .status-badge {
-            display: inline-block; padding: 6px 12px; border-radius: 20px;
-            font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px;
-        }
-        .status-pending { background: #fef3c7; color: #d97706; }
-
-        /* --- AFFILIATE DASHBOARD STYLING (RESTORED) --- */
-        .aff-card {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            border-radius: 20px; padding: 20px; color: white; margin: 15px 0;
-        }
-        .aff-card .aff-title { font-size: 11px; opacity: 0.85; text-transform: uppercase; }
-        .aff-card .aff-balance { font-size: 28px; font-weight: 800; margin: 4px 0 12px 0; }
-        .aff-card-stats { display: flex; justify-content: space-between; border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 10px; font-size: 12px; }
-
-        .aff-actions { display: flex; gap: 10px; margin-bottom: 20px; }
-        .aff-btn { flex: 1; padding: 10px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 12px; }
-        .aff-btn-sale { background: #10b981; color: white; }
-        .aff-btn-withdraw { background: #2563eb; color: white; }
-
-        .aff-history-list { list-style: none; }
-        .aff-history-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 12px; background: var(--surface); border-radius: 12px;
-            margin-bottom: 8px; border: 1px solid var(--border); font-size: 12px;
-        }
-
-        footer { background: #000; color: #fff; padding: 25px 6%; margin-top: auto; text-align: center; font-size: 0.85rem; }
+        .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .footer-logo { font-weight: 800; font-size: 1.5rem; }
+        .footer-logo span { color: #64748b; }
+        .footer-contact { display: flex; flex-direction: column; gap: 8px; }
+        .footer-contact a { color: #fff; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 9px; transition: opacity 0.2s; }
+        .footer-contact a:hover { opacity: 0.8; }
+        .footer-bottom { border-top: 1px solid #1e293b; margin-top: 20px; padding-top: 15px; text-align: center; color: #94a3b8; font-size: 0.85rem; }
 
         @media (max-width: 768px) {
-            nav { padding: 12px 4%; }
+            nav { padding: 12px 4%; flex-wrap: wrap; justify-content: space-between; }
+            .logo { font-size: 1.2rem; order: 1; }
+            
+            .nav-right { order: 2; gap: 8px; flex-shrink: 0; }
+            .icon-btn { font-size: 1.15rem; }
+            
+            .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin: 8px 0 2px 0; }
+            
+            .hero { padding: 20px 4% 5px; flex-direction: column; align-items: flex-start; gap: 15px; }
+            .hero-text h1 { font-size: 1.8rem; }
+            .hero-text p { font-size: 0.85rem; }
+
+            .trust-stats { width: 100%; justify-content: space-around; padding: 10px; }
+            .trust-bar-section { padding: 10px 4%; }
+            .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
+
+            .category-bar { padding: 10px 4%; gap: 8px; }
+            .category-btn { padding: 8px 16px; font-size: 0.8rem; }
+
+            .banner-section { padding: 8px 4% 8px 4%; }
+            .banner-item { flex: 0 0 100%; max-height: 160px; border-radius: 12px; }
+            .banner-item img { border-radius: 12px; }
+            .banner-arrow { width: 30px; height: 30px; font-size: 0.8rem; }
+            .banner-arrow.prev { left: -5px; }
+            .banner-arrow.next { right: -5px; }
+            .dot { width: 6px; height: 6px; }
+            .dot.active { width: 14px; }
+            
+            .container { padding: 10px 4% 20px; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            
+            .card { border-radius: 16px; padding: 8px; }
+            .image-box { height: 160px; border-radius: 12px; margin-bottom: 10px; }
+            .card h3 { font-size: 0.85rem; margin-bottom: 8px; }
+            .price-container { margin-bottom: 10px; gap: 5px; flex-wrap: wrap; }
+            .price { font-size: 0.95rem; }
+            .mrp { font-size: 0.75rem; }
+            .buy-btn { padding: 10px; font-size: 0.8rem; border-radius: 10px; }
+            
+            .stock-badge, .discount-badge { padding: 3px 8px; font-size: 0.6rem; border-radius: 6px; top: 8px; }
+            .stock-badge { left: 8px; }
+            .discount-badge { right: 8px; }
+            .discount-badge.with-wishlist { right: 44px; }
+            .card-wishlist-btn { width: 28px; height: 28px; font-size: 0.8rem; top: 8px; right: 8px; }
+
+            .safe-checkout-box { margin: 10px 4% 25px; padding: 15px; }
+
+            .skeleton-card { border-radius: 16px; padding: 8px; height: 280px; }
+            .skeleton-img { height: 140px; border-radius: 12px; }
+            
+            .cookie-banner { left: 10px; right: 10px; bottom: 10px; padding: 14px; }
+
+            footer { padding: 25px 4%; }
+            .footer-content { flex-direction: column; text-align: center; gap: 15px; }
+            .footer-contact { align-items: center; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">CART<span>PRIME</span></div>
+        <div id="navLogo" class="logo">CART<span>PRIME</span></div>
         <div class="search-container">
             <i class="fa fa-search"></i>
-            <input type="text" placeholder="Search products...">
+            <input type="text" id="searchInput" placeholder="Search verified products..." autocomplete="off">
+            <div id="searchSuggestions" class="search-suggestions-box"></div>
         </div>
         <div class="nav-right">
-            <button class="earn-money-btn" id="openAffiliateBtn">
-                <i class="fa-solid fa-coins"></i> Earn Money
+            <!-- Global Theme Switcher Toggle Button -->
+            <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Theme">
+                <i class="fa-regular fa-moon"></i>
             </button>
-            <button id="themeToggleBtn" class="theme-toggle-btn"><i class="fa-regular fa-moon"></i></button>
+
+            <a href="/wishlist" class="icon-btn" title="My Wishlist">
+                <i class="fa-regular fa-heart"></i>
+                <span id="wishlistBadge" class="badge" style="display:none;">0</span>
+            </a>
+            
+            <a href="/orders" class="icon-btn" title="My Orders">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span id="ordersBadge" class="badge" style="display:none;">0</span>
+            </a>
         </div>
     </nav>
 
     <header class="hero">
         <div class="hero-text">
-            <h1>Welcome To CartPrime</h1>
-            <p>100% Verified & Premium Quality Store.</p>
+            <h1>Welcome To <br> CartPrime </h1>
+            <h1 style="color: rgb(65, 155, 65);">Online Shop</h1>
+            <p>100% Verified & Premium Quality Shopping Store.</p>
+        </div>
+
+        <!-- Dynamic Trust Badge Stats Widget -->
+        <div class="trust-stats">
+            <div class="stat-item">
+                <i class="fa-solid fa-shield-check"></i>
+                <div class="stat-info">
+                    <strong>100% Verified</strong>
+                    <span>Trusted Store</span>
+                </div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <i class="fa-solid fa-truck-fast"></i>
+                <div class="stat-info">
+                    <strong>Fast Shipping</strong>
+                    <span>Free Delivery</span>
+                </div>
+            </div>
         </div>
     </header>
+
+    <!-- Trust Features Bar -->
+    <div class="trust-bar-section">
+        <div class="trust-bar-grid">
+            <div class="trust-card">
+                <div class="trust-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                <div class="trust-details">
+                    <h4>Fast Shipping</h4>
+                    <p>Free Delivery</p>
+                </div>
+            </div>
+            <div class="trust-card">
+                <div class="trust-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="trust-details">
+                    <h4>Buyer Protection</h4>
+                    <p>7 Days Easy Returns</p>
+                </div>
+            </div>
+            <div class="trust-card">
+                <div class="trust-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <div class="trust-details">
+                    <h4>COD Available</h4>
+                    <p>Pay Upon Delivery</p>
+                </div>
+            </div>
+            <div class="trust-card">
+                <div class="trust-icon"><i class="fa-solid fa-headset"></i></div>
+                <div class="trust-details">
+                    <h4>Dedicated Support</h4>
+                    <p>Quick Help Support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category-bar" id="categoryBar"></div>
+
+    <div class="banner-section" id="bannerSection" style="display: none;">
+        <div class="banner-wrapper">
+            <button class="banner-arrow prev" id="bannerPrevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="banner-slider" id="bannerSlider"></div>
+            <button class="banner-arrow next" id="bannerNextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="banner-dots" id="bannerDots"></div>
+    </div>
 
     <div class="container">
         <div class="grid" id="productGrid"></div>
     </div>
 
-    <!-- 1. VERIFICATION FORM MODAL -->
-    <div class="modal-overlay" id="verificationModal">
-        <div class="modal-card">
-            <button class="modal-close" onclick="closeModal('verificationModal')"><i class="fa-solid fa-xmark"></i></button>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <i class="fa-solid fa-id-card" style="font-size: 2rem; color: #2563eb;"></i>
-                <h3 style="margin-top: 8px;">Affiliate Verification</h3>
-                <p style="font-size: 0.78rem; color: var(--text-muted);">Submit details for Admin approval to start earning.</p>
-            </div>
-
-            <form id="affiliateVerifyForm">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="applicantName" placeholder="Enter your name" required>
-                </div>
-                <div class="form-group">
-                    <label>WhatsApp Number</label>
-                    <input type="tel" id="applicantPhone" placeholder="Enter phone number" required>
-                </div>
-                <div class="form-group">
-                    <label>UPI ID (for payouts)</label>
-                    <input type="text" id="applicantUpi" placeholder="e.g. name@upi" required>
-                </div>
-                <button type="submit" class="submit-btn"><i class="fa-solid fa-paper-plane"></i> Submit to Admin</button>
-            </form>
+    <!-- Safe Checkout Box -->
+    <div class="safe-checkout-box">
+        <h3><i class="fa-solid fa-lock"></i> 100% Safe & Secure Shopping Guarantee</h3>
+        <div class="payment-badges">
+            <span><i class="fa-solid fa-check"></i> Verified Merchant</span>
+            <span><i class="fa-solid fa-box-check"></i> 100% Genuine Products</span>
+            <span><i class="fa-solid fa-wallet"></i> Cash on Delivery</span>
         </div>
     </div>
 
-    <!-- 2. PENDING STATUS MODAL -->
-    <div class="modal-overlay" id="pendingModal">
-        <div class="modal-card" style="text-align: center;">
-            <button class="modal-close" onclick="closeModal('pendingModal')"><i class="fa-solid fa-xmark"></i></button>
-            <span class="status-badge status-pending">Verification Pending</span>
-            <h3>Application Under Review</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 12px 0 20px;">
-                Your request has been submitted to the Admin for verification. You can access the Affiliate Dashboard once approved.
-            </p>
-            <button class="submit-btn" style="background: var(--surface); color: var(--text-main); border: 1px solid var(--border);" onclick="closeModal('pendingModal')">Close</button>
-        </div>
-    </div>
-
-    <!-- 3. RESTORED FULL AFFILIATE DASHBOARD MODAL -->
-    <div class="modal-overlay" id="dashboardModal">
-        <div class="modal-card">
-            <button class="modal-close" onclick="closeModal('dashboardModal')"><i class="fa-solid fa-xmark"></i></button>
-            
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-wallet" style="color: #2563eb; font-size: 1.2rem;"></i>
-                <h3 style="font-size: 1.1rem; color: var(--text-main);">CartPrime Affiliate</h3>
-            </div>
-
-            <div class="aff-card">
-                <div class="aff-title">Available Commission</div>
-                <div class="aff-balance">₹ <span id="aff-balance-amt">12,500.00</span></div>
-                <div class="aff-card-stats">
-                    <div>Pending: <b>₹ <span id="aff-pending-amt">3,200.00</span></b></div>
-                    <div>Withdrawn: <b>₹ <span id="aff-withdrawn-amt">45,000.00</span></b></div>
-                </div>
-            </div>
-
-            <div class="aff-actions">
-                <button class="aff-btn aff-btn-sale" onclick="addSimulatedSale()">+ Record Sale</button>
-                <button class="aff-btn aff-btn-withdraw" onclick="requestAffiliateWithdraw()">Payout Request</button>
-            </div>
-
-            <h4 style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 10px;">Recent Sales History</h4>
-            <ul class="aff-history-list" id="affHistoryList">
-                <li class="aff-history-item">
-                    <div>
-                        <strong>Wireless Headphones</strong><br>
-                        <small style="color: var(--text-muted);">10% Commission</small>
-                    </div>
-                    <span style="color: #10b981; font-weight: 800;">+ ₹250.00</span>
-                </li>
-            </ul>
+    <!-- Cookies Consent Banner -->
+    <div class="cookie-banner" id="cookieBanner" style="display: none;">
+        <p><strong>We use cookies!</strong> We use cookies to enhance your shopping experience and analyze our website traffic.</p>
+        <div class="cookie-actions">
+            <button class="cookie-btn cookie-accept" id="acceptCookiesBtn">Accept Cookies</button>
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2026 CartPrime. All Rights Reserved.</p>
+        <div class="footer-content">
+            <div class="footer-logo">CART<span>PRIME</span></div>
+            <div class="footer-contact">
+                <a href="mailto:cartprimeshopping@gmail.com">
+                    <i class="fa-regular fa-envelope"></i>
+                    cartprimeshopping@gmail.com
+                </a>
+                <a href="https://www.instagram.com/cartprimeonlinestore?igsh=MWFmYTkzdHhyOXoyYQ==" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-brands fa-instagram" style="font-size: 1.1rem; color: #e1306c;"></i>
+                    @cartprimeonlinestore
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 CartPrime. All Rights Reserved.</p>
+        </div>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
+        // --- AFFILIATE TRACKING LOGIC ---
+        (function handleAffiliateTracking() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const affId = urlParams.get('ref') || urlParams.get('aff');
+            if (affId) {
+                localStorage.setItem('cartPrime_affiliateId', affId);
+            }
+        })();
+
+        // --- COOKIES CONSENT LOGIC ---
+        const cookieBanner = document.getElementById('cookieBanner');
+        const acceptCookiesBtn = document.getElementById('acceptCookiesBtn');
+
+        if (!localStorage.getItem('cookiesAccepted')) {
+            cookieBanner.style.display = 'flex';
+        }
+
+        acceptCookiesBtn.addEventListener('click', () => {
+            localStorage.setItem('cookiesAccepted', 'true');
+            cookieBanner.style.display = 'none';
+        });
+
+        // --- GLOBAL THEME LOGIC ---
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = themeToggleBtn.querySelector('i');
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.className = 'fa-regular fa-sun';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeIcon.className = 'fa-regular fa-moon';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            let targetTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            localStorage.setItem('theme', targetTheme);
+            themeIcon.className = targetTheme === 'dark' ? 'fa-regular fa-sun' : 'fa-regular fa-moon';
+        });
+
+        // --- FIREBASE INITIALIZATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
             authDomain: "cartprime-shopping.firebaseapp.com",
             projectId: "cartprime-shopping",
             storageBucket: "cartprime-shopping.firebasestorage.app",
             messagingSenderId: "570068438689",
-            appId: "1:570068438689:web:17b25f49f2b561fd29eae0"
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+            measurementId: "G-9GREWHMEYL"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
+        let allProducts = [];
+        let activeCategory = "All";
+        let autoScrollInterval = null;
         let currentUser = null;
+        let userWishlistIds = {};
+
+        showSkeletons();
+
+        function showSkeletons() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = "";
+            for (let i = 0; i < 8; i++) {
+                grid.innerHTML += `
+                    <div class="skeleton-card">
+                        <div class="skeleton-img"></div>
+                        <div class="skeleton-info">
+                            <div class="skeleton-line" style="width: 80%;"></div>
+                            <div class="skeleton-line" style="width: 40%;"></div>
+                            <div class="skeleton-line" style="width: 60%; margin-top: auto;"></div>
+                            <div class="skeleton-line" style="height: 40px; border-radius: 12px;"></div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function trackProductClickAndRedirect(productId) {
+            let viewedProducts = JSON.parse(localStorage.getItem('viewedProductIds') || "[]");
+            let visitCounted = localStorage.getItem('visitCounted') === 'true';
+
+            if (!viewedProducts.includes(productId)) {
+                viewedProducts.push(productId);
+                localStorage.setItem('viewedProductIds', JSON.stringify(viewedProducts));
+            }
+
+            const affId = localStorage.getItem('cartPrime_affiliateId');
+            const affQuery = affId ? `&ref=${encodeURIComponent(affId)}` : '';
+
+            if (viewedProducts.length >= 5 && !visitCounted) {
+                const visitsRef = ref(db, 'admin/visits');
+                get(visitsRef).then((snapshot) => {
+                    let currentVisits = snapshot.exists() ? snapshot.val() : 0;
+                    set(visitsRef, currentVisits + 1).then(() => {
+                        localStorage.setItem('visitCounted', 'true');
+                        window.location.href = `/product-details?id=${productId}${affQuery}`;
+                    }).catch(() => {
+                        window.location.href = `/product-details?id=${productId}${affQuery}`;
+                    });
+                }).catch(() => {
+                    window.location.href = `/product-details?id=${productId}${affQuery}`;
+                });
+            } else {
+                window.location.href = `/product-details?id=${productId}${affQuery}`;
+            }
+        }
+
+        if (window.location.pathname.endsWith('.html')) {
+            let cleanPath = window.location.pathname.replace('.html', '');
+            if (cleanPath.endsWith('/index')) cleanPath = '/';
+            window.history.replaceState(null, '', cleanPath + window.location.search);
+        }
+
+        document.getElementById('navLogo').addEventListener('click', () => {
+            window.location.href = "/";
+        });
+
+        // --- UPDATED BADGES & WISHLIST LOGIC ---
+        function updateBadges(user) {
+            const wishlistBadge = document.getElementById('wishlistBadge');
+            const ordersBadge = document.getElementById('ordersBadge');
+
+            if (user) {
+                // Logged-in user: Fetch from Firebase
+                onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => {
+                    if (snapshot.exists()) {
+                        userWishlistIds = snapshot.val();
+                    } else {
+                        userWishlistIds = {};
+                    }
+                    updateWishlistUIAndBadge(wishlistBadge);
+                });
+            } else {
+                // Guest user: Fetch from localStorage
+                let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}");
+                userWishlistIds = localWishlist;
+                updateWishlistUIAndBadge(wishlistBadge);
+            }
+
+            // Orders Count Logic
+            const phoneSources = [
+                localStorage.getItem('userPhone'),
+                localStorage.getItem('cartPrime_LastOrderPhone'),
+                localStorage.getItem('cartPrime_Phone'),
+                user ? user.phoneNumber : null
+            ];
+
+            let targetPhone = phoneSources.find(p => p && p.trim() !== "");
+
+            if (targetPhone) {
+                onValue(ref(db, `orders/${targetPhone}`), (snapshot) => {
+                    const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
+                    if (count > 0) {
+                        ordersBadge.textContent = count;
+                        ordersBadge.style.display = 'flex';
+                    } else {
+                        ordersBadge.style.display = 'none';
+                    }
+                });
+            } else {
+                ordersBadge.style.display = 'none';
+            }
+        }
+
+        function updateWishlistUIAndBadge(wishlistBadge) {
+            const count = Object.keys(userWishlistIds).length;
+            if (count > 0) {
+                wishlistBadge.textContent = count;
+                wishlistBadge.style.display = 'flex';
+            } else {
+                wishlistBadge.style.display = 'none';
+            }
+
+            if (allProducts.length > 0) {
+                let filtered = allProducts;
+                if (activeCategory !== "All") {
+                    filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
+                }
+                renderProducts(filtered);
+            }
+        }
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
+            updateBadges(user);
         });
 
-        window.closeModal = function(id) {
-            document.getElementById(id).style.display = 'none';
-        }
+        updateBadges(null);
+        
+        onValue(ref(db, 'products'), (snapshot) => {
+            allProducts = [];
+            snapshot.forEach(child => {
+                const data = child.val();
+                data.id = child.key;
+                allProducts.push(data);
+            });
+            renderCategoryBar(); 
+            renderProducts(allProducts);
+        });
 
-        // --- RESTORED DASHBOARD FUNCTIONS ---
-        let affData = { balance: 12500, pending: 3200, withdrawn: 45000 };
+        const bannerSection = document.getElementById('bannerSection');
+        const bannerSlider = document.getElementById('bannerSlider');
+        const bannerDots = document.getElementById('bannerDots');
 
-        window.addSimulatedSale = function() {
-            let pName = prompt("Enter Sold Product Name:", "Smart Watch");
-            let pAmt = prompt("Enter Product Sale Amount (₹):", "3500");
-            if (pName && pAmt && !isNaN(pAmt)) {
-                let commission = parseFloat(pAmt) * 0.10;
-                affData.balance += commission;
-                document.getElementById('aff-balance-amt').innerText = affData.balance.toFixed(2);
-                
-                let list = document.getElementById('affHistoryList');
-                let li = document.createElement('li');
-                li.className = 'aff-history-item';
-                li.innerHTML = `<div><strong>${pName}</strong><br><small style="color: var(--text-muted);">10% Commission</small></div><span style="color: #10b981; font-weight: 800;">+ ₹${commission.toFixed(2)}</span>`;
-                list.prepend(li);
-            }
-        };
+        onValue(ref(db, 'banners'), (snapshot) => {
+            if (snapshot.exists()) {
+                bannerSlider.innerHTML = "";
+                bannerDots.innerHTML = "";
+                let index = 0;
 
-        window.requestAffiliateWithdraw = function() {
-            let amt = prompt("Enter Payout Amount (₹):", affData.balance);
-            if (amt && !isNaN(amt) && parseFloat(amt) <= affData.balance) {
-                affData.balance -= parseFloat(amt);
-                affData.withdrawn += parseFloat(amt);
-                document.getElementById('aff-balance-amt').innerText = affData.balance.toFixed(2);
-                document.getElementById('aff-withdrawn-amt').innerText = affData.withdrawn.toFixed(2);
-                alert("Withdrawal request submitted successfully!");
-            }
-        };
+                snapshot.forEach(child => {
+                    const bannerData = child.val();
+                    const imgUrl = bannerData.imageUrl || bannerData.image || bannerData.url;
 
-        // Handle Earn Money Button Click
-        document.getElementById('openAffiliateBtn').addEventListener('click', async () => {
-            const userId = currentUser ? currentUser.uid : "USER_DEMO";
+                    if (imgUrl) {
+                        const item = document.createElement('div');
+                        item.className = 'banner-item';
+                        item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner">`;
 
-            const dbRef = ref(db);
-            try {
-                const snapshot = await get(child(dbRef, `affiliate_requests/${userId}`));
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    if (data.status === 'approved') {
-                        document.getElementById('dashboardModal').style.display = 'flex';
-                    } else {
-                        document.getElementById('pendingModal').style.display = 'flex';
+                        const targetLink = bannerData.redirectLink || bannerData.link || bannerData.targetUrl || bannerData.url || bannerData.redirectUrl;
+
+                        item.addEventListener('click', () => {
+                            if (targetLink && targetLink.toString().trim() !== "") {
+                                let linkStr = targetLink.toString().trim();
+                                if (linkStr.startsWith('http://') || linkStr.startsWith('https://')) {
+                                    window.location.href = linkStr;
+                                } else {
+                                    window.location.href = linkStr.startsWith('/') ? linkStr : `/${linkStr}`;
+                                }
+                            } 
+                            else if (bannerData.productId) {
+                                trackProductClickAndRedirect(bannerData.productId);
+                            } 
+                            else if (bannerData.category) {
+                                activeCategory = bannerData.category;
+                                const filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
+                                renderProducts(filtered);
+                                document.querySelectorAll('.category-btn').forEach(b => {
+                                    if(b.getAttribute('data-cat').toLowerCase() === activeCategory.toLowerCase()) b.classList.add('active');
+                                    else b.classList.remove('active');
+                                });
+                            }
+                        });
+
+                        bannerSlider.appendChild(item);
+
+                        const dot = document.createElement('div');
+                        dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                        dot.setAttribute('data-index', index);
+                        bannerDots.appendChild(dot);
+                        index++;
                     }
-                } else {
-                    document.getElementById('verificationModal').style.display = 'flex';
-                }
-            } catch (error) {
-                document.getElementById('verificationModal').style.display = 'flex';
-            }
-        });
-
-        // Submit Verification Data to Admin
-        document.getElementById('affiliateVerifyForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('applicantName').value;
-            const phone = document.getElementById('applicantPhone').value;
-            const upi = document.getElementById('applicantUpi').value;
-            const userId = currentUser ? currentUser.uid : "USER_DEMO";
-
-            try {
-                await set(ref(db, 'affiliate_requests/' + userId), {
-                    userId: userId,
-                    name: name,
-                    phone: phone,
-                    upi: upi,
-                    status: 'pending',
-                    balance: 12500,
-                    appliedAt: new Date().toISOString()
                 });
 
-                closeModal('verificationModal');
-                document.getElementById('pendingModal').style.display = 'flex';
-            } catch (err) {
-                alert("Submission failed. Error: " + err.message);
+                if (index > 0) {
+                    bannerSection.style.display = 'block';
+                    initializeSliderScroll();
+                } else {
+                    bannerSection.style.display = 'none';
+                }
+            } else {
+                bannerSection.style.display = 'none';
             }
         });
 
-        // Theme Switch
-        document.getElementById('themeToggleBtn').addEventListener('click', () => {
-            let current = document.documentElement.getAttribute('data-theme');
-            document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+        function initializeSliderScroll() {
+            const slider = document.getElementById('bannerSlider');
+            const dots = document.querySelectorAll('.dot');
+            const prevBtn = document.getElementById('bannerPrevBtn');
+            const nextBtn = document.getElementById('bannerNextBtn');
+            const totalBanners = dots.length;
+            if (totalBanners === 0) return;
+
+            if (autoScrollInterval) clearInterval(autoScrollInterval);
+
+            const startAutoScroll = () => {
+                autoScrollInterval = setInterval(() => {
+                    const width = slider.clientWidth;
+                    const currentScroll = slider.scrollLeft;
+                    let nextIndex = Math.round(currentScroll / width) + 1;
+
+                    if (nextIndex >= totalBanners) {
+                        nextIndex = 0;
+                    }
+
+                    slider.scrollTo({
+                        left: nextIndex * width,
+                        behavior: 'smooth'
+                    });
+                }, 3000);
+            };
+
+            startAutoScroll();
+
+            if (prevBtn && nextBtn) {
+                prevBtn.onclick = () => {
+                    clearInterval(autoScrollInterval);
+                    const width = slider.clientWidth;
+                    slider.scrollBy({ left: -width, behavior: 'smooth' });
+                    startAutoScroll();
+                };
+
+                nextBtn.onclick = () => {
+                    clearInterval(autoScrollInterval);
+                    const width = slider.clientWidth;
+                    slider.scrollBy({ left: width, behavior: 'smooth' });
+                    startAutoScroll();
+                };
+            }
+
+            slider.addEventListener('scroll', () => {
+                const width = slider.clientWidth;
+                const scrollLeft = slider.scrollLeft;
+                const activeIndex = Math.round(scrollLeft / width);
+
+                dots.forEach((dot, idx) => {
+                    if (idx === activeIndex) dot.classList.add('active');
+                    else dot.classList.remove('active');
+                });
+            });
+
+            dots.forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    clearInterval(autoScrollInterval);
+                    const idx = parseInt(e.target.getAttribute('data-index'));
+                    const width = slider.clientWidth;
+                    slider.scrollTo({
+                        left: idx * width,
+                        behavior: 'smooth'
+                    });
+                    startAutoScroll();
+                });
+            });
+
+            slider.addEventListener('touchstart', () => clearInterval(autoScrollInterval));
+            slider.addEventListener('touchend', () => startAutoScroll());
+        }
+
+        function renderCategoryBar() {
+            const catBar = document.getElementById('categoryBar');
+            const categories = new Set(["Gadgets", "Fashion", "Watches", "Accessories"]);
+            
+            allProducts.forEach(p => {
+                if (p.category && p.category.trim() !== "" && p.showOnHome !== false) {
+                    categories.add(p.category.trim());
+                }
+            });
+
+            let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All">All</div>`;
+            
+            categories.forEach(cat => {
+                barHtml += `<div class="category-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`;
+            });
+            catBar.innerHTML = barHtml;
+
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    activeCategory = e.target.getAttribute('data-cat');
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    let filtered = allProducts;
+                    if (activeCategory !== "All") {
+                        filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
+                    }
+                    renderProducts(filtered);
+                });
+            });
+        }
+
+        function renderProducts(products) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = "";
+            
+            let animationDelayIndex = 0;
+
+            products.forEach((p) => {
+                if (p.showOnHome === false) return;
+
+                const isOut = p.outOfStock === true;
+                const pr = parseFloat(p.price.toString().replace(/,/g, ''));
+                const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr);
+                
+                let discTag = "";
+                let hasDisc = false;
+                if(mr > pr) {
+                    const disc = Math.round(((mr - pr) / mr) * 100);
+                    hasDisc = true;
+                    discTag = `<div class="discount-badge ${hasDisc ? 'with-wishlist' : ''}">${disc}% OFF</div>`;
+                }
+
+                const isWishlisted = userWishlistIds[p.id] ? true : false;
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.animationDelay = `${animationDelayIndex * 0.08}s`;
+                animationDelayIndex++;
+
+                const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150';
+
+                card.innerHTML = `
+                    ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''}
+                    ${!isOut ? discTag : ''}
+                    <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist" data-id="${p.id}">
+                        <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                    </button>
+                    <div class="image-box">
+                        <img src="${productMainImg}" alt="${p.name || 'Product'}" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}">
+                        <div class="verified-tag"><i class="fa-solid fa-shield-check"></i> Quality Assured</div>
+                    </div>
+                    <div class="card-info">
+                        <h3>${p.name || 'No Title'}</h3>
+                        <div class="price-container">
+                            <span class="price">₹${p.price}</span>
+                            ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''}
+                        </div>
+                        <button class="buy-btn" ${isOut ? 'disabled' : ''}>
+                            ${isOut ? 'Unavailable' : 'View Product'}
+                        </button>
+                    </div>
+                `;
+
+                // Wishlist Button Toggle Handler
+                const wishlistBtn = card.querySelector('.card-wishlist-btn');
+                wishlistBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const prodId = wishlistBtn.getAttribute('data-id');
+
+                    if (currentUser) {
+                        const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`);
+                        if (userWishlistIds[prodId]) {
+                            remove(wishRef).then(() => {
+                                delete userWishlistIds[prodId];
+                                wishlistBtn.classList.remove('active');
+                                wishlistBtn.querySelector('i').className = 'fa-regular fa-heart';
+                                updateWishlistUIAndBadge(document.getElementById('wishlistBadge'));
+                            });
+                        } else {
+                            set(wishRef, true).then(() => {
+                                userWishlistIds[prodId] = true;
+                                wishlistBtn.classList.add('active');
+                                wishlistBtn.querySelector('i').className = 'fa-solid fa-heart';
+                                updateWishlistUIAndBadge(document.getElementById('wishlistBadge'));
+                            });
+                        }
+                    } else {
+                        let guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}");
+                        if (guestWishlist[prodId]) {
+                            delete guestWishlist[prodId];
+                            wishlistBtn.classList.remove('active');
+                            wishlistBtn.querySelector('i').className = 'fa-regular fa-heart';
+                        } else {
+                            guestWishlist[prodId] = true;
+                            wishlistBtn.classList.add('active');
+                            wishlistBtn.querySelector('i').className = 'fa-solid fa-heart';
+                        }
+                        localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist));
+                        userWishlistIds = guestWishlist;
+                        updateWishlistUIAndBadge(document.getElementById('wishlistBadge'));
+                    }
+                });
+
+                card.addEventListener('click', () => {
+                    if(isOut) return;
+                    trackProductClickAndRedirect(p.id);
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsBox = document.getElementById('searchSuggestions');
+
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase().trim();
+            suggestionsBox.innerHTML = "";
+
+            if (val.length < 1) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            const searchWords = val.split(/\s+/).filter(word => word);
+            
+            let matchedProducts = allProducts.filter(p => {
+                const productName = (p.name || "").toLowerCase();
+                const productCat = (p.category || "").toLowerCase();
+                const productDesc = (p.description || "").toLowerCase();
+                
+                return searchWords.some(word => 
+                    productName.includes(word) || 
+                    productCat.includes(word) || 
+                    productDesc.includes(word)
+                );
+            });
+
+            if (matchedProducts.length > 0) {
+                suggestionsBox.style.display = 'block';
+                
+                matchedProducts.slice(0, 10).forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    
+                    const productImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/50';
+                    
+                    div.innerHTML = `
+                        <img src="${productImg}" alt="${p.name || 'Product'}">
+                        <div class="suggestion-info">
+                            <h4>${p.name || 'No Name'}</h4>
+                            <p>₹${p.price || '0'}</p>
+                        </div>
+                    `;
+                    div.addEventListener('click', () => {
+                        trackProductClickAndRedirect(p.id);
+                    });
+                    suggestionsBox.appendChild(div);
+                });
+            } else {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const searchVal = searchInput.value.trim();
+
+                if (searchVal.toLowerCase() === "cartecom@com") {
+                    window.location.href = "/ecom";
+                    return;
+                }
+
+                if (searchVal.length >= 1) {
+                    window.location.href = `/search?q=${encodeURIComponent(searchVal)}`;
+                }
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) suggestionsBox.style.display = 'none';
         });
     </script>
 </body>
