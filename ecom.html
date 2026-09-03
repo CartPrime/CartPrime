@@ -523,6 +523,9 @@ window.logoutAdmin = () => {
 
 window.addEventListener('load', () => {
     checkAdminPasscode();
+    setTimeout(() => {
+        if(window.checkAndCreditCommissions) window.checkAndCreditCommissions();
+    }, 3000);
 });
 
 const firebaseConfig = {
@@ -1282,11 +1285,80 @@ window.verifyPayment = (path, status) => {
 };
 
 window.updateStatus = (path, s) => {
-    update(ref(db, 'orders/' + path), { status: s }).then(() => {
+    let updateData = { status: s };
+    
+    if (s === "Delivered") {
+        updateData.deliveryDate = new Date().toISOString().split('T')[0];
+        updateData.commissionPaid = false; 
+    }
+
+    update(ref(db, 'orders/' + path), updateData).then(() => {
         Swal.close();
         Swal.fire('Updated', `Order status marked as ${s}`, 'success');
+        
+        if (window.checkAndCreditCommissions) {
+            window.checkAndCreditCommissions();
+        }
     });
 };
+
+/* 7 DAYS REFERRAL COMMISSION AUTOMATION */
+window.checkAndCreditCommissions = async () => {
+    try {
+        const ordersSnap = await get(ref(db, 'orders'));
+        if (!ordersSnap.exists()) return;
+
+        const allOrdersGroup = ordersSnap.val();
+        const today = new Date();
+
+        for (let phone in allOrdersGroup) {
+            let userOrders = allOrdersGroup[phone];
+
+            if (userOrders.productName || userOrders.customerName) {
+                await processSingleOrderCommission(userOrders, phone, today);
+            } else {
+                for (let orderId in userOrders) {
+                    await processSingleOrderCommission(userOrders[orderId], `${phone}/${orderId}`, today);
+                }
+            }
+        }
+    } catch (err) {
+        console.error("Error processing commissions:", err);
+    }
+};
+
+async function processSingleOrderCommission(order, orderPath, today) {
+    if (order.status === "Delivered" && order.referredBy && order.commissionAmount > 0 && !order.commissionPaid && order.deliveryDate) {
+        
+        let deliveryDate = new Date(order.deliveryDate);
+        let diffTime = Math.abs(today - deliveryDate);
+        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+
+        if (diffDays >= 7) {
+            let referrerUid = order.referredBy;
+            let commAmount = parseFloat(order.commissionAmount);
+
+            const walletRef = ref(db, `wallets/${referrerUid}`);
+            const walletSnap = await get(walletRef);
+            let currentBalance = walletSnap.exists() ? (parseFloat(walletSnap.val().balance) || 0) : 0;
+            let newBalance = currentBalance + commAmount;
+
+            await update(walletRef, { balance: newBalance });
+
+            const txRef = push(ref(db, `wallet_transactions/${referrerUid}`));
+            await set(txRef, {
+                amount: commAmount,
+                type: "CREDIT",
+                title: `Referral Bonus (Order #${order.orderId || orderPath.split('/').pop()})`,
+                date: new Date().toISOString()
+            });
+
+            await update(ref(db, `orders/${orderPath}`), {
+                commissionPaid: true
+            });
+        }
+    }
+}
 
 window.shipOrderWithDate = async (path) => {
     const { value: date } = await Swal.fire({ 
@@ -1581,12 +1653,10 @@ onValue(ref(db, 'userComplaints'), snap => {
     snap.forEach(child => {
         const val = child.val();
         
-        // Root Level Item under userComplaints (e.g., userComplaints/{pushId})
         if (val && (val.message || val.complaint || val.category || val.subject)) {
             hasComplaints = true;
             renderComplaintCard(container, val, child.key);
         } else {
-            // Nested User Sub-Node Level (e.g., userComplaints/{userPhone}/{pushId})
             child.forEach(subChild => {
                 const subVal = subChild.val();
                 if (subVal && (subVal.message || subVal.complaint || subVal.category || subVal.subject)) {
