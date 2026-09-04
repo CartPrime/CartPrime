@@ -59,12 +59,12 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease; 
 } 
 /* --- Global Button Touch & Interactive Reset --- */ 
-button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item { 
+button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip { 
   touch-action: manipulation; 
   user-select: none; 
   -webkit-tap-highlight-color: transparent; 
 } 
-button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active { 
+button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active { 
   transform: scale(0.96) !important; 
 } 
 /* --- Navigation --- */ 
@@ -125,6 +125,63 @@ nav {
   color: var(--text-muted); 
   font-size: 0.85rem; 
 } 
+
+/* --- Top Profile Section Badge --- */
+.nav-right { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+  position: relative; 
+  flex-shrink: 0; 
+} 
+.profile-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 5px 12px 5px 6px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.profile-chip:hover {
+  border-color: var(--accent);
+}
+.profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+.profile-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+.profile-phone {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.edit-profile-btn {
+  color: var(--accent);
+  font-size: 0.78rem;
+  margin-left: 4px;
+}
+
 /* --- Bottom Navigation Bar --- */
 .bottom-nav {
   position: fixed;
@@ -154,6 +211,7 @@ nav {
   position: relative;
   width: 20%;
   transition: color 0.2s ease;
+  cursor: pointer;
 }
 .bottom-nav-item i {
   font-size: 1.25rem;
@@ -489,47 +547,6 @@ nav {
   grid-template-columns: repeat(2, 1fr); 
   gap: 15px; 
 } 
-/* --- Dynamic Theme Toggle Button --- */ 
-.theme-toggle-btn { 
-  background: var(--surface); 
-  border: 1px solid var(--border); 
-  color: var(--text-main); 
-  width: 40px; 
-  height: 40px; 
-  border-radius: 50%; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  cursor: pointer; 
-  font-size: 1.1rem; 
-  transition: all 0.25s ease; 
-  flex-shrink: 0; 
-} 
-.theme-toggle-btn:hover { 
-  background: var(--border); 
-  transform: rotate(15deg); 
-} 
-/* --- Earn Money Navigation Button --- */ 
-.earn-btn { 
-  background: #2563eb; 
-  color: #ffffff; 
-  border: none; 
-  padding: 8px 16px; 
-  border-radius: 12px; 
-  font-weight: 700; 
-  font-size: 0.85rem; 
-  cursor: pointer; 
-  display: inline-flex; 
-  align-items: center; 
-  justify-content: center; 
-  gap: 6px; 
-  transition: background 0.2s ease, transform 0.2s ease; 
-  min-height: 40px; 
-  white-space: nowrap; 
-} 
-.earn-btn:hover { 
-  background: #1d4ed8; 
-} 
 /* --- Modal Universal Styles --- */ 
 .modal-overlay { 
   display: none; 
@@ -854,32 +871,6 @@ nav {
   color: var(--text-muted); 
   cursor: not-allowed; 
 } 
-.nav-right { 
-  display: flex; 
-  align-items: center; 
-  gap: 12px; 
-  position: relative; 
-  flex-shrink: 0; 
-} 
-.icon-btn { 
-  position: relative; 
-  font-size: 1.25rem; 
-  color: var(--text-main); 
-  cursor: pointer; 
-  text-decoration: none; 
-  transition: 0.2s; 
-  width: 40px; 
-  height: 40px; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  border-radius: 50%; 
-  background: var(--surface); 
-  border: 1px solid var(--border); 
-} 
-.icon-btn:hover { 
-  color: var(--accent); 
-} 
 .badge { 
   position: absolute; 
   top: -4px; 
@@ -1084,17 +1075,6 @@ footer {
     gap: 8px; 
     flex-shrink: 0; 
   } 
-  .icon-btn, .theme-toggle-btn { 
-    width: 36px; 
-    height: 36px; 
-    font-size: 1rem; 
-  } 
-  .earn-btn { 
-    padding: 6px 12px; 
-    font-size: 0.78rem; 
-    min-height: 36px; 
-    border-radius: 10px; 
-  } 
   .search-container { 
     order: 3; 
     flex-basis: 100%; 
@@ -1230,17 +1210,6 @@ footer {
     align-items: center; 
   } 
 } 
-@media (max-width: 380px) { 
-  .earn-btn span { 
-    display: none; 
-  } 
-  .earn-btn { 
-    padding: 6px 10px; 
-  } 
-  .earn-btn i { 
-    margin: 0; 
-  } 
-} 
 </style> 
 </head> 
 <body> 
@@ -1252,35 +1221,29 @@ footer {
     <div id="searchSuggestions" class="search-suggestions-box"></div> 
   </div> 
   <div class="nav-right"> 
-    <button id="earnMoneyBtn" class="earn-btn"> 
-      <i class="fa-solid fa-wallet"></i> 
-      <span>Earn Money</span> 
-    </button> 
-    <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Theme"> 
-      <i class="fa-regular fa-moon"></i> 
-    </button> 
-    <a href="/wishlist" class="icon-btn" title="My Wishlist"> 
-      <i class="fa-regular fa-heart"></i> 
-      <span id="wishlistBadge" class="badge" style="display:none;">0</span> 
-    </a> 
-    <a href="/orders" class="icon-btn" title="My Orders"> 
-      <i class="fa-solid fa-bag-shopping"></i> 
-      <span id="ordersBadge" class="badge" style="display:none;">0</span> 
-    </a> 
+    <!-- Dynamic Profile Badge Header Replacing Previous Icons -->
+    <div class="profile-chip" id="profileChip" title="Click to edit profile">
+      <div class="profile-avatar" id="navProfileAvatar">U</div>
+      <div class="profile-info">
+        <span class="profile-name" id="navProfileName">User <i class="fa-solid fa-pen edit-profile-btn"></i></span>
+        <span class="profile-phone" id="navProfilePhone">Not set</span>
+      </div>
+    </div>
   </div> 
 </nav> 
 
-<!-- User Registration/Welcome Modal on First Visit -->
+<!-- User Registration/Welcome/Edit Modal -->
 <div id="userWelcomeModal" class="modal-overlay"> 
   <div class="modal-card"> 
-    <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Welcome to CartPrime</h3> 
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Please enter your details to get started.</p> 
+    <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;" id="welcomeModalTitle">Welcome to CartPrime</h3> 
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">Please enter your details to get started.</p> 
     
     <form id="userWelcomeForm" class="modal-form"> 
       <input type="text" id="userWelcomeName" class="modal-input" placeholder="Full Name" required> 
       <input type="tel" id="userWelcomePhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
       <div class="modal-btn-group"> 
-        <button type="submit" class="modal-btn-submit" id="welcomeSubmitBtn">Continue Shopping</button> 
+        <button type="button" id="closeWelcomeModal" style="display:none; flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button>
+        <button type="submit" class="modal-btn-submit" id="welcomeSubmitBtn">Save & Continue</button> 
       </div> 
     </form> 
 
@@ -1411,10 +1374,10 @@ footer {
     <span>Orders</span>
     <span id="bottomOrdersBadge" class="badge" style="display:none;">0</span>
   </a>
-  <a href="/wallet" class="bottom-nav-item">
+  <div id="bottomEarnBtn" class="bottom-nav-item">
     <i class="fa-solid fa-wallet"></i>
     <span>Earn</span>
-  </a>
+  </div>
 </div>
 
 <!-- Premium Custom Toast Notification Modal -->
@@ -1470,13 +1433,51 @@ footer {
     return `CP-REF-${randomDigits}`;
   }
 
-  // --- FIRST VISIT USER DETAILS CHECK & LOADING ANIMATION ---
+  // --- TOP PROFILE HEADER & USER DETAILS UPDATE LOGIC ---
+  const profileChip = document.getElementById('profileChip');
+  const navProfileAvatar = document.getElementById('navProfileAvatar');
+  const navProfileName = document.getElementById('navProfileName');
+  const navProfilePhone = document.getElementById('navProfilePhone');
+
   const welcomeModal = document.getElementById('userWelcomeModal');
   const welcomeForm = document.getElementById('userWelcomeForm');
   const verifyLoadingBox = document.getElementById('verifyLoadingBox');
-  const storedUserPhone = localStorage.getItem('userPhone');
+  const closeWelcomeModal = document.getElementById('closeWelcomeModal');
+  const welcomeModalTitle = document.getElementById('welcomeModalTitle');
+  const welcomeModalSub = document.getElementById('welcomeModalSub');
 
+  function updateHeaderProfileUI() {
+    const name = localStorage.getItem('userName') || "User";
+    const phone = localStorage.getItem('userPhone') || "";
+    
+    if (navProfileAvatar) navProfileAvatar.textContent = name.charAt(0).toUpperCase();
+    if (navProfileName) navProfileName.innerHTML = `${name} <i class="fa-solid fa-pen edit-profile-btn"></i>`;
+    if (navProfilePhone) navProfilePhone.textContent = phone ? phone : "Tap to set";
+  }
+
+  updateHeaderProfileUI();
+
+  // Handle Edit Profile Click
+  if (profileChip) {
+    profileChip.addEventListener('click', () => {
+      document.getElementById('userWelcomeName').value = localStorage.getItem('userName') || "";
+      document.getElementById('userWelcomePhone').value = localStorage.getItem('userPhone') || "";
+      welcomeModalTitle.textContent = "Edit Your Profile";
+      welcomeModalSub.textContent = "Update your name or phone number below.";
+      if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
+      welcomeModal.style.display = 'flex';
+    });
+  }
+
+  if (closeWelcomeModal) {
+    closeWelcomeModal.addEventListener('click', () => {
+      welcomeModal.style.display = 'none';
+    });
+  }
+
+  const storedUserPhone = localStorage.getItem('userPhone');
   if (!storedUserPhone) {
+    if (closeWelcomeModal) closeWelcomeModal.style.display = "none";
     welcomeModal.style.display = 'flex';
   }
 
@@ -1503,16 +1504,18 @@ footer {
             welcomeModal.style.display = 'none';
             verifyLoadingBox.style.display = 'none';
             welcomeForm.style.display = 'flex';
-            showCustomAlert("Verification Completed!", "Your mobile number has been verified successfully. Happy Shopping!", true);
+            updateHeaderProfileUI();
+            showCustomAlert("Profile Saved!", "Your details have been saved successfully.", true);
             updateBadges(currentUser);
           }).catch(() => {
             welcomeModal.style.display = 'none';
             verifyLoadingBox.style.display = 'none';
             welcomeForm.style.display = 'flex';
-            showCustomAlert("Verification Completed!", "Welcome to CartPrime!", true);
+            updateHeaderProfileUI();
+            showCustomAlert("Profile Saved!", "Welcome to CartPrime!", true);
             updateBadges(currentUser);
           });
-        }, 1500);
+        }, 1200);
       }
     });
   }
@@ -1563,59 +1566,45 @@ footer {
     cookieBanner.style.display = 'none'; 
   }); 
 
-  // --- GLOBAL THEME LOGIC --- 
-  const themeToggleBtn = document.getElementById('themeToggleBtn'); 
-  const themeIcon = themeToggleBtn.querySelector('i'); 
-  const savedTheme = localStorage.getItem('theme') || 'light'; 
-  if (savedTheme === 'dark') { 
-    document.documentElement.setAttribute('data-theme', 'dark'); 
-    themeIcon.className = 'fa-regular fa-sun'; 
-  } else { 
-    document.documentElement.setAttribute('data-theme', 'light'); 
-    themeIcon.className = 'fa-regular fa-moon'; 
-  } 
-  themeToggleBtn.addEventListener('click', () => { 
-    const currentTheme = document.documentElement.getAttribute('data-theme'); 
-    let targetTheme = currentTheme === 'light' ? 'dark' : 'light'; 
-    document.documentElement.setAttribute('data-theme', targetTheme); 
-    localStorage.setItem('theme', targetTheme); 
-    themeIcon.className = targetTheme === 'dark' ? 'fa-regular fa-sun' : 'fa-regular fa-moon'; 
-  }); 
-
-  // --- EARN MONEY MODAL LOGIC (UPDATED WITH UNIQUE PARTNER ID) --- 
+  // --- EARN VERIFICATION LOGIC (BOTTOM NAV EARN BUTTON) --- 
   const earnModal = document.getElementById('earnModal'); 
-  const earnMoneyBtn = document.getElementById('earnMoneyBtn'); 
+  const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
   const earnForm = document.getElementById('earnForm'); 
-  
-  if (earnMoneyBtn) { 
-    earnMoneyBtn.addEventListener('click', () => { 
-      const registeredPhone = localStorage.getItem('partnerPhone');
-      if (registeredPhone) {
-        const partnerRef = ref(db, `earn_partners/${registeredPhone}`);
-        get(partnerRef).then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            const status = (data.status || "").toLowerCase();
-            if (status === 'approved') {
-              window.location.href = "/wallet";
-            } else {
-              showCustomAlert(
-                "Request Pending", 
-                `Your partner verification is pending approval. Your Partner ID: ${data.partnerId || 'N/A'}. Please wait for admin verification.`, 
-                false
-              );
-            }
+
+  function handleEarnVerification() {
+    const registeredPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    if (registeredPhone) {
+      const partnerRef = ref(db, `earn_partners/${registeredPhone}`);
+      get(partnerRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const status = (data.status || "").toLowerCase();
+          if (status === 'approved') {
+            window.location.href = "/wallet";
           } else {
-            earnModal.style.display = 'flex';
+            showCustomAlert(
+              "Verification Pending", 
+              `Your partner registration is pending approval. Partner ID: ${data.partnerId || 'N/A'}. Please wait for admin activation before accessing Wallet.`, 
+              false
+            );
           }
-        }).catch(() => {
+        } else {
+          // Fill defaults if available
+          document.getElementById('partnerName').value = localStorage.getItem('userName') || "";
+          document.getElementById('partnerPhone').value = registeredPhone;
           earnModal.style.display = 'flex';
-        });
-      } else {
-        earnModal.style.display = 'flex'; 
-      }
-    }); 
+        }
+      }).catch(() => {
+        earnModal.style.display = 'flex';
+      });
+    } else {
+      earnModal.style.display = 'flex'; 
+    }
+  }
+  
+  if (bottomEarnBtn) { 
+    bottomEarnBtn.addEventListener('click', handleEarnVerification); 
   } 
 
   if (closeEarnModal) { 
@@ -1644,12 +1633,11 @@ footer {
             } else {
               showCustomAlert(
                 "Already Registered", 
-                `This number is already registered (Partner ID: ${data.partnerId || 'N/A'}) and is currently pending approval.`, 
+                `This number is already registered (Partner ID: ${data.partnerId || 'N/A'}) and is pending approval.`, 
                 false
               );
             }
           } else {
-            // UNIQUE PARTNER ID GENERATION
             const uniquePartnerId = generateUniquePartnerId();
 
             set(partnerRef, { 
@@ -1665,8 +1653,8 @@ footer {
               earnForm.reset(); 
               earnModal.style.display = 'none'; 
               showCustomAlert(
-                "Request Submitted!", 
-                `Your registration request was successful! Your Unique Partner ID is: ${uniquePartnerId}. Admin will review and activate your account.`, 
+                "Verification Submitted!", 
+                `Your registration request was successful! Partner ID: ${uniquePartnerId}. Access to wallet will be enabled once approved.`, 
                 true
               ); 
             }).catch((err) => { 
@@ -1747,9 +1735,7 @@ footer {
 
   // --- UPDATED BADGES & WISHLIST LOGIC --- 
   function updateBadges(user) { 
-    const wishlistBadge = document.getElementById('wishlistBadge'); 
     const bottomWishlistBadge = document.getElementById('bottomWishlistBadge'); 
-    const ordersBadge = document.getElementById('ordersBadge'); 
     const bottomOrdersBadge = document.getElementById('bottomOrdersBadge'); 
 
     if (user) { 
@@ -1759,12 +1745,12 @@ footer {
         } else { 
           userWishlistIds = {}; 
         } 
-        updateWishlistUIAndBadge(wishlistBadge, bottomWishlistBadge); 
+        updateWishlistUIAndBadge(bottomWishlistBadge); 
       }); 
     } else { 
       let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
       userWishlistIds = localWishlist; 
-      updateWishlistUIAndBadge(wishlistBadge, bottomWishlistBadge); 
+      updateWishlistUIAndBadge(bottomWishlistBadge); 
     } 
 
     const phoneSources = [ 
@@ -1778,34 +1764,27 @@ footer {
       onValue(ref(db, `orders/${targetPhone}`), (snapshot) => { 
         const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0; 
         if (count > 0) { 
-          ordersBadge.textContent = count; 
-          ordersBadge.style.display = 'flex'; 
           if(bottomOrdersBadge) {
             bottomOrdersBadge.textContent = count;
             bottomOrdersBadge.style.display = 'flex';
           }
         } else { 
-          ordersBadge.style.display = 'none'; 
           if(bottomOrdersBadge) bottomOrdersBadge.style.display = 'none';
         } 
       }); 
     } else { 
-      ordersBadge.style.display = 'none'; 
       if(bottomOrdersBadge) bottomOrdersBadge.style.display = 'none';
     } 
   } 
 
-  function updateWishlistUIAndBadge(wishlistBadge, bottomWishlistBadge) { 
+  function updateWishlistUIAndBadge(bottomWishlistBadge) { 
     const count = Object.keys(userWishlistIds).length; 
     if (count > 0) { 
-      wishlistBadge.textContent = count; 
-      wishlistBadge.style.display = 'flex'; 
       if(bottomWishlistBadge) {
         bottomWishlistBadge.textContent = count;
         bottomWishlistBadge.style.display = 'flex';
       }
     } else { 
-      wishlistBadge.style.display = 'none'; 
       if(bottomWishlistBadge) bottomWishlistBadge.style.display = 'none';
     } 
     if (allProducts.length > 0) { 
@@ -2034,14 +2013,14 @@ footer {
               delete userWishlistIds[prodId]; 
               wishlistBtn.classList.remove('active'); 
               wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
-              updateWishlistUIAndBadge(document.getElementById('wishlistBadge'), document.getElementById('bottomWishlistBadge')); 
+              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
             }); 
           } else { 
             set(wishRef, true).then(() => { 
               userWishlistIds[prodId] = true; 
               wishlistBtn.classList.add('active'); 
               wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
-              updateWishlistUIAndBadge(document.getElementById('wishlistBadge'), document.getElementById('bottomWishlistBadge')); 
+              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
             }); 
           } 
         } else { 
@@ -2057,7 +2036,7 @@ footer {
           } 
           localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist)); 
           userWishlistIds = guestWishlist; 
-          updateWishlistUIAndBadge(document.getElementById('wishlistBadge'), document.getElementById('bottomWishlistBadge')); 
+          updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
         } 
       }); 
 
