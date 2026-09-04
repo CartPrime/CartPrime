@@ -20,7 +20,6 @@
             --text-secondary: #a3aed0;
             --brand-purple: #5936f5;
             --card-gradient: linear-gradient(135deg, #6c47ff 0%, #4318ff 100%);
-            --card-sub-gradient: linear-gradient(135deg, #7551ff 0%, #3311cc 100%);
             --success-green: #05cd99;
             --border-color: #f0f3fa;
         }
@@ -105,7 +104,7 @@
             font-weight: 600;
             gap: 4px;
             cursor: pointer;
-            width: 25%;
+            width: 20%;
             transition: all 0.2s ease;
         }
 
@@ -460,40 +459,6 @@
             font-size: 13px;
         }
 
-        /* Promo Card Inline */
-        .promo-card {
-            background: var(--card-sub-gradient);
-            border-radius: 20px;
-            padding: 18px;
-            color: white;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 20px rgba(67, 24, 255, 0.2);
-        }
-
-        .promo-card h4 {
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        .promo-card p {
-            font-size: 12px;
-            opacity: 0.85;
-            margin-bottom: 14px;
-        }
-
-        .promo-btn {
-            background-color: white;
-            color: var(--brand-purple);
-            border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            width: 100%;
-        }
-
         @media (max-width: 576px) {
             .top-header {
                 flex-direction: column;
@@ -528,13 +493,6 @@
             </div>
         </div>
 
-        <!-- Promo Banner -->
-        <div class="promo-card">
-            <h4><i class="fa-solid fa-rocket"></i> Boost Your Earnings</h4>
-            <p>Share your exclusive tracking link and earn flat rates on every sale</p>
-            <button class="promo-btn" onclick="copyReferralLink()">Copy Referral Link</button>
-        </div>
-
         <!-- 1. DASHBOARD VIEW -->
         <section id="dashboard" class="page-view active-view">
             <div class="stats-vertical">
@@ -553,39 +511,6 @@
                     <div class="stat-value">₹ <span class="val-pending">2,340.25</span></div>
                     <div class="stat-sub">Awaiting order completion</div>
                 </div>
-            </div>
-
-            <!-- Referral Link Share Card -->
-            <div class="card-box">
-                <div class="box-header">
-                    <h3>Your Unique Referral Link</h3>
-                </div>
-                <p style="font-size: 12px; color: var(--text-secondary);">Share this link with your audience to earn rewards on every order.</p>
-                <div class="link-copy-box">
-                    <input type="text" id="referral-url" class="link-input" value="https://cartprime.com/ref/farhanul" readonly>
-                    <button class="btn-copy" onclick="copyReferralLink()"><i class="fa-regular fa-copy"></i> Copy</button>
-                </div>
-            </div>
-
-            <!-- Rules Card -->
-            <div class="card-box">
-                <div class="box-header">
-                    <h3>Payout Rules</h3>
-                </div>
-                <ul class="rules-list">
-                    <li>
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span><strong>Successful Delivery Required:</strong> The referred user must successfully place and receive at least 1 order.</span>
-                    </li>
-                    <li>
-                        <i class="fa-solid fa-circle-xmark"></i>
-                        <span><strong>No Return Policy:</strong> Amount will NOT be credited if the customer returns or cancels the product.</span>
-                    </li>
-                    <li>
-                        <i class="fa-solid fa-clock"></i>
-                        <span><strong>Verification Period:</strong> Earnings status updates to 'Available' once the product return window closes.</span>
-                    </li>
-                </ul>
             </div>
 
             <!-- Recent Transactions -->
@@ -622,6 +547,42 @@
                     </li>
                 </ul>
             </div>
+        </section>
+
+        <!-- 2. REFERRAL VIEW -->
+        <section id="referral" class="page-view">
+            <!-- Referral Link Share Card -->
+            <div class="card-box">
+                <div class="box-header">
+                    <h3>Your Unique Referral Link</h3>
+                </div>
+                <p style="font-size: 12px; color: var(--text-secondary);">Share this link with your audience to earn rewards on every order.</p>
+                <div class="link-copy-box">
+                    <input type="text" id="referral-url" class="link-input" value="https://cartprime.com/ref/farhanul" readonly>
+                    <button class="btn-copy" onclick="copyReferralLink()"><i class="fa-regular fa-copy"></i> Copy</button>
+                </div>
+            </div>
+
+            <!-- Rules Card -->
+            <div class="card-box">
+                <div class="box-header">
+                    <h3>Payout Rules</h3>
+                </div>
+                <ul class="rules-list">
+                    <li>
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span><strong>Successful Delivery Required:</strong> The referred user must successfully place and receive at least 1 order.</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-circle-xmark"></i>
+                        <span><strong>No Return Policy:</strong> Amount will NOT be credited if the customer returns or cancels the product.</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-clock"></i>
+                        <span><strong>Verification Period:</strong> Earnings status updates to 'Available' once the product return window closes.</span>
+                    </li>
+                </ul>
+            </div>
 
             <!-- Top Referrals -->
             <div class="card-box">
@@ -645,7 +606,7 @@
             </div>
         </section>
 
-        <!-- 2. EARNINGS VIEW -->
+        <!-- 3. EARNINGS VIEW -->
         <section id="earnings" class="page-view">
             <div class="card-box">
                 <div class="box-header">
@@ -666,7 +627,7 @@
             </div>
         </section>
 
-        <!-- 3. WITHDRAW VIEW -->
+        <!-- 4. WITHDRAW VIEW -->
         <section id="withdraw" class="page-view">
             <div class="card-box">
                 <div class="box-header">
@@ -690,7 +651,7 @@
             </div>
         </section>
 
-        <!-- 4. TRANSACTIONS VIEW -->
+        <!-- 5. TRANSACTIONS VIEW -->
         <section id="transactions" class="page-view">
             <div class="card-box">
                 <div class="box-header">
@@ -733,6 +694,10 @@
         <a class="nav-item-bottom active" onclick="switchTab('dashboard', this)">
             <i class="fa-solid fa-house"></i>
             <span>Home</span>
+        </a>
+        <a class="nav-item-bottom" onclick="switchTab('referral', this)">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Referral</span>
         </a>
         <a class="nav-item-bottom" onclick="switchTab('earnings', this)">
             <i class="fa-solid fa-chart-line"></i>
@@ -830,7 +795,7 @@
                 alert("Withdrawal Request Submitted Successfully!");
                 amountInput.value = '';
                 
-                const historyBtn = document.querySelectorAll('.nav-item-bottom')[3];
+                const historyBtn = document.querySelectorAll('.nav-item-bottom')[4];
                 switchTab('transactions', historyBtn);
             } else {
                 alert("Invalid amount or insufficient balance!");
