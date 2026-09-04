@@ -824,7 +824,9 @@
                 
                 orderKeys.forEach(key => {
                     const order = orders[key];
-                    const referrer = order.referredBy || order.referencedBy;
+                    
+                    // referralCode, refCode, promoCode തുടങ്ങിയ വിവിധിയിനം ഫീൽഡുകൾ ഇവിടെ പരിശോധിക്കുന്നു
+                    const referrer = order.referralCode || order.refCode || order.promoCode || order.referredBy || order.referencedBy;
                     
                     if (referrer && (
                         referrer.toLowerCase() === activeUserId.toLowerCase() || 
