@@ -587,21 +587,41 @@
         let isApprovedEarner = false;
 
         const userId = localStorage.getItem('userId');
+        const userPhone = localStorage.getItem('userPhone') || localStorage.getItem('earnNumber'); 
         const guestKey = localStorage.getItem('guestUserId') || 'guest_' + Math.random().toString(36).substring(2, 9);
         localStorage.setItem('guestUserId', guestKey);
 
         const currentActiveUserId = userId || guestKey;
 
-        // Verify if the active user is an approved earner/partner
+        // Check earn_partners node in Firebase Database using phone number or userId
         async function checkEarnerStatus() {
-            if (!userId) return false;
+            const partnerKey = userPhone || userId;
+            if (!partnerKey) return false;
+
             try {
-                const earnerSnap = await get(ref(db, `earners/${userId}`));
-                if (earnerSnap.exists() && earnerSnap.val().status === 'approved') {
-                    return true;
+                // Check direct key path under earn_partners
+                const partnerSnap = await get(ref(db, `earn_partners/${partnerKey}`));
+                if (partnerSnap.exists()) {
+                    const data = partnerSnap.val();
+                    if (data.status === 'approved' || data.approved === true) {
+                        return true;
+                    }
+                }
+
+                // Search inside earn_partners node for matching phone number
+                const allPartnersSnap = await get(ref(db, `earn_partners`));
+                if (allPartnersSnap.exists()) {
+                    const partners = allPartnersSnap.val();
+                    for (let key in partners) {
+                        const p = partners[key];
+                        if ((p.phone === partnerKey || p.mobile === partnerKey || key === partnerKey) && 
+                            (p.status === 'approved' || p.approved === true)) {
+                            return true;
+                        }
+                    }
                 }
             } catch (err) {
-                console.error("Error checking earner status:", err);
+                console.error("Error checking earn_partners status:", err);
             }
             return false;
         }
@@ -829,7 +849,7 @@
 
             const estimatedDeliveryText = getEstimatedDeliveryDate();
 
-            // Earn Commission Banner - Only visible for approved partners
+            // Earn Commission Banner - Checked from earn_partners node
             const earnBannerHTML = isApprovedEarner ? `
                 <div class="earn-banner">
                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -962,7 +982,7 @@
         };
 
         window.shareProduct = (title, isAffiliateShare = false) => {
-            const activeRefUser = userId || guestKey;
+            const activeRefUser = userPhone || userId || guestKey;
             const baseUrl = window.location.origin + window.location.pathname;
             const affiliateUrl = `${baseUrl}?id=${productId}&ref=${activeRefUser}`;
             
