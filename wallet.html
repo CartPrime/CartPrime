@@ -636,10 +636,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Dynamic User ID Logic (Gets ID from URL, Local Storage, or Session)
+        // Active User ID / Phone Number dynamic retrieval
         function getActiveUserId() {
             const urlParams = new URLSearchParams(window.location.search);
-            const idFromUrl = urlParams.get('id') || urlParams.get('partnerId') || urlParams.get('userId');
+            const idFromUrl = urlParams.get('id') || urlParams.get('partnerId') || urlParams.get('userId') || urlParams.get('phone') || urlParams.get('mobile');
             
             if (idFromUrl) {
                 localStorage.setItem('partnerId', idFromUrl);
@@ -648,6 +648,7 @@
 
             return localStorage.getItem('partnerId') || 
                    localStorage.getItem('userId') || 
+                   localStorage.getItem('userPhone') ||
                    sessionStorage.getItem('partnerId') || 
                    'guest_user';
         }
@@ -660,25 +661,73 @@
             listenToWalletData();
         };
 
-        // Home page-ൽ നിന്നുള്ള യൂസറുടെ പേര് ആദ്യം എടുക്കുന്നു (users path), ഇല്ലെങ്കിൽ earn_partners നോക്കുന്നു
+        // നമ്പർ അല്ലെങ്കിൽ ID വെച്ച് പേര് കണ്ടെത്തുന്നു (Direct Key Fetch, Phone Queries, Fallback Search)
         function fetchPartnerDetails() {
-            db.ref(`users/${activeUserId}`).once('value', (userSnapshot) => {
-                const userData = userSnapshot.val();
-                
-                if (userData && (userData.name || userData.fullName || userData.displayName || userData.username)) {
-                    partnerName = userData.name || userData.fullName || userData.displayName || userData.username;
+            const cleanId = activeUserId.trim();
+
+            // 1. Direct fetch using Key (e.g., users/+919876543210 or users/9876543210)
+            db.ref(`users/${cleanId}`).once('value', (snapshot) => {
+                const userData = snapshot.val();
+                let foundName = extractNameFromData(userData);
+
+                if (foundName) {
+                    partnerName = foundName;
                     updateUIWithPartnerName(partnerName);
                 } else {
-                    db.ref(`earn_partners/${activeUserId}`).on('value', (partnerSnapshot) => {
-                        const partnerData = partnerSnapshot.val();
-                        if (partnerData && (partnerData.name || partnerData.fullName || partnerData.username)) {
-                            partnerName = partnerData.name || partnerData.fullName || partnerData.username;
+                    // 2. Query 'users' node by mobile/phone number fields
+                    searchUserByPhone('users', cleanId, (nameFromUsers) => {
+                        if (nameFromUsers) {
+                            partnerName = nameFromUsers;
+                            updateUIWithPartnerName(partnerName);
                         } else {
-                            partnerName = activeUserId !== 'guest_user' ? activeUserId : 'User';
+                            // 3. Fallback to 'earn_partners' path (Direct Key)
+                            db.ref(`earn_partners/${cleanId}`).once('value', (partnerSnapshot) => {
+                                const partnerData = partnerSnapshot.val();
+                                let partnerFoundName = extractNameFromData(partnerData);
+
+                                if (partnerFoundName) {
+                                    partnerName = partnerFoundName;
+                                    updateUIWithPartnerName(partnerName);
+                                } else {
+                                    // 4. Query 'earn_partners' by phone field
+                                    searchUserByPhone('earn_partners', cleanId, (nameFromPartners) => {
+                                        partnerName = nameFromPartners || (cleanId !== 'guest_user' ? cleanId : 'User');
+                                        updateUIWithPartnerName(partnerName);
+                                    });
+                                }
+                            });
                         }
-                        updateUIWithPartnerName(partnerName);
                     });
                 }
+            });
+        }
+
+        // Object-ൽ നിന്നുമുള്ള പേര് Extract ചെയ്യാനുള്ള Helper Function
+        function extractNameFromData(data) {
+            if (!data) return null;
+            return data.name || data.fullName || data.displayName || data.username || data.userName || null;
+        }
+
+        // Phone number matching query helper
+        function searchUserByPhone(nodePath, phoneNumber, callback) {
+            db.ref(nodePath).once('value', (snapshot) => {
+                const allData = snapshot.val();
+                let matchedName = null;
+
+                if (allData) {
+                    const cleanSearchPhone = phoneNumber.replace(/\D/g, ''); // Numbers only
+
+                    Object.keys(allData).forEach(key => {
+                        const item = allData[key];
+                        if (item) {
+                            const userPhone = String(item.phone || item.mobile || item.phoneNumber || key).replace(/\D/g, '');
+                            if (userPhone && cleanSearchPhone && (userPhone.includes(cleanSearchPhone) || cleanSearchPhone.includes(userPhone))) {
+                                matchedName = extractNameFromData(item);
+                            }
+                        }
+                    });
+                }
+                callback(matchedName);
             });
         }
 
@@ -750,7 +799,7 @@
             }
         }
 
-        // 2. Realtime Listener for Wallet Balances
+        // Realtime Listener for Wallet Balances
         function listenToWalletData() {
             db.ref(`earn_partners/${activeUserId}/wallet`).on('value', (snapshot) => {
                 const data = snapshot.val() || { balance: 0 };
@@ -758,7 +807,7 @@
             });
         }
 
-        // 3. Realtime Listener for Orders & Auto Credit Commission
+        // Realtime Listener for Orders & Auto Credit Commission
         function listenToReferralOrders() {
             db.ref('orders').on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
@@ -845,7 +894,7 @@
             });
         }
 
-        // 4. Payout Request Handling
+        // Payout Request Handling
         function handleWithdraw(event) {
             event.preventDefault();
             const methodInput = document.getElementById('withdraw-method');
