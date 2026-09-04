@@ -792,41 +792,49 @@
             });
         }
 
-        // --- 7 DAYS RETURN PERIOD CHECK LOGIC ---
-        function checkReturnPeriodStatus(order) {
+        // --- STRICT DELIVERED + 7 DAYS RETURN PERIOD LOGIC ---
+        function checkCompletionEligibility(order) {
             const orderStatus = (order.status || '').toLowerCase();
             
-            // 1. Manually completed status by system or admin
+            // 1. Manually marked completed or return flags set
             if (orderStatus === 'completed' || order.returnWindowClosed === true || order.returnClosed === true) {
                 return true;
             }
 
-            // 2. Return Period Date Expiry Check
-            let deliveryDateObj = null;
-            if (order.deliveryDate) {
-                // Extracts end date if deliveryDate is a range (e.g., "Delivered by Sep 09 - Sep 11")
+            // 2. MUST BE DELIVERED FIRST
+            if (orderStatus !== 'delivered') {
+                return false; // Order is pending dispatch/shipping
+            }
+
+            // 3. Extract Delivery / Order Date for 7 Days Calculation
+            let deliveredTimestamp = null;
+
+            if (order.deliveredAt || order.deliveryTimestamp) {
+                deliveredTimestamp = order.deliveredAt || order.deliveryTimestamp;
+            } else if (order.deliveryDate) {
                 const parts = order.deliveryDate.split('-');
                 const datePart = parts[parts.length - 1].replace(/Delivered by|on/gi, '').trim();
                 const parsed = Date.parse(datePart);
                 if (!isNaN(parsed)) {
-                    deliveryDateObj = new Date(parsed);
+                    deliveredTimestamp = parsed;
                 }
             } else if (order.date) {
-                deliveryDateObj = new Date(order.date);
-            }
-
-            if (deliveryDateObj) {
-                const now = new Date();
-                // Adding 7 Days Return Window limit
-                const returnExpiryDate = new Date(deliveryDateObj);
-                returnExpiryDate.setDate(returnExpiryDate.getDate() + 7);
-
-                if (now >= returnExpiryDate) {
-                    return true; // Return period passed
+                const parsed = Date.parse(order.date);
+                if (!isNaN(parsed)) {
+                    deliveredTimestamp = parsed;
                 }
             }
 
-            return false; // Still inside Return Period
+            if (deliveredTimestamp) {
+                const now = Date.now();
+                const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+                
+                if (now >= (deliveredTimestamp + sevenDaysInMs)) {
+                    return true; // Delivered AND 7 days return period passed
+                }
+            }
+
+            return false; // Delivered but still inside 7-day return period
         }
 
         function listenToReferralOrders() {
@@ -860,18 +868,13 @@
                     const orderStatus = (order.status || '').toLowerCase();
                     const isDelivered = (orderStatus === 'delivered');
                     
-                    // Check if Return Period is over
-                    const isReturnPeriodOver = checkReturnPeriodStatus(order);
-                    
-                    const isCompleted = isReturnPeriodOver || orderStatus === 'completed';
-                    const isPending = !isCompleted;
+                    // Verify if Delivered AND 7 Days are completed
+                    const isEligibleForSuccess = checkCompletionEligibility(order);
 
-                    if (isPending) {
-                        pendingTotal += commissionEarned;
-                    } else {
+                    if (isEligibleForSuccess) {
                         verifiedEarnings += commissionEarned;
 
-                        // Auto credit commission to Creator Wallet when Return Period closes
+                        // Auto credit commission to Creator Wallet when Delivered + 7 Days pass
                         if (!order.commissionCredited) {
                             db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
                                 return (currentBalance || 0) + commissionEarned;
@@ -880,14 +883,20 @@
                             db.ref(`referralOrders/${cleanRefCode}/${key}/commissionCredited`).set(true);
                             db.ref(`referralOrders/${cleanRefCode}/${key}/status`).set('Completed');
                         }
+                    } else {
+                        pendingTotal += commissionEarned;
                     }
 
                     const customerName = order.customerName || order.userName || 'Customer';
                     
                     let statusText = 'Pending • Processing Order';
-                    if (isPending && isDelivered) {
-                        statusText = 'Delivered • Return Period Active (7 Days)';
-                    } else if (isCompleted) {
+                    if (!isEligibleForSuccess) {
+                        if (isDelivered) {
+                            statusText = 'Delivered • Return Period Active (7 Days)';
+                        } else {
+                            statusText = `Pending • ${order.status || 'In Transit'}`;
+                        }
+                    } else {
                         statusText = 'Completed • 3% Commission Credited';
                     }
 
@@ -895,8 +904,8 @@
                     li.className = 'ref-order-item';
                     li.innerHTML = `
                         <div class="t-info">
-                            <div class="t-icon ${isPending ? 'pending-icon' : 'income'}">
-                                <i class="fa-solid ${isPending ? 'fa-clock' : 'fa-circle-check'}"></i>
+                            <div class="t-icon ${!isEligibleForSuccess ? 'pending-icon' : 'income'}">
+                                <i class="fa-solid ${!isEligibleForSuccess ? 'fa-clock' : 'fa-circle-check'}"></i>
                             </div>
                             <div class="t-details">
                                 <h4>${customerName} (Order #${order.orderId || key})</h4>
@@ -905,8 +914,8 @@
                         </div>
                         <div class="t-amount">
                             <div class="amt plus">+ ₹${commissionEarned.toFixed(2)}</div>
-                            <span class="badge ${isPending ? 'badge-pending' : 'badge-success'}">
-                                ${isPending ? 'Pending' : 'Success'}
+                            <span class="badge ${!isEligibleForSuccess ? 'badge-pending' : 'badge-success'}">
+                                ${!isEligibleForSuccess ? 'Pending' : 'Success'}
                             </span>
                         </div>
                     `;
