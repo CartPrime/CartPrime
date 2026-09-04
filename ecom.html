@@ -1325,7 +1325,7 @@ window.updateStatus = (path, s) => {
     });
 };
 
-/* APPROVE OR REJECT EARN PARTNER REQUEST FUNCTION (GLOBAL SCOPE) */
+/* APPROVE OR REJECT EARN PARTNER REQUEST FUNCTION (ATTACHED TO WINDOW FOR GLOBAL ACCESS) */
 window.updateAffiliateStatus = async (requestId, userId, newStatus) => {
     try {
         await update(ref(db, `earn_partners/${requestId}`), { 
