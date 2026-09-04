@@ -38,7 +38,6 @@
             min-height: 100vh;
         }
 
-        /* Top Header */
         header {
             position: sticky;
             top: 0;
@@ -73,7 +72,6 @@
             color: var(--text-main);
         }
 
-        /* Container */
         .container {
             max-width: 1000px;
             margin: 0 auto;
@@ -93,7 +91,6 @@
             }
         }
 
-        /* Image Gallery */
         .image-section {
             position: relative;
         }
@@ -155,7 +152,6 @@
             border-color: var(--primary);
         }
 
-        /* Wishlist & Share Buttons */
         .wishlist-container, .share-container {
             position: absolute;
             top: 12px;
@@ -179,7 +175,6 @@
         .wishlist-container i { color: #64748b; transition: 0.2s; }
         .wishlist-container.active i { color: #ef4444; }
 
-        /* Product Info */
         .info-section {
             background: var(--card-bg);
             padding: 20px;
@@ -223,7 +218,36 @@
             border-radius: 6px;
         }
 
-        /* Size Selection */
+        .earn-banner {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            color: #0284c7;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .earn-btn {
+            background: #0284c7;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
         .size-box-wrapper {
             margin-bottom: 20px;
         }
@@ -259,7 +283,6 @@
             border-color: var(--primary);
         }
 
-        /* Policy & Delivery */
         .policy-container {
             margin-bottom: 20px;
             display: flex;
@@ -300,7 +323,6 @@
         .cod-highlight-tag { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
         .cod-disabled-tag { background: #f8fafc; color: #64748b; }
 
-        /* Trust Badge Grid */
         .trust-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -325,7 +347,6 @@
             color: var(--text-muted);
         }
 
-        /* Specifications */
         .specs-box {
             margin-bottom: 20px;
         }
@@ -363,7 +384,6 @@
             margin-bottom: 20px;
         }
 
-        /* Reviews Section */
         .reviews-box {
             margin-top: 20px;
             padding-top: 20px;
@@ -451,7 +471,6 @@
         .star-orange { color: #f97316; }
         .star-red { color: #ef4444; }
 
-        /* Sticky Action Bar at Bottom */
         .sticky-action {
             position: fixed;
             bottom: 0;
@@ -496,7 +515,6 @@
             cursor: not-allowed;
         }
 
-        /* Loader */
         .loader-overlay {
             position: fixed;
             inset: 0;
@@ -524,31 +542,22 @@
 </head>
 <body>
 
-    <!-- Page Loader -->
     <div class="loader-overlay" id="pageLoader">
         <div class="spinner"></div>
     </div>
 
-    <!-- Header -->
     <header>
         <button class="back-btn" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
         <span class="header-title">Product Details</span>
         <div style="width: 38px;"></div>
     </header>
 
-    <!-- Main Content Container -->
     <div class="container">
-        <div class="product-grid" id="productDetail">
-            <!-- Dynamic Content Will Be Injected Here via Script -->
-        </div>
+        <div class="product-grid" id="productDetail"></div>
     </div>
 
-    <!-- Sticky Bottom Bar -->
-    <div class="sticky-action" id="stickyAction">
-        <!-- Dynamic Price and Buy Button Injected Here -->
-    </div>
+    <div class="sticky-action" id="stickyAction"></div>
 
-    <!-- Firebase Script & Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, get, child, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
@@ -569,16 +578,32 @@
         const urlParams = new URLSearchParams(window.location.search); 
         const productId = urlParams.get('id'); 
         
-        // 1. Referral Param Tracking
         const refCode = urlParams.get('ref');
         if (refCode) {
             localStorage.setItem('referredBy', refCode);
         }
 
         let selectedProductSize = null;
+        let isApprovedEarner = false;
 
+        const userId = localStorage.getItem('userId');
         const guestKey = localStorage.getItem('guestUserId') || 'guest_' + Math.random().toString(36).substring(2, 9);
         localStorage.setItem('guestUserId', guestKey);
+
+        const currentActiveUserId = userId || guestKey;
+
+        async function checkEarnerStatus() {
+            if (!userId) return false;
+            try {
+                const earnerSnap = await get(ref(db, `earners/${userId}`));
+                if (earnerSnap.exists() && earnerSnap.val().status === 'approved') {
+                    return true;
+                }
+            } catch (err) {
+                console.error("Error checking earner status:", err);
+            }
+            return false;
+        }
 
         function getEstimatedDeliveryDate() {
             const today = new Date();
@@ -614,29 +639,35 @@
             }, 6000); 
         }
 
-        get(child(ref(db), `wishlist/${guestKey}/${productId}`)).then(snap => { 
+        get(child(ref(db), `wishlist/${currentActiveUserId}/${productId}`)).then(snap => { 
             if(snap.exists() && document.getElementById('wishlistHeart')) {
                 document.getElementById('wishlistHeart').classList.add('active'); 
             }
         });
 
-        if (productId) {
-            get(child(ref(db), `products/${productId}`)).then((productSnap) => {
-                if (productSnap.exists()) {
-                    const productData = productSnap.val();
-                    const reviewsData = productData.reviews || null;
-                    renderProduct(productData, reviewsData); 
-                    track6SecView(productId);
-                } else {
-                    document.getElementById('productDetail').innerHTML = "<p style='padding: 20px; font-weight: 700;'>Product not found!</p>";
-                }
+        async function initPage() {
+            isApprovedEarner = await checkEarnerStatus();
+
+            if (productId) {
+                get(child(ref(db), `products/${productId}`)).then((productSnap) => {
+                    if (productSnap.exists()) {
+                        const productData = productSnap.val();
+                        const reviewsData = productData.reviews || null;
+                        renderProduct(productData, reviewsData); 
+                        track6SecView(productId);
+                    } else {
+                        document.getElementById('productDetail').innerHTML = "<p style='padding: 20px; font-weight: 700;'>Product not found!</p>";
+                    }
+                    hideLoader();
+                }).catch(() => {
+                    hideLoader();
+                });
+            } else {
                 hideLoader();
-            }).catch(() => {
-                hideLoader();
-            });
-        } else {
-            hideLoader();
+            }
         }
+
+        initPage();
 
         function getStarClass(rating) {
             const r = Math.round(rating);
@@ -768,7 +799,6 @@
             const baseMrp = p.mrp ? parseFloat(p.mrp.toString().replace(/,/g, '').replace(/[^\d.]/g, '')) : Math.round(displayPrice * 1.35);
             const discountPct = baseMrp > displayPrice ? Math.round(((baseMrp - displayPrice) / baseMrp) * 100) : 0;
 
-            // Commission Calculation (p.commission ഉണ്ടെങ്കിൽ അത്, അല്ലെങ്കിൽ 5%)
             const commissionAmount = p.commission ? parseFloat(p.commission) : Math.round(displayPrice * 0.05);
 
             const availableSizes = p.sizes || [];
@@ -798,6 +828,18 @@
 
             const estimatedDeliveryText = getEstimatedDeliveryDate();
 
+            const earnBannerHTML = isApprovedEarner ? `
+                <div class="earn-banner">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-coins" style="color: #0284c7; font-size: 1.1rem;"></i>
+                        <span>Earn <b>₹${commissionAmount}</b> commission on successful sale!</span>
+                    </div>
+                    <button class="earn-btn" id="earnMoneyBtn">
+                        <i class="fa-solid fa-share-nodes"></i> Earn Money
+                    </button>
+                </div>
+            ` : '';
+
             document.getElementById('productDetail').innerHTML = `
                 <div class="image-section">
                     <div class="main-img-container">
@@ -805,7 +847,7 @@
                             ${p.images.map(img => `<div class="image-slide"><img src="${img}" class="main-img"></div>`).join('')}
                         </div>
                         
-                        <div class="share-container" id="productShareBtn" title="Share & Earn Commission">
+                        <div class="share-container" id="productShareBtn" title="Share Product">
                             <i class="fa-solid fa-share-nodes"></i>
                         </div>
 
@@ -824,11 +866,7 @@
                         ${discountPct > 0 ? `<span class="discount">${discountPct}% off</span>` : ''}
                     </div>
 
-                    <!-- Share & Earn Banner -->
-                    <div style="background: #e0f2fe; border: 1px solid #bae6fd; color: #0284c7; padding: 10px 14px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-coins" style="color: #0284c7;"></i>
-                        <span>Share & Earn: <b>₹${commissionAmount}</b> commission on successful sale!</span>
-                    </div>
+                    ${earnBannerHTML}
 
                     ${sizeHTML}
 
@@ -888,8 +926,14 @@
                 </div>`;
             
             document.getElementById('productShareBtn').addEventListener('click', () => {
-                window.shareProduct(fullTitle, commissionAmount);
+                window.shareProduct(fullTitle, false);
             });
+
+            if (isApprovedEarner && document.getElementById('earnMoneyBtn')) {
+                document.getElementById('earnMoneyBtn').addEventListener('click', () => {
+                    window.shareProduct(fullTitle, true);
+                });
+            }
 
             document.getElementById('wishlistHeart').addEventListener('click', () => {
                 window.toggleWishlist(productId, fullTitle, displayPrice, p.images[0]);
@@ -915,13 +959,14 @@
             if(label) label.innerText = size;
         };
 
-        // Referral Share Link Generation
-        window.shareProduct = (title, comm) => {
-            const userId = localStorage.getItem('userId') || guestKey;
+        window.shareProduct = (title, isAffiliateShare = false) => {
+            const activeRefUser = userId || guestKey;
             const baseUrl = window.location.origin + window.location.pathname;
-            const affiliateUrl = `${baseUrl}?id=${productId}&ref=${userId}`;
+            const affiliateUrl = `${baseUrl}?id=${productId}&ref=${activeRefUser}`;
             
-            const shareMessage = `🛒 *Check out this product on CartPrime!* \n\n🔥 ${title}\n\n👇 Buy now:`;
+            const shareMessage = isAffiliateShare
+                ? `🛒 *Check out this product on CartPrime!* \n\n🔥 ${title}\n\n👇 Buy now using my link:`
+                : `🛒 *Check out this product on CartPrime!* \n\n🔥 ${title}\n\n👇 Buy now:`;
             
             const shareData = {
                 title: title,
@@ -936,7 +981,15 @@
                 window.open(whatsappUrl, '_blank');
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(affiliateUrl).then(() => {
-                        Swal.fire({ title: 'Affiliate Link Copied!', text: 'Share this link to earn commission.', icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
+                        Swal.fire({ 
+                            title: isAffiliateShare ? 'Earn Link Copied!' : 'Link Copied!', 
+                            text: isAffiliateShare ? 'Share this link to earn commission when someone buys.' : 'Product link copied to clipboard.', 
+                            icon: 'success', 
+                            toast: true, 
+                            position: 'top-end', 
+                            showConfirmButton: false, 
+                            timer: 2500 
+                        });
                     });
                 }
             }
@@ -944,7 +997,7 @@
 
         window.toggleWishlist = (id, name, price, img) => {
             const heart = document.getElementById('wishlistHeart'); 
-            const wRef = ref(db, `wishlist/${guestKey}/${id}`);
+            const wRef = ref(db, `wishlist/${currentActiveUserId}/${id}`);
             
             get(wRef).then(snap => { 
                 if (snap.exists()) { 
