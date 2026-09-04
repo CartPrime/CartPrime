@@ -506,7 +506,7 @@
                 <div class="box-header">
                     <h3>Your Unique Referral Link</h3>
                 </div>
-                <p style="font-size: 12px; color: var(--text-secondary);">Share this link to earn commission when someone orders a product.</p>
+                <p style="font-size: 12px; color: var(--text-secondary);">Share this link to direct users to index.html and earn commissions.</p>
                 <div class="link-copy-box">
                     <input type="text" id="referral-url" class="link-input" readonly>
                     <button class="btn-copy" onclick="copyReferralLink()"><i class="fa-regular fa-copy"></i> Copy</button>
@@ -644,10 +644,11 @@
             }
         }
 
-        // Set up Referral URL input
+        // Set up Referral URL input pointing explicitly to index.html
         function setupReferralLink() {
-            const currentOrigin = window.location.origin + window.location.pathname;
-            document.getElementById('referral-url').value = `${currentOrigin}?ref=${creatorId}`;
+            const currentOrigin = window.location.origin;
+            // Target index.html in the root path
+            document.getElementById('referral-url').value = `${currentOrigin}/index.html?ref=${creatorId}`;
         }
 
         // Tab Navigation
@@ -760,7 +761,7 @@
                     wallet.earnings = (wallet.earnings || 0) + amount;
                     return wallet;
                 });
-            }, 12000); // 12 seconds return period simulation
+            }, 12000);
         }
 
         // 5. Handle Withdrawal Requests
