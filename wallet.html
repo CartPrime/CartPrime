@@ -636,7 +636,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Active User ID / Phone Number dynamic retrieval
         function getActiveUserId() {
             const urlParams = new URLSearchParams(window.location.search);
             const idFromUrl = urlParams.get('id') || urlParams.get('partnerId') || urlParams.get('userId') || urlParams.get('phone') || urlParams.get('mobile');
@@ -655,46 +654,39 @@
 
         const activeUserId = getActiveUserId(); 
         let partnerName = "User";
+        let uniquePartnerId = activeUserId; // Uniq ID for referral link
 
         window.onload = function() {
             fetchPartnerDetails();
             listenToWalletData();
         };
 
-        // നമ്പർ അല്ലെങ്കിൽ ID വെച്ച് പേര് കണ്ടെത്തുന്നു (Direct Key Fetch, Phone Queries, Fallback Search)
         function fetchPartnerDetails() {
             const cleanId = activeUserId.trim();
 
-            // 1. Direct fetch using Key (e.g., users/+919876543210 or users/9876543210)
-            db.ref(`users/${cleanId}`).once('value', (snapshot) => {
-                const userData = snapshot.val();
-                let foundName = extractNameFromData(userData);
+            db.ref(`earn_partners/${cleanId}`).once('value', (partnerSnapshot) => {
+                const partnerData = partnerSnapshot.val();
 
-                if (foundName) {
-                    partnerName = foundName;
+                if (partnerData) {
+                    partnerName = extractNameFromData(partnerData) || partnerName;
+                    // earn_partners -ൽ ഉള്ള uniq ID എടുക്കുന്നു
+                    uniquePartnerId = partnerData.uniqId || partnerData.uniqueId || partnerData.partnerId || cleanId;
                     updateUIWithPartnerName(partnerName);
                 } else {
-                    // 2. Query 'users' node by mobile/phone number fields
-                    searchUserByPhone('users', cleanId, (nameFromUsers) => {
-                        if (nameFromUsers) {
-                            partnerName = nameFromUsers;
+                    db.ref(`users/${cleanId}`).once('value', (snapshot) => {
+                        const userData = snapshot.val();
+                        let foundName = extractNameFromData(userData);
+
+                        if (foundName) {
+                            partnerName = foundName;
                             updateUIWithPartnerName(partnerName);
                         } else {
-                            // 3. Fallback to 'earn_partners' path (Direct Key)
-                            db.ref(`earn_partners/${cleanId}`).once('value', (partnerSnapshot) => {
-                                const partnerData = partnerSnapshot.val();
-                                let partnerFoundName = extractNameFromData(partnerData);
-
-                                if (partnerFoundName) {
-                                    partnerName = partnerFoundName;
-                                    updateUIWithPartnerName(partnerName);
-                                } else {
-                                    // 4. Query 'earn_partners' by phone field
-                                    searchUserByPhone('earn_partners', cleanId, (nameFromPartners) => {
-                                        partnerName = nameFromPartners || (cleanId !== 'guest_user' ? cleanId : 'User');
-                                        updateUIWithPartnerName(partnerName);
-                                    });
+                            searchUserByPhone('earn_partners', cleanId, (partnerDataFromPhone) => {
+                                if (partnerDataFromPhone) {
+                                    partnerName = extractNameFromData(partnerDataFromPhone) || partnerName;
+                                    uniquePartnerId = partnerDataFromPhone.uniqId || partnerDataFromPhone.uniqueId || partnerDataFromPhone.partnerId || cleanId;
                                 }
+                                updateUIWithPartnerName(partnerName);
                             });
                         }
                     });
@@ -702,32 +694,30 @@
             });
         }
 
-        // Object-ൽ നിന്നുമുള്ള പേര് Extract ചെയ്യാനുള്ള Helper Function
         function extractNameFromData(data) {
             if (!data) return null;
             return data.name || data.fullName || data.displayName || data.username || data.userName || null;
         }
 
-        // Phone number matching query helper
         function searchUserByPhone(nodePath, phoneNumber, callback) {
             db.ref(nodePath).once('value', (snapshot) => {
                 const allData = snapshot.val();
-                let matchedName = null;
+                let matchedData = null;
 
                 if (allData) {
-                    const cleanSearchPhone = phoneNumber.replace(/\D/g, ''); // Numbers only
+                    const cleanSearchPhone = phoneNumber.replace(/\D/g, '');
 
                     Object.keys(allData).forEach(key => {
                         const item = allData[key];
                         if (item) {
                             const userPhone = String(item.phone || item.mobile || item.phoneNumber || key).replace(/\D/g, '');
                             if (userPhone && cleanSearchPhone && (userPhone.includes(cleanSearchPhone) || cleanSearchPhone.includes(userPhone))) {
-                                matchedName = extractNameFromData(item);
+                                matchedData = item;
                             }
                         }
                     });
                 }
-                callback(matchedName);
+                callback(matchedData);
             });
         }
 
@@ -742,16 +732,15 @@
             listenToReferralOrders();
         }
 
-        // Referral URL Generator
+        // Distinct Uniq ID വെച്ച് Link Generate ചെയ്യുന്നു
         function setupReferralLink() {
             const currentOrigin = window.location.origin;
             const refInput = document.getElementById('referral-url');
             if (refInput) {
-                refInput.value = `${currentOrigin}/index.html?ref=${activeUserId}`;
+                refInput.value = `${currentOrigin}/index.html?ref=${uniquePartnerId}`;
             }
         }
 
-        // Tab Navigation
         function switchTab(viewId, element) {
             document.querySelectorAll('.nav-item-bottom').forEach(link => link.classList.remove('active'));
             if (element) element.classList.add('active');
@@ -772,7 +761,6 @@
             }
         }
 
-        // WhatsApp Share
         function shareToWhatsApp() {
             const linkInput = document.getElementById('referral-url');
             if (linkInput) {
@@ -782,7 +770,6 @@
             }
         }
 
-        // Native Share API
         function shareNative() {
             const linkInput = document.getElementById('referral-url');
             if (linkInput) {
@@ -799,7 +786,6 @@
             }
         }
 
-        // Realtime Listener for Wallet Balances
         function listenToWalletData() {
             db.ref(`earn_partners/${activeUserId}/wallet`).on('value', (snapshot) => {
                 const data = snapshot.val() || { balance: 0 };
@@ -807,7 +793,6 @@
             });
         }
 
-        // Realtime Listener for Orders & Auto Credit Commission
         function listenToReferralOrders() {
             db.ref('orders').on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
@@ -826,7 +811,11 @@
                     const order = orders[key];
                     const referrer = order.referredBy || order.referencedBy;
                     
-                    if (referrer && (referrer.toLowerCase() === activeUserId.toLowerCase() || referrer.toLowerCase() === partnerName.toLowerCase())) {
+                    if (referrer && (
+                        referrer.toLowerCase() === activeUserId.toLowerCase() || 
+                        referrer.toLowerCase() === uniquePartnerId.toLowerCase() || 
+                        referrer.toLowerCase() === partnerName.toLowerCase()
+                    )) {
                         count++;
                         
                         const productAmount = parseFloat(order.amount || order.totalPrice || order.price || 0);
@@ -894,7 +883,6 @@
             });
         }
 
-        // Payout Request Handling
         function handleWithdraw(event) {
             event.preventDefault();
             const methodInput = document.getElementById('withdraw-method');
