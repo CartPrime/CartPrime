@@ -483,29 +483,8 @@
             </div>
         </div>
 
-        <!-- 1. DASHBOARD VIEW -->
-        <section id="dashboard" class="page-view active-view">
-            <div class="stats-vertical">
-                <div class="stat-card featured">
-                    <div class="stat-title">Available Balance</div>
-                    <div class="stat-value">₹ <span class="val-balance">0.00</span></div>
-                    <div class="stat-sub">Ready for instant payout</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">Lifetime Earnings</div>
-                    <div class="stat-value">₹ <span class="val-earnings">0.00</span></div>
-                    <div class="stat-sub">Total verified earnings (3% Commission)</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">Pending Earnings</div>
-                    <div class="stat-value">₹ <span class="val-pending">0.00</span></div>
-                    <div class="stat-sub">Awaiting return window completion</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. REFERRAL VIEW -->
-        <section id="referral" class="page-view">
+        <!-- 1. REFERRAL VIEW (Default View) -->
+        <section id="referral" class="page-view active-view">
             <div class="stats-vertical">
                 <div class="stat-card">
                     <div class="stat-title">Total Referred Orders</div>
@@ -546,23 +525,28 @@
             </div>
         </section>
 
-        <!-- 3. EARNINGS VIEW -->
+        <!-- 2. EARNINGS VIEW (വാലറ്റ്, ലൈഫ് ടൈം, പെൻഡിംഗ് തുകകൾ അടങ്ങിയ ഭാഗം) -->
         <section id="earnings" class="page-view">
-            <div class="card-box">
-                <div class="box-header">
-                    <h3>Performance Analytics</h3>
+            <div class="stats-vertical">
+                <div class="stat-card featured">
+                    <div class="stat-title">Available Balance</div>
+                    <div class="stat-value">₹ <span class="val-balance">0.00</span></div>
+                    <div class="stat-sub">Ready for instant payout</div>
                 </div>
-                <div class="stats-vertical">
-                    <div class="stat-card">
-                        <div class="stat-title">Total Lifetime Earnings</div>
-                        <div class="stat-value">₹ <span class="val-earnings">0.00</span></div>
-                        <div class="stat-sub">Processed across all referral links (3% rate)</div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-title">Lifetime Earnings</div>
+                    <div class="stat-value">₹ <span class="val-earnings">0.00</span></div>
+                    <div class="stat-sub">Total verified earnings (3% Commission)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Pending Earnings</div>
+                    <div class="stat-value">₹ <span class="val-pending">0.00</span></div>
+                    <div class="stat-sub">Awaiting return window completion</div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. WITHDRAW VIEW -->
+        <!-- 3. WITHDRAW VIEW -->
         <section id="withdraw" class="page-view">
             <div class="card-box">
                 <div class="box-header">
@@ -586,7 +570,7 @@
             </div>
         </section>
 
-        <!-- 5. TRANSACTIONS VIEW -->
+        <!-- 4. TRANSACTIONS VIEW -->
         <section id="transactions" class="page-view">
             <div class="card-box">
                 <div class="box-header">
@@ -597,12 +581,14 @@
         </section>
     </main>
 
+    <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
-        <a class="nav-item-bottom active" onclick="switchTab('dashboard', this)">
+        <!-- Home ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ index.html പേജിലേക്ക് പോകും -->
+        <a class="nav-item-bottom" href="index.html">
             <i class="fa-solid fa-house"></i>
             <span>Home</span>
         </a>
-        <a class="nav-item-bottom" onclick="switchTab('referral', this)">
+        <a class="nav-item-bottom active" onclick="switchTab('referral', this)">
             <i class="fa-solid fa-user-plus"></i>
             <span>Referral</span>
         </a>
@@ -621,7 +607,7 @@
     </nav>
 
     <script>
-        // 1. Firebase Configuration
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
             authDomain: "cartprime-shopping.firebaseapp.com",
@@ -802,11 +788,9 @@
             });
         }
 
-        // --- REFERRAL ORDERS FETCHING LOGIC (അപ്‌ഡേറ്റ് ചെയ്ത ഭാഗം) ---
         function listenToReferralOrders() {
             const cleanRefCode = uniquePartnerId.toString().replace(/[.#$\[\]]/g, "_");
 
-            // `referralOrders/{referralCode}` എന്ന പാതയിൽ നിന്ന് ഈ യൂസറുടെ ലിങ്ക് വഴി വന്ന എല്ലാ ഓർഡറുകളും എടുക്കുന്നു
             db.ref(`referralOrders/${cleanRefCode}`).on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
                 const list = document.getElementById('referral-orders-list');
@@ -824,20 +808,17 @@
                     const order = orders[key];
                     count++;
                     
-                    // വില സ്ട്രിംഗ് ഫോർമാറ്റിലാണെങ്കിൽ സംഖ്യയാക്കി മാറ്റുന്നു (Eg: "1,200" -> 1200)
                     let rawPrice = order.price || order.totalPrice || order.amount || "0";
                     if (typeof rawPrice === 'string') {
                         rawPrice = rawPrice.replace(/[^0-9.]/g, '');
                     }
                     const productAmount = parseFloat(rawPrice) || 0;
                     
-                    // 3% കമ്മീഷൻ കണക്കാക്കുന്നു
                     const commissionEarned = order.commissionAmount ? parseFloat(order.commissionAmount) : (productAmount * 0.03); 
 
                     const orderStatus = (order.status || '').toLowerCase();
                     const isDelivered = (orderStatus === 'delivered');
                     
-                    // ഓർഡർ ഡെലിവറി ആയി, റീട്ടേൺ വിൻഡോ ക്ലോസ് ആയാൽ (അല്ലെങ്കിൽ Completed ആയാൽ) Success ആയി മാറുന്നു.
                     const isCompleted = (orderStatus === 'completed' || order.returnWindowClosed === true || order.returnClosed === true);
                     const isPending = !isCompleted;
 
@@ -846,7 +827,6 @@
                     } else {
                         verifiedEarnings += commissionEarned;
 
-                        // കമ്മീഷൻ തുക വാലറ്റിലേക്ക് മുൻപ് കൊടുത്തിട്ടില്ലെങ്കിൽ ക്രെഡിറ്റ് ചെയ്യുന്നു
                         if (!order.commissionCredited) {
                             db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
                                 return (currentBalance || 0) + commissionEarned;
@@ -856,7 +836,6 @@
                         }
                     }
 
-                    // ഉപഭോക്താവിന്റെ പേര് എടുക്കുന്നു
                     const customerName = order.customerName || order.userName || 'Customer';
                     
                     let statusText = 'Pending • Processing Order';
@@ -929,7 +908,7 @@
 
                     alert("Withdrawal Request Submitted Successfully!");
                     amtInput.value = '';
-                    switchTab('dashboard', document.querySelectorAll('.nav-item-bottom')[0]);
+                    switchTab('referral', document.querySelectorAll('.nav-item-bottom')[1]);
                 } else {
                     alert("Insufficient balance for withdrawal!");
                 }
