@@ -613,9 +613,9 @@
             });
         }
 
-        // 3. Realtime Listener for Customer Orders & Pending/Success Calculations
+        // 3. Realtime Listener for Customer Orders & Filter by Referenced User
         function listenToReferralOrders() {
-            db.ref(`users/${creatorId}/orders`).on('value', (snapshot) => {
+            db.ref('orders').on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
                 const list = document.getElementById('referral-orders-list');
                 list.innerHTML = '';
@@ -626,48 +626,53 @@
 
                 const orderKeys = Object.keys(orders).reverse();
                 
-                if (orderKeys.length === 0) {
+                orderKeys.forEach(key => {
+                    const order = orders[key];
+                    
+                    // Check if order was referred by this user
+                    const referrer = order.referencedBy || order.referredBy;
+                    if (referrer === creatorId) {
+                        count++;
+                        const orderAmount = parseFloat(order.amount || order.commission || 0);
+
+                        // Check status: 'pending' or 'success'
+                        const isPending = (order.status === 'pending' || order.status === 'Pending Verification' || order.status === 'Processing');
+                        const isSuccess = (order.status === 'success' || order.status === 'Completed' || order.status === 'Delivered');
+
+                        if (isPending) {
+                            pendingTotal += orderAmount;
+                        } else if (isSuccess) {
+                            verifiedEarnings += orderAmount;
+                        }
+
+                        const customerName = order.userName || order.customerName || 'Customer';
+                        
+                        const li = document.createElement('li');
+                        li.className = 'ref-order-item';
+                        li.innerHTML = `
+                            <div class="t-info">
+                                <div class="t-icon income">
+                                    <i class="fa-solid ${isPending ? 'fa-clock' : 'fa-circle-check'}"></i>
+                                </div>
+                                <div class="t-details">
+                                    <h4>${customerName} (Order #${order.orderId || key})</h4>
+                                    <p>${isPending ? 'Pending • Return Period Active' : 'Success • Return Period Completed'}</p>
+                                </div>
+                            </div>
+                            <div class="t-amount">
+                                <div class="amt plus">+ ₹${orderAmount.toFixed(2)}</div>
+                                <span class="badge ${isPending ? 'badge-pending' : 'badge-success'}">
+                                    ${isPending ? 'Pending' : 'Success'}
+                                </span>
+                            </div>
+                        `;
+                        list.appendChild(li);
+                    }
+                });
+
+                if (count === 0) {
                     list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No referred orders yet.</li>`;
                 }
-
-                orderKeys.forEach(key => {
-                    count++;
-                    const order = orders[key];
-                    const orderAmount = parseFloat(order.amount || 0);
-
-                    // Check status: 'pending' or 'success'
-                    const isPending = (order.status === 'pending' || order.status === 'Pending Verification' || order.status === 'Processing');
-                    const isSuccess = (order.status === 'success' || order.status === 'Completed' || order.status === 'Delivered');
-
-                    if (isPending) {
-                        pendingTotal += orderAmount;
-                    } else if (isSuccess) {
-                        verifiedEarnings += orderAmount;
-                    }
-
-                    const customerName = order.userName || order.customerName || 'Customer';
-                    
-                    const li = document.createElement('li');
-                    li.className = 'ref-order-item';
-                    li.innerHTML = `
-                        <div class="t-info">
-                            <div class="t-icon income">
-                                <i class="fa-solid ${isPending ? 'fa-clock' : 'fa-circle-check'}"></i>
-                            </div>
-                            <div class="t-details">
-                                <h4>${customerName} (Order #${order.orderId || key})</h4>
-                                <p>${isPending ? 'Pending • Return Period Active' : 'Success • Return Period Completed'}</p>
-                            </div>
-                        </div>
-                        <div class="t-amount">
-                            <div class="amt plus">+ ₹${orderAmount.toFixed(2)}</div>
-                            <span class="badge ${isPending ? 'badge-pending' : 'badge-success'}">
-                                ${isPending ? 'Pending' : 'Success'}
-                            </span>
-                        </div>
-                    `;
-                    list.appendChild(li);
-                });
 
                 // Update UI Counters dynamically
                 document.querySelectorAll('.val-pending').forEach(el => el.innerText = pendingTotal.toFixed(2));
