@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartprime - Affiliate Creator Wallet</title>
+    <title>Cartprime - Creator Wallet</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -31,7 +31,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            padding-bottom: 75px; /* Bottom Nav-ന് സ്ഥലം നൽകുവാൻ */
+            padding-bottom: 75px;
         }
 
         /* Top Bar Styling */
@@ -171,13 +171,25 @@
             font-weight: bold;
         }
 
-        /* Views Setup */
+        /* Views Setup & Keyframe Animation */
         .page-view {
             display: none;
         }
 
         .page-view.active-view {
             display: block;
+            animation: fadeIn 0.35s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Stats Cards - Vertical Stack */
@@ -245,7 +257,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .box-header h3 {
@@ -372,66 +384,6 @@
             box-shadow: 0 8px 20px rgba(89, 54, 245, 0.3);
         }
 
-        /* Top Referrals */
-        .referral-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .referral-item:last-child {
-            border-bottom: none;
-        }
-
-        .ref-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .ref-amount {
-            font-weight: 700;
-            font-size: 13px;
-        }
-
-        /* Promo Card Inline */
-        .promo-card {
-            background: var(--card-sub-gradient);
-            border-radius: 20px;
-            padding: 18px;
-            color: white;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 20px rgba(67, 24, 255, 0.2);
-        }
-
-        .promo-card h4 {
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        .promo-card p {
-            font-size: 12px;
-            opacity: 0.85;
-            margin-bottom: 14px;
-        }
-
-        .promo-btn {
-            background-color: white;
-            color: var(--brand-purple);
-            border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            width: 100%;
-        }
-
         @media (max-width: 576px) {
             .top-header {
                 flex-direction: column;
@@ -448,7 +400,7 @@
             <div class="brand-icon"><i class="fa-solid fa-wallet"></i></div>
             <div class="brand-text">
                 <h2>Cartprime</h2>
-                <span>Affiliate Creator Wallet</span>
+                <span>Creator Hub</span>
             </div>
         </div>
         <div class="user-profile">
@@ -462,40 +414,34 @@
         <div class="top-header">
             <div class="header-title">
                 <h1>Welcome back, Farhanul! 👋</h1>
-                <p>Here's your affiliate earnings overview</p>
+                <p>Track your earnings and manage payouts</p>
             </div>
-        </div>
-
-        <!-- Promo Banner -->
-        <div class="promo-card">
-            <h4><i class="fa-solid fa-gift"></i> Earn More</h4>
-            <p>Share your link and earn more rewards everyday</p>
-            <button class="promo-btn" onclick="alert('Affiliate Link Copied!')">Copy Affiliate Link</button>
         </div>
 
         <!-- 1. DASHBOARD VIEW -->
         <section id="dashboard" class="page-view active-view">
             <div class="stats-vertical">
                 <div class="stat-card featured">
-                    <div class="stat-title">Total Balance</div>
+                    <div class="stat-title">Available Balance</div>
                     <div class="stat-value">₹ <span class="val-balance">12,450.75</span></div>
-                    <div class="stat-sub">Available for withdrawal</div>
+                    <div class="stat-sub">Ready for instant payout</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title">Total Earnings</div>
+                    <div class="stat-title">Lifetime Earnings</div>
                     <div class="stat-value">₹ <span class="val-earnings">45,780.50</span></div>
-                    <div class="stat-sub">All time earnings</div>
+                    <div class="stat-sub">Total earnings till date</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Pending Balance</div>
                     <div class="stat-value">₹ <span class="val-pending">2,340.25</span></div>
-                    <div class="stat-sub">Will be available soon</div>
+                    <div class="stat-sub">Under processing</div>
                 </div>
             </div>
 
+            <!-- Recent Transactions -->
             <div class="card-box">
                 <div class="box-header">
-                    <h3>Recent Transactions</h3>
+                    <h3>Recent Activity</h3>
                 </div>
                 <ul class="transaction-list">
                     <li class="transaction-item">
@@ -513,9 +459,9 @@
                     </li>
                     <li class="transaction-item">
                         <div class="t-info">
-                            <div class="t-icon income"><i class="fa-solid fa-gift"></i></div>
+                            <div class="t-icon income"><i class="fa-solid fa-bag-shopping"></i></div>
                             <div class="t-details">
-                                <h4>Affiliate Commission</h4>
+                                <h4>Earnings Credit</h4>
                                 <p>Order #CP7856 • 20 Aug, 2026</p>
                             </div>
                         </div>
@@ -526,44 +472,24 @@
                     </li>
                 </ul>
             </div>
-
-            <div class="card-box">
-                <div class="box-header">
-                    <h3>Top Referrals</h3>
-                </div>
-                <div>
-                    <div class="referral-item">
-                        <div class="ref-user">1. @tech_with_farhan</div>
-                        <div class="ref-amount">₹2,450.00</div>
-                    </div>
-                    <div class="referral-item">
-                        <div class="ref-user">2. @digital_creator_07</div>
-                        <div class="ref-amount">₹1,780.00</div>
-                    </div>
-                    <div class="referral-item">
-                        <div class="ref-user">3. @online_hustler</div>
-                        <div class="ref-amount">₹1,250.00</div>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <!-- 2. EARNINGS VIEW -->
         <section id="earnings" class="page-view">
             <div class="card-box">
                 <div class="box-header">
-                    <h3>Earnings Breakdown</h3>
+                    <h3>Performance Analytics</h3>
                 </div>
                 <div class="stats-vertical">
                     <div class="stat-card">
-                        <div class="stat-title">This Month Earnings</div>
+                        <div class="stat-title">Current Month Earnings</div>
                         <div class="stat-value">₹ 8,560.00</div>
-                        <div class="stat-sub">August earnings</div>
+                        <div class="stat-sub">Generated in August</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Total Lifetime Earnings</div>
                         <div class="stat-value">₹ <span class="val-earnings">45,780.50</span></div>
-                        <div class="stat-sub">Processed through links</div>
+                        <div class="stat-sub">Overall revenue</div>
                     </div>
                 </div>
             </div>
@@ -573,22 +499,22 @@
         <section id="withdraw" class="page-view">
             <div class="card-box">
                 <div class="box-header">
-                    <h3>Request Withdrawal</h3>
+                    <h3>Payout Request</h3>
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <p style="font-size: 13px; color: var(--text-secondary);">Available Balance for Cashout:</p>
+                    <p style="font-size: 13px; color: var(--text-secondary);">Available Balance for Withdrawal:</p>
                     <h2 style="font-size: 26px; color: var(--brand-purple);">₹ <span class="val-balance">12,450.75</span></h2>
                 </div>
                 <form onsubmit="handleWithdraw(event)">
                     <div class="form-group">
-                        <label>UPI ID / Bank Details</label>
+                        <label>UPI ID or Bank Account Details</label>
                         <input type="text" id="withdraw-method" class="form-input" placeholder="e.g. farhanul@upi" required>
                     </div>
                     <div class="form-group">
                         <label>Amount (₹)</label>
-                        <input type="number" id="withdraw-amt" class="form-input" placeholder="Enter amount" required>
+                        <input type="number" id="withdraw-amt" class="form-input" placeholder="Enter amount to withdraw" required>
                     </div>
-                    <button type="submit" class="btn-submit">Submit Withdrawal Request</button>
+                    <button type="submit" class="btn-submit">Request Payout</button>
                 </form>
             </div>
         </section>
@@ -597,7 +523,7 @@
         <section id="transactions" class="page-view">
             <div class="card-box">
                 <div class="box-header">
-                    <h3>All History</h3>
+                    <h3>Transaction History</h3>
                 </div>
                 <ul class="transaction-list" id="full-transaction-list">
                     <li class="transaction-item">
@@ -615,9 +541,9 @@
                     </li>
                     <li class="transaction-item">
                         <div class="t-info">
-                            <div class="t-icon income"><i class="fa-solid fa-gift"></i></div>
+                            <div class="t-icon income"><i class="fa-solid fa-bag-shopping"></i></div>
                             <div class="t-details">
-                                <h4>Affiliate Commission</h4>
+                                <h4>Earnings Credit</h4>
                                 <p>Order #CP7856 • 20 Aug, 2026</p>
                             </div>
                         </div>
@@ -659,32 +585,27 @@
             earnings: 45780.50
         };
 
-        // Navigation Switcher Logic
+        // Tab Switcher with Smooth Animation
         function switchTab(viewId, element) {
-            // Remove active class from bottom nav links
             const navLinks = document.querySelectorAll('.nav-item-bottom');
             navLinks.forEach(link => link.classList.remove('active'));
 
-            // Add active class to clicked link
             if (element) {
                 element.classList.add('active');
             }
 
-            // Hide all section views
             const views = document.querySelectorAll('.page-view');
             views.forEach(view => view.classList.remove('active-view'));
 
-            // Show selected view
             const selectedView = document.getElementById(viewId);
             if(selectedView) {
                 selectedView.classList.add('active-view');
             }
 
-            // Scroll back to top on view change
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Update UI dynamically
+        // Update UI dynamic numbers
         function updateUI() {
             const formattedBalance = walletData.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
             const formattedEarnings = walletData.earnings.toLocaleString('en-IN', { minimumFractionDigits: 2 });
@@ -693,7 +614,7 @@
             document.querySelectorAll('.val-earnings').forEach(el => el.innerText = formattedEarnings);
         }
 
-        // Withdrawal Handling
+        // Withdrawal Form Handler
         function handleWithdraw(event) {
             event.preventDefault();
             const method = document.getElementById('withdraw-method').value;
@@ -704,7 +625,6 @@
                 walletData.balance -= amount;
                 updateUI();
 
-                // Add to transactions list
                 const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
                 const transactionLists = document.querySelectorAll('.transaction-list');
                 
@@ -730,7 +650,6 @@
                 alert("Withdrawal Request Submitted Successfully!");
                 amountInput.value = '';
                 
-                // Redirect to History Tab
                 const historyBtn = document.querySelectorAll('.nav-item-bottom')[3];
                 switchTab('transactions', historyBtn);
             } else {
