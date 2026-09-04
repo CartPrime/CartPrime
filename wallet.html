@@ -200,7 +200,7 @@
             font-weight: bold;
         }
 
-        /* Views (Pages) Setup */
+        /* Page Display Switching */
         .page-view {
             display: none;
         }
@@ -537,7 +537,7 @@
                 </div>
             </div>
 
-            <!-- Dashboard Content Sections Stacked Below -->
+            <!-- Dashboard Content Sections -->
             <div class="card-box">
                 <div class="box-header">
                     <h3>Recent Transactions</h3>
@@ -644,7 +644,7 @@
                 <div class="box-header">
                     <h3>All History</h3>
                 </div>
-                <ul class="transaction-list" id="full-transaction-list">
+                <ul class="transaction-list">
                     <li class="transaction-item">
                         <div class="t-info">
                             <div class="t-icon payout"><i class="fa-solid fa-arrow-down"></i></div>
@@ -684,26 +684,29 @@
             earnings: 45780.50
         };
 
-        // Navigation Switcher Logic
+        // Tab Switching Logic
         function switchTab(viewId, element) {
-            // Remove active class from links
+            // Remove active style from all navigation buttons
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => link.classList.remove('active'));
 
-            // Add active class to clicked link
+            // Set active class on clicked button
             if (element) {
                 element.classList.add('active');
             }
 
-            // Hide all section views
+            // Hide all pages
             const views = document.querySelectorAll('.page-view');
             views.forEach(view => view.classList.remove('active-view'));
 
-            // Show selected view
-            document.getElementById(viewId).classList.add('active-view');
+            // Show selected page
+            const targetView = document.getElementById(viewId);
+            if (targetView) {
+                targetView.classList.add('active-view');
+            }
         }
 
-        // Update UI dynamically
+        // Dynamically update UI
         function updateUI() {
             const formattedBalance = walletData.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
             const formattedEarnings = walletData.earnings.toLocaleString('en-IN', { minimumFractionDigits: 2 });
@@ -712,7 +715,7 @@
             document.querySelectorAll('.val-earnings').forEach(el => el.innerText = formattedEarnings);
         }
 
-        // Withdrawal Handling
+        // Withdrawal Logic
         function handleWithdraw(event) {
             event.preventDefault();
             const method = document.getElementById('withdraw-method').value;
@@ -723,7 +726,6 @@
                 walletData.balance -= amount;
                 updateUI();
 
-                // Add to transactions list
                 const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
                 const transactionLists = document.querySelectorAll('.transaction-list');
                 
@@ -748,7 +750,10 @@
 
                 alert("Withdrawal Request Submitted Successfully!");
                 amountInput.value = '';
-                switchTab('transactions', document.querySelectorAll('.nav-link')[3]);
+                
+                // Redirect to Transactions Tab
+                const transNavLink = document.querySelectorAll('.nav-link')[3];
+                switchTab('transactions', transNavLink);
             } else {
                 alert("Invalid amount or insufficient balance!");
             }
