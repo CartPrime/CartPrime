@@ -442,7 +442,7 @@
                 <div class="stat-card">
                     <div class="stat-title">Lifetime Earnings</div>
                     <div class="stat-value">₹ <span class="val-earnings">0.00</span></div>
-                    <div class="stat-sub">Total verified earnings</div>
+                    <div class="stat-sub">Total verified earnings (3% Commission)</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Pending Earnings</div>
@@ -458,7 +458,7 @@
                 <div class="stat-card">
                     <div class="stat-title">Total Referred Orders</div>
                     <div class="stat-value"><span id="ref-count">0</span> Orders</div>
-                    <div class="stat-sub">Tracked via your link</div>
+                    <div class="stat-sub">Tracked via your referral link</div>
                 </div>
             </div>
 
@@ -467,7 +467,7 @@
                 <div class="box-header">
                     <h3>Your Unique Referral Link</h3>
                 </div>
-                <p style="font-size: 12px; color: var(--text-secondary);">Share this link to direct users to shop and earn commissions.</p>
+                <p style="font-size: 12px; color: var(--text-secondary);">Share this link to direct users to shop and earn 3% commission on sales.</p>
                 <div class="link-copy-box">
                     <input type="text" id="referral-url" class="link-input" readonly>
                     <button class="btn-copy" onclick="copyReferralLink()"><i class="fa-regular fa-copy"></i> Copy</button>
@@ -493,7 +493,7 @@
                     <div class="stat-card">
                         <div class="stat-title">Total Lifetime Earnings</div>
                         <div class="stat-value">₹ <span class="val-earnings">0.00</span></div>
-                        <div class="stat-sub">Processed across all links</div>
+                        <div class="stat-sub">Processed across all referral links (3% rate)</div>
                     </div>
                 </div>
             </div>
@@ -613,7 +613,7 @@
             });
         }
 
-        // 3. Realtime Listener for Customer Orders & Filter by Referenced User
+        // 3. Realtime Listener for Customer Orders (Referred By Check, 3% Commission & Return Period Check)
         function listenToReferralOrders() {
             db.ref('orders').on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
@@ -629,24 +629,37 @@
                 orderKeys.forEach(key => {
                     const order = orders[key];
                     
-                    // Check if order was referred by this user
-                    const referrer = order.referencedBy || order.referredBy;
+                    // Check if referredBy or referencedBy matches this user ID
+                    const referrer = order.referredBy || order.referencedBy;
+                    
                     if (referrer === creatorId) {
                         count++;
-                        const orderAmount = parseFloat(order.amount || order.commission || 0);
+                        
+                        // Calculate 3% Commission on product/order amount
+                        const productAmount = parseFloat(order.amount || order.totalPrice || order.price || 0);
+                        const commissionEarned = productAmount * 0.03; 
 
-                        // Check status: 'pending' or 'success'
-                        const isPending = (order.status === 'pending' || order.status === 'Pending Verification' || order.status === 'Processing');
-                        const isSuccess = (order.status === 'success' || order.status === 'Completed' || order.status === 'Delivered');
+                        // Check status: Delivered, Completed, Pending, Return Window Status
+                        const isDelivered = (order.status === 'Delivered' || order.status === 'delivered');
+                        const isCompleted = (order.status === 'Completed' || order.status === 'completed' || order.returnWindowClosed === true);
+                        
+                        // It is pending if still processing OR if delivered but return period is active
+                        const isPending = !isCompleted;
 
                         if (isPending) {
-                            pendingTotal += orderAmount;
-                        } else if (isSuccess) {
-                            verifiedEarnings += orderAmount;
+                            pendingTotal += commissionEarned;
+                        } else {
+                            verifiedEarnings += commissionEarned;
                         }
 
                         const customerName = order.userName || order.customerName || 'Customer';
-                        
+                        let statusText = 'Pending • Processing Order';
+                        if (isDelivered && isPending) {
+                            statusText = 'Delivered • Return Period Active';
+                        } else if (isCompleted) {
+                            statusText = 'Completed • 3% Commission Credited';
+                        }
+
                         const li = document.createElement('li');
                         li.className = 'ref-order-item';
                         li.innerHTML = `
@@ -656,11 +669,11 @@
                                 </div>
                                 <div class="t-details">
                                     <h4>${customerName} (Order #${order.orderId || key})</h4>
-                                    <p>${isPending ? 'Pending • Return Period Active' : 'Success • Return Period Completed'}</p>
+                                    <p>${statusText}</p>
                                 </div>
                             </div>
                             <div class="t-amount">
-                                <div class="amt plus">+ ₹${orderAmount.toFixed(2)}</div>
+                                <div class="amt plus">+ ₹${commissionEarned.toFixed(2)}</div>
                                 <span class="badge ${isPending ? 'badge-pending' : 'badge-success'}">
                                     ${isPending ? 'Pending' : 'Success'}
                                 </span>
@@ -671,13 +684,16 @@
                 });
 
                 if (count === 0) {
-                    list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No referred orders yet.</li>`;
+                    list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No referred orders found for your link yet.</li>`;
                 }
 
                 // Update UI Counters dynamically
                 document.querySelectorAll('.val-pending').forEach(el => el.innerText = pendingTotal.toFixed(2));
                 document.querySelectorAll('.val-earnings').forEach(el => el.innerText = verifiedEarnings.toFixed(2));
                 document.getElementById('ref-count').innerText = count;
+
+                // Sync calculated verified earnings to Firebase wallet balance if needed
+                db.ref(`users/${creatorId}/wallet/balance`).set(verifiedEarnings);
             });
         }
 
