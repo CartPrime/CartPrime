@@ -419,14 +419,14 @@
             </div>
         </div>
         <div class="user-profile">
-            <div class="profile-img">FF</div>
+            <div class="profile-img" id="user-avatar">U</div>
         </div>
     </header>
 
     <main class="main-content">
         <div class="top-header">
             <div class="header-title">
-                <h1>Welcome back, Farhanul! 👋</h1>
+                <h1>Welcome back, <span id="user-display-name">User</span>! 👋</h1>
                 <p>Track your earnings and grow your revenue</p>
             </div>
         </div>
@@ -512,7 +512,7 @@
                 <form onsubmit="handleWithdraw(event)">
                     <div class="form-group">
                         <label>UPI ID or Bank Account Details</label>
-                        <input type="text" id="withdraw-method" class="form-input" placeholder="e.g. farhanul@upi" required>
+                        <input type="text" id="withdraw-method" class="form-input" placeholder="e.g. user@upi" required>
                     </div>
                     <div class="form-group">
                         <label>Amount (₹)</label>
@@ -572,9 +572,16 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const creatorId = "farhanul"; // Creator Account ID
+
+        // പ്രൊഫൈൽ പേര് അല്ലെങ്കിൽ യൂസർ ഐഡി ഡൈനാമിക് ആയി കണ്ടെത്തുന്നു
+        // (ഉദാഹരണത്തിന്: LocalStorage-ൽ ഉള്ള ലോഗിൻ ചെയ്ത യൂസർ ഐഡി ഉപയോഗിക്കുന്നു)
+        const activeUserId = localStorage.getItem('userId') || "farhanul"; 
+        const activeUserName = localStorage.getItem('userName') || "Farhanul";
 
         window.onload = function() {
+            document.getElementById('user-display-name').innerText = activeUserName;
+            document.getElementById('user-avatar').innerText = activeUserName.charAt(0).toUpperCase();
+
             setupReferralLink();
             listenToWalletData();
             listenToReferralOrders();
@@ -583,7 +590,7 @@
         // Referral URL Generator
         function setupReferralLink() {
             const currentOrigin = window.location.origin;
-            document.getElementById('referral-url').value = `${currentOrigin}/index.html?ref=${creatorId}`;
+            document.getElementById('referral-url').value = `${currentOrigin}/index.html?ref=${activeUserId}`;
         }
 
         // Tab Navigation
@@ -607,13 +614,13 @@
 
         // 2. Realtime Listener for Wallet Main Balances
         function listenToWalletData() {
-            db.ref(`users/${creatorId}/wallet`).on('value', (snapshot) => {
+            db.ref(`users/${activeUserId}/wallet`).on('value', (snapshot) => {
                 const data = snapshot.val() || { balance: 0 };
                 document.querySelectorAll('.val-balance').forEach(el => el.innerText = (data.balance || 0).toFixed(2));
             });
         }
 
-        // 3. Realtime Listener for Customer Orders (Referred By Check, 3% Commission & Return Period Check)
+        // 3. Realtime Listener for Customer Orders (Referred By Validation & Calculation)
         function listenToReferralOrders() {
             db.ref('orders').on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
@@ -629,21 +636,20 @@
                 orderKeys.forEach(key => {
                     const order = orders[key];
                     
-                    // Check if referredBy or referencedBy matches this user ID
+                    // Order-ലെ referredBy അല്ലെങ്കിൽ referencedBy പരിശോധിക്കുന്നു
                     const referrer = order.referredBy || order.referencedBy;
                     
-                    if (referrer === creatorId) {
+                    // ഓർഡർ ചെയ്ത ആളുടെ വിവരങ്ങൾ പരിശോധിക്കുന്നു (User Name / User ID വച്ച് മാച്ച് ചെയ്യുന്നുണ്ടോ എന്ന് നോക്കുന്നു)
+                    if (referrer && (referrer.toLowerCase() === activeUserId.toLowerCase() || referrer.toLowerCase() === activeUserName.toLowerCase())) {
                         count++;
                         
-                        // Calculate 3% Commission on product/order amount
+                        // 3% കമ്മീഷൻ കണക്കാക്കുന്നു
                         const productAmount = parseFloat(order.amount || order.totalPrice || order.price || 0);
                         const commissionEarned = productAmount * 0.03; 
 
-                        // Check status: Delivered, Completed, Pending, Return Window Status
                         const isDelivered = (order.status === 'Delivered' || order.status === 'delivered');
                         const isCompleted = (order.status === 'Completed' || order.status === 'completed' || order.returnWindowClosed === true);
                         
-                        // It is pending if still processing OR if delivered but return period is active
                         const isPending = !isCompleted;
 
                         if (isPending) {
@@ -684,30 +690,30 @@
                 });
 
                 if (count === 0) {
-                    list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No referred orders found for your link yet.</li>`;
+                    list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No referred orders found for your account yet.</li>`;
                 }
 
-                // Update UI Counters dynamically
+                // UI വാല്യുക്കൾ അപ്‌ഡേറ്റ് ചെയ്യുന്നു
                 document.querySelectorAll('.val-pending').forEach(el => el.innerText = pendingTotal.toFixed(2));
                 document.querySelectorAll('.val-earnings').forEach(el => el.innerText = verifiedEarnings.toFixed(2));
                 document.getElementById('ref-count').innerText = count;
 
-                // Sync calculated verified earnings to Firebase wallet balance if needed
-                db.ref(`users/${creatorId}/wallet/balance`).set(verifiedEarnings);
+                // വെരിഫൈ ചെയ്ത ബാലൻസ് ഡാറ്റാബേസ് വാലറ്റിലേക്ക് സേവ് ചെയ്യുന്നു
+                db.ref(`users/${activeUserId}/wallet/balance`).set(verifiedEarnings);
             });
         }
 
-        // 4. Handle Withdrawal
+        // 4. Payout Request handling
         function handleWithdraw(event) {
             event.preventDefault();
             const method = document.getElementById('withdraw-method').value;
             const amount = parseFloat(document.getElementById('withdraw-amt').value);
 
-            db.ref(`users/${creatorId}/wallet/balance`).get().then((snapshot) => {
+            db.ref(`users/${activeUserId}/wallet/balance`).get().then((snapshot) => {
                 const currentBalance = snapshot.val() || 0;
 
                 if (amount > 0 && amount <= currentBalance) {
-                    db.ref(`users/${creatorId}/wallet/balance`).set(currentBalance - amount);
+                    db.ref(`users/${activeUserId}/wallet/balance`).set(currentBalance - amount);
                     alert("Withdrawal Request Submitted Successfully!");
                     document.getElementById('withdraw-amt').value = '';
                     switchTab('dashboard', document.querySelectorAll('.nav-item-bottom')[0]);
