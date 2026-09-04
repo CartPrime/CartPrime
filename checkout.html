@@ -302,6 +302,22 @@
         let currentUserId = null;
         let currentUserEmail = null; 
 
+        // Helper function to generate estimated delivery date range (5 to 7 days from today)
+        const getEstimatedDeliveryDateStr = () => {
+            const today = new Date();
+            const startDate = new Date(today);
+            startDate.setDate(today.getDate() + 5);
+            
+            const endDate = new Date(today);
+            endDate.setDate(today.getDate() + 7);
+            
+            const options = { month: 'short', day: 'numeric' };
+            const startStr = startDate.toLocaleDateString('en-US', options);
+            const endStr = endDate.toLocaleDateString('en-US', options);
+            
+            return `Delivered by ${startStr} - ${endStr}`;
+        };
+
         // Helper function for cleaning price string to safe Float number
         const parsePrice = (priceStr) => {
             if (!priceStr) return 0;
@@ -578,6 +594,12 @@
                     const refUser = refFromUrl || orderInfo.referredBy || localStorage.getItem('referredBy') || null;
                     const commAmt = commFromUrl || orderInfo.commissionAmount || localStorage.getItem('commissionAmount') || 0;
 
+                    // Calculate estimated delivery date string
+                    const estimatedDeliveryText = getEstimatedDeliveryDateStr();
+
+                    // Determine overall return policy status
+                    const isOrderReturnable = orderInfo.return === true || orderInfo.return === 'true' || orderInfo.returnPolicy === true || orderInfo.isReturnable === true || false;
+
                     let finalOrder = { 
                         customerName: fields.name, 
                         customerPhone: fields.phone, 
@@ -591,7 +613,10 @@
                         orderId: orderId,
                         referredBy: refUser,
                         commissionAmount: parseFloat(commAmt) || 0,
-                        orderLink: window.location.href // Checkout URL ഫീൽഡ്
+                        orderLink: window.location.href, // Checkout URL field
+                        returnPolicy: isOrderReturnable,
+                        isReturnable: isOrderReturnable,
+                        deliveryDate: estimatedDeliveryText
                     };
 
                     if (orderInfo.orderType === "Cart" && orderInfo.items) {
@@ -601,6 +626,7 @@
                         finalOrder.items = orderInfo.items.map(item => {
                             let p = parsePrice(item.price);
                             let q = parseInt(item.quantity) || 1;
+                            let itemReturnStatus = item.return === true || item.return === 'true' || item.returnPolicy === true || item.isReturnable === true || false;
                             calcTotal += (p * q);
                             return { 
                                 id: item.id || "", 
@@ -609,7 +635,10 @@
                                 image: item.image || "", 
                                 quantity: q, 
                                 size: item.selectedSize || item.size || "N/A", 
-                                return: item.return === true || item.return === 'true' 
+                                return: itemReturnStatus,
+                                returnPolicy: itemReturnStatus,
+                                isReturnable: itemReturnStatus,
+                                deliveryDate: estimatedDeliveryText
                             };
                         });
                         
@@ -632,17 +661,19 @@
                             image: orderInfo.productImage || "",
                             quantity: q,
                             size: orderInfo.selectedSize || "N/A",
-                            return: orderInfo.return === true || orderInfo.return === 'true'
+                            return: isOrderReturnable,
+                            returnPolicy: isOrderReturnable,
+                            isReturnable: isOrderReturnable,
+                            deliveryDate: estimatedDeliveryText
                         }];
                     }
 
-                    // 1. സാധാരണ പോലെ ഉപഭോക്താവിന്റെ ഫോൺ നമ്പറിന് കീഴിൽ ഓർഡർ സേവ് ചെയ്യുന്നു
+                    // 1. Save primary order under customer's phone number
                     const primaryOrderRef = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
 
-                    // 2. റഫറൽ കോഡ് ഉണ്ടെങ്കിൽ `referralOrders/{referralCode}/{orderId}` എന്ന പാതിലേക്കും കൂടെ ഓർഡർ വിവരങ്ങൾ സേവ് ചെയ്യുന്നു
+                    // 2. Save referral order details under `referralOrders/{referralCode}/{orderId}` with returnPolicy and deliveryDate
                     let referralOrderRef = Promise.resolve();
                     if (refUser) {
-                        // സ്പെഷ്യൽ ക്യാരക്ടറുകൾ ഒഴിവാക്കി ശുദ്ധമായ റഫറൽ കോഡ് എടുക്കുന്നു
                         const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
                         referralOrderRef = set(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), finalOrder);
                     }
@@ -655,7 +686,7 @@
 
                         if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
                         
-                        // Storage-ൽ നിന്നുള്ള ആക്റ്റീവ് ഡാറ്റകൾ നീക്കം ചെയ്യുക
+                        // Clear active temporary order data
                         localStorage.removeItem('pendingOrder');
                         localStorage.removeItem('referredBy');
                         localStorage.removeItem('commissionAmount');
