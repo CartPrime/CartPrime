@@ -167,7 +167,6 @@
         <h1 style="font-weight: 800; letter-spacing: -1px;">My Orders</h1>
     </div>
 
-    <!-- Security Guarantee Banner -->
     <div class="security-banner">
         <i class="fa-solid fa-shield-halved"></i>
         <span>100% Secure & Encrypted Order History with Buyer Protection</span>
@@ -177,7 +176,6 @@
         <div class="empty-state">Loading your orders...</div>
     </div>
 
-    <!-- Trust Badges Section -->
     <div class="trust-grid">
         <div class="trust-item">
             <i class="fa-solid fa-badge-check"></i>
@@ -193,7 +191,6 @@
         </div>
     </div>
 
-    <!-- Help & Support Footer Banner -->
     <div class="support-card" onclick="window.location.href='Complaint.html'">
         <div class="support-info">
             <i class="fa-solid fa-circle-question"></i>
@@ -472,12 +469,36 @@
                 </div>`;
         }
 
+        // --- RETURN WINDOW EXPIRY CALCULATION (7 Days) ---
+        let isReturnExpired = false;
+        if (checkStatus === 'delivered') {
+            const returnDaysLimit = 7; // Change return window days here if needed
+            const baseDateStr = order.deliveredDate || order.date; 
+            
+            if (baseDateStr) {
+                const orderDateObj = new Date(baseDateStr);
+                if (!isNaN(orderDateObj.getTime())) {
+                    const currentDateObj = new Date();
+                    const diffTime = currentDateObj - orderDateObj;
+                    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+                    
+                    if (diffDays > returnDaysLimit) {
+                        isReturnExpired = true;
+                    }
+                }
+            }
+        }
+
         let actionBtnHtml = '';
         if ((checkStatus === 'pending' || checkStatus === 'orderconfirmed') && !order.deliveryDate) { 
             actionBtnHtml = `<button onclick="cancelOrder('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#fee2e2; color:#ef4444; border:none; border-radius:10px; font-weight:700; margin-top:15px; cursor:pointer;">Cancel Order</button>`; 
         } 
         else if (checkStatus === 'delivered' && orderHasReturnableProduct) { 
-            actionBtnHtml = `<button onclick="requestReturn('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#f1f5f9; color:#1e293b; border:1px solid #e2e8f0; border-radius:10px; font-weight:700; margin-top:10px; cursor:pointer;"><i class="fa-solid fa-rotate-left"></i> Request Return</button>`;
+            if (isReturnExpired) {
+                actionBtnHtml = `<div style="width:100%; padding:10px; background:#f1f5f9; color:#94a3b8; border:1px solid #e2e8f0; border-radius:10px; font-weight:700; margin-top:10px; text-align:center; font-size:0.8rem;"><i class="fa-solid fa-circle-xmark"></i> Return Policy Expired (7 Days Completed)</div>`;
+            } else {
+                actionBtnHtml = `<button onclick="requestReturn('${order.id}', '${order.userPhone}')" style="width:100%; padding:10px; background:#f1f5f9; color:#1e293b; border:1px solid #e2e8f0; border-radius:10px; font-weight:700; margin-top:10px; cursor:pointer;"><i class="fa-solid fa-rotate-left"></i> Request Return</button>`;
+            }
         }
 
         const statusBadgeHtml = `<span class="order-status status-${checkStatus}">${checkStatus === 'delivered' ? 'Your Order Delivered' : rawStatus}</span>`;
