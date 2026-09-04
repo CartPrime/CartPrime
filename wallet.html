@@ -16,6 +16,9 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            /* Blue Overlay/Highlight remove ചെയ്യാനുള്ള CSS */
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
 
         :root {
@@ -28,6 +31,7 @@
             --success-green: #05cd99;
             --warning-orange: #ffb547;
             --border-color: #f0f3fa;
+            --whatsapp-green: #25d366;
         }
 
         body {
@@ -37,6 +41,13 @@
             flex-direction: column;
             min-height: 100vh;
             padding-bottom: 75px;
+            user-select: none; /* Text Highlight Blue Overlay ഒഴിവാക്കാൻ */
+        }
+
+        /* Focus Blue Outline ഒഴിവാക്കുന്നു */
+        button, a, input {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .top-navbar {
@@ -381,8 +392,14 @@
 
         .link-copy-box {
             display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .link-input-group {
+            display: flex;
             gap: 8px;
-            margin-top: 10px;
         }
 
         .link-input {
@@ -405,6 +422,44 @@
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
+        }
+
+        /* Share Options Styles */
+        .share-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-share-wa {
+            flex: 1;
+            background: var(--whatsapp-green);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-share-more {
+            flex: 1;
+            background: #eef2f6;
+            color: var(--text-primary);
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
     </style>
 </head>
@@ -468,9 +523,21 @@
                     <h3>Your Unique Referral Link</h3>
                 </div>
                 <p style="font-size: 12px; color: var(--text-secondary);">Share this link to direct users to shop and earn 3% commission on sales.</p>
+                
                 <div class="link-copy-box">
-                    <input type="text" id="referral-url" class="link-input" readonly>
-                    <button class="btn-copy" onclick="copyReferralLink()"><i class="fa-regular fa-copy"></i> Copy</button>
+                    <div class="link-input-group">
+                        <input type="text" id="referral-url" class="link-input" readonly>
+                        <button class="btn-copy" onclick="copyReferralLink()"><i class="fa-regular fa-copy"></i> Copy</button>
+                    </div>
+                    <!-- WhatsApp and General Share Buttons -->
+                    <div class="share-actions">
+                        <button class="btn-share-wa" onclick="shareToWhatsApp()">
+                            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button class="btn-share-more" onclick="shareNative()">
+                            <i class="fa-solid fa-share-nodes"></i> Share
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -573,8 +640,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // പ്രൊഫൈൽ പേര് അല്ലെങ്കിൽ യൂസർ ഐഡി ഡൈനാമിക് ആയി കണ്ടെത്തുന്നു
-        // (ഉദാഹരണത്തിന്: LocalStorage-ൽ ഉള്ള ലോഗിൻ ചെയ്ത യൂസർ ഐഡി ഉപയോഗിക്കുന്നു)
         const activeUserId = localStorage.getItem('userId') || "farhanul"; 
         const activeUserName = localStorage.getItem('userName') || "Farhanul";
 
@@ -612,6 +677,27 @@
             alert("Referral Link copied to clipboard!");
         }
 
+        // WhatsApp Share
+        function shareToWhatsApp() {
+            const refUrl = document.getElementById('referral-url').value;
+            const message = `Check out Cartprime! Shop using my link: ${refUrl}`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        // Native Share (Mobile App Choice / Native Web Share API)
+        function shareNative() {
+            const refUrl = document.getElementById('referral-url').value;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Cartprime Referral',
+                    text: 'Shop on Cartprime using my link:',
+                    url: refUrl,
+                }).catch(() => {});
+            } else {
+                copyReferralLink();
+            }
+        }
+
         // 2. Realtime Listener for Wallet Main Balances
         function listenToWalletData() {
             db.ref(`users/${activeUserId}/wallet`).on('value', (snapshot) => {
@@ -620,7 +706,7 @@
             });
         }
 
-        // 3. Realtime Listener for Customer Orders (Referred By Validation & Calculation)
+        // 3. Realtime Listener for Customer Orders (Auto Credit Commission to Wallet)
         function listenToReferralOrders() {
             db.ref('orders').on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
@@ -635,15 +721,11 @@
                 
                 orderKeys.forEach(key => {
                     const order = orders[key];
-                    
-                    // Order-ലെ referredBy അല്ലെങ്കിൽ referencedBy പരിശോധിക്കുന്നു
                     const referrer = order.referredBy || order.referencedBy;
                     
-                    // ഓർഡർ ചെയ്ത ആളുടെ വിവരങ്ങൾ പരിശോധിക്കുന്നു (User Name / User ID വച്ച് മാച്ച് ചെയ്യുന്നുണ്ടോ എന്ന് നോക്കുന്നു)
                     if (referrer && (referrer.toLowerCase() === activeUserId.toLowerCase() || referrer.toLowerCase() === activeUserName.toLowerCase())) {
                         count++;
                         
-                        // 3% കമ്മീഷൻ കണക്കാക്കുന്നു
                         const productAmount = parseFloat(order.amount || order.totalPrice || order.price || 0);
                         const commissionEarned = productAmount * 0.03; 
 
@@ -656,6 +738,16 @@
                             pendingTotal += commissionEarned;
                         } else {
                             verifiedEarnings += commissionEarned;
+
+                            // ⭐ പുതിയ ഓർഡർ പൂർത്തിയാവുമ്പോൾ വാലറ്റിൽ ഓട്ടോമാറ്റിക് ആയി കമ്മീഷൻ ആഡ് ചെയ്യുന്ന ഭാഗം ⭐
+                            if (!order.commissionCredited) {
+                                db.ref(`users/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
+                                    return (currentBalance || 0) + commissionEarned;
+                                });
+
+                                // കമ്മീഷൻ പ്രൊസസ്സ് ചെയ്തതായി അടയാളപ്പെടുത്തുന്നു
+                                db.ref(`orders/${key}/commissionCredited`).set(true);
+                            }
                         }
 
                         const customerName = order.userName || order.customerName || 'Customer';
@@ -693,13 +785,9 @@
                     list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No referred orders found for your account yet.</li>`;
                 }
 
-                // UI വാല്യുക്കൾ അപ്‌ഡേറ്റ് ചെയ്യുന്നു
                 document.querySelectorAll('.val-pending').forEach(el => el.innerText = pendingTotal.toFixed(2));
                 document.querySelectorAll('.val-earnings').forEach(el => el.innerText = verifiedEarnings.toFixed(2));
                 document.getElementById('ref-count').innerText = count;
-
-                // വെരിഫൈ ചെയ്ത ബാലൻസ് ഡാറ്റാബേസ് വാലറ്റിലേക്ക് സേവ് ചെയ്യുന്നു
-                db.ref(`users/${activeUserId}/wallet/balance`).set(verifiedEarnings);
             });
         }
 
