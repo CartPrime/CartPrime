@@ -586,7 +586,7 @@
 
         let selectedProductSize = null;
         let isApprovedEarner = false;
-        let earnerPartnerId = null; // Stores earn_partners Node Key
+        let earnerPartnerId = null; // Stores earn_partners Node Key / Partner ID
 
         const userId = localStorage.getItem('userId');
         
@@ -620,7 +620,7 @@
                         const isApproved = (p.status === 'approved' || p.approved === true || p.status === 'Approved');
                         if (!isApproved) continue;
 
-                        const partnerPhone = cleanPhoneStr(p.phone || p.mobile || p.number || p.userPhone || key);
+                        const partnerPhone = cleanPhoneStr(p.phone || p.mobile || p.number || p.userPhone || p.partnerPhone || '');
                         const partnerName = (p.name || p.userName || p.partnerName || '').toString().toLowerCase().trim();
 
                         // Match Phone AND Name to verify partner
@@ -628,7 +628,7 @@
                         const isNameMatched = partnerName && partnerName === userName;
 
                         if (isPhoneMatched && isNameMatched) {
-                            earnerPartnerId = key; // Keep partner ID key
+                            earnerPartnerId = p.partnerId || p.code || p.referralCode || key; // Use Partner ID/code, fallback to key
                             return true;
                         }
                     }
@@ -997,10 +997,12 @@
         window.shareProduct = (title, isAffiliateShare = false) => {
             const baseUrl = window.location.origin + window.location.pathname;
             
-            // Affiliate share uses earnerPartnerId (the Partner Key from earn_partners node)
+            // Generate link using partner code/ID instead of phone number
+            const targetPartnerCode = earnerPartnerId || localStorage.getItem('referredBy');
             let affiliateUrl = `${baseUrl}?id=${productId}`;
-            if (isAffiliateShare && earnerPartnerId) {
-                affiliateUrl += `&ref=${earnerPartnerId}`;
+            
+            if (isAffiliateShare && targetPartnerCode) {
+                affiliateUrl += `&ref=${encodeURIComponent(targetPartnerCode)}`;
             }
             
             const shareMessage = isAffiliateShare
@@ -1067,8 +1069,8 @@
                 return;
             }
 
-            // Read the Partner ID (referral code) saved from URL query string
-            const referredBy = localStorage.getItem('referredBy') || null;
+            // Read the Partner ID (referral code) saved from URL query string or partner session
+            const referredBy = localStorage.getItem('referredBy') || earnerPartnerId || null;
 
             localStorage.setItem('pendingOrder', JSON.stringify({ 
                 productId: id, 
