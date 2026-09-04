@@ -591,7 +591,7 @@
                         orderId: orderId,
                         referredBy: refUser,
                         commissionAmount: parseFloat(commAmt) || 0,
-                        orderLink: window.location.href // നിലവിലുള്ള Checkout URL ഒരു പുതിയ ഫീൽഡ് ആയി സേവ് ചെയ്യുന്നു
+                        orderLink: window.location.href // Checkout URL ഫീൽഡ്
                     };
 
                     if (orderInfo.orderType === "Cart" && orderInfo.items) {
@@ -636,7 +636,18 @@
                         }];
                     }
 
-                    set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder).then(() => {
+                    // 1. സാധാരണ പോലെ ഉപഭോക്താവിന്റെ ഫോൺ നമ്പറിന് കീഴിൽ ഓർഡർ സേവ് ചെയ്യുന്നു
+                    const primaryOrderRef = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
+
+                    // 2. റഫറൽ കോഡ് ഉണ്ടെങ്കിൽ `referralOrders/{referralCode}/{orderId}` എന്ന പാതിലേക്കും കൂടെ ഓർഡർ വിവരങ്ങൾ സേവ് ചെയ്യുന്നു
+                    let referralOrderRef = Promise.resolve();
+                    if (refUser) {
+                        // സ്പെഷ്യൽ ക്യാരക്ടറുകൾ ഒഴിവാക്കി ശുദ്ധമായ റഫറൽ കോഡ് എടുക്കുന്നു
+                        const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
+                        referralOrderRef = set(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), finalOrder);
+                    }
+
+                    Promise.all([primaryOrderRef, referralOrderRef]).then(() => {
                         const activeUser = auth.currentUser;
                         const emailToSend = activeUser ? activeUser.email : currentUserEmail;
 
@@ -651,7 +662,10 @@
 
                         showAlert('Success', 'Order Placed Successfully!', 'success');
                         setTimeout(() => location.href = 'orders.html', 1500);
-                    }).catch(() => showAlert('Error', 'Order could not be saved.', 'error'));
+                    }).catch((err) => {
+                        console.error("Order save error:", err);
+                        showAlert('Error', 'Order could not be saved.', 'error');
+                    });
                 }
             });
         };
