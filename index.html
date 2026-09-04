@@ -54,7 +54,7 @@ body {
   min-height: 100vh; 
   display: flex; 
   flex-direction: column; 
-  padding-bottom: 70px; /* Space for Bottom Navigation Bar */
+  padding-bottom: 75px; /* Space for Bottom Navigation Bar */
   -webkit-tap-highlight-color: transparent; 
   transition: background-color 0.3s ease, color 0.3s ease; 
 } 
@@ -214,14 +214,14 @@ nav {
   cursor: pointer;
 }
 .bottom-nav-item i {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
 }
 .bottom-nav-item.active, .bottom-nav-item:hover {
   color: var(--accent);
 }
 .bottom-nav-item .badge {
   top: -2px;
-  right: 18px;
+  right: 14px;
 }
 
 /* --- Loading Spinner Inside Modal --- */
@@ -322,7 +322,7 @@ nav {
   margin-top: 8px; 
   font-size: 0.95rem; 
 } 
-/* Updated Trust Stats Widget */ 
+/* Trust Stats Widget */ 
 .trust-stats { 
   display: flex; 
   align-items: center; 
@@ -764,7 +764,6 @@ nav {
   font-weight: 800; 
   z-index: 10; 
 } 
-/* Genuine Guarantee Tag on Product Image */ 
 .verified-tag { 
   position: absolute; 
   bottom: 8px; 
@@ -784,7 +783,6 @@ nav {
 .verified-tag i { 
   color: #2563eb; 
 } 
-/* --- Product Card Wishlist Button --- */ 
 .card-wishlist-btn { 
   position: absolute; 
   top: 10px; 
@@ -812,7 +810,6 @@ nav {
   color: #ef4444; 
   background: #fff; 
 } 
-/* Adjust discount badge position if wishlist button exists */ 
 .discount-badge.with-wishlist { 
   right: 48px; 
 } 
@@ -1011,53 +1008,30 @@ nav {
 .cookie-accept:hover { 
   opacity: 0.9; 
 } 
-footer { 
-  background: #000; 
-  color: #fff; 
-  padding: 30px 6%; 
-  margin-top: auto; 
-  width: 100%; 
-  border-top: 1px solid #1e293b; 
-} 
-.footer-content { 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  flex-wrap: wrap; 
-  gap: 15px; 
-} 
-.footer-logo { 
-  font-weight: 800; 
-  font-size: 1.5rem; 
-} 
-.footer-logo span { 
-  color: #64748b; 
-} 
-.footer-contact { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 8px; 
-} 
-.footer-contact a { 
-  color: #fff; 
-  text-decoration: none; 
-  font-size: 0.85rem; 
-  display: flex; 
-  align-items: center; 
-  gap: 9px; 
-  transition: opacity 0.2s; 
-} 
-.footer-contact a:hover { 
-  opacity: 0.8; 
-} 
-.footer-bottom { 
-  border-top: 1px solid #1e293b; 
-  margin-top: 20px; 
-  padding-top: 15px; 
-  text-align: center; 
-  color: #94a3b8; 
-  font-size: 0.85rem; 
-} 
+
+/* --- Contact Modal Options --- */
+.contact-option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.contact-option:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.contact-option i {
+  font-size: 1.4rem;
+}
+
 /* --- Responsive Adjustments --- */ 
 @media (max-width: 768px) { 
   nav { 
@@ -1198,17 +1172,6 @@ footer {
     width: 100%; 
     min-height: 40px; 
   } 
-  footer { 
-    padding: 25px 4%; 
-  } 
-  .footer-content { 
-    flex-direction: column; 
-    text-align: center; 
-    gap: 15px; 
-  } 
-  .footer-contact { 
-    align-items: center; 
-  } 
 } 
 </style> 
 </head> 
@@ -1221,7 +1184,6 @@ footer {
     <div id="searchSuggestions" class="search-suggestions-box"></div> 
   </div> 
   <div class="nav-right"> 
-    <!-- Dynamic Profile Badge Header Replacing Previous Icons -->
     <div class="profile-chip" id="profileChip" title="Click to edit profile">
       <div class="profile-avatar" id="navProfileAvatar">U</div>
       <div class="profile-info">
@@ -1255,10 +1217,11 @@ footer {
   </div> 
 </div>
 
+<!-- Earn Partner Request Modal -->
 <div id="earnModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Earn Money Partner</h3> 
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Register your details to start earning commission on referrals.</p> 
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Submit your details for separate admin review and verification.</p> 
     <form id="earnForm" class="modal-form"> 
       <input type="text" id="partnerName" class="modal-input" placeholder="Full Name" required> 
       <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
@@ -1270,6 +1233,27 @@ footer {
     </form> 
   </div> 
 </div> 
+
+<!-- Contact Us Modal -->
+<div id="contactModal" class="modal-overlay"> 
+  <div class="modal-card"> 
+    <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Contact Customer Support</h3> 
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">We are here to help you 24/7. Reach out via any platform below:</p> 
+    
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <a href="mailto:cartprimeshopping@gmail.com" class="contact-option">
+        <i class="fa-regular fa-envelope" style="color: #2563eb;"></i>
+        <span>Email: cartprimeshopping@gmail.com</span>
+      </a>
+      <a href="https://www.instagram.com/cartprimeonlinestore?igsh=MWFmYTkzdHhyOXoyYQ==" target="_blank" rel="noopener noreferrer" class="contact-option">
+        <i class="fa-brands fa-instagram" style="color: #e1306c;"></i>
+        <span>Instagram: @cartprimeonlinestore</span>
+      </a>
+    </div>
+
+    <button type="button" id="closeContactModal" style="width:100%; margin-top:16px; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--text-main); font-weight:700; cursor:pointer;">Close</button> 
+  </div> 
+</div>
 
 <header class="hero"> 
   <div class="hero-text"> 
@@ -1354,15 +1338,11 @@ footer {
   </div> 
 </div> 
 
-<!-- Bottom Navigation Bar -->
+<!-- Bottom Navigation Bar with Contact Icon -->
 <div class="bottom-nav">
   <a href="/" class="bottom-nav-item active">
     <i class="fa-solid fa-house"></i>
     <span>Home</span>
-  </a>
-  <a href="#categoryBar" class="bottom-nav-item">
-    <i class="fa-solid fa-layer-group"></i>
-    <span>Categories</span>
   </a>
   <a href="/wishlist" class="bottom-nav-item">
     <i class="fa-regular fa-heart"></i>
@@ -1378,6 +1358,10 @@ footer {
     <i class="fa-solid fa-wallet"></i>
     <span>Earn</span>
   </div>
+  <div id="bottomContactBtn" class="bottom-nav-item">
+    <i class="fa-solid fa-headset"></i>
+    <span>Contact</span>
+  </div>
 </div>
 
 <!-- Premium Custom Toast Notification Modal -->
@@ -1392,22 +1376,6 @@ footer {
   </div>
 </div>
 
-<footer> 
-  <div class="footer-content"> 
-    <div class="footer-logo">CART<span>PRIME</span></div> 
-    <div class="footer-contact"> 
-      <a href="mailto:cartprimeshopping@gmail.com"> 
-        <i class="fa-regular fa-envelope"></i> cartprimeshopping@gmail.com 
-      </a> 
-      <a href="https://www.instagram.com/cartprimeonlinestore?igsh=MWFmYTkzdHhyOXoyYQ==" target="_blank" rel="noopener noreferrer"> 
-        <i class="fa-brands fa-instagram" style="font-size: 1.1rem; color: #e1306c;"></i> @cartprimeonlinestore 
-      </a> 
-    </div> 
-  </div> 
-  <div class="footer-bottom"> 
-    <p>&copy; 2026 CartPrime. All Rights Reserved.</p> 
-  </div> 
-</footer> 
 <script type="module"> 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"; 
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"; 
@@ -1427,13 +1395,12 @@ footer {
   const auth = getAuth(app); 
   const db = getDatabase(app); 
 
-  // --- HELPER FUNCTION TO GENERATE UNIQUE PARTNER ID ---
   function generateUniquePartnerId() {
     const randomDigits = Math.floor(100000 + Math.random() * 900000);
     return `CP-REF-${randomDigits}`;
   }
 
-  // --- TOP PROFILE HEADER & USER DETAILS UPDATE LOGIC ---
+  // --- TOP PROFILE HEADER LOGIC ---
   const profileChip = document.getElementById('profileChip');
   const navProfileAvatar = document.getElementById('navProfileAvatar');
   const navProfileName = document.getElementById('navProfileName');
@@ -1457,7 +1424,6 @@ footer {
 
   updateHeaderProfileUI();
 
-  // Handle Edit Profile Click
   if (profileChip) {
     profileChip.addEventListener('click', () => {
       document.getElementById('userWelcomeName').value = localStorage.getItem('userName') || "";
@@ -1520,7 +1486,7 @@ footer {
     });
   }
 
-  // --- PREMIUM TOAST NOTIFICATION FUNCTION ---
+  // --- PREMIUM TOAST NOTIFICATION ---
   function showCustomAlert(title, message, isSuccess = true) {
     const toastModal = document.getElementById('customToast');
     const toastTitle = document.getElementById('toastTitle');
@@ -1546,7 +1512,7 @@ footer {
     };
   }
 
-  // --- AFFILIATE TRACKING LOGIC --- 
+  // --- AFFILIATE TRACKING --- 
   (function handleAffiliateTracking() { 
     const urlParams = new URLSearchParams(window.location.search); 
     const affId = urlParams.get('ref') || urlParams.get('aff'); 
@@ -1555,7 +1521,7 @@ footer {
     } 
   })(); 
 
-  // --- COOKIES CONSENT LOGIC --- 
+  // --- COOKIES CONSENT --- 
   const cookieBanner = document.getElementById('cookieBanner'); 
   const acceptCookiesBtn = document.getElementById('acceptCookiesBtn'); 
   if (!localStorage.getItem('cookiesAccepted')) { 
@@ -1566,45 +1532,37 @@ footer {
     cookieBanner.style.display = 'none'; 
   }); 
 
-  // --- EARN VERIFICATION LOGIC (BOTTOM NAV EARN BUTTON) --- 
+  // --- CONTACT MODAL LOGIC ---
+  const contactModal = document.getElementById('contactModal');
+  const bottomContactBtn = document.getElementById('bottomContactBtn');
+  const closeContactModal = document.getElementById('closeContactModal');
+
+  if (bottomContactBtn) {
+    bottomContactBtn.addEventListener('click', () => {
+      contactModal.style.display = 'flex';
+    });
+  }
+
+  if (closeContactModal) {
+    closeContactModal.addEventListener('click', () => {
+      contactModal.style.display = 'none';
+    });
+  }
+
+  // --- EARN VERIFICATION MODAL LOGIC (MANUAL VERIFICATION MODE) --- 
   const earnModal = document.getElementById('earnModal'); 
   const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
   const earnForm = document.getElementById('earnForm'); 
 
-  function handleEarnVerification() {
-    const registeredPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-    if (registeredPhone) {
-      const partnerRef = ref(db, `earn_partners/${registeredPhone}`);
-      get(partnerRef).then((snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const status = (data.status || "").toLowerCase();
-          if (status === 'approved') {
-            window.location.href = "/wallet";
-          } else {
-            showCustomAlert(
-              "Verification Pending", 
-              `Your partner registration is pending approval. Partner ID: ${data.partnerId || 'N/A'}. Please wait for admin activation before accessing Wallet.`, 
-              false
-            );
-          }
-        } else {
-          // Fill defaults if available
-          document.getElementById('partnerName').value = localStorage.getItem('userName') || "";
-          document.getElementById('partnerPhone').value = registeredPhone;
-          earnModal.style.display = 'flex';
-        }
-      }).catch(() => {
-        earnModal.style.display = 'flex';
-      });
-    } else {
-      earnModal.style.display = 'flex'; 
-    }
+  function openEarnRegistrationModal() {
+    document.getElementById('partnerName').value = localStorage.getItem('userName') || "";
+    document.getElementById('partnerPhone').value = localStorage.getItem('userPhone') || "";
+    earnModal.style.display = 'flex';
   }
   
   if (bottomEarnBtn) { 
-    bottomEarnBtn.addEventListener('click', handleEarnVerification); 
+    bottomEarnBtn.addEventListener('click', openEarnRegistrationModal); 
   } 
 
   if (closeEarnModal) { 
@@ -1625,18 +1583,12 @@ footer {
         get(partnerRef).then((snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val();
-            const status = (data.status || "").toLowerCase();
-            if (status === 'approved') {
-              localStorage.setItem('partnerPhone', phone);
-              localStorage.setItem('partnerId', data.partnerId);
-              window.location.href = "/wallet";
-            } else {
-              showCustomAlert(
-                "Already Registered", 
-                `This number is already registered (Partner ID: ${data.partnerId || 'N/A'}) and is pending approval.`, 
-                false
-              );
-            }
+            showCustomAlert(
+              "Application Submitted", 
+              `Your Earn Partner registration is undergoing separate verification by our team. Partner ID: ${data.partnerId || 'N/A'}.`, 
+              true
+            );
+            earnModal.style.display = 'none';
           } else {
             const uniquePartnerId = generateUniquePartnerId();
 
@@ -1653,8 +1605,8 @@ footer {
               earnForm.reset(); 
               earnModal.style.display = 'none'; 
               showCustomAlert(
-                "Verification Submitted!", 
-                `Your registration request was successful! Partner ID: ${uniquePartnerId}. Access to wallet will be enabled once approved.`, 
+                "Request Received!", 
+                `Your registration was submitted successfully for separate verification! Partner ID: ${uniquePartnerId}. Access will be enabled after manual review.`, 
                 true
               ); 
             }).catch((err) => { 
