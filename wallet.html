@@ -660,28 +660,46 @@
             listenToWalletData();
         };
 
-        // earn_partners ഫീൽഡിൽ നിന്ന് യൂസർ നൽകിയ പേര് എടുത്തു കാണിക്കുന്നു
+        // Home page-ൽ നിന്നുള്ള യൂസറുടെ പേര് ആദ്യം എടുക്കുന്നു (users path), ഇല്ലെങ്കിൽ earn_partners നോക്കുന്നു
         function fetchPartnerDetails() {
-            db.ref(`earn_partners/${activeUserId}`).on('value', (snapshot) => {
-                const partnerData = snapshot.val();
-                if (partnerData) {
-                    partnerName = partnerData.name || partnerData.fullName || partnerData.username || activeUserId;
+            db.ref(`users/${activeUserId}`).once('value', (userSnapshot) => {
+                const userData = userSnapshot.val();
+                
+                if (userData && (userData.name || userData.fullName || userData.displayName || userData.username)) {
+                    partnerName = userData.name || userData.fullName || userData.displayName || userData.username;
+                    updateUIWithPartnerName(partnerName);
                 } else {
-                    partnerName = activeUserId !== 'guest_user' ? activeUserId : 'User';
+                    db.ref(`earn_partners/${activeUserId}`).on('value', (partnerSnapshot) => {
+                        const partnerData = partnerSnapshot.val();
+                        if (partnerData && (partnerData.name || partnerData.fullName || partnerData.username)) {
+                            partnerName = partnerData.name || partnerData.fullName || partnerData.username;
+                        } else {
+                            partnerName = activeUserId !== 'guest_user' ? activeUserId : 'User';
+                        }
+                        updateUIWithPartnerName(partnerName);
+                    });
                 }
-
-                document.getElementById('user-display-name').innerText = partnerName;
-                document.getElementById('user-avatar').innerText = partnerName.charAt(0).toUpperCase();
-
-                setupReferralLink();
-                listenToReferralOrders();
             });
+        }
+
+        function updateUIWithPartnerName(name) {
+            const nameElement = document.getElementById('user-display-name');
+            const avatarElement = document.getElementById('user-avatar');
+
+            if (nameElement) nameElement.innerText = name;
+            if (avatarElement) avatarElement.innerText = name.charAt(0).toUpperCase();
+
+            setupReferralLink();
+            listenToReferralOrders();
         }
 
         // Referral URL Generator
         function setupReferralLink() {
             const currentOrigin = window.location.origin;
-            document.getElementById('referral-url').value = `${currentOrigin}/index.html?ref=${activeUserId}`;
+            const refInput = document.getElementById('referral-url');
+            if (refInput) {
+                refInput.value = `${currentOrigin}/index.html?ref=${activeUserId}`;
+            }
         }
 
         // Tab Navigation
@@ -691,36 +709,44 @@
 
             document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active-view'));
             const selectedView = document.getElementById(viewId);
-            if(selectedView) selectedView.classList.add('active-view');
+            if (selectedView) selectedView.classList.add('active-view');
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function copyReferralLink() {
             const linkInput = document.getElementById('referral-url');
-            linkInput.select();
-            navigator.clipboard.writeText(linkInput.value);
-            alert("Referral Link copied to clipboard!");
+            if (linkInput) {
+                linkInput.select();
+                navigator.clipboard.writeText(linkInput.value);
+                alert("Referral Link copied to clipboard!");
+            }
         }
 
         // WhatsApp Share
         function shareToWhatsApp() {
-            const refUrl = document.getElementById('referral-url').value;
-            const message = `Check out Cartprime! Shop using my link: ${refUrl}`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+            const linkInput = document.getElementById('referral-url');
+            if (linkInput) {
+                const refUrl = linkInput.value;
+                const message = `Check out Cartprime! Shop using my link: ${refUrl}`;
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+            }
         }
 
         // Native Share API
         function shareNative() {
-            const refUrl = document.getElementById('referral-url').value;
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Cartprime Referral',
-                    text: 'Shop on Cartprime using my link:',
-                    url: refUrl,
-                }).catch(() => {});
-            } else {
-                copyReferralLink();
+            const linkInput = document.getElementById('referral-url');
+            if (linkInput) {
+                const refUrl = linkInput.value;
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Cartprime Referral',
+                        text: 'Shop on Cartprime using my link:',
+                        url: refUrl,
+                    }).catch(() => {});
+                } else {
+                    copyReferralLink();
+                }
             }
         }
 
@@ -737,6 +763,8 @@
             db.ref('orders').on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
                 const list = document.getElementById('referral-orders-list');
+                if (!list) return;
+
                 list.innerHTML = '';
 
                 let count = 0;
@@ -811,15 +839,22 @@
 
                 document.querySelectorAll('.val-pending').forEach(el => el.innerText = pendingTotal.toFixed(2));
                 document.querySelectorAll('.val-earnings').forEach(el => el.innerText = verifiedEarnings.toFixed(2));
-                document.getElementById('ref-count').innerText = count;
+
+                const refCountEl = document.getElementById('ref-count');
+                if (refCountEl) refCountEl.innerText = count;
             });
         }
 
         // 4. Payout Request Handling
         function handleWithdraw(event) {
             event.preventDefault();
-            const method = document.getElementById('withdraw-method').value;
-            const amount = parseFloat(document.getElementById('withdraw-amt').value);
+            const methodInput = document.getElementById('withdraw-method');
+            const amtInput = document.getElementById('withdraw-amt');
+
+            if (!methodInput || !amtInput) return;
+
+            const method = methodInput.value;
+            const amount = parseFloat(amtInput.value);
 
             db.ref(`earn_partners/${activeUserId}/wallet/balance`).get().then((snapshot) => {
                 const currentBalance = snapshot.val() || 0;
@@ -838,7 +873,7 @@
                     });
 
                     alert("Withdrawal Request Submitted Successfully!");
-                    document.getElementById('withdraw-amt').value = '';
+                    amtInput.value = '';
                     switchTab('dashboard', document.querySelectorAll('.nav-item-bottom')[0]);
                 } else {
                     alert("Insufficient balance for withdrawal!");
