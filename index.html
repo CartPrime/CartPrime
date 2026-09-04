@@ -1464,6 +1464,12 @@ footer {
   const auth = getAuth(app); 
   const db = getDatabase(app); 
 
+  // --- HELPER FUNCTION TO GENERATE UNIQUE PARTNER ID ---
+  function generateUniquePartnerId() {
+    const randomDigits = Math.floor(100000 + Math.random() * 900000);
+    return `CP-REF-${randomDigits}`;
+  }
+
   // --- FIRST VISIT USER DETAILS CHECK & LOADING ANIMATION ---
   const welcomeModal = document.getElementById('userWelcomeModal');
   const welcomeForm = document.getElementById('userWelcomeForm');
@@ -1481,16 +1487,13 @@ footer {
       const phone = document.getElementById('userWelcomePhone').value.trim();
 
       if (name && phone) {
-        // Form മറച്ച് Loading Spinner മാത്രം കാണിക്കുക
         welcomeForm.style.display = 'none';
         verifyLoadingBox.style.display = 'flex';
 
-        // 1.5 സെക്കൻഡ് verification loading അനുഭവം നൽകാൻ delay
         setTimeout(() => {
           localStorage.setItem('userName', name);
           localStorage.setItem('userPhone', phone);
           
-          // Save to Firebase database under users
           const userRef = ref(db, `users/${phone}`);
           set(userRef, {
             name: name,
@@ -1579,7 +1582,7 @@ footer {
     themeIcon.className = targetTheme === 'dark' ? 'fa-regular fa-sun' : 'fa-regular fa-moon'; 
   }); 
 
-  // --- EARN MONEY MODAL LOGIC --- 
+  // --- EARN MONEY MODAL LOGIC (UPDATED WITH UNIQUE PARTNER ID) --- 
   const earnModal = document.getElementById('earnModal'); 
   const earnMoneyBtn = document.getElementById('earnMoneyBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
@@ -1599,7 +1602,7 @@ footer {
             } else {
               showCustomAlert(
                 "Request Pending", 
-                "Your partner verification is pending approval. Please wait for admin verification.", 
+                `Your partner verification is pending approval. Your Partner ID: ${data.partnerId || 'N/A'}. Please wait for admin verification.`, 
                 false
               );
             }
@@ -1627,6 +1630,7 @@ footer {
       const name = document.getElementById('partnerName').value.trim(); 
       const phone = document.getElementById('partnerPhone').value.trim(); 
       const upi = document.getElementById('partnerUpi').value.trim(); 
+
       if (name && phone && upi) { 
         const partnerRef = ref(db, `earn_partners/${phone}`); 
         get(partnerRef).then((snapshot) => {
@@ -1635,16 +1639,21 @@ footer {
             const status = (data.status || "").toLowerCase();
             if (status === 'approved') {
               localStorage.setItem('partnerPhone', phone);
+              localStorage.setItem('partnerId', data.partnerId);
               window.location.href = "/wallet";
             } else {
               showCustomAlert(
                 "Already Registered", 
-                "This number is already registered and is currently pending approval.", 
+                `This number is already registered (Partner ID: ${data.partnerId || 'N/A'}) and is currently pending approval.`, 
                 false
               );
             }
           } else {
+            // UNIQUE PARTNER ID GENERATION
+            const uniquePartnerId = generateUniquePartnerId();
+
             set(partnerRef, { 
+              partnerId: uniquePartnerId,
               name: name, 
               phone: phone, 
               upi: upi, 
@@ -1652,11 +1661,12 @@ footer {
               timestamp: Date.now() 
             }).then(() => { 
               localStorage.setItem('partnerPhone', phone);
+              localStorage.setItem('partnerId', uniquePartnerId);
               earnForm.reset(); 
               earnModal.style.display = 'none'; 
               showCustomAlert(
                 "Request Submitted!", 
-                "Your verification request has been submitted successfully! Admin will review and activate your account.", 
+                `Your registration request was successful! Your Unique Partner ID is: ${uniquePartnerId}. Admin will review and activate your account.`, 
                 true
               ); 
             }).catch((err) => { 
