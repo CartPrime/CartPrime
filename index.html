@@ -54,16 +54,17 @@ body {
   min-height: 100vh; 
   display: flex; 
   flex-direction: column; 
+  padding-bottom: 70px; /* Space for Bottom Navigation Bar */
   -webkit-tap-highlight-color: transparent; 
   transition: background-color 0.3s ease, color 0.3s ease; 
 } 
 /* --- Global Button Touch & Interactive Reset --- */ 
-button, .category-btn, .icon-btn, .cookie-btn, .earn-btn { 
+button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item { 
   touch-action: manipulation; 
   user-select: none; 
   -webkit-tap-highlight-color: transparent; 
 } 
-button:active, .category-btn:active, .icon-btn:active { 
+button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active { 
   transform: scale(0.96) !important; 
 } 
 /* --- Navigation --- */ 
@@ -124,6 +125,69 @@ nav {
   color: var(--text-muted); 
   font-size: 0.85rem; 
 } 
+/* --- Bottom Navigation Bar --- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 9999;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+}
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  position: relative;
+  width: 20%;
+  transition: color 0.2s ease;
+}
+.bottom-nav-item i {
+  font-size: 1.25rem;
+}
+.bottom-nav-item.active, .bottom-nav-item:hover {
+  color: var(--accent);
+}
+.bottom-nav-item .badge {
+  top: -2px;
+  right: 18px;
+}
+
+/* --- Loading Spinner Inside Modal --- */
+.verify-loading-box {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 15px 0;
+}
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 4px solid var(--border);
+  border-top: 4px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* --- Compact Search Suggestion Box --- */ 
 .search-suggestions-box { 
   position: absolute; 
@@ -466,8 +530,8 @@ nav {
 .earn-btn:hover { 
   background: #1d4ed8; 
 } 
-/* --- Earn Money Verification Modal --- */ 
-.earn-modal-overlay { 
+/* --- Modal Universal Styles --- */ 
+.modal-overlay { 
   display: none; 
   position: fixed; 
   top: 0; 
@@ -475,12 +539,13 @@ nav {
   width: 100%; 
   height: 100%; 
   background: rgba(0,0,0,0.6); 
+  backdrop-filter: blur(4px);
   z-index: 10000; 
   align-items: center; 
   justify-content: center; 
   padding: 15px; 
 } 
-.earn-modal-card { 
+.modal-card { 
   background: var(--card-bg); 
   color: var(--text-main); 
   padding: 25px; 
@@ -490,13 +555,13 @@ nav {
   box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
   border: 1px solid var(--border); 
 } 
-.earn-form { 
+.modal-form { 
   display: flex; 
   flex-direction: column; 
   gap: 12px; 
   margin-top: 15px; 
 } 
-.earn-input { 
+.modal-input { 
   padding: 12px; 
   border-radius: 10px; 
   border: 1px solid var(--border); 
@@ -505,26 +570,12 @@ nav {
   font-size: 0.9rem; 
   width: 100%; 
 } 
-.earn-btn-group { 
+.modal-btn-group { 
   display: flex; 
   gap: 10px; 
   margin-top: 10px; 
 } 
-.earn-btn-cancel { 
-  flex: 1; 
-  padding: 12px; 
-  border-radius: 10px; 
-  border: 1px solid var(--border); 
-  background: transparent; 
-  color: var(--text-main); 
-  cursor: pointer; 
-  font-weight: 600; 
-  min-height: 44px; 
-  display: inline-flex; 
-  align-items: center; 
-  justify-content: center; 
-} 
-.earn-btn-submit { 
+.modal-btn-submit { 
   flex: 1; 
   padding: 12px; 
   border-radius: 10px; 
@@ -921,7 +972,7 @@ nav {
 /* --- Cookies Consent Banner --- */ 
 .cookie-banner { 
   position: fixed; 
-  bottom: 20px; 
+  bottom: 80px; 
   left: 20px; 
   right: 20px; 
   max-width: 450px; 
@@ -1155,7 +1206,7 @@ footer {
   .cookie-banner { 
     left: 10px; 
     right: 10px; 
-    bottom: 10px; 
+    bottom: 75px; 
     padding: 14px; 
     width: auto; 
     max-width: 100%; 
@@ -1166,9 +1217,6 @@ footer {
   .cookie-btn { 
     width: 100%; 
     min-height: 40px; 
-  } 
-  .earn-btn-group { 
-    flex-direction: flex-row; 
   } 
   footer { 
     padding: 25px 4%; 
@@ -1221,21 +1269,45 @@ footer {
     </a> 
   </div> 
 </nav> 
-<div id="earnModal" class="earn-modal-overlay"> 
-  <div class="earn-modal-card"> 
+
+<!-- User Registration/Welcome Modal on First Visit -->
+<div id="userWelcomeModal" class="modal-overlay"> 
+  <div class="modal-card"> 
+    <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Welcome to CartPrime</h3> 
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Please enter your details to get started.</p> 
+    
+    <form id="userWelcomeForm" class="modal-form"> 
+      <input type="text" id="userWelcomeName" class="modal-input" placeholder="Full Name" required> 
+      <input type="tel" id="userWelcomePhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
+      <div class="modal-btn-group"> 
+        <button type="submit" class="modal-btn-submit" id="welcomeSubmitBtn">Continue Shopping</button> 
+      </div> 
+    </form> 
+
+    <!-- Verification Loading Indicator -->
+    <div id="verifyLoadingBox" class="verify-loading-box">
+      <div class="spinner"></div>
+      <p style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin: 0;">Verifying Mobile Number...</p>
+    </div>
+  </div> 
+</div>
+
+<div id="earnModal" class="modal-overlay"> 
+  <div class="modal-card"> 
     <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Earn Money Partner</h3> 
     <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Register your details to start earning commission on referrals.</p> 
-    <form id="earnForm" class="earn-form"> 
-      <input type="text" id="partnerName" class="earn-input" placeholder="Full Name" required> 
-      <input type="tel" id="partnerPhone" class="earn-input" placeholder="Mobile / WhatsApp Number" required> 
-      <input type="text" id="partnerUpi" class="earn-input" placeholder="UPI ID / GPay Number for Payouts" required> 
-      <div class="earn-btn-group"> 
-        <button type="button" id="closeEarnModal" class="earn-btn-cancel">Cancel</button> 
-        <button type="submit" class="earn-btn-submit">Submit Request</button> 
+    <form id="earnForm" class="modal-form"> 
+      <input type="text" id="partnerName" class="modal-input" placeholder="Full Name" required> 
+      <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
+      <input type="text" id="partnerUpi" class="modal-input" placeholder="UPI ID / GPay Number for Payouts" required> 
+      <div class="modal-btn-group"> 
+        <button type="button" id="closeEarnModal" style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button> 
+        <button type="submit" class="modal-btn-submit">Submit Request</button> 
       </div> 
     </form> 
   </div> 
 </div> 
+
 <header class="hero"> 
   <div class="hero-text"> 
     <h1>Welcome To <br> CartPrime </h1> 
@@ -1319,6 +1391,32 @@ footer {
   </div> 
 </div> 
 
+<!-- Bottom Navigation Bar -->
+<div class="bottom-nav">
+  <a href="/" class="bottom-nav-item active">
+    <i class="fa-solid fa-house"></i>
+    <span>Home</span>
+  </a>
+  <a href="#categoryBar" class="bottom-nav-item">
+    <i class="fa-solid fa-layer-group"></i>
+    <span>Categories</span>
+  </a>
+  <a href="/wishlist" class="bottom-nav-item">
+    <i class="fa-regular fa-heart"></i>
+    <span>Wishlist</span>
+    <span id="bottomWishlistBadge" class="badge" style="display:none;">0</span>
+  </a>
+  <a href="/orders" class="bottom-nav-item">
+    <i class="fa-solid fa-bag-shopping"></i>
+    <span>Orders</span>
+    <span id="bottomOrdersBadge" class="badge" style="display:none;">0</span>
+  </a>
+  <a href="/wallet" class="bottom-nav-item">
+    <i class="fa-solid fa-wallet"></i>
+    <span>Earn</span>
+  </a>
+</div>
+
 <!-- Premium Custom Toast Notification Modal -->
 <div id="customToast" class="custom-toast-overlay">
   <div class="custom-toast-card">
@@ -1351,6 +1449,70 @@ footer {
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"; 
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"; 
   import { getDatabase, ref, onValue, get, set, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js"; 
+
+  // --- FIREBASE INITIALIZATION --- 
+  const firebaseConfig = { 
+    apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc", 
+    authDomain: "cartprime-shopping.firebaseapp.com", 
+    projectId: "cartprime-shopping", 
+    storageBucket: "cartprime-shopping.firebasestorage.app", 
+    messagingSenderId: "570068438689", 
+    appId: "1:570068438689:web:17b25f49f2b561fd29eae0", 
+    measurementId: "G-9GREWHMEYL" 
+  }; 
+  const app = initializeApp(firebaseConfig); 
+  const auth = getAuth(app); 
+  const db = getDatabase(app); 
+
+  // --- FIRST VISIT USER DETAILS CHECK & LOADING ANIMATION ---
+  const welcomeModal = document.getElementById('userWelcomeModal');
+  const welcomeForm = document.getElementById('userWelcomeForm');
+  const verifyLoadingBox = document.getElementById('verifyLoadingBox');
+  const storedUserPhone = localStorage.getItem('userPhone');
+
+  if (!storedUserPhone) {
+    welcomeModal.style.display = 'flex';
+  }
+
+  if (welcomeForm) {
+    welcomeForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('userWelcomeName').value.trim();
+      const phone = document.getElementById('userWelcomePhone').value.trim();
+
+      if (name && phone) {
+        // Form മറച്ച് Loading Spinner മാത്രം കാണിക്കുക
+        welcomeForm.style.display = 'none';
+        verifyLoadingBox.style.display = 'flex';
+
+        // 1.5 സെക്കൻഡ് verification loading അനുഭവം നൽകാൻ delay
+        setTimeout(() => {
+          localStorage.setItem('userName', name);
+          localStorage.setItem('userPhone', phone);
+          
+          // Save to Firebase database under users
+          const userRef = ref(db, `users/${phone}`);
+          set(userRef, {
+            name: name,
+            phone: phone,
+            joinedAt: Date.now()
+          }).then(() => {
+            welcomeModal.style.display = 'none';
+            verifyLoadingBox.style.display = 'none';
+            welcomeForm.style.display = 'flex';
+            showCustomAlert("Verification Completed!", "Your mobile number has been verified successfully. Happy Shopping!", true);
+            updateBadges(currentUser);
+          }).catch(() => {
+            welcomeModal.style.display = 'none';
+            verifyLoadingBox.style.display = 'none';
+            welcomeForm.style.display = 'flex';
+            showCustomAlert("Verification Completed!", "Welcome to CartPrime!", true);
+            updateBadges(currentUser);
+          });
+        }, 1500);
+      }
+    });
+  }
 
   // --- PREMIUM TOAST NOTIFICATION FUNCTION ---
   function showCustomAlert(title, message, isSuccess = true) {
@@ -1416,20 +1578,6 @@ footer {
     localStorage.setItem('theme', targetTheme); 
     themeIcon.className = targetTheme === 'dark' ? 'fa-regular fa-sun' : 'fa-regular fa-moon'; 
   }); 
-
-  // --- FIREBASE INITIALIZATION --- 
-  const firebaseConfig = { 
-    apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc", 
-    authDomain: "cartprime-shopping.firebaseapp.com", 
-    projectId: "cartprime-shopping", 
-    storageBucket: "cartprime-shopping.firebasestorage.app", 
-    messagingSenderId: "570068438689", 
-    appId: "1:570068438689:web:17b25f49f2b561fd29eae0", 
-    measurementId: "G-9GREWHMEYL" 
-  }; 
-  const app = initializeApp(firebaseConfig); 
-  const auth = getAuth(app); 
-  const db = getDatabase(app); 
 
   // --- EARN MONEY MODAL LOGIC --- 
   const earnModal = document.getElementById('earnModal'); 
@@ -1590,7 +1738,10 @@ footer {
   // --- UPDATED BADGES & WISHLIST LOGIC --- 
   function updateBadges(user) { 
     const wishlistBadge = document.getElementById('wishlistBadge'); 
+    const bottomWishlistBadge = document.getElementById('bottomWishlistBadge'); 
     const ordersBadge = document.getElementById('ordersBadge'); 
+    const bottomOrdersBadge = document.getElementById('bottomOrdersBadge'); 
+
     if (user) { 
       onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => { 
         if (snapshot.exists()) { 
@@ -1598,12 +1749,12 @@ footer {
         } else { 
           userWishlistIds = {}; 
         } 
-        updateWishlistUIAndBadge(wishlistBadge); 
+        updateWishlistUIAndBadge(wishlistBadge, bottomWishlistBadge); 
       }); 
     } else { 
       let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
       userWishlistIds = localWishlist; 
-      updateWishlistUIAndBadge(wishlistBadge); 
+      updateWishlistUIAndBadge(wishlistBadge, bottomWishlistBadge); 
     } 
 
     const phoneSources = [ 
@@ -1619,22 +1770,33 @@ footer {
         if (count > 0) { 
           ordersBadge.textContent = count; 
           ordersBadge.style.display = 'flex'; 
+          if(bottomOrdersBadge) {
+            bottomOrdersBadge.textContent = count;
+            bottomOrdersBadge.style.display = 'flex';
+          }
         } else { 
           ordersBadge.style.display = 'none'; 
+          if(bottomOrdersBadge) bottomOrdersBadge.style.display = 'none';
         } 
       }); 
     } else { 
       ordersBadge.style.display = 'none'; 
+      if(bottomOrdersBadge) bottomOrdersBadge.style.display = 'none';
     } 
   } 
 
-  function updateWishlistUIAndBadge(wishlistBadge) { 
+  function updateWishlistUIAndBadge(wishlistBadge, bottomWishlistBadge) { 
     const count = Object.keys(userWishlistIds).length; 
     if (count > 0) { 
       wishlistBadge.textContent = count; 
       wishlistBadge.style.display = 'flex'; 
+      if(bottomWishlistBadge) {
+        bottomWishlistBadge.textContent = count;
+        bottomWishlistBadge.style.display = 'flex';
+      }
     } else { 
       wishlistBadge.style.display = 'none'; 
+      if(bottomWishlistBadge) bottomWishlistBadge.style.display = 'none';
     } 
     if (allProducts.length > 0) { 
       let filtered = allProducts; 
@@ -1862,14 +2024,14 @@ footer {
               delete userWishlistIds[prodId]; 
               wishlistBtn.classList.remove('active'); 
               wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
-              updateWishlistUIAndBadge(document.getElementById('wishlistBadge')); 
+              updateWishlistUIAndBadge(document.getElementById('wishlistBadge'), document.getElementById('bottomWishlistBadge')); 
             }); 
           } else { 
             set(wishRef, true).then(() => { 
               userWishlistIds[prodId] = true; 
               wishlistBtn.classList.add('active'); 
               wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
-              updateWishlistUIAndBadge(document.getElementById('wishlistBadge')); 
+              updateWishlistUIAndBadge(document.getElementById('wishlistBadge'), document.getElementById('bottomWishlistBadge')); 
             }); 
           } 
         } else { 
@@ -1885,7 +2047,7 @@ footer {
           } 
           localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist)); 
           userWishlistIds = guestWishlist; 
-          updateWishlistUIAndBadge(document.getElementById('wishlistBadge')); 
+          updateWishlistUIAndBadge(document.getElementById('wishlistBadge'), document.getElementById('bottomWishlistBadge')); 
         } 
       }); 
 
