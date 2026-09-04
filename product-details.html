@@ -587,47 +587,45 @@
         let isApprovedEarner = false;
 
         const userId = localStorage.getItem('userId');
-        const userPhone = localStorage.getItem('userPhone') || localStorage.getItem('earnNumber') || localStorage.getItem('earnPhone') || localStorage.getItem('phone');
-        const userName = localStorage.getItem('userName') || localStorage.getItem('earnName') || localStorage.getItem('name');
         
+        // Clean phone helper
+        const cleanPhoneStr = (p) => p ? p.toString().replace(/\D/g, '').slice(-10) : '';
+
+        // Get user profile details from localStorage (Same keys used in home page/login)
+        const rawUserPhone = localStorage.getItem('userPhone') || localStorage.getItem('phone') || localStorage.getItem('earnNumber') || localStorage.getItem('earnPhone') || '';
+        const rawUserName = localStorage.getItem('userName') || localStorage.getItem('name') || localStorage.getItem('earnName') || '';
+
+        const userPhone = cleanPhoneStr(rawUserPhone);
+        const userName = rawUserName.toString().toLowerCase().trim();
+
         const guestKey = localStorage.getItem('guestUserId') || 'guest_' + Math.random().toString(36).substring(2, 9);
         localStorage.setItem('guestUserId', guestKey);
 
         const currentActiveUserId = userId || guestKey;
 
-        // Check earn_partners node in Firebase Database using phone, name, or userId
+        // Check earn_partners node: BOTH Name AND Phone must exist and account must be approved
         async function checkEarnerStatus() {
-            const keysToTry = [userPhone, userName, userId].filter(Boolean);
-            if (keysToTry.length === 0) return false;
+            if (!userPhone || !userName) return false;
 
             try {
-                // 1. Direct key lookups under earn_partners
-                for (let k of keysToTry) {
-                    const partnerSnap = await get(ref(db, `earn_partners/${k}`));
-                    if (partnerSnap.exists()) {
-                        const data = partnerSnap.val();
-                        if (data.status === 'approved' || data.approved === true) {
-                            return true;
-                        }
-                    }
-                }
-
-                // 2. Iterate through all nodes in earn_partners to match phone or name
                 const allPartnersSnap = await get(ref(db, `earn_partners`));
                 if (allPartnersSnap.exists()) {
                     const partners = allPartnersSnap.val();
                     for (let key in partners) {
                         const p = partners[key];
                         if (!p) continue;
-                        
-                        const isApproved = (p.status === 'approved' || p.approved === true);
+
+                        const isApproved = (p.status === 'approved' || p.approved === true || p.status === 'Approved');
                         if (!isApproved) continue;
 
-                        const matchPhone = userPhone && (p.phone === userPhone || p.mobile === userPhone || p.number === userPhone || key === userPhone);
-                        const matchName = userName && (p.name && p.name.toString().toLowerCase().trim() === userName.toString().toLowerCase().trim());
-                        const matchKey = key === userId;
+                        const partnerPhone = cleanPhoneStr(p.phone || p.mobile || p.number || p.userPhone || key);
+                        const partnerName = (p.name || p.userName || p.partnerName || '').toString().toLowerCase().trim();
 
-                        if (matchPhone || matchName || matchKey) {
+                        // Must match BOTH Phone and Name
+                        const isPhoneMatched = partnerPhone && partnerPhone === userPhone;
+                        const isNameMatched = partnerName && partnerName === userName;
+
+                        if (isPhoneMatched && isNameMatched) {
                             return true;
                         }
                     }
@@ -861,7 +859,7 @@
 
             const estimatedDeliveryText = getEstimatedDeliveryDate();
 
-            // Earn Commission Banner - Checked from earn_partners node
+            // Earn Commission Banner - Only visible when Name & Phone match in earn_partners and status is approved
             const earnBannerHTML = isApprovedEarner ? `
                 <div class="earn-banner">
                     <div style="display: flex; align-items: center; gap: 8px;">
