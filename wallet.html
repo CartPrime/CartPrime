@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartprime - Affiliate Creator Dashboard</title>
+    <title>Cartprime - Affiliate Creator Wallet</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -14,61 +14,66 @@
         }
 
         :root {
-            --bg-color: #f4f7fe;
+            --bg-main: #f8f9fe;
             --sidebar-bg: #ffffff;
-            --card-bg: #ffffff;
-            --text-dark: #1b2559;
-            --text-gray: #a3aed0;
-            --primary-blue: #4318ff;
-            --primary-hover: #3311cc;
-            --light-blue: #f4f7fe;
+            --text-primary: #1b2559;
+            --text-secondary: #a3aed0;
+            --brand-purple: #5936f5;
+            --card-gradient: linear-gradient(135deg, #6c47ff 0%, #4318ff 100%);
+            --card-sub-gradient: linear-gradient(135deg, #7551ff 0%, #3311cc 100%);
             --success-green: #05cd99;
-            --border-color: #e9edf7;
+            --border-color: #f0f3fa;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-dark);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
             display: flex;
             min-height: 100vh;
         }
 
         /* Sidebar Styling */
         .sidebar {
-            width: 260px;
+            width: 280px;
             background-color: var(--sidebar-bg);
             padding: 30px 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             border-right: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
 
         .brand {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             padding-left: 10px;
         }
 
         .brand-icon {
-            background-color: var(--primary-blue);
+            background: var(--card-gradient);
             color: white;
-            padding: 10px;
+            width: 42px;
+            height: 42px;
             border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 18px;
+            box-shadow: 0 10px 20px rgba(89, 54, 245, 0.2);
         }
 
         .brand-text h2 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
-            color: var(--text-dark);
+            color: var(--text-primary);
         }
 
         .brand-text span {
             font-size: 12px;
-            color: var(--text-gray);
+            color: var(--text-secondary);
         }
 
         .nav-list {
@@ -76,87 +81,100 @@
         }
 
         .nav-item {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 12px 16px;
-            color: var(--text-gray);
+            padding: 14px 18px;
+            color: var(--text-secondary);
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
-            border-radius: 12px;
-            transition: all 0.2s;
+            border-radius: 16px;
+            transition: all 0.2s ease;
         }
 
         .nav-link:hover, .nav-link.active {
-            background-color: var(--light-blue);
-            color: var(--primary-blue);
+            background-color: #f4f0ff;
+            color: var(--brand-purple);
         }
 
+        /* Promo Card Sidebar */
         .promo-card {
-            background: linear-gradient(135deg, #4318ff 0%, #868cff 100%);
-            border-radius: 20px;
-            padding: 20px;
+            background: var(--card-sub-gradient);
+            border-radius: 24px;
+            padding: 22px;
             color: white;
             text-align: center;
-            margin-top: 20px;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(67, 24, 255, 0.25);
         }
 
         .promo-card i {
-            font-size: 30px;
-            margin-bottom: 10px;
+            font-size: 32px;
+            margin-bottom: 12px;
         }
 
         .promo-card h4 {
             font-size: 16px;
             margin-bottom: 6px;
+            font-weight: 700;
         }
 
         .promo-card p {
-            font-size: 11px;
-            opacity: 0.8;
-            margin-bottom: 15px;
+            font-size: 12px;
+            opacity: 0.85;
+            margin-bottom: 18px;
+            line-height: 1.4;
         }
 
         .promo-btn {
             background-color: white;
-            color: var(--primary-blue);
+            color: var(--brand-purple);
             border: none;
-            padding: 10px 15px;
-            border-radius: 10px;
+            padding: 12px 18px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
             width: 100%;
+            transition: 0.2s;
         }
 
-        /* Main Content Styling */
+        .promo-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Main Content */
         .main-content {
             flex: 1;
-            padding: 30px;
+            padding: 30px 40px;
             overflow-y: auto;
         }
 
-        /* Top Header */
+        /* Header Bar */
         .top-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .header-title h1 {
             font-size: 26px;
-            font-weight: 700;
+            font-weight: 800;
+            color: var(--text-primary);
         }
 
         .header-title p {
             font-size: 14px;
-            color: var(--text-gray);
+            color: var(--text-secondary);
+            margin-top: 4px;
         }
 
         .user-profile {
@@ -164,16 +182,16 @@
             align-items: center;
             gap: 15px;
             background: white;
-            padding: 8px 16px;
-            border-radius: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            padding: 8px 18px 8px 10px;
+            border-radius: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
         }
 
         .profile-img {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background-color: var(--primary-blue);
+            background: #111;
             color: white;
             display: flex;
             align-items: center;
@@ -181,69 +199,74 @@
             font-weight: bold;
         }
 
-        /* Controls Section */
+        /* Action Buttons */
         .action-bar {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
             gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 600;
+            padding: 14px 24px;
+            border-radius: 14px;
+            font-weight: 700;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             font-size: 14px;
-            transition: 0.2s;
+            transition: 0.2s ease;
         }
 
         .btn-primary {
-            background-color: var(--primary-blue);
+            background: var(--brand-purple);
             color: white;
+            box-shadow: 0 8px 20px rgba(89, 54, 245, 0.3);
         }
 
         .btn-primary:hover {
-            background-color: var(--primary-hover);
+            transform: translateY(-2px);
         }
 
         .btn-success {
-            background-color: var(--success-green);
+            background: var(--success-green);
             color: white;
+            box-shadow: 0 8px 20px rgba(5, 205, 153, 0.3);
         }
 
         .btn-success:hover {
-            opacity: 0.9;
+            transform: translateY(-2px);
         }
 
-        /* Stats Grid */
+        /* Stats Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
 
         .stat-card {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 18px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            background-color: white;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             position: relative;
+            border: 1px solid var(--border-color);
         }
 
         .stat-card.featured {
-            background: linear-gradient(135deg, #4318ff 0%, #868cff 100%);
+            background: var(--card-gradient);
             color: white;
+            border: none;
+            box-shadow: 0 15px 30px rgba(89, 54, 245, 0.3);
         }
 
         .stat-title {
             font-size: 13px;
-            color: var(--text-gray);
+            color: var(--text-secondary);
             font-weight: 600;
             margin-bottom: 8px;
         }
@@ -253,47 +276,49 @@
         }
 
         .stat-value {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 26px;
+            font-weight: 800;
         }
 
         .stat-sub {
             font-size: 12px;
-            margin-top: 5px;
-            color: var(--text-gray);
+            margin-top: 6px;
+            color: var(--text-secondary);
+            font-weight: 500;
         }
 
         .stat-card.featured .stat-sub {
             color: rgba(255, 255, 255, 0.8);
         }
 
-        /* Content Grid */
+        /* Content Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 20px;
+            gap: 25px;
         }
 
         .card-box {
-            background-color: var(--card-bg);
-            padding: 24px;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            background-color: white;
+            padding: 26px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
         }
 
         .box-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .box-header h3 {
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 800;
         }
 
-        /* Transactions List */
+        /* Transactions */
         .transaction-list {
             list-style: none;
         }
@@ -302,7 +327,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 0;
+            padding: 16px 0;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -313,17 +338,17 @@
         .t-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
         }
 
         .t-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 18px;
         }
 
         .t-icon.income {
@@ -333,17 +358,18 @@
 
         .t-icon.payout {
             background-color: #e9e3ff;
-            color: var(--primary-blue);
+            color: var(--brand-purple);
         }
 
         .t-details h4 {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 700;
         }
 
         .t-details p {
             font-size: 12px;
-            color: var(--text-gray);
+            color: var(--text-secondary);
+            margin-top: 2px;
         }
 
         .t-amount {
@@ -351,18 +377,20 @@
         }
 
         .t-amount .amt {
-            font-weight: 700;
-            font-size: 15px;
+            font-weight: 800;
+            font-size: 16px;
         }
 
         .t-amount .amt.plus { color: var(--success-green); }
-        .t-amount .amt.minus { color: var(--text-dark); }
+        .t-amount .amt.minus { color: var(--text-primary); }
 
         .badge {
-            font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 6px;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 8px;
             font-weight: 700;
+            display: inline-block;
+            margin-top: 4px;
         }
 
         .badge-success {
@@ -370,27 +398,83 @@
             color: var(--success-green);
         }
 
-        /* Responsive Layout */
+        /* Top Referrals */
+        .referral-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+        }
+
+        .ref-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .ref-amount {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE DESIGN (Media Queries) */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 992px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 20px;
+            }
+            .promo-card {
+                display: none;
+            }
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
-            .sidebar {
-                display: none;
+            .main-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .action-bar {
+                width: 100%;
+            }
+            .btn {
+                flex: 1;
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Section -->
+    <!-- Responsive Sidebar Section -->
     <aside class="sidebar">
         <div>
             <div class="brand">
                 <div class="brand-icon"><i class="fa-solid fa-wallet"></i></div>
                 <div class="brand-text">
                     <h2>Cartprime</h2>
-                    <span>Affiliate Partner</span>
+                    <span>Affiliate Creator Wallet</span>
                 </div>
             </div>
 
@@ -405,61 +489,66 @@
 
         <div class="promo-card">
             <i class="fa-solid fa-gift"></i>
-            <h4>Earn More Rewards</h4>
-            <p>Share your affiliate link and boost your daily revenue.</p>
-            <button class="promo-btn" onclick="alert('Affiliate Link Copied!')">Copy Link</button>
+            <h4>Earn More</h4>
+            <p>Share your link and earn more rewards everyday</p>
+            <button class="promo-btn" onclick="alert('Affiliate Link Copied!')">Copy Affiliate Link</button>
         </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Box -->
     <main class="main-content">
-        <!-- Top Header Bar -->
+        <!-- Top Navigation -->
         <div class="top-header">
             <div class="header-title">
-                <h1>Welcome back, Partner! 👋</h1>
-                <p>Here is your affiliate earnings overview</p>
+                <h1>Welcome back, Farhanul! 👋</h1>
+                <p>Here's your affiliate earnings overview</p>
             </div>
             <div class="user-profile">
-                <div class="profile-img">CP</div>
+                <div class="profile-img">FF</div>
                 <div>
-                    <h4 style="font-size: 14px;">Cartprime Creator</h4>
-                    <span style="font-size: 11px; color: var(--text-gray);">Affiliate Partner</span>
+                    <h4 style="font-size: 14px;">Farhanul Faris</h4>
+                    <span style="font-size: 11px; color: var(--text-secondary);">Affiliate Creator</span>
                 </div>
             </div>
         </div>
 
-        <!-- Action Bar (Buttons) -->
+        <!-- Action Controls Bar -->
         <div class="action-bar">
             <button class="btn btn-success" onclick="simulateAffiliateSale()">
-                <i class="fa-solid fa-plus"></i> Record New Sale
+                <i class="fa-solid fa-plus"></i> Record Sale
             </button>
             <button class="btn btn-primary" onclick="requestWithdrawal()">
                 <i class="fa-solid fa-money-bill-transfer"></i> Payout Request
             </button>
         </div>
 
-        <!-- Top Stat Cards -->
+        <!-- Grid Stat Cards -->
         <div class="stats-grid">
             <div class="stat-card featured">
-                <div class="stat-title">Available Balance</div>
-                <div class="stat-value">₹ <span id="total-balance">12,500.00</span></div>
-                <div class="stat-sub">Ready for withdrawal</div>
+                <div class="stat-title">Total Balance</div>
+                <div class="stat-value">₹ <span id="total-balance">12,450.75</span></div>
+                <div class="stat-sub">Available for withdrawal</div>
             </div>
             <div class="stat-card">
-                <div class="stat-title">Total Withdrawn</div>
-                <div class="stat-value">₹ <span id="withdrawn-amt">45,000.00</span></div>
-                <div class="stat-sub">All-time payouts</div>
+                <div class="stat-title">Total Earnings</div>
+                <div class="stat-value">₹ <span id="withdrawn-amt">45,780.50</span></div>
+                <div class="stat-sub">All time earnings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">This Month</div>
+                <div class="stat-value">₹ 8,560.00</div>
+                <div class="stat-sub">August earnings</div>
             </div>
             <div class="stat-card">
                 <div class="stat-title">Pending Balance</div>
-                <div class="stat-value">₹ <span id="pending-amt">3,200.00</span></div>
+                <div class="stat-value">₹ <span id="pending-amt">2,340.25</span></div>
                 <div class="stat-sub">Will be available soon</div>
             </div>
         </div>
 
-        <!-- Dashboard Bottom Grid -->
+        <!-- Dashboard Main Grid -->
         <div class="dashboard-grid">
-            <!-- Left Side: Recent Transactions History -->
+            <!-- Recent Transactions Block -->
             <div class="card-box">
                 <div class="box-header">
                     <h3>Recent Transactions</h3>
@@ -467,57 +556,65 @@
                 <ul class="transaction-list" id="transaction-list">
                     <li class="transaction-item">
                         <div class="t-info">
-                            <div class="t-icon income"><i class="fa-solid fa-bag-shopping"></i></div>
+                            <div class="t-icon payout"><i class="fa-solid fa-arrow-down"></i></div>
                             <div class="t-details">
-                                <h4>Wireless Headphones</h4>
-                                <p>10% Commission • 03 Sep 2026</p>
+                                <h4>Withdrawal to UPI</h4>
+                                <p>farhanul@upi • 20 Aug, 2026</p>
                             </div>
                         </div>
                         <div class="t-amount">
-                            <div class="amt plus">+ ₹250.00</div>
+                            <div class="amt minus">- ₹3,000.00</div>
                             <span class="badge badge-success">Success</span>
                         </div>
                     </li>
                     <li class="transaction-item">
                         <div class="t-info">
-                            <div class="t-icon income"><i class="fa-solid fa-bag-shopping"></i></div>
+                            <div class="t-icon income"><i class="fa-solid fa-gift"></i></div>
                             <div class="t-details">
-                                <h4>Smart Watch</h4>
-                                <p>10% Commission • 02 Sep 2026</p>
+                                <h4>Affiliate Commission</h4>
+                                <p>Order #CP7856 • 20 Aug, 2026</p>
                             </div>
                         </div>
                         <div class="t-amount">
-                            <div class="amt plus">+ ₹700.00</div>
+                            <div class="amt plus">+ ₹560.00</div>
                             <span class="badge badge-success">Success</span>
                         </div>
                     </li>
                 </ul>
             </div>
 
-            <!-- Right Side: Info Panel -->
+            <!-- Top Referrals Side Box -->
             <div class="card-box">
                 <div class="box-header">
-                    <h3>Quick Overview</h3>
+                    <h3>Top Referrals</h3>
                 </div>
-                <div style="font-size: 13px; color: var(--text-gray); line-height: 1.6;">
-                    <p style="margin-bottom: 12px;"><strong>Commission Rate:</strong> Flat 10% on all successfully recorded product sales.</p>
-                    <p style="margin-bottom: 12px;"><strong>Payout Policy:</strong> Minimum withdrawal limit is ₹500.00.</p>
+                <div>
+                    <div class="referral-item">
+                        <div class="ref-user">1. @tech_with_farhan</div>
+                        <div class="ref-amount">₹2,450.00</div>
+                    </div>
+                    <div class="referral-item">
+                        <div class="ref-user">2. @digital_creator_07</div>
+                        <div class="ref-amount">₹1,780.00</div>
+                    </div>
+                    <div class="referral-item">
+                        <div class="ref-user">3. @online_hustler</div>
+                        <div class="ref-amount">₹1,250.00</div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- JavaScript for Functionality -->
+    <!-- Interactivity Script -->
     <script>
-        // Data State
         let walletData = {
-            balance: 12500.00,
-            pending: 3200.00,
-            withdrawn: 45000.00,
+            balance: 12450.75,
+            pending: 2340.25,
+            withdrawn: 45780.50,
             commissionRate: 0.10
         };
 
-        // UI Refresh Function
         function updateUI() {
             document.getElementById('total-balance').innerText = walletData.balance.toLocaleString('en-IN', {
                 minimumFractionDigits: 2,
@@ -533,43 +630,40 @@
             });
         }
 
-        // Add Sale Functionality
         function simulateAffiliateSale() {
-            let productName = prompt("Enter Sold Product Name:", "Bluetooth Speaker");
+            let productName = prompt("Enter Sold Product Name:", "Smart Watch");
             if (!productName) return;
 
-            let saleAmount = prompt("Enter Product Total Price (₹):", "1500");
+            let saleAmount = prompt("Enter Sale Amount (₹):", "1500");
             
             if (saleAmount && !isNaN(saleAmount) && Number(saleAmount) > 0) {
                 saleAmount = parseFloat(saleAmount);
                 let commission = saleAmount * walletData.commissionRate;
 
                 walletData.balance += commission;
+                walletData.withdrawn += commission;
                 updateUI();
 
                 addTransactionToList(productName, commission, true);
             }
         }
 
-        // Withdraw Functionality
         function requestWithdrawal() {
             let amount = prompt("Enter withdrawal amount (₹):", walletData.balance);
             if (amount && !isNaN(amount) && Number(amount) > 0) {
                 amount = parseFloat(amount);
                 if (amount <= walletData.balance) {
                     walletData.balance -= amount;
-                    walletData.withdrawn += amount;
                     updateUI();
 
-                    addTransactionToList("Withdrawal Request", amount, false);
-                    alert("Payout request submitted successfully!");
+                    addTransactionToList("Withdrawal to UPI", amount, false);
+                    alert("Payout Request Sent Successfully!");
                 } else {
-                    alert("Insufficient commission balance!");
+                    alert("Insufficient Balance!");
                 }
             }
         }
 
-        // Dynamic Item Add
         function addTransactionToList(title, amount, isIncome) {
             const list = document.getElementById('transaction-list');
             const li = document.createElement('li');
@@ -577,7 +671,7 @@
 
             const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
             
-            const iconClass = isIncome ? 'fa-bag-shopping' : 'fa-arrow-up-from-bracket';
+            const iconClass = isIncome ? 'fa-gift' : 'fa-arrow-down';
             const iconBg = isIncome ? 'income' : 'payout';
             const amountSign = isIncome ? '+' : '-';
             const amountClass = isIncome ? 'plus' : 'minus';
@@ -587,7 +681,7 @@
                     <div class="t-icon ${iconBg}"><i class="fa-solid ${iconClass}"></i></div>
                     <div class="t-details">
                         <h4>${title}</h4>
-                        <p>${isIncome ? '10% Commission' : 'Payout'} • ${today}</p>
+                        <p>${isIncome ? 'Affiliate Commission' : 'Withdrawal Request'} • ${today}</p>
                     </div>
                 </div>
                 <div class="t-amount">
