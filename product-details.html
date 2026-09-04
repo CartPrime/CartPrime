@@ -592,6 +592,7 @@
 
         const currentActiveUserId = userId || guestKey;
 
+        // Verify if the active user is an approved earner/partner
         async function checkEarnerStatus() {
             if (!userId) return false;
             try {
@@ -828,6 +829,7 @@
 
             const estimatedDeliveryText = getEstimatedDeliveryDate();
 
+            // Earn Commission Banner - Only visible for approved partners
             const earnBannerHTML = isApprovedEarner ? `
                 <div class="earn-banner">
                     <div style="display: flex; align-items: center; gap: 8px;">
