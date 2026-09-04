@@ -95,6 +95,7 @@
             font-size: 14px;
             border-radius: 16px;
             transition: all 0.2s ease;
+            cursor: pointer;
         }
 
         .nav-link:hover, .nav-link.active {
@@ -199,52 +200,20 @@
             font-weight: bold;
         }
 
-        /* Action Buttons */
-        .action-bar {
+        /* Views (Pages) Setup */
+        .page-view {
+            display: none;
+        }
+
+        .page-view.active-view {
+            display: block;
+        }
+
+        /* Stats Cards - Vertical Stack */
+        .stats-vertical {
             display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 14px 24px;
-            border-radius: 14px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            transition: 0.2s ease;
-        }
-
-        .btn-primary {
-            background: var(--brand-purple);
-            color: white;
-            box-shadow: 0 8px 20px rgba(89, 54, 245, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-success {
-            background: var(--success-green);
-            color: white;
-            box-shadow: 0 8px 20px rgba(5, 205, 153, 0.3);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            flex-direction: column;
+            gap: 16px;
             margin-bottom: 30px;
         }
 
@@ -291,19 +260,14 @@
             color: rgba(255, 255, 255, 0.8);
         }
 
-        /* Content Dashboard Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
-        }
-
+        /* Content Box */
         .card-box {
             background-color: white;
             padding: 26px;
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             border: 1px solid var(--border-color);
+            margin-bottom: 25px;
         }
 
         .box-header {
@@ -398,12 +362,56 @@
             color: var(--success-green);
         }
 
+        /* Form UI (Withdraw Section) */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--brand-purple);
+        }
+
+        .btn-submit {
+            background: var(--brand-purple);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            font-size: 15px;
+            box-shadow: 0 8px 20px rgba(89, 54, 245, 0.3);
+        }
+
         /* Top Referrals */
         .referral-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .referral-item:last-child {
+            border-bottom: none;
         }
 
         .ref-user {
@@ -419,13 +427,7 @@
             font-size: 14px;
         }
 
-        /* RESPONSIVE DESIGN (Media Queries) */
-        @media (max-width: 1200px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
+        /* RESPONSIVE DESIGN */
         @media (max-width: 992px) {
             body {
                 flex-direction: column;
@@ -439,35 +441,22 @@
             .promo-card {
                 display: none;
             }
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
             .main-content {
                 padding: 20px;
             }
         }
 
         @media (max-width: 576px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
             .top-header {
                 flex-direction: column;
                 align-items: flex-start;
-            }
-            .action-bar {
-                width: 100%;
-            }
-            .btn {
-                flex: 1;
-                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Responsive Sidebar Section -->
+    <!-- Sidebar Section -->
     <aside class="sidebar">
         <div>
             <div class="brand">
@@ -479,11 +468,26 @@
             </div>
 
             <ul class="nav-list">
-                <li class="nav-item"><a href="#" class="nav-link active"><i class="fa-solid fa-house"></i> Dashboard</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fa-solid fa-chart-line"></i> Earnings</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fa-solid fa-arrow-up-from-bracket"></i> Withdraw</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fa-solid fa-list"></i> Transactions</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                <li class="nav-item">
+                    <a class="nav-link active" onclick="switchTab('dashboard', this)">
+                        <i class="fa-solid fa-house"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchTab('earnings', this)">
+                        <i class="fa-solid fa-chart-line"></i> Earnings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchTab('withdraw', this)">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i> Withdraw
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchTab('transactions', this)">
+                        <i class="fa-solid fa-list"></i> Transactions
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -495,9 +499,9 @@
         </div>
     </aside>
 
-    <!-- Main Content Box -->
+    <!-- Main Content Container -->
     <main class="main-content">
-        <!-- Top Navigation -->
+        <!-- Top Header Bar -->
         <div class="top-header">
             <div class="header-title">
                 <h1>Welcome back, Farhanul! 👋</h1>
@@ -512,48 +516,33 @@
             </div>
         </div>
 
-        <!-- Action Controls Bar -->
-        <div class="action-bar">
-            <button class="btn btn-success" onclick="simulateAffiliateSale()">
-                <i class="fa-solid fa-plus"></i> Record Sale
-            </button>
-            <button class="btn btn-primary" onclick="requestWithdrawal()">
-                <i class="fa-solid fa-money-bill-transfer"></i> Payout Request
-            </button>
-        </div>
+        <!-- 1. DASHBOARD VIEW -->
+        <section id="dashboard" class="page-view active-view">
+            <!-- Stats Vertical List -->
+            <div class="stats-vertical">
+                <div class="stat-card featured">
+                    <div class="stat-title">Total Balance</div>
+                    <div class="stat-value">₹ <span class="val-balance">12,450.75</span></div>
+                    <div class="stat-sub">Available for withdrawal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Total Earnings</div>
+                    <div class="stat-value">₹ <span class="val-earnings">45,780.50</span></div>
+                    <div class="stat-sub">All time earnings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Pending Balance</div>
+                    <div class="stat-value">₹ <span class="val-pending">2,340.25</span></div>
+                    <div class="stat-sub">Will be available soon</div>
+                </div>
+            </div>
 
-        <!-- Grid Stat Cards -->
-        <div class="stats-grid">
-            <div class="stat-card featured">
-                <div class="stat-title">Total Balance</div>
-                <div class="stat-value">₹ <span id="total-balance">12,450.75</span></div>
-                <div class="stat-sub">Available for withdrawal</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">Total Earnings</div>
-                <div class="stat-value">₹ <span id="withdrawn-amt">45,780.50</span></div>
-                <div class="stat-sub">All time earnings</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">This Month</div>
-                <div class="stat-value">₹ 8,560.00</div>
-                <div class="stat-sub">August earnings</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">Pending Balance</div>
-                <div class="stat-value">₹ <span id="pending-amt">2,340.25</span></div>
-                <div class="stat-sub">Will be available soon</div>
-            </div>
-        </div>
-
-        <!-- Dashboard Main Grid -->
-        <div class="dashboard-grid">
-            <!-- Recent Transactions Block -->
+            <!-- Dashboard Content Sections Stacked Below -->
             <div class="card-box">
                 <div class="box-header">
                     <h3>Recent Transactions</h3>
                 </div>
-                <ul class="transaction-list" id="transaction-list">
+                <ul class="transaction-list">
                     <li class="transaction-item">
                         <div class="t-info">
                             <div class="t-icon payout"><i class="fa-solid fa-arrow-down"></i></div>
@@ -583,7 +572,6 @@
                 </ul>
             </div>
 
-            <!-- Top Referrals Side Box -->
             <div class="card-box">
                 <div class="box-header">
                     <h3>Top Referrals</h3>
@@ -603,94 +591,167 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- 2. EARNINGS VIEW -->
+        <section id="earnings" class="page-view">
+            <div class="card-box">
+                <div class="box-header">
+                    <h3>Earnings Breakdown</h3>
+                </div>
+                <div class="stats-vertical">
+                    <div class="stat-card">
+                        <div class="stat-title">This Month Earnings</div>
+                        <div class="stat-value">₹ 8,560.00</div>
+                        <div class="stat-sub">August earnings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Total Lifetime Earnings</div>
+                        <div class="stat-value">₹ <span class="val-earnings">45,780.50</span></div>
+                        <div class="stat-sub">Processed through links</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. WITHDRAW VIEW -->
+        <section id="withdraw" class="page-view">
+            <div class="card-box">
+                <div class="box-header">
+                    <h3>Request Withdrawal</h3>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <p style="font-size: 14px; color: var(--text-secondary);">Available Balance for Cashout:</p>
+                    <h2 style="font-size: 28px; color: var(--brand-purple);">₹ <span class="val-balance">12,450.75</span></h2>
+                </div>
+                <form onsubmit="handleWithdraw(event)">
+                    <div class="form-group">
+                        <label>UPI ID / Bank Details</label>
+                        <input type="text" id="withdraw-method" class="form-input" placeholder="e.g. farhanul@upi" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount (₹)</label>
+                        <input type="number" id="withdraw-amt" class="form-input" placeholder="Enter amount" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Submit Withdrawal Request</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 4. TRANSACTIONS VIEW -->
+        <section id="transactions" class="page-view">
+            <div class="card-box">
+                <div class="box-header">
+                    <h3>All History</h3>
+                </div>
+                <ul class="transaction-list" id="full-transaction-list">
+                    <li class="transaction-item">
+                        <div class="t-info">
+                            <div class="t-icon payout"><i class="fa-solid fa-arrow-down"></i></div>
+                            <div class="t-details">
+                                <h4>Withdrawal to UPI</h4>
+                                <p>farhanul@upi • 20 Aug, 2026</p>
+                            </div>
+                        </div>
+                        <div class="t-amount">
+                            <div class="amt minus">- ₹3,000.00</div>
+                            <span class="badge badge-success">Success</span>
+                        </div>
+                    </li>
+                    <li class="transaction-item">
+                        <div class="t-info">
+                            <div class="t-icon income"><i class="fa-solid fa-gift"></i></div>
+                            <div class="t-details">
+                                <h4>Affiliate Commission</h4>
+                                <p>Order #CP7856 • 20 Aug, 2026</p>
+                            </div>
+                        </div>
+                        <div class="t-amount">
+                            <div class="amt plus">+ ₹560.00</div>
+                            <span class="badge badge-success">Success</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
     </main>
 
-    <!-- Interactivity Script -->
+    <!-- JavaScript Navigation and Logic -->
     <script>
         let walletData = {
             balance: 12450.75,
             pending: 2340.25,
-            withdrawn: 45780.50,
-            commissionRate: 0.10
+            earnings: 45780.50
         };
 
-        function updateUI() {
-            document.getElementById('total-balance').innerText = walletData.balance.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            document.getElementById('pending-amt').innerText = walletData.pending.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            document.getElementById('withdrawn-amt').innerText = walletData.withdrawn.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
+        // Navigation Switcher Logic
+        function switchTab(viewId, element) {
+            // Remove active class from links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            // Add active class to clicked link
+            if (element) {
+                element.classList.add('active');
+            }
+
+            // Hide all section views
+            const views = document.querySelectorAll('.page-view');
+            views.forEach(view => view.classList.remove('active-view'));
+
+            // Show selected view
+            document.getElementById(viewId).classList.add('active-view');
         }
 
-        function simulateAffiliateSale() {
-            let productName = prompt("Enter Sold Product Name:", "Smart Watch");
-            if (!productName) return;
+        // Update UI dynamically
+        function updateUI() {
+            const formattedBalance = walletData.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+            const formattedEarnings = walletData.earnings.toLocaleString('en-IN', { minimumFractionDigits: 2 });
 
-            let saleAmount = prompt("Enter Sale Amount (₹):", "1500");
-            
-            if (saleAmount && !isNaN(saleAmount) && Number(saleAmount) > 0) {
-                saleAmount = parseFloat(saleAmount);
-                let commission = saleAmount * walletData.commissionRate;
+            document.querySelectorAll('.val-balance').forEach(el => el.innerText = formattedBalance);
+            document.querySelectorAll('.val-earnings').forEach(el => el.innerText = formattedEarnings);
+        }
 
-                walletData.balance += commission;
-                walletData.withdrawn += commission;
+        // Withdrawal Handling
+        function handleWithdraw(event) {
+            event.preventDefault();
+            const method = document.getElementById('withdraw-method').value;
+            const amountInput = document.getElementById('withdraw-amt');
+            const amount = parseFloat(amountInput.value);
+
+            if (amount > 0 && amount <= walletData.balance) {
+                walletData.balance -= amount;
                 updateUI();
 
-                addTransactionToList(productName, commission, true);
+                // Add to transactions list
+                const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                const transactionLists = document.querySelectorAll('.transaction-list');
+                
+                transactionLists.forEach(list => {
+                    const li = document.createElement('li');
+                    li.className = 'transaction-item';
+                    li.innerHTML = `
+                        <div class="t-info">
+                            <div class="t-icon payout"><i class="fa-solid fa-arrow-down"></i></div>
+                            <div class="t-details">
+                                <h4>Withdrawal to ${method}</h4>
+                                <p>${method} • ${today}</p>
+                            </div>
+                        </div>
+                        <div class="t-amount">
+                            <div class="amt minus">- ₹${amount.toFixed(2)}</div>
+                            <span class="badge badge-success">Success</span>
+                        </div>
+                    `;
+                    list.prepend(li);
+                });
+
+                alert("Withdrawal Request Submitted Successfully!");
+                amountInput.value = '';
+                switchTab('transactions', document.querySelectorAll('.nav-link')[3]);
+            } else {
+                alert("Invalid amount or insufficient balance!");
             }
-        }
-
-        function requestWithdrawal() {
-            let amount = prompt("Enter withdrawal amount (₹):", walletData.balance);
-            if (amount && !isNaN(amount) && Number(amount) > 0) {
-                amount = parseFloat(amount);
-                if (amount <= walletData.balance) {
-                    walletData.balance -= amount;
-                    updateUI();
-
-                    addTransactionToList("Withdrawal to UPI", amount, false);
-                    alert("Payout Request Sent Successfully!");
-                } else {
-                    alert("Insufficient Balance!");
-                }
-            }
-        }
-
-        function addTransactionToList(title, amount, isIncome) {
-            const list = document.getElementById('transaction-list');
-            const li = document.createElement('li');
-            li.className = 'transaction-item';
-
-            const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-            
-            const iconClass = isIncome ? 'fa-gift' : 'fa-arrow-down';
-            const iconBg = isIncome ? 'income' : 'payout';
-            const amountSign = isIncome ? '+' : '-';
-            const amountClass = isIncome ? 'plus' : 'minus';
-
-            li.innerHTML = `
-                <div class="t-info">
-                    <div class="t-icon ${iconBg}"><i class="fa-solid ${iconClass}"></i></div>
-                    <div class="t-details">
-                        <h4>${title}</h4>
-                        <p>${isIncome ? 'Affiliate Commission' : 'Withdrawal Request'} • ${today}</p>
-                    </div>
-                </div>
-                <div class="t-amount">
-                    <div class="amt ${amountClass}">${amountSign} ₹${amount.toFixed(2)}</div>
-                    <span class="badge badge-success">Success</span>
-                </div>
-            `;
-
-            list.prepend(li);
         }
     </script>
 </body>
