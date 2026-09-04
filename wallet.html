@@ -384,6 +384,116 @@
             box-shadow: 0 8px 20px rgba(89, 54, 245, 0.3);
         }
 
+        /* Link Box */
+        .link-copy-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .link-input {
+            flex: 1;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .btn-copy {
+            background: var(--brand-purple);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Rules Styling */
+        .rules-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .rules-list li {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .rules-list li i {
+            color: var(--brand-purple);
+            margin-top: 3px;
+        }
+
+        /* Top Referrals List */
+        .referral-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .referral-item:last-child {
+            border-bottom: none;
+        }
+
+        .ref-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .ref-amount {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* Promo Card Inline */
+        .promo-card {
+            background: var(--card-sub-gradient);
+            border-radius: 20px;
+            padding: 18px;
+            color: white;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(67, 24, 255, 0.2);
+        }
+
+        .promo-card h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .promo-card p {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-bottom: 14px;
+        }
+
+        .promo-btn {
+            background-color: white;
+            color: var(--brand-purple);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
+        }
+
         @media (max-width: 576px) {
             .top-header {
                 flex-direction: column;
@@ -414,8 +524,15 @@
         <div class="top-header">
             <div class="header-title">
                 <h1>Welcome back, Farhanul! 👋</h1>
-                <p>Track your earnings and manage payouts</p>
+                <p>Track your earnings and grow your revenue</p>
             </div>
+        </div>
+
+        <!-- Promo Banner -->
+        <div class="promo-card">
+            <h4><i class="fa-solid fa-rocket"></i> Boost Your Earnings</h4>
+            <p>Share your exclusive tracking link and earn flat rates on every sale</p>
+            <button class="promo-btn" onclick="copyReferralLink()">Copy Referral Link</button>
         </div>
 
         <!-- 1. DASHBOARD VIEW -->
@@ -429,13 +546,46 @@
                 <div class="stat-card">
                     <div class="stat-title">Lifetime Earnings</div>
                     <div class="stat-value">₹ <span class="val-earnings">45,780.50</span></div>
-                    <div class="stat-sub">Total earnings till date</div>
+                    <div class="stat-sub">Total verified earnings</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title">Pending Balance</div>
+                    <div class="stat-title">Pending Earnings</div>
                     <div class="stat-value">₹ <span class="val-pending">2,340.25</span></div>
-                    <div class="stat-sub">Under processing</div>
+                    <div class="stat-sub">Awaiting order completion</div>
                 </div>
+            </div>
+
+            <!-- Referral Link Share Card -->
+            <div class="card-box">
+                <div class="box-header">
+                    <h3>Your Unique Referral Link</h3>
+                </div>
+                <p style="font-size: 12px; color: var(--text-secondary);">Share this link with your audience to earn rewards on every order.</p>
+                <div class="link-copy-box">
+                    <input type="text" id="referral-url" class="link-input" value="https://cartprime.com/ref/farhanul" readonly>
+                    <button class="btn-copy" onclick="copyReferralLink()"><i class="fa-regular fa-copy"></i> Copy</button>
+                </div>
+            </div>
+
+            <!-- Rules Card -->
+            <div class="card-box">
+                <div class="box-header">
+                    <h3>Payout Rules</h3>
+                </div>
+                <ul class="rules-list">
+                    <li>
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span><strong>Successful Delivery Required:</strong> The referred user must successfully place and receive at least 1 order.</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-circle-xmark"></i>
+                        <span><strong>No Return Policy:</strong> Amount will NOT be credited if the customer returns or cancels the product.</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-clock"></i>
+                        <span><strong>Verification Period:</strong> Earnings status updates to 'Available' once the product return window closes.</span>
+                    </li>
+                </ul>
             </div>
 
             <!-- Recent Transactions -->
@@ -461,7 +611,7 @@
                         <div class="t-info">
                             <div class="t-icon income"><i class="fa-solid fa-bag-shopping"></i></div>
                             <div class="t-details">
-                                <h4>Earnings Credit</h4>
+                                <h4>Commission Credit</h4>
                                 <p>Order #CP7856 • 20 Aug, 2026</p>
                             </div>
                         </div>
@@ -471,6 +621,27 @@
                         </div>
                     </li>
                 </ul>
+            </div>
+
+            <!-- Top Referrals -->
+            <div class="card-box">
+                <div class="box-header">
+                    <h3>Top Performing Creators</h3>
+                </div>
+                <div>
+                    <div class="referral-item">
+                        <div class="ref-user">1. @tech_with_farhan</div>
+                        <div class="ref-amount">₹2,450.00</div>
+                    </div>
+                    <div class="referral-item">
+                        <div class="ref-user">2. @digital_creator_07</div>
+                        <div class="ref-amount">₹1,780.00</div>
+                    </div>
+                    <div class="referral-item">
+                        <div class="ref-user">3. @online_hustler</div>
+                        <div class="ref-amount">₹1,250.00</div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -489,7 +660,7 @@
                     <div class="stat-card">
                         <div class="stat-title">Total Lifetime Earnings</div>
                         <div class="stat-value">₹ <span class="val-earnings">45,780.50</span></div>
-                        <div class="stat-sub">Overall revenue</div>
+                        <div class="stat-sub">Processed across all links</div>
                     </div>
                 </div>
             </div>
@@ -543,7 +714,7 @@
                         <div class="t-info">
                             <div class="t-icon income"><i class="fa-solid fa-bag-shopping"></i></div>
                             <div class="t-details">
-                                <h4>Earnings Credit</h4>
+                                <h4>Commission Credit</h4>
                                 <p>Order #CP7856 • 20 Aug, 2026</p>
                             </div>
                         </div>
@@ -603,6 +774,15 @@
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Copy Referral Link Logic
+        function copyReferralLink() {
+            const linkInput = document.getElementById('referral-url');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(linkInput.value);
+            alert("Referral link copied to clipboard!");
         }
 
         // Update UI dynamic numbers
