@@ -16,7 +16,6 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            /* Blue Overlay/Highlight remove ചെയ്യാനുള്ള CSS */
             -webkit-tap-highlight-color: transparent;
             outline: none;
         }
@@ -41,10 +40,9 @@
             flex-direction: column;
             min-height: 100vh;
             padding-bottom: 75px;
-            user-select: none; /* Text Highlight Blue Overlay ഒഴിവാക്കാൻ */
+            user-select: none;
         }
 
-        /* Focus Blue Outline ഒഴിവാക്കുന്നു */
         button, a, input {
             outline: none !important;
             -webkit-tap-highlight-color: transparent;
@@ -424,7 +422,6 @@
             cursor: pointer;
         }
 
-        /* Share Options Styles */
         .share-actions {
             display: flex;
             gap: 10px;
@@ -481,7 +478,7 @@
     <main class="main-content">
         <div class="top-header">
             <div class="header-title">
-                <h1>Welcome back, <span id="user-display-name">User</span>! 👋</h1>
+                <h1>Welcome back, <span id="user-display-name">Loading...</span>! 👋</h1>
                 <p>Track your earnings and grow your revenue</p>
             </div>
         </div>
@@ -526,10 +523,9 @@
                 
                 <div class="link-copy-box">
                     <div class="link-input-group">
-                        <input type="text" id="referral-url" class="link-input" readonly>
+                        <input type="text" id="referral-url" class="link-input" readonly placeholder="Generating link...">
                         <button class="btn-copy" onclick="copyReferralLink()"><i class="fa-regular fa-copy"></i> Copy</button>
                     </div>
-                    <!-- WhatsApp and General Share Buttons -->
                     <div class="share-actions">
                         <button class="btn-share-wa" onclick="shareToWhatsApp()">
                             <i class="fa-brands fa-whatsapp"></i> WhatsApp
@@ -640,17 +636,32 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const activeUserId = localStorage.getItem('userId') || "farhanul"; 
-        const activeUserName = localStorage.getItem('userName') || "Farhanul";
+        // Local Storage-ൽ നിന്ന് Active Partner-ന്റെ ID ലഭ്യമാക്കുന്നു
+        const activeUserId = localStorage.getItem('partnerId') || localStorage.getItem('userId') || "farhanul"; 
+        let partnerName = "User";
 
         window.onload = function() {
-            document.getElementById('user-display-name').innerText = activeUserName;
-            document.getElementById('user-avatar').innerText = activeUserName.charAt(0).toUpperCase();
-
-            setupReferralLink();
+            fetchPartnerDetails();
             listenToWalletData();
-            listenToReferralOrders();
         };
+
+        // earn_partners ഫീൽഡിൽ നിന്ന് ഡാറ്റ എടുത്തു കാട്ടുന്നു
+        function fetchPartnerDetails() {
+            db.ref(`earn_partners/${activeUserId}`).on('value', (snapshot) => {
+                const partnerData = snapshot.val();
+                if (partnerData) {
+                    partnerName = partnerData.name || partnerData.fullName || partnerData.username || activeUserId;
+                } else {
+                    partnerName = activeUserId;
+                }
+
+                document.getElementById('user-display-name').innerText = partnerName;
+                document.getElementById('user-avatar').innerText = partnerName.charAt(0).toUpperCase();
+
+                setupReferralLink();
+                listenToReferralOrders();
+            });
+        }
 
         // Referral URL Generator
         function setupReferralLink() {
@@ -684,7 +695,7 @@
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
         }
 
-        // Native Share (Mobile App Choice / Native Web Share API)
+        // Native Share API
         function shareNative() {
             const refUrl = document.getElementById('referral-url').value;
             if (navigator.share) {
@@ -698,15 +709,15 @@
             }
         }
 
-        // 2. Realtime Listener for Wallet Main Balances
+        // 2. Realtime Listener for Wallet Balances
         function listenToWalletData() {
-            db.ref(`users/${activeUserId}/wallet`).on('value', (snapshot) => {
+            db.ref(`earn_partners/${activeUserId}/wallet`).on('value', (snapshot) => {
                 const data = snapshot.val() || { balance: 0 };
                 document.querySelectorAll('.val-balance').forEach(el => el.innerText = (data.balance || 0).toFixed(2));
             });
         }
 
-        // 3. Realtime Listener for Customer Orders (Auto Credit Commission to Wallet)
+        // 3. Realtime Listener for Orders & Auto Credit Commission
         function listenToReferralOrders() {
             db.ref('orders').on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
@@ -723,7 +734,7 @@
                     const order = orders[key];
                     const referrer = order.referredBy || order.referencedBy;
                     
-                    if (referrer && (referrer.toLowerCase() === activeUserId.toLowerCase() || referrer.toLowerCase() === activeUserName.toLowerCase())) {
+                    if (referrer && (referrer.toLowerCase() === activeUserId.toLowerCase() || referrer.toLowerCase() === partnerName.toLowerCase())) {
                         count++;
                         
                         const productAmount = parseFloat(order.amount || order.totalPrice || order.price || 0);
@@ -739,13 +750,12 @@
                         } else {
                             verifiedEarnings += commissionEarned;
 
-                            // ⭐ പുതിയ ഓർഡർ പൂർത്തിയാവുമ്പോൾ വാലറ്റിൽ ഓട്ടോമാറ്റിക് ആയി കമ്മീഷൻ ആഡ് ചെയ്യുന്ന ഭാഗം ⭐
+                            // ഓർഡർ പൂര്ത്തിയായിക്കഴിഞ്ഞാൽ Wallet-ലേക്ക് ഡയറക്ട് ആഡ് ചെയ്യുന്നു
                             if (!order.commissionCredited) {
-                                db.ref(`users/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
+                                db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
                                     return (currentBalance || 0) + commissionEarned;
                                 });
 
-                                // കമ്മീഷൻ പ്രൊസസ്സ് ചെയ്തതായി അടയാളപ്പെടുത്തുന്നു
                                 db.ref(`orders/${key}/commissionCredited`).set(true);
                             }
                         }
@@ -791,17 +801,29 @@
             });
         }
 
-        // 4. Payout Request handling
+        // 4. Payout Request Handling
         function handleWithdraw(event) {
             event.preventDefault();
             const method = document.getElementById('withdraw-method').value;
             const amount = parseFloat(document.getElementById('withdraw-amt').value);
 
-            db.ref(`users/${activeUserId}/wallet/balance`).get().then((snapshot) => {
+            db.ref(`earn_partners/${activeUserId}/wallet/balance`).get().then((snapshot) => {
                 const currentBalance = snapshot.val() || 0;
 
                 if (amount > 0 && amount <= currentBalance) {
-                    db.ref(`users/${activeUserId}/wallet/balance`).set(currentBalance - amount);
+                    db.ref(`earn_partners/${activeUserId}/wallet/balance`).set(currentBalance - amount);
+                    
+                    // വിഡ്രോവൽ ഹിസ്റ്ററി രേഖപ്പെടുത്തുന്നു
+                    const requestRef = db.ref(`payout_requests`).push();
+                    requestRef.set({
+                        partnerId: activeUserId,
+                        partnerName: partnerName,
+                        amount: amount,
+                        method: method,
+                        status: 'Pending',
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+
                     alert("Withdrawal Request Submitted Successfully!");
                     document.getElementById('withdraw-amt').value = '';
                     switchTab('dashboard', document.querySelectorAll('.nav-item-bottom')[0]);
