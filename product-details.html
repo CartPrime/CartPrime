@@ -578,6 +578,7 @@
         const urlParams = new URLSearchParams(window.location.search); 
         const productId = urlParams.get('id'); 
         
+        // Referral link save logic
         const refCode = urlParams.get('ref');
         if (refCode) {
             localStorage.setItem('referredBy', refCode);
@@ -585,13 +586,14 @@
 
         let selectedProductSize = null;
         let isApprovedEarner = false;
+        let earnerPartnerId = null; // Store partner key
 
         const userId = localStorage.getItem('userId');
         
         // Clean phone helper
         const cleanPhoneStr = (p) => p ? p.toString().replace(/\D/g, '').slice(-10) : '';
 
-        // Get user profile details from localStorage (Same keys used in home page/login)
+        // Get user profile details from localStorage
         const rawUserPhone = localStorage.getItem('userPhone') || localStorage.getItem('phone') || localStorage.getItem('earnNumber') || localStorage.getItem('earnPhone') || '';
         const rawUserName = localStorage.getItem('userName') || localStorage.getItem('name') || localStorage.getItem('earnName') || '';
 
@@ -626,6 +628,7 @@
                         const isNameMatched = partnerName && partnerName === userName;
 
                         if (isPhoneMatched && isNameMatched) {
+                            earnerPartnerId = key; // Keep partner ID
                             return true;
                         }
                     }
@@ -859,7 +862,7 @@
 
             const estimatedDeliveryText = getEstimatedDeliveryDate();
 
-            // Earn Commission Banner - Only visible when Name & Phone match in earn_partners and status is approved
+            // Earn Commission Banner - Visible when user is an approved partner
             const earnBannerHTML = isApprovedEarner ? `
                 <div class="earn-banner">
                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -992,7 +995,8 @@
         };
 
         window.shareProduct = (title, isAffiliateShare = false) => {
-            const activeRefUser = userPhone || userName || userId || guestKey;
+            // Priority: Approved Partner Phone/ID -> Saved Phone -> userId
+            const activeRefUser = userPhone || earnerPartnerId || userId || guestKey;
             const baseUrl = window.location.origin + window.location.pathname;
             const affiliateUrl = `${baseUrl}?id=${productId}&ref=${activeRefUser}`;
             
@@ -1060,6 +1064,7 @@
                 return;
             }
 
+            // Read the referral code saved from the URL query string
             const referredBy = localStorage.getItem('referredBy') || null;
 
             localStorage.setItem('pendingOrder', JSON.stringify({ 
@@ -1074,9 +1079,10 @@
                 isReturnable: ret, 
                 cod: cod,
                 selectedSize: selectedProductSize || 'N/A',
-                referredBy: referredBy,
+                referredBy: referredBy, // Pass referral phone/code to checkout
                 commissionAmount: comm
             })); 
+
             location.href = 'checkout.html'; 
         };
     </script>
