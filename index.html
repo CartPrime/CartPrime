@@ -1549,7 +1549,7 @@ nav {
     });
   }
 
-  // --- EARN VERIFICATION MODAL LOGIC (MANUAL VERIFICATION MODE) --- 
+  // --- EARN VERIFICATION & REDIRECTION LOGIC --- 
   const earnModal = document.getElementById('earnModal'); 
   const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
@@ -1560,9 +1560,47 @@ nav {
     document.getElementById('partnerPhone').value = localStorage.getItem('userPhone') || "";
     earnModal.style.display = 'flex';
   }
+
+  function handleEarnClick() {
+    const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    
+    if (!phone) {
+      openEarnRegistrationModal();
+      return;
+    }
+
+    const partnerRef = ref(db, `earn_partners/${phone}`);
+    get(partnerRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const partnerData = snapshot.val();
+        const status = (partnerData.status || "").toLowerCase();
+
+        if (status === 'approved' || status === 'active') {
+          // If approved by admin, redirect directly to wallet.html
+          window.location.href = '/wallet.html';
+        } else if (status === 'pending' || status === 'pending verification') {
+          showCustomAlert(
+            "Under Verification", 
+            `Your Earn Partner registration is under admin review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access to wallet after approval.`, 
+            true
+          );
+        } else {
+          showCustomAlert(
+            "Application Status", 
+            `Status: ${partnerData.status || 'Pending'}. Please contact support if you need help.`, 
+            false
+          );
+        }
+      } else {
+        openEarnRegistrationModal();
+      }
+    }).catch(() => {
+      openEarnRegistrationModal();
+    });
+  }
   
   if (bottomEarnBtn) { 
-    bottomEarnBtn.addEventListener('click', openEarnRegistrationModal); 
+    bottomEarnBtn.addEventListener('click', handleEarnClick); 
   } 
 
   if (closeEarnModal) { 
@@ -1583,12 +1621,21 @@ nav {
         get(partnerRef).then((snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val();
-            showCustomAlert(
-              "Application Submitted", 
-              `Your Earn Partner registration is undergoing separate verification by our team. Partner ID: ${data.partnerId || 'N/A'}.`, 
-              true
-            );
-            earnModal.style.display = 'none';
+            const status = (data.status || "").toLowerCase();
+            
+            if (status === 'approved' || status === 'active') {
+              localStorage.setItem('partnerPhone', phone);
+              localStorage.setItem('partnerId', data.partnerId);
+              earnModal.style.display = 'none';
+              window.location.href = '/wallet.html';
+            } else {
+              showCustomAlert(
+                "Application Already Submitted", 
+                `Your Earn Partner registration is undergoing separate verification by our team. Partner ID: ${data.partnerId || 'N/A'}.`, 
+                true
+              );
+              earnModal.style.display = 'none';
+            }
           } else {
             const uniquePartnerId = generateUniquePartnerId();
 
@@ -1606,7 +1653,7 @@ nav {
               earnModal.style.display = 'none'; 
               showCustomAlert(
                 "Request Received!", 
-                `Your registration was submitted successfully for separate verification! Partner ID: ${uniquePartnerId}. Access will be enabled after manual review.`, 
+                `Your registration was submitted successfully to earn_partners for separate verification! Partner ID: ${uniquePartnerId}. Access to wallet.html will be granted after admin approval.`, 
                 true
               ); 
             }).catch((err) => { 
