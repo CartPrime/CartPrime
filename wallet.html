@@ -267,7 +267,7 @@
             list-style: none;
         }
 
-        .transaction-item, .ref-order-item {
+        .ref-order-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -275,7 +275,7 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .transaction-item:last-child, .ref-order-item:last-child {
+        .ref-order-item:last-child {
             border-bottom: none;
         }
 
@@ -300,11 +300,6 @@
             color: var(--success-green);
         }
 
-        .t-icon.payout {
-            background-color: #e9e3ff;
-            color: var(--brand-purple);
-        }
-
         .t-details h4 {
             font-size: 14px;
             font-weight: 700;
@@ -326,7 +321,6 @@
         }
 
         .t-amount .amt.plus { color: var(--success-green); }
-        .t-amount .amt.minus { color: var(--text-primary); }
 
         .badge {
             font-size: 10px;
@@ -412,39 +406,6 @@
             font-size: 13px;
             cursor: pointer;
         }
-
-        .btn-simulate {
-            background: var(--brand-purple);
-            color: white;
-            border: none;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .rules-list {
-            list-style: none;
-            margin-top: 10px;
-        }
-
-        .rules-list li {
-            font-size: 13px;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .rules-list li i {
-            color: var(--brand-purple);
-            margin-top: 3px;
-        }
     </style>
 </head>
 <body>
@@ -496,7 +457,7 @@
             <div class="stats-vertical">
                 <div class="stat-card">
                     <div class="stat-title">Total Referred Orders</div>
-                    <div class="stat-value"><span id="ref-count">0</span> Delivered</div>
+                    <div class="stat-value"><span id="ref-count">0</span> Orders</div>
                     <div class="stat-sub">Tracked via your link</div>
                 </div>
             </div>
@@ -506,25 +467,11 @@
                 <div class="box-header">
                     <h3>Your Unique Referral Link</h3>
                 </div>
-                <p style="font-size: 12px; color: var(--text-secondary);">Share this link to direct users to index.html and earn commissions.</p>
+                <p style="font-size: 12px; color: var(--text-secondary);">Share this link to direct users to shop and earn commissions.</p>
                 <div class="link-copy-box">
                     <input type="text" id="referral-url" class="link-input" readonly>
                     <button class="btn-copy" onclick="copyReferralLink()"><i class="fa-regular fa-copy"></i> Copy</button>
                 </div>
-            </div>
-
-            <!-- Simulation Box (Customer Product Checkout Demo) -->
-            <div class="card-box" style="border: 2px dashed var(--brand-purple); background: #fdfcff;">
-                <div class="box-header">
-                    <h3><i class="fa-solid fa-cart-shopping"></i> Customer Order Simulation</h3>
-                </div>
-                <p style="font-size: 12px; color: var(--text-secondary);">Test how an order placed via your referral link gets tracked in real-time:</p>
-                
-                <div class="form-group" style="margin-top: 10px;">
-                    <label>Order Commission Value (₹)</label>
-                    <input type="number" id="sim-order-amount" class="form-input" value="450">
-                </div>
-                <button class="btn-simulate" onclick="simulateCustomerOrder()"><i class="fa-solid fa-bag-shopping"></i> Place Order via Referral</button>
             </div>
 
             <!-- Referred Orders Status List -->
@@ -647,7 +594,6 @@
         // Set up Referral URL input pointing explicitly to index.html
         function setupReferralLink() {
             const currentOrigin = window.location.origin;
-            // Target index.html in the root path
             document.getElementById('referral-url').value = `${currentOrigin}/index.html?ref=${creatorId}`;
         }
 
@@ -681,7 +627,7 @@
             });
         }
 
-        // 3. Realtime Listener for Referred Orders
+        // 3. Realtime Listener for Real Customer Orders
         function listenToReferralOrders() {
             db.ref(`users/${creatorId}/orders`).on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
@@ -698,22 +644,23 @@
                 orderKeys.forEach(key => {
                     count++;
                     const order = orders[key];
-                    const isPending = order.status === 'pending';
+                    const isPending = (order.status === 'pending' || order.status === 'Pending Verification');
+                    const customerName = order.userName || order.customerName || 'Customer';
                     
                     const li = document.createElement('li');
                     li.className = 'ref-order-item';
                     li.innerHTML = `
                         <div class="t-info">
                             <div class="t-icon income">
-                                <i class="fa-solid ${isPending ? 'fa-truck-ramp-box' : 'fa-circle-check'}"></i>
+                                <i class="fa-solid ${isPending ? 'fa-clock' : 'fa-circle-check'}"></i>
                             </div>
                             <div class="t-details">
-                                <h4>Order #${order.orderId}</h4>
-                                <p>${isPending ? 'Delivered • Return Period Active' : 'Delivered • Return Period Closed'}</p>
+                                <h4>${customerName} (Order #${order.orderId || key})</h4>
+                                <p>${isPending ? 'Pending • Return Period Active' : 'Success • Return Period Closed'}</p>
                             </div>
                         </div>
                         <div class="t-amount">
-                            <div class="amt plus">+ ₹${parseFloat(order.amount).toFixed(2)}</div>
+                            <div class="amt plus">+ ₹${parseFloat(order.amount || 0).toFixed(2)}</div>
                             <span class="badge ${isPending ? 'badge-pending' : 'badge-success'}">
                                 ${isPending ? 'Pending' : 'Success'}
                             </span>
@@ -726,45 +673,7 @@
             });
         }
 
-        // 4. Simulate Customer Order via Referral Link
-        function simulateCustomerOrder() {
-            const amountInput = document.getElementById('sim-order-amount');
-            const amount = parseFloat(amountInput.value) || 450.00;
-            const orderId = 'CP' + Math.floor(10000 + Math.random() * 90000);
-
-            // Active Referrer (If opened via link or default creatorId)
-            const activeReferrer = localStorage.getItem('cartprime_referrer') || creatorId;
-            const orderRef = db.ref(`users/${activeReferrer}/orders/${orderId}`);
-
-            // Step 1: Save Order in Firebase as "Pending" (Customer Received Item)
-            orderRef.set({
-                orderId: orderId,
-                amount: amount,
-                status: 'pending',
-                timestamp: Date.now()
-            });
-
-            // Update Creator's Pending Earnings in Firebase
-            db.ref(`users/${activeReferrer}/wallet/pending`).transaction((current) => (current || 0) + amount);
-
-            alert(`Order #${orderId} Delivered! Commission ₹${amount} added as PENDING.`);
-
-            // Step 2: Return Window Expiry Simulation (Converts Pending to Success after 12 Seconds)
-            setTimeout(() => {
-                orderRef.update({ status: 'success' });
-
-                // Move Funds from Pending to Available Balance & Lifetime Earnings
-                db.ref(`users/${activeReferrer}/wallet`).transaction((wallet) => {
-                    if (!wallet) wallet = { balance: 0, pending: 0, earnings: 0 };
-                    wallet.pending = Math.max(0, (wallet.pending || 0) - amount);
-                    wallet.balance = (wallet.balance || 0) + amount;
-                    wallet.earnings = (wallet.earnings || 0) + amount;
-                    return wallet;
-                });
-            }, 12000);
-        }
-
-        // 5. Handle Withdrawal Requests
+        // 4. Handle Withdrawal Requests
         function handleWithdraw(event) {
             event.preventDefault();
             const method = document.getElementById('withdraw-method').value;
