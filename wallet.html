@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cartprime - Creator Wallet</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Firebase SDK Setup -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -34,7 +39,6 @@
             padding-bottom: 75px;
         }
 
-        /* Top Bar Styling */
         .top-navbar {
             background-color: var(--sidebar-bg);
             padding: 15px 25px;
@@ -78,7 +82,6 @@
             display: block;
         }
 
-        /* Bottom Navigation Styling */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -117,7 +120,6 @@
             color: var(--brand-purple);
         }
 
-        /* Main Content */
         .main-content {
             flex: 1;
             padding: 25px 20px;
@@ -126,7 +128,6 @@
             width: 100%;
         }
 
-        /* Header Bar */
         .top-header {
             display: flex;
             justify-content: space-between;
@@ -171,7 +172,6 @@
             font-weight: bold;
         }
 
-        /* Views Setup & Keyframe Animation */
         .page-view {
             display: none;
         }
@@ -192,7 +192,6 @@
             }
         }
 
-        /* Stats Cards - Vertical Stack */
         .stats-vertical {
             display: flex;
             flex-direction: column;
@@ -243,7 +242,6 @@
             color: rgba(255, 255, 255, 0.8);
         }
 
-        /* Content Box */
         .card-box {
             background-color: white;
             padding: 22px;
@@ -265,7 +263,6 @@
             font-weight: 800;
         }
 
-        /* Transactions & Referrals List */
         .transaction-list, .referral-orders-list {
             list-style: none;
         }
@@ -350,7 +347,6 @@
             color: var(--warning-orange);
         }
 
-        /* Form UI */
         .form-group {
             margin-bottom: 18px;
         }
@@ -389,7 +385,6 @@
             box-shadow: 0 8px 20px rgba(89, 54, 245, 0.3);
         }
 
-        /* Link Box */
         .link-copy-box {
             display: flex;
             gap: 8px;
@@ -429,7 +424,6 @@
             cursor: pointer;
         }
 
-        /* Rules Styling */
         .rules-list {
             list-style: none;
             margin-top: 10px;
@@ -449,18 +443,10 @@
             color: var(--brand-purple);
             margin-top: 3px;
         }
-
-        @media (max-width: 576px) {
-            .top-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
     </style>
 </head>
 <body>
 
-    <!-- Top Brand Header Bar -->
     <header class="top-navbar">
         <div class="brand">
             <div class="brand-icon"><i class="fa-solid fa-wallet"></i></div>
@@ -474,9 +460,7 @@
         </div>
     </header>
 
-    <!-- Main Content Container -->
     <main class="main-content">
-        <!-- Top Greeting Header -->
         <div class="top-header">
             <div class="header-title">
                 <h1>Welcome back, Farhanul! 👋</h1>
@@ -489,69 +473,39 @@
             <div class="stats-vertical">
                 <div class="stat-card featured">
                     <div class="stat-title">Available Balance</div>
-                    <div class="stat-value">₹ <span class="val-balance">12,450.75</span></div>
+                    <div class="stat-value">₹ <span class="val-balance">0.00</span></div>
                     <div class="stat-sub">Ready for instant payout</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Lifetime Earnings</div>
-                    <div class="stat-value">₹ <span class="val-earnings">45,780.50</span></div>
+                    <div class="stat-value">₹ <span class="val-earnings">0.00</span></div>
                     <div class="stat-sub">Total verified earnings</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Pending Earnings</div>
-                    <div class="stat-value">₹ <span class="val-pending">2,340.25</span></div>
+                    <div class="stat-value">₹ <span class="val-pending">0.00</span></div>
                     <div class="stat-sub">Awaiting return window completion</div>
                 </div>
             </div>
 
-            <!-- Recent Transactions -->
             <div class="card-box">
                 <div class="box-header">
                     <h3>Recent Activity</h3>
                 </div>
-                <ul class="transaction-list">
-                    <li class="transaction-item">
-                        <div class="t-info">
-                            <div class="t-icon payout"><i class="fa-solid fa-arrow-down"></i></div>
-                            <div class="t-details">
-                                <h4>Withdrawal to UPI</h4>
-                                <p>farhanul@upi • 20 Aug, 2026</p>
-                            </div>
-                        </div>
-                        <div class="t-amount">
-                            <div class="amt minus">- ₹3,000.00</div>
-                            <span class="badge badge-success">Success</span>
-                        </div>
-                    </li>
-                    <li class="transaction-item">
-                        <div class="t-info">
-                            <div class="t-icon income"><i class="fa-solid fa-bag-shopping"></i></div>
-                            <div class="t-details">
-                                <h4>Commission Credit</h4>
-                                <p>Order #CP7856 • 20 Aug, 2026</p>
-                            </div>
-                        </div>
-                        <div class="t-amount">
-                            <div class="amt plus">+ ₹560.00</div>
-                            <span class="badge badge-success">Success</span>
-                        </div>
-                    </li>
-                </ul>
+                <ul class="transaction-list" id="dashboard-tx-list"></ul>
             </div>
         </section>
 
         <!-- 2. REFERRAL VIEW -->
         <section id="referral" class="page-view">
-            <!-- Referral Stats -->
             <div class="stats-vertical">
                 <div class="stat-card">
                     <div class="stat-title">Total Referred Orders</div>
-                    <div class="stat-value"><span id="ref-count">2</span> Delivered</div>
+                    <div class="stat-value"><span id="ref-count">0</span> Delivered</div>
                     <div class="stat-sub">Tracked via your link</div>
                 </div>
             </div>
 
-            <!-- Referral Link Share Card -->
             <div class="card-box">
                 <div class="box-header">
                     <h3>Your Unique Referral Link</h3>
@@ -563,43 +517,14 @@
                 </div>
             </div>
 
-            <!-- Referred Orders Section -->
             <div class="card-box">
                 <div class="box-header">
                     <h3>Referred Orders Status</h3>
-                    <button class="btn-simulate" onclick="simulateNewReferralOrder()">+ Test Order</button>
+                    <button class="btn-simulate" onclick="createFirebaseOrder()">+ Test Order</button>
                 </div>
-                <ul class="referral-orders-list" id="referral-orders-list">
-                    <li class="ref-order-item" id="order-CP9021">
-                        <div class="t-info">
-                            <div class="t-icon income"><i class="fa-solid fa-truck-ramp-box"></i></div>
-                            <div class="t-details">
-                                <h4>Order #CP9021 (Rahul M.)</h4>
-                                <p>Delivered • Return period ends in 3 days</p>
-                            </div>
-                        </div>
-                        <div class="t-amount">
-                            <div class="amt plus">+ ₹450.00</div>
-                            <span class="badge badge-pending">Pending</span>
-                        </div>
-                    </li>
-                    <li class="ref-order-item">
-                        <div class="t-info">
-                            <div class="t-icon income"><i class="fa-solid fa-circle-check"></i></div>
-                            <div class="t-details">
-                                <h4>Order #CP8812 (Anjali K.)</h4>
-                                <p>Delivered • Return window closed</p>
-                            </div>
-                        </div>
-                        <div class="t-amount">
-                            <div class="amt plus">+ ₹320.00</div>
-                            <span class="badge badge-success">Success</span>
-                        </div>
-                    </li>
-                </ul>
+                <ul class="referral-orders-list" id="referral-orders-list"></ul>
             </div>
 
-            <!-- Rules Card -->
             <div class="card-box">
                 <div class="box-header">
                     <h3>Payout Rules</h3>
@@ -629,13 +554,8 @@
                 </div>
                 <div class="stats-vertical">
                     <div class="stat-card">
-                        <div class="stat-title">Current Month Earnings</div>
-                        <div class="stat-value">₹ 8,560.00</div>
-                        <div class="stat-sub">Generated in August</div>
-                    </div>
-                    <div class="stat-card">
                         <div class="stat-title">Total Lifetime Earnings</div>
-                        <div class="stat-value">₹ <span class="val-earnings">45,780.50</span></div>
+                        <div class="stat-value">₹ <span class="val-earnings">0.00</span></div>
                         <div class="stat-sub">Processed across all links</div>
                     </div>
                 </div>
@@ -650,7 +570,7 @@
                 </div>
                 <div style="margin-bottom: 20px;">
                     <p style="font-size: 13px; color: var(--text-secondary);">Available Balance for Withdrawal:</p>
-                    <h2 style="font-size: 26px; color: var(--brand-purple);">₹ <span class="val-balance">12,450.75</span></h2>
+                    <h2 style="font-size: 26px; color: var(--brand-purple);">₹ <span class="val-balance">0.00</span></h2>
                 </div>
                 <form onsubmit="handleWithdraw(event)">
                     <div class="form-group">
@@ -672,39 +592,11 @@
                 <div class="box-header">
                     <h3>Transaction History</h3>
                 </div>
-                <ul class="transaction-list" id="full-transaction-list">
-                    <li class="transaction-item">
-                        <div class="t-info">
-                            <div class="t-icon payout"><i class="fa-solid fa-arrow-down"></i></div>
-                            <div class="t-details">
-                                <h4>Withdrawal to UPI</h4>
-                                <p>farhanul@upi • 20 Aug, 2026</p>
-                            </div>
-                        </div>
-                        <div class="t-amount">
-                            <div class="amt minus">- ₹3,000.00</div>
-                            <span class="badge badge-success">Success</span>
-                        </div>
-                    </li>
-                    <li class="transaction-item">
-                        <div class="t-info">
-                            <div class="t-icon income"><i class="fa-solid fa-bag-shopping"></i></div>
-                            <div class="t-details">
-                                <h4>Commission Credit</h4>
-                                <p>Order #CP7856 • 20 Aug, 2026</p>
-                            </div>
-                        </div>
-                        <div class="t-amount">
-                            <div class="amt plus">+ ₹560.00</div>
-                            <span class="badge badge-success">Success</span>
-                        </div>
-                    </li>
-                </ul>
+                <ul class="transaction-list" id="full-transaction-list"></ul>
             </div>
         </section>
     </main>
 
-    <!-- Bottom Fixed Navigation Bar -->
     <nav class="bottom-nav">
         <a class="nav-item-bottom active" onclick="switchTab('dashboard', this)">
             <i class="fa-solid fa-house"></i>
@@ -728,146 +620,151 @@
         </a>
     </nav>
 
-    <!-- JavaScript Navigation and Logic -->
     <script>
-        let walletData = {
-            balance: 12450.75,
-            pending: 2340.25,
-            earnings: 45780.50,
-            referralCount: 2
+        // 1. Firebase Initialization
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+            authDomain: "cartprime-shopping.firebaseapp.com",
+            databaseURL: "https://cartprime-shopping-default-rtdb.firebaseio.com",
+            projectId: "cartprime-shopping",
+            storageBucket: "cartprime-shopping.firebasestorage.app",
+            messagingSenderId: "570068438689",
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+            measurementId: "G-9GREWHMEYL"
         };
 
-        // Tab Switcher with Smooth Animation
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const userId = "farhanul"; // Current creator username
+
+        // Initialize Firebase Listeners
+        window.onload = function() {
+            listenToWalletData();
+            listenToReferrals();
+        };
+
+        // Tab Navigation
         function switchTab(viewId, element) {
-            const navLinks = document.querySelectorAll('.nav-item-bottom');
-            navLinks.forEach(link => link.classList.remove('active'));
+            document.querySelectorAll('.nav-item-bottom').forEach(link => link.classList.remove('active'));
+            if (element) element.classList.add('active');
 
-            if (element) {
-                element.classList.add('active');
-            }
-
-            const views = document.querySelectorAll('.page-view');
-            views.forEach(view => view.classList.remove('active-view'));
-
+            document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active-view'));
             const selectedView = document.getElementById(viewId);
-            if(selectedView) {
-                selectedView.classList.add('active-view');
-            }
+            if(selectedView) selectedView.classList.add('active-view');
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Copy Referral Link Logic
         function copyReferralLink() {
             const linkInput = document.getElementById('referral-url');
             linkInput.select();
-            linkInput.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(linkInput.value);
-            alert("Referral link copied to clipboard!");
+            alert("Referral link copied!");
         }
 
-        // Update UI dynamic numbers
-        function updateUI() {
-            const formattedBalance = walletData.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-            const formattedEarnings = walletData.earnings.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-            const formattedPending = walletData.pending.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-
-            document.querySelectorAll('.val-balance').forEach(el => el.innerText = formattedBalance);
-            document.querySelectorAll('.val-earnings').forEach(el => el.innerText = formattedEarnings);
-            document.querySelectorAll('.val-pending').forEach(el => el.innerText = formattedPending);
-            document.getElementById('ref-count').innerText = walletData.referralCount;
-        }
-
-        // Test Simulation: Add a Delivered Referral Order (Initially Pending)
-        function simulateNewReferralOrder() {
-            walletData.referralCount += 1;
-            const orderAmount = 500.00;
-            walletData.pending += orderAmount;
-            
-            updateUI();
-
-            const orderId = 'CP' + Math.floor(1000 + Math.random() * 9000);
-            const list = document.getElementById('referral-orders-list');
-            
-            const li = document.createElement('li');
-            li.className = 'ref-order-item';
-            li.id = 'order-' + orderId;
-            li.innerHTML = `
-                <div class="t-info">
-                    <div class="t-icon income"><i class="fa-solid fa-truck-ramp-box"></i></div>
-                    <div class="t-details">
-                        <h4>Order #${orderId} (New User)</h4>
-                        <p>Delivered • Return period window active</p>
-                    </div>
-                </div>
-                <div class="t-amount">
-                    <div class="amt plus">+ ₹${orderAmount.toFixed(2)}</div>
-                    <span class="badge badge-pending">Pending</span>
-                </div>
-            `;
-            list.prepend(li);
-
-            // Simulate Return Window Expiry after 10 seconds -> Converts Pending to Success
-            setTimeout(() => {
-                const item = document.getElementById('order-' + orderId);
-                if (item) {
-                    item.querySelector('.badge').className = 'badge badge-success';
-                    item.querySelector('.badge').innerText = 'Success';
-                    item.querySelector('.t-details p').innerText = 'Delivered • Return window closed';
-                    item.querySelector('.t-icon').innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-
-                    // Move amount from Pending to Available Balance & Lifetime Earnings
-                    walletData.pending -= orderAmount;
-                    walletData.balance += orderAmount;
-                    walletData.earnings += orderAmount;
-                    updateUI();
-                }
-            }, 10000); // 10 seconds simulation
-
-            alert(`New referred order #${orderId} delivered! Added ₹${orderAmount} as Pending.`);
-        }
-
-        // Withdrawal Form Handler
-        function handleWithdraw(event) {
-            event.preventDefault();
-            const method = document.getElementById('withdraw-method').value;
-            const amountInput = document.getElementById('withdraw-amt');
-            const amount = parseFloat(amountInput.value);
-
-            if (amount > 0 && amount <= walletData.balance) {
-                walletData.balance -= amount;
-                updateUI();
-
-                const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-                const transactionLists = document.querySelectorAll('.transaction-list');
+        // 2. Fetch Wallet Stats Realtime from Firebase
+        function listenToWalletData() {
+            db.ref(`users/${userId}/wallet`).on('value', (snapshot) => {
+                const data = snapshot.val() || { balance: 0, pending: 0, earnings: 0 };
                 
-                transactionLists.forEach(list => {
+                document.querySelectorAll('.val-balance').forEach(el => el.innerText = data.balance.toFixed(2));
+                document.querySelectorAll('.val-earnings').forEach(el => el.innerText = data.earnings.toFixed(2));
+                document.querySelectorAll('.val-pending').forEach(el => el.innerText = data.pending.toFixed(2));
+            });
+        }
+
+        // 3. Fetch Orders and Listen for Automatic Changes
+        function listenToReferrals() {
+            db.ref(`users/${userId}/orders`).on('value', (snapshot) => {
+                const orders = snapshot.val() || {};
+                const list = document.getElementById('referral-orders-list');
+                list.innerHTML = '';
+
+                let count = 0;
+                Object.keys(orders).reverse().forEach(key => {
+                    count++;
+                    const order = orders[key];
+                    const isPending = order.status === 'pending';
+                    
                     const li = document.createElement('li');
-                    li.className = 'transaction-item';
+                    li.className = 'ref-order-item';
                     li.innerHTML = `
                         <div class="t-info">
-                            <div class="t-icon payout"><i class="fa-solid fa-arrow-down"></i></div>
+                            <div class="t-icon income">
+                                <i class="fa-solid ${isPending ? 'fa-truck-ramp-box' : 'fa-circle-check'}"></i>
+                            </div>
                             <div class="t-details">
-                                <h4>Withdrawal to ${method}</h4>
-                                <p>${method} • ${today}</p>
+                                <h4>Order #${order.orderId}</h4>
+                                <p>${isPending ? 'Delivered • Return period window active' : 'Delivered • Return window closed'}</p>
                             </div>
                         </div>
                         <div class="t-amount">
-                            <div class="amt minus">- ₹${amount.toFixed(2)}</div>
-                            <span class="badge badge-success">Success</span>
+                            <div class="amt plus">+ ₹${order.amount.toFixed(2)}</div>
+                            <span class="badge ${isPending ? 'badge-pending' : 'badge-success'}">
+                                ${isPending ? 'Pending' : 'Success'}
+                            </span>
                         </div>
                     `;
-                    list.prepend(li);
+                    list.appendChild(li);
                 });
 
-                alert("Withdrawal Request Submitted Successfully!");
-                amountInput.value = '';
-                
-                const historyBtn = document.querySelectorAll('.nav-item-bottom')[4];
-                switchTab('transactions', historyBtn);
-            } else {
-                alert("Invalid amount or insufficient balance!");
-            }
+                document.getElementById('ref-count').innerText = count;
+            });
+        }
+
+        // 4. Test Button: Create a New Delivered Order in Firebase
+        function createFirebaseOrder() {
+            const orderId = 'CP' + Math.floor(1000 + Math.random() * 9000);
+            const amount = 500.00;
+
+            const orderRef = db.ref(`users/${userId}/orders/${orderId}`);
+            
+            // Step A: Save Order as Pending in Firebase
+            orderRef.set({
+                orderId: orderId,
+                amount: amount,
+                status: 'pending',
+                timestamp: Date.now()
+            });
+
+            // Update Pending Wallet Amount
+            db.ref(`users/${userId}/wallet/pending`).transaction((current) => (current || 0) + amount);
+
+            // Step B: Auto Update Return Window after 10 seconds (Change status to Success)
+            setTimeout(() => {
+                orderRef.update({ status: 'success' });
+
+                // Move money from Pending to Available Balance & Lifetime Earnings
+                db.ref(`users/${userId}/wallet`).transaction((wallet) => {
+                    if (!wallet) wallet = { balance: 0, pending: 0, earnings: 0 };
+                    wallet.pending = Math.max(0, wallet.pending - amount);
+                    wallet.balance = (wallet.balance || 0) + amount;
+                    wallet.earnings = (wallet.earnings || 0) + amount;
+                    return wallet;
+                });
+            }, 10000);
+        }
+
+        // 5. Handle Withdrawal
+        function handleWithdraw(event) {
+            event.preventDefault();
+            const method = document.getElementById('withdraw-method').value;
+            const amount = parseFloat(document.getElementById('withdraw-amt').value);
+
+            db.ref(`users/${userId}/wallet/balance`).get().then((snapshot) => {
+                const currentBalance = snapshot.val() || 0;
+
+                if (amount > 0 && amount <= currentBalance) {
+                    // Reduce Balance in Firebase
+                    db.ref(`users/${userId}/wallet/balance`).set(currentBalance - amount);
+
+                    alert("Withdrawal Request Submitted!");
+                    document.getElementById('withdraw-amt').value = '';
+                    switchTab('dashboard', document.querySelectorAll('.nav-item-bottom')[0]);
+                } else {
+                    alert("Insufficient balance!");
+                }
+            });
         }
     </script>
 </body>
