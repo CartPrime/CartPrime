@@ -1625,6 +1625,7 @@ nav {
             
             if (status === 'approved' || status === 'active') {
               localStorage.setItem('partnerPhone', phone);
+              localStorage.setItem('partnerName', name);
               localStorage.setItem('partnerId', data.partnerId);
               earnModal.style.display = 'none';
               window.location.href = '/wallet.html';
@@ -1648,6 +1649,7 @@ nav {
               timestamp: Date.now() 
             }).then(() => { 
               localStorage.setItem('partnerPhone', phone);
+              localStorage.setItem('partnerName', name);
               localStorage.setItem('partnerId', uniquePartnerId);
               earnForm.reset(); 
               earnModal.style.display = 'none'; 
@@ -1695,6 +1697,7 @@ nav {
     } 
   } 
 
+  // --- REDIRECTION WITH USER & EARN PARTNER PARAMETERS ---
   function trackProductClickAndRedirect(productId) { 
     let viewedProducts = JSON.parse(localStorage.getItem('viewedProductIds') || "[]"); 
     let visitCounted = localStorage.getItem('visitCounted') === 'true'; 
@@ -1702,23 +1705,33 @@ nav {
       viewedProducts.push(productId); 
       localStorage.setItem('viewedProductIds', JSON.stringify(viewedProducts)); 
     } 
+
     const affId = localStorage.getItem('cartPrime_affiliateId'); 
-    const affQuery = affId ? `&ref=${encodeURIComponent(affId)}` : ''; 
+    const userName = localStorage.getItem('partnerName') || localStorage.getItem('userName') || '';
+    const userPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone') || '';
+
+    let queryParams = [`id=${encodeURIComponent(productId)}`];
+    if (affId) queryParams.push(`ref=${encodeURIComponent(affId)}`);
+    if (userName) queryParams.push(`name=${encodeURIComponent(userName)}`);
+    if (userPhone) queryParams.push(`phone=${encodeURIComponent(userPhone)}`);
+
+    const finalUrl = `/product-details?${queryParams.join('&')}`;
+
     if (viewedProducts.length >= 5 && !visitCounted) { 
       const visitsRef = ref(db, 'admin/visits'); 
       get(visitsRef).then((snapshot) => { 
         let currentVisits = snapshot.exists() ? snapshot.val() : 0; 
         set(visitsRef, currentVisits + 1).then(() => { 
           localStorage.setItem('visitCounted', 'true'); 
-          window.location.href = `/product-details?id=${productId}${affQuery}`; 
+          window.location.href = finalUrl; 
         }).catch(() => { 
-          window.location.href = `/product-details?id=${productId}${affQuery}`; 
+          window.location.href = finalUrl; 
         }); 
       }).catch(() => { 
-        window.location.href = `/product-details?id=${productId}${affQuery}`; 
+        window.location.href = finalUrl; 
       }); 
     } else { 
-      window.location.href = `/product-details?id=${productId}${affQuery}`; 
+      window.location.href = finalUrl; 
     } 
   } 
 
