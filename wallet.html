@@ -636,59 +636,97 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        function getActiveUserId() {
+        function getUserPhoneNumber() {
             const urlParams = new URLSearchParams(window.location.search);
-            const idFromUrl = urlParams.get('id') || urlParams.get('partnerId') || urlParams.get('userId') || urlParams.get('phone') || urlParams.get('mobile');
+            const rawPhone = urlParams.get('phone') || urlParams.get('mobile') || urlParams.get('id') || urlParams.get('partnerId') || urlParams.get('userId');
             
-            if (idFromUrl) {
-                localStorage.setItem('partnerId', idFromUrl);
-                return idFromUrl;
-            }
+            let phone = rawPhone || 
+                        localStorage.getItem('userPhone') || 
+                        localStorage.getItem('userMobile') || 
+                        localStorage.getItem('partnerId') || 
+                        localStorage.getItem('userId') || 
+                        sessionStorage.getItem('userPhone') || '';
 
-            return localStorage.getItem('partnerId') || 
-                   localStorage.getItem('userId') || 
-                   localStorage.getItem('userPhone') ||
-                   sessionStorage.getItem('partnerId') || 
-                   'guest_user';
+            // Clean digits only
+            return String(phone).replace(/\D/g, '');
         }
 
-        const activeUserId = getActiveUserId(); 
+        const userPhone = getUserPhoneNumber();
+        let activeUserId = userPhone || 'guest_user';
         let partnerName = "User";
-        let uniquePartnerId = activeUserId; // Uniq ID for referral link
+        let uniquePartnerId = activeUserId; 
 
         window.onload = function() {
-            fetchPartnerDetails();
-            listenToWalletData();
+            verifyAndFetchPartnerDetails();
         };
 
-        function fetchPartnerDetails() {
-            const cleanId = activeUserId.trim();
+        function verifyAndFetchPartnerDetails() {
+            if (!userPhone) {
+                updateUIWithPartnerName("Partner");
+                listenToWalletData();
+                return;
+            }
 
-            db.ref(`earn_partners/${cleanId}`).once('value', (partnerSnapshot) => {
-                const partnerData = partnerSnapshot.val();
+            // 1. earn_partners ൽ തന്നിരിക്കുന്ന ഫോൺ നമ്പർ പരിശോധിക്കുന്നു
+            db.ref('earn_partners').once('value', (snapshot) => {
+                const partners = snapshot.val() || {};
+                let matchedKey = null;
+                let matchedPartnerData = null;
 
-                if (partnerData) {
-                    partnerName = extractNameFromData(partnerData) || partnerName;
-                    // earn_partners -ൽ ഉള്ള uniq ID എടുക്കുന്നു
-                    uniquePartnerId = partnerData.uniqId || partnerData.uniqueId || partnerData.partnerId || cleanId;
+                // Check key or internal phone field
+                Object.keys(partners).forEach(key => {
+                    const item = partners[key];
+                    const itemPhone = String(item.phone || item.mobile || key).replace(/\D/g, '');
+                    if (itemPhone && itemPhone.includes(userPhone)) {
+                        matchedKey = key;
+                        matchedPartnerData = item;
+                    }
+                });
+
+                if (matchedPartnerData) {
+                    // earn_partners -ൽ ലഭിച്ച വിവരങ്ങൾ ലോഡ് ചെയ്യുന്നു
+                    activeUserId = matchedKey;
+                    partnerName = extractNameFromData(matchedPartnerData) || partnerName;
+                    uniquePartnerId = matchedPartnerData.uniqId || matchedPartnerData.uniqueId || matchedPartnerData.partnerId || activeUserId;
+                    
                     updateUIWithPartnerName(partnerName);
+                    listenToWalletData();
                 } else {
-                    db.ref(`users/${cleanId}`).once('value', (snapshot) => {
-                        const userData = snapshot.val();
-                        let foundName = extractNameFromData(userData);
+                    // 2. earn_partners -ൽ ഇല്ലെങ്കിൽ, 'users' നോഡിൽ പോയി പേര് തെരയുന്നു
+                    db.ref('users').once('value', (userSnapshot) => {
+                        const users = userSnapshot.val() || {};
+                        let matchedUserData = null;
 
-                        if (foundName) {
-                            partnerName = foundName;
+                        Object.keys(users).forEach(uKey => {
+                            const uItem = users[uKey];
+                            const uPhone = String(uItem.phone || uItem.mobile || uKey).replace(/\D/g, '');
+                            if (uPhone && uPhone.includes(userPhone)) {
+                                matchedUserData = uItem;
+                            }
+                        });
+
+                        const foundName = extractNameFromData(matchedUserData) || "Creator Partner";
+                        partnerName = foundName;
+
+                        // earn_partners നോഡിലേക്ക് ഓട്ടോമാറ്റിക് ആയി എൻട്രി ചേർക്കുന്നു
+                        activeUserId = userPhone;
+                        uniquePartnerId = 'PARTNER_' + userPhone;
+
+                        const newPartnerData = {
+                            phone: userPhone,
+                            name: partnerName,
+                            uniqId: uniquePartnerId,
+                            createdAt: firebase.database.ServerValue.TIMESTAMP,
+                            wallet: { balance: 0 }
+                        };
+
+                        db.ref(`earn_partners/${activeUserId}`).set(newPartnerData).then(() => {
                             updateUIWithPartnerName(partnerName);
-                        } else {
-                            searchUserByPhone('earn_partners', cleanId, (partnerDataFromPhone) => {
-                                if (partnerDataFromPhone) {
-                                    partnerName = extractNameFromData(partnerDataFromPhone) || partnerName;
-                                    uniquePartnerId = partnerDataFromPhone.uniqId || partnerDataFromPhone.uniqueId || partnerDataFromPhone.partnerId || cleanId;
-                                }
-                                updateUIWithPartnerName(partnerName);
-                            });
-                        }
+                            listenToWalletData();
+                        }).catch(() => {
+                            updateUIWithPartnerName(partnerName);
+                            listenToWalletData();
+                        });
                     });
                 }
             });
@@ -697,28 +735,6 @@
         function extractNameFromData(data) {
             if (!data) return null;
             return data.name || data.fullName || data.displayName || data.username || data.userName || null;
-        }
-
-        function searchUserByPhone(nodePath, phoneNumber, callback) {
-            db.ref(nodePath).once('value', (snapshot) => {
-                const allData = snapshot.val();
-                let matchedData = null;
-
-                if (allData) {
-                    const cleanSearchPhone = phoneNumber.replace(/\D/g, '');
-
-                    Object.keys(allData).forEach(key => {
-                        const item = allData[key];
-                        if (item) {
-                            const userPhone = String(item.phone || item.mobile || item.phoneNumber || key).replace(/\D/g, '');
-                            if (userPhone && cleanSearchPhone && (userPhone.includes(cleanSearchPhone) || cleanSearchPhone.includes(userPhone))) {
-                                matchedData = item;
-                            }
-                        }
-                    });
-                }
-                callback(matchedData);
-            });
         }
 
         function updateUIWithPartnerName(name) {
@@ -732,7 +748,6 @@
             listenToReferralOrders();
         }
 
-        // Distinct Uniq ID വെച്ച് Link Generate ചെയ്യുന്നു
         function setupReferralLink() {
             const currentOrigin = window.location.origin;
             const refInput = document.getElementById('referral-url');
@@ -814,7 +829,8 @@
                     if (referrer && (
                         referrer.toLowerCase() === activeUserId.toLowerCase() || 
                         referrer.toLowerCase() === uniquePartnerId.toLowerCase() || 
-                        referrer.toLowerCase() === partnerName.toLowerCase()
+                        referrer.toLowerCase() === partnerName.toLowerCase() ||
+                        referrer.includes(userPhone)
                     )) {
                         count++;
                         
@@ -903,6 +919,7 @@
                     requestRef.set({
                         partnerId: activeUserId,
                         partnerName: partnerName,
+                        userPhone: userPhone,
                         amount: amount,
                         method: method,
                         status: 'Pending',
