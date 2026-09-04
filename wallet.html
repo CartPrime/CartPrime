@@ -647,7 +647,6 @@
                         localStorage.getItem('userId') || 
                         sessionStorage.getItem('userPhone') || '';
 
-            // Clean digits only
             return String(phone).replace(/\D/g, '');
         }
 
@@ -667,13 +666,11 @@
                 return;
             }
 
-            // 1. earn_partners ൽ തന്നിരിക്കുന്ന ഫോൺ നമ്പർ പരിശോധിക്കുന്നു
             db.ref('earn_partners').once('value', (snapshot) => {
                 const partners = snapshot.val() || {};
                 let matchedKey = null;
                 let matchedPartnerData = null;
 
-                // Check key or internal phone field
                 Object.keys(partners).forEach(key => {
                     const item = partners[key];
                     const itemPhone = String(item.phone || item.mobile || key).replace(/\D/g, '');
@@ -684,7 +681,6 @@
                 });
 
                 if (matchedPartnerData) {
-                    // earn_partners -ൽ ലഭിച്ച വിവരങ്ങൾ ലോഡ് ചെയ്യുന്നു
                     activeUserId = matchedKey;
                     partnerName = extractNameFromData(matchedPartnerData) || partnerName;
                     uniquePartnerId = matchedPartnerData.uniqId || matchedPartnerData.uniqueId || matchedPartnerData.partnerId || activeUserId;
@@ -692,7 +688,6 @@
                     updateUIWithPartnerName(partnerName);
                     listenToWalletData();
                 } else {
-                    // 2. earn_partners -ൽ ഇല്ലെങ്കിൽ, 'users' നോഡിൽ പോയി പേര് തെരയുന്നു
                     db.ref('users').once('value', (userSnapshot) => {
                         const users = userSnapshot.val() || {};
                         let matchedUserData = null;
@@ -708,7 +703,6 @@
                         const foundName = extractNameFromData(matchedUserData) || "Creator Partner";
                         partnerName = foundName;
 
-                        // earn_partners നോഡിലേക്ക് ഓട്ടോമാറ്റിക് ആയി എൻട്രി ചേർക്കുന്നു
                         activeUserId = userPhone;
                         uniquePartnerId = 'PARTNER_' + userPhone;
 
@@ -808,8 +802,12 @@
             });
         }
 
+        // --- REFERRAL ORDERS FETCHING LOGIC (അപ്‌ഡേറ്റ് ചെയ്ത ഭാഗം) ---
         function listenToReferralOrders() {
-            db.ref('orders').on('value', (snapshot) => {
+            const cleanRefCode = uniquePartnerId.toString().replace(/[.#$\[\]]/g, "_");
+
+            // `referralOrders/{referralCode}` എന്ന പാതയിൽ നിന്ന് ഈ യൂസറുടെ ലിങ്ക് വഴി വന്ന എല്ലാ ഓർഡറുകളും എടുക്കുന്നു
+            db.ref(`referralOrders/${cleanRefCode}`).on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
                 const list = document.getElementById('referral-orders-list');
                 if (!list) return;
@@ -824,69 +822,70 @@
                 
                 orderKeys.forEach(key => {
                     const order = orders[key];
+                    count++;
                     
-                    // referralCode, refCode, promoCode തുടങ്ങിയ വിവിധിയിനം ഫീൽഡുകൾ ഇവിടെ പരിശോധിക്കുന്നു
-                    const referrer = order.referralCode || order.refCode || order.promoCode || order.referredBy || order.referencedBy;
-                    
-                    if (referrer && (
-                        referrer.toLowerCase() === activeUserId.toLowerCase() || 
-                        referrer.toLowerCase() === uniquePartnerId.toLowerCase() || 
-                        referrer.toLowerCase() === partnerName.toLowerCase() ||
-                        referrer.includes(userPhone)
-                    )) {
-                        count++;
-                        
-                        const productAmount = parseFloat(order.amount || order.totalPrice || order.price || 0);
-                        const commissionEarned = productAmount * 0.03; 
-
-                        const isDelivered = (order.status === 'Delivered' || order.status === 'delivered');
-                        const isCompleted = (order.status === 'Completed' || order.status === 'completed' || order.returnWindowClosed === true);
-                        
-                        const isPending = !isCompleted;
-
-                        if (isPending) {
-                            pendingTotal += commissionEarned;
-                        } else {
-                            verifiedEarnings += commissionEarned;
-
-                            if (!order.commissionCredited) {
-                                db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
-                                    return (currentBalance || 0) + commissionEarned;
-                                });
-
-                                db.ref(`orders/${key}/commissionCredited`).set(true);
-                            }
-                        }
-
-                        const customerName = order.userName || order.customerName || 'Customer';
-                        let statusText = 'Pending • Processing Order';
-                        if (isDelivered && isPending) {
-                            statusText = 'Delivered • Return Period Active';
-                        } else if (isCompleted) {
-                            statusText = 'Completed • 3% Commission Credited';
-                        }
-
-                        const li = document.createElement('li');
-                        li.className = 'ref-order-item';
-                        li.innerHTML = `
-                            <div class="t-info">
-                                <div class="t-icon income">
-                                    <i class="fa-solid ${isPending ? 'fa-clock' : 'fa-circle-check'}"></i>
-                                </div>
-                                <div class="t-details">
-                                    <h4>${customerName} (Order #${order.orderId || key})</h4>
-                                    <p>${statusText}</p>
-                                </div>
-                            </div>
-                            <div class="t-amount">
-                                <div class="amt plus">+ ₹${commissionEarned.toFixed(2)}</div>
-                                <span class="badge ${isPending ? 'badge-pending' : 'badge-success'}">
-                                    ${isPending ? 'Pending' : 'Success'}
-                                </span>
-                            </div>
-                        `;
-                        list.appendChild(li);
+                    // വില സ്ട്രിംഗ് ഫോർമാറ്റിലാണെങ്കിൽ സംഖ്യയാക്കി മാറ്റുന്നു (Eg: "1,200" -> 1200)
+                    let rawPrice = order.price || order.totalPrice || order.amount || "0";
+                    if (typeof rawPrice === 'string') {
+                        rawPrice = rawPrice.replace(/[^0-9.]/g, '');
                     }
+                    const productAmount = parseFloat(rawPrice) || 0;
+                    
+                    // 3% കമ്മീഷൻ കണക്കാക്കുന്നു
+                    const commissionEarned = order.commissionAmount ? parseFloat(order.commissionAmount) : (productAmount * 0.03); 
+
+                    const orderStatus = (order.status || '').toLowerCase();
+                    const isDelivered = (orderStatus === 'delivered');
+                    
+                    // ഓർഡർ ഡെലിവറി ആയി, റീട്ടേൺ വിൻഡോ ക്ലോസ് ആയാൽ (അല്ലെങ്കിൽ Completed ആയാൽ) Success ആയി മാറുന്നു.
+                    const isCompleted = (orderStatus === 'completed' || order.returnWindowClosed === true || order.returnClosed === true);
+                    const isPending = !isCompleted;
+
+                    if (isPending) {
+                        pendingTotal += commissionEarned;
+                    } else {
+                        verifiedEarnings += commissionEarned;
+
+                        // കമ്മീഷൻ തുക വാലറ്റിലേക്ക് മുൻപ് കൊടുത്തിട്ടില്ലെങ്കിൽ ക്രെഡിറ്റ് ചെയ്യുന്നു
+                        if (!order.commissionCredited) {
+                            db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
+                                return (currentBalance || 0) + commissionEarned;
+                            });
+
+                            db.ref(`referralOrders/${cleanRefCode}/${key}/commissionCredited`).set(true);
+                        }
+                    }
+
+                    // ഉപഭോക്താവിന്റെ പേര് എടുക്കുന്നു
+                    const customerName = order.customerName || order.userName || 'Customer';
+                    
+                    let statusText = 'Pending • Processing Order';
+                    if (isDelivered && isPending) {
+                        statusText = 'Delivered • Return Period Active';
+                    } else if (isCompleted) {
+                        statusText = 'Completed • 3% Commission Credited';
+                    }
+
+                    const li = document.createElement('li');
+                    li.className = 'ref-order-item';
+                    li.innerHTML = `
+                        <div class="t-info">
+                            <div class="t-icon income">
+                                <i class="fa-solid ${isPending ? 'fa-clock' : 'fa-circle-check'}"></i>
+                            </div>
+                            <div class="t-details">
+                                <h4>${customerName} (Order #${order.orderId || key})</h4>
+                                <p>${statusText}</p>
+                            </div>
+                        </div>
+                        <div class="t-amount">
+                            <div class="amt plus">+ ₹${commissionEarned.toFixed(2)}</div>
+                            <span class="badge ${isPending ? 'badge-pending' : 'badge-success'}">
+                                ${isPending ? 'Pending' : 'Success'}
+                            </span>
+                        </div>
+                    `;
+                    list.appendChild(li);
                 });
 
                 if (count === 0) {
