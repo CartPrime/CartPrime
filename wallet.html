@@ -29,131 +29,101 @@
             background-color: var(--bg-main);
             color: var(--text-primary);
             display: flex;
+            flex-direction: column;
             min-height: 100vh;
+            padding-bottom: 75px; /* Bottom Nav-ന് സ്ഥലം നൽകുവാൻ */
         }
 
-        /* Sidebar Styling */
-        .sidebar {
-            width: 280px;
+        /* Top Bar Styling */
+        .top-navbar {
             background-color: var(--sidebar-bg);
-            padding: 30px 20px;
+            padding: 15px 25px;
             display: flex;
-            flex-direction: column;
             justify-content: space-between;
-            border-right: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .brand {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 35px;
-            padding-left: 10px;
         }
 
         .brand-icon {
             background: var(--card-gradient);
             color: white;
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            box-shadow: 0 10px 20px rgba(89, 54, 245, 0.2);
+            font-size: 16px;
+            box-shadow: 0 8px 16px rgba(89, 54, 245, 0.2);
         }
 
         .brand-text h2 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 800;
             color: var(--text-primary);
         }
 
         .brand-text span {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
+            display: block;
         }
 
-        .nav-list {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 6px;
-        }
-
-        .nav-link {
+        /* Bottom Navigation Styling */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--sidebar-bg);
+            border-top: 1px solid var(--border-color);
             display: flex;
+            justify-content: space-around;
             align-items: center;
-            gap: 15px;
-            padding: 14px 18px;
+            padding: 10px 0;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+
+        .nav-item-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             color: var(--text-secondary);
             text-decoration: none;
+            font-size: 11px;
             font-weight: 600;
-            font-size: 14px;
-            border-radius: 16px;
+            gap: 4px;
+            cursor: pointer;
+            width: 25%;
             transition: all 0.2s ease;
-            cursor: pointer;
         }
 
-        .nav-link:hover, .nav-link.active {
-            background-color: #f4f0ff;
+        .nav-item-bottom i {
+            font-size: 18px;
+        }
+
+        .nav-item-bottom:hover, .nav-item-bottom.active {
             color: var(--brand-purple);
-        }
-
-        /* Promo Card Sidebar */
-        .promo-card {
-            background: var(--card-sub-gradient);
-            border-radius: 24px;
-            padding: 22px;
-            color: white;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 15px 30px rgba(67, 24, 255, 0.25);
-        }
-
-        .promo-card i {
-            font-size: 32px;
-            margin-bottom: 12px;
-        }
-
-        .promo-card h4 {
-            font-size: 16px;
-            margin-bottom: 6px;
-            font-weight: 700;
-        }
-
-        .promo-card p {
-            font-size: 12px;
-            opacity: 0.85;
-            margin-bottom: 18px;
-            line-height: 1.4;
-        }
-
-        .promo-btn {
-            background-color: white;
-            color: var(--brand-purple);
-            border: none;
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.2s;
-        }
-
-        .promo-btn:hover {
-            opacity: 0.9;
         }
 
         /* Main Content */
         .main-content {
             flex: 1;
-            padding: 30px 40px;
-            overflow-y: auto;
+            padding: 25px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         /* Header Bar */
@@ -161,46 +131,47 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
         }
 
         .header-title h1 {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 800;
             color: var(--text-primary);
         }
 
         .header-title p {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-secondary);
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             background: white;
-            padding: 8px 18px 8px 10px;
+            padding: 6px 14px 6px 8px;
             border-radius: 40px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
         }
 
         .profile-img {
-            width: 42px;
-            height: 42px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: #111;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 13px;
             font-weight: bold;
         }
 
-        /* Page Display Switching */
+        /* Views Setup */
         .page-view {
             display: none;
         }
@@ -214,12 +185,12 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .stat-card {
             background-color: white;
-            padding: 24px;
+            padding: 20px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             position: relative;
@@ -237,7 +208,7 @@
             font-size: 13px;
             color: var(--text-secondary);
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .stat-card.featured .stat-title {
@@ -245,13 +216,13 @@
         }
 
         .stat-value {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 800;
         }
 
         .stat-sub {
             font-size: 12px;
-            margin-top: 6px;
+            margin-top: 4px;
             color: var(--text-secondary);
             font-weight: 500;
         }
@@ -263,22 +234,22 @@
         /* Content Box */
         .card-box {
             background-color: white;
-            padding: 26px;
+            padding: 22px;
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             border: 1px solid var(--border-color);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .box-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .box-header h3 {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 800;
         }
 
@@ -291,7 +262,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 0;
+            padding: 14px 0;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -302,17 +273,17 @@
         .t-info {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
 
         .t-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .t-icon.income {
@@ -326,12 +297,12 @@
         }
 
         .t-details h4 {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
         }
 
         .t-details p {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
             margin-top: 2px;
         }
@@ -342,19 +313,19 @@
 
         .t-amount .amt {
             font-weight: 800;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .t-amount .amt.plus { color: var(--success-green); }
         .t-amount .amt.minus { color: var(--text-primary); }
 
         .badge {
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 8px;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 6px;
             font-weight: 700;
             display: inline-block;
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
         .badge-success {
@@ -364,19 +335,19 @@
 
         /* Form UI (Withdraw Section) */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             margin-bottom: 8px;
         }
 
         .form-input {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
             font-size: 14px;
@@ -392,12 +363,12 @@
             background: var(--brand-purple);
             color: white;
             border: none;
-            padding: 14px 24px;
+            padding: 14px 20px;
             border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
             width: 100%;
-            font-size: 15px;
+            font-size: 14px;
             box-shadow: 0 8px 20px rgba(89, 54, 245, 0.3);
         }
 
@@ -406,7 +377,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 0;
+            padding: 12px 0;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -418,32 +389,47 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
 
         .ref-amount {
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 992px) {
-            body {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-                padding: 20px;
-            }
-            .promo-card {
-                display: none;
-            }
-            .main-content {
-                padding: 20px;
-            }
+        /* Promo Card Inline */
+        .promo-card {
+            background: var(--card-sub-gradient);
+            border-radius: 20px;
+            padding: 18px;
+            color: white;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(67, 24, 255, 0.2);
+        }
+
+        .promo-card h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .promo-card p {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-bottom: 14px;
+        }
+
+        .promo-btn {
+            background-color: white;
+            color: var(--brand-purple);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
         }
 
         @media (max-width: 576px) {
@@ -456,69 +442,39 @@
 </head>
 <body>
 
-    <!-- Sidebar Section -->
-    <aside class="sidebar">
-        <div>
-            <div class="brand">
-                <div class="brand-icon"><i class="fa-solid fa-wallet"></i></div>
-                <div class="brand-text">
-                    <h2>Cartprime</h2>
-                    <span>Affiliate Creator Wallet</span>
-                </div>
+    <!-- Top Brand Header Bar -->
+    <header class="top-navbar">
+        <div class="brand">
+            <div class="brand-icon"><i class="fa-solid fa-wallet"></i></div>
+            <div class="brand-text">
+                <h2>Cartprime</h2>
+                <span>Affiliate Creator Wallet</span>
             </div>
-
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a class="nav-link active" onclick="switchTab('dashboard', this)">
-                        <i class="fa-solid fa-house"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" onclick="switchTab('earnings', this)">
-                        <i class="fa-solid fa-chart-line"></i> Earnings
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" onclick="switchTab('withdraw', this)">
-                        <i class="fa-solid fa-arrow-up-from-bracket"></i> Withdraw
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" onclick="switchTab('transactions', this)">
-                        <i class="fa-solid fa-list"></i> Transactions
-                    </a>
-                </li>
-            </ul>
         </div>
-
-        <div class="promo-card">
-            <i class="fa-solid fa-gift"></i>
-            <h4>Earn More</h4>
-            <p>Share your link and earn more rewards everyday</p>
-            <button class="promo-btn" onclick="alert('Affiliate Link Copied!')">Copy Affiliate Link</button>
+        <div class="user-profile">
+            <div class="profile-img">FF</div>
         </div>
-    </aside>
+    </header>
 
     <!-- Main Content Container -->
     <main class="main-content">
-        <!-- Top Header Bar -->
+        <!-- Top Greeting Header -->
         <div class="top-header">
             <div class="header-title">
                 <h1>Welcome back, Farhanul! 👋</h1>
                 <p>Here's your affiliate earnings overview</p>
             </div>
-            <div class="user-profile">
-                <div class="profile-img">FF</div>
-                <div>
-                    <h4 style="font-size: 14px;">Farhanul Faris</h4>
-                    <span style="font-size: 11px; color: var(--text-secondary);">Affiliate Creator</span>
-                </div>
-            </div>
+        </div>
+
+        <!-- Promo Banner -->
+        <div class="promo-card">
+            <h4><i class="fa-solid fa-gift"></i> Earn More</h4>
+            <p>Share your link and earn more rewards everyday</p>
+            <button class="promo-btn" onclick="alert('Affiliate Link Copied!')">Copy Affiliate Link</button>
         </div>
 
         <!-- 1. DASHBOARD VIEW -->
         <section id="dashboard" class="page-view active-view">
-            <!-- Stats Vertical List -->
             <div class="stats-vertical">
                 <div class="stat-card featured">
                     <div class="stat-title">Total Balance</div>
@@ -537,7 +493,6 @@
                 </div>
             </div>
 
-            <!-- Dashboard Content Sections -->
             <div class="card-box">
                 <div class="box-header">
                     <h3>Recent Transactions</h3>
@@ -621,8 +576,8 @@
                     <h3>Request Withdrawal</h3>
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <p style="font-size: 14px; color: var(--text-secondary);">Available Balance for Cashout:</p>
-                    <h2 style="font-size: 28px; color: var(--brand-purple);">₹ <span class="val-balance">12,450.75</span></h2>
+                    <p style="font-size: 13px; color: var(--text-secondary);">Available Balance for Cashout:</p>
+                    <h2 style="font-size: 26px; color: var(--brand-purple);">₹ <span class="val-balance">12,450.75</span></h2>
                 </div>
                 <form onsubmit="handleWithdraw(event)">
                     <div class="form-group">
@@ -644,7 +599,7 @@
                 <div class="box-header">
                     <h3>All History</h3>
                 </div>
-                <ul class="transaction-list">
+                <ul class="transaction-list" id="full-transaction-list">
                     <li class="transaction-item">
                         <div class="t-info">
                             <div class="t-icon payout"><i class="fa-solid fa-arrow-down"></i></div>
@@ -676,6 +631,26 @@
         </section>
     </main>
 
+    <!-- Bottom Fixed Navigation Bar -->
+    <nav class="bottom-nav">
+        <a class="nav-item-bottom active" onclick="switchTab('dashboard', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a class="nav-item-bottom" onclick="switchTab('earnings', this)">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Earnings</span>
+        </a>
+        <a class="nav-item-bottom" onclick="switchTab('withdraw', this)">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+            <span>Withdraw</span>
+        </a>
+        <a class="nav-item-bottom" onclick="switchTab('transactions', this)">
+            <i class="fa-solid fa-list"></i>
+            <span>History</span>
+        </a>
+    </nav>
+
     <!-- JavaScript Navigation and Logic -->
     <script>
         let walletData = {
@@ -684,29 +659,32 @@
             earnings: 45780.50
         };
 
-        // Tab Switching Logic
+        // Navigation Switcher Logic
         function switchTab(viewId, element) {
-            // Remove active style from all navigation buttons
-            const navLinks = document.querySelectorAll('.nav-link');
+            // Remove active class from bottom nav links
+            const navLinks = document.querySelectorAll('.nav-item-bottom');
             navLinks.forEach(link => link.classList.remove('active'));
 
-            // Set active class on clicked button
+            // Add active class to clicked link
             if (element) {
                 element.classList.add('active');
             }
 
-            // Hide all pages
+            // Hide all section views
             const views = document.querySelectorAll('.page-view');
             views.forEach(view => view.classList.remove('active-view'));
 
-            // Show selected page
-            const targetView = document.getElementById(viewId);
-            if (targetView) {
-                targetView.classList.add('active-view');
+            // Show selected view
+            const selectedView = document.getElementById(viewId);
+            if(selectedView) {
+                selectedView.classList.add('active-view');
             }
+
+            // Scroll back to top on view change
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Dynamically update UI
+        // Update UI dynamically
         function updateUI() {
             const formattedBalance = walletData.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
             const formattedEarnings = walletData.earnings.toLocaleString('en-IN', { minimumFractionDigits: 2 });
@@ -715,7 +693,7 @@
             document.querySelectorAll('.val-earnings').forEach(el => el.innerText = formattedEarnings);
         }
 
-        // Withdrawal Logic
+        // Withdrawal Handling
         function handleWithdraw(event) {
             event.preventDefault();
             const method = document.getElementById('withdraw-method').value;
@@ -726,6 +704,7 @@
                 walletData.balance -= amount;
                 updateUI();
 
+                // Add to transactions list
                 const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
                 const transactionLists = document.querySelectorAll('.transaction-list');
                 
@@ -751,9 +730,9 @@
                 alert("Withdrawal Request Submitted Successfully!");
                 amountInput.value = '';
                 
-                // Redirect to Transactions Tab
-                const transNavLink = document.querySelectorAll('.nav-link')[3];
-                switchTab('transactions', transNavLink);
+                // Redirect to History Tab
+                const historyBtn = document.querySelectorAll('.nav-item-bottom')[3];
+                switchTab('transactions', historyBtn);
             } else {
                 alert("Invalid amount or insufficient balance!");
             }
