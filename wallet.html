@@ -572,26 +572,15 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const creatorId = "farhanul"; // Your Referral Username
+        const creatorId = "farhanul"; // Creator Account ID
 
-        // Initialize App & Capture Referral from URL
         window.onload = function() {
-            captureReferralFromURL();
             setupReferralLink();
             listenToWalletData();
             listenToReferralOrders();
         };
 
-        // Capture `?ref=...` parameter if someone visits via referral link
-        function captureReferralFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
-            if (refCode) {
-                localStorage.setItem('cartprime_referrer', refCode);
-            }
-        }
-
-        // Set up Referral URL input pointing explicitly to index.html
+        // Referral URL Generator
         function setupReferralLink() {
             const currentOrigin = window.location.origin;
             document.getElementById('referral-url').value = `${currentOrigin}/index.html?ref=${creatorId}`;
@@ -616,18 +605,15 @@
             alert("Referral Link copied to clipboard!");
         }
 
-        // 2. Realtime Listener for Wallet Balances
+        // 2. Realtime Listener for Wallet Main Balances
         function listenToWalletData() {
             db.ref(`users/${creatorId}/wallet`).on('value', (snapshot) => {
-                const data = snapshot.val() || { balance: 0, pending: 0, earnings: 0 };
-                
+                const data = snapshot.val() || { balance: 0 };
                 document.querySelectorAll('.val-balance').forEach(el => el.innerText = (data.balance || 0).toFixed(2));
-                document.querySelectorAll('.val-earnings').forEach(el => el.innerText = (data.earnings || 0).toFixed(2));
-                document.querySelectorAll('.val-pending').forEach(el => el.innerText = (data.pending || 0).toFixed(2));
             });
         }
 
-        // 3. Realtime Listener for Real Customer Orders
+        // 3. Realtime Listener for Customer Orders & Pending/Success Calculations
         function listenToReferralOrders() {
             db.ref(`users/${creatorId}/orders`).on('value', (snapshot) => {
                 const orders = snapshot.val() || {};
@@ -635,6 +621,9 @@
                 list.innerHTML = '';
 
                 let count = 0;
+                let pendingTotal = 0;
+                let verifiedEarnings = 0;
+
                 const orderKeys = Object.keys(orders).reverse();
                 
                 if (orderKeys.length === 0) {
@@ -644,7 +633,18 @@
                 orderKeys.forEach(key => {
                     count++;
                     const order = orders[key];
-                    const isPending = (order.status === 'pending' || order.status === 'Pending Verification');
+                    const orderAmount = parseFloat(order.amount || 0);
+
+                    // Check status: 'pending' or 'success'
+                    const isPending = (order.status === 'pending' || order.status === 'Pending Verification' || order.status === 'Processing');
+                    const isSuccess = (order.status === 'success' || order.status === 'Completed' || order.status === 'Delivered');
+
+                    if (isPending) {
+                        pendingTotal += orderAmount;
+                    } else if (isSuccess) {
+                        verifiedEarnings += orderAmount;
+                    }
+
                     const customerName = order.userName || order.customerName || 'Customer';
                     
                     const li = document.createElement('li');
@@ -656,11 +656,11 @@
                             </div>
                             <div class="t-details">
                                 <h4>${customerName} (Order #${order.orderId || key})</h4>
-                                <p>${isPending ? 'Pending • Return Period Active' : 'Success • Return Period Closed'}</p>
+                                <p>${isPending ? 'Pending • Return Period Active' : 'Success • Return Period Completed'}</p>
                             </div>
                         </div>
                         <div class="t-amount">
-                            <div class="amt plus">+ ₹${parseFloat(order.amount || 0).toFixed(2)}</div>
+                            <div class="amt plus">+ ₹${orderAmount.toFixed(2)}</div>
                             <span class="badge ${isPending ? 'badge-pending' : 'badge-success'}">
                                 ${isPending ? 'Pending' : 'Success'}
                             </span>
@@ -669,11 +669,14 @@
                     list.appendChild(li);
                 });
 
+                // Update UI Counters dynamically
+                document.querySelectorAll('.val-pending').forEach(el => el.innerText = pendingTotal.toFixed(2));
+                document.querySelectorAll('.val-earnings').forEach(el => el.innerText = verifiedEarnings.toFixed(2));
                 document.getElementById('ref-count').innerText = count;
             });
         }
 
-        // 4. Handle Withdrawal Requests
+        // 4. Handle Withdrawal
         function handleWithdraw(event) {
             event.preventDefault();
             const method = document.getElementById('withdraw-method').value;
