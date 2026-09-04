@@ -636,8 +636,23 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Local Storage-ൽ നിന്ന് Active Partner-ന്റെ ID ലഭ്യമാക്കുന്നു
-        const activeUserId = localStorage.getItem('partnerId') || localStorage.getItem('userId') || "farhanul"; 
+        // Dynamic User ID Logic (Gets ID from URL, Local Storage, or Session)
+        function getActiveUserId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idFromUrl = urlParams.get('id') || urlParams.get('partnerId') || urlParams.get('userId');
+            
+            if (idFromUrl) {
+                localStorage.setItem('partnerId', idFromUrl);
+                return idFromUrl;
+            }
+
+            return localStorage.getItem('partnerId') || 
+                   localStorage.getItem('userId') || 
+                   sessionStorage.getItem('partnerId') || 
+                   'guest_user';
+        }
+
+        const activeUserId = getActiveUserId(); 
         let partnerName = "User";
 
         window.onload = function() {
@@ -645,14 +660,14 @@
             listenToWalletData();
         };
 
-        // earn_partners ഫീൽഡിൽ നിന്ന് ഡാറ്റ എടുത്തു കാട്ടുന്നു
+        // earn_partners ഫീൽഡിൽ നിന്ന് യൂസർ നൽകിയ പേര് എടുത്തു കാണിക്കുന്നു
         function fetchPartnerDetails() {
             db.ref(`earn_partners/${activeUserId}`).on('value', (snapshot) => {
                 const partnerData = snapshot.val();
                 if (partnerData) {
                     partnerName = partnerData.name || partnerData.fullName || partnerData.username || activeUserId;
                 } else {
-                    partnerName = activeUserId;
+                    partnerName = activeUserId !== 'guest_user' ? activeUserId : 'User';
                 }
 
                 document.getElementById('user-display-name').innerText = partnerName;
@@ -750,7 +765,6 @@
                         } else {
                             verifiedEarnings += commissionEarned;
 
-                            // ഓർഡർ പൂര്ത്തിയായിക്കഴിഞ്ഞാൽ Wallet-ലേക്ക് ഡയറക്ട് ആഡ് ചെയ്യുന്നു
                             if (!order.commissionCredited) {
                                 db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
                                     return (currentBalance || 0) + commissionEarned;
@@ -813,7 +827,6 @@
                 if (amount > 0 && amount <= currentBalance) {
                     db.ref(`earn_partners/${activeUserId}/wallet/balance`).set(currentBalance - amount);
                     
-                    // വിഡ്രോവൽ ഹിസ്റ്ററി രേഖപ്പെടുത്തുന്നു
                     const requestRef = db.ref(`payout_requests`).push();
                     requestRef.set({
                         partnerId: activeUserId,
