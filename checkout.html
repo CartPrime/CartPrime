@@ -589,6 +589,7 @@
             }).then((res) => {
                 if(res.isConfirmed) {
                     const orderId = Date.now(); 
+                    const now = new Date();
                     
                     // Fetch Referral Info (URL Parameter > Order Object > LocalStorage)
                     const refUser = refFromUrl || orderInfo.referredBy || localStorage.getItem('referredBy') || null;
@@ -606,7 +607,9 @@
                         phone: fields.phone, 
                         address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state}, ${fields.country} - ${fields.pin}`, 
                         transactionId: 'COD', 
-                        date: new Date().toISOString().split('T')[0], 
+                        date: now.toISOString().split('T')[0], 
+                        createdAt: now.toISOString(),
+                        timestamp: Date.now(),
                         status: "Order Confirmed", 
                         paymentStatus: "COD",
                         paymentMethod: "COD",
@@ -671,11 +674,26 @@
                     // 1. Save primary order under customer's phone number
                     const primaryOrderRef = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
 
-                    // 2. Save referral order details under `referralOrders/{referralCode}/{orderId}` with returnPolicy and deliveryDate
+                    // 2. Save referral order details under `referralOrders/{referralCode}/{orderId}`
                     let referralOrderRef = Promise.resolve();
                     if (refUser) {
                         const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
-                        referralOrderRef = set(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), finalOrder);
+                        
+                        // 7 Days Return Period Limit Date Calculation
+                        const returnExpiryDate = new Date();
+                        returnExpiryDate.setDate(now.getDate() + 7);
+
+                        // Referral Specific Data with Return Policy Details
+                        const referralOrderData = {
+                            ...finalOrder,
+                            referralStatus: "Pending", // Initial status is set to Pending
+                            returnPolicy: isOrderReturnable ? "7 Days Return Policy" : "No Return",
+                            returnPeriodDays: 7,
+                            returnEligibleUntil: returnExpiryDate.toISOString(),
+                            referralCreatedAt: now.toISOString()
+                        };
+
+                        referralOrderRef = set(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), referralOrderData);
                     }
 
                     Promise.all([primaryOrderRef, referralOrderRef]).then(() => {
