@@ -1313,7 +1313,7 @@ window.updateStatus = async (path, s) => {
 };
 
 /* REFINED PAYOUT REQUEST HANDLING LOGIC */
-onValue(ref(db, 'payoutRequests'), snap => {
+onValue(ref(db, 'payout_requests'), snap => {
     const list = document.getElementById('payoutRequestList');
     if (!list) return;
     list.innerHTML = "";
