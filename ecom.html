@@ -1323,8 +1323,8 @@ window.updateStatus = async (path, s) => {
 };
 
 /* ROBUST PAYOUT / WITHDRAWAL REQUESTS LISTENER (Renders into Earn tab) */
-onValue(ref(db, 'payoutRequests'), snap => {
-    const list = document.getElementById('payoutRequestList');
+onValue(ref(db, 'payout_requests'), snap => {
+    const list = document.getElementById('payout_requests');
     if (!list) return;
     list.innerHTML = "";
 
