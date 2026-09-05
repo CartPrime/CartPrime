@@ -2193,7 +2193,9 @@ nav {
   }); 
 
   document.addEventListener('click', (e) => { 
-    if (!e.target.closest('.search-container')) suggestionsBox.style.display = 'none'; 
+    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { 
+      suggestionsBox.style.display = 'none'; 
+    } 
   }); 
 </script> 
 </body> 
