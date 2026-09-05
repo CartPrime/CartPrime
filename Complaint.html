@@ -109,7 +109,7 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         .modal-header h3 { font-size: 1.3rem; font-weight: 700; }
 
-        /* Modernized Luxurious Alert Modal Styling */
+        /* Modernized Luxurious Alert Modal Styling & Success Tick Animation */
         .alert-modal-card { 
             text-align: center; 
             max-width: 400px; 
@@ -124,6 +124,35 @@
             margin-bottom: 14px; 
             filter: drop-shadow(0 4px 10px rgba(234, 179, 8, 0.3));
         }
+        
+        /* Success Checkmark Animation Styles */
+        .success-tick-wrapper {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 18px auto;
+            border-radius: 50%;
+            background: rgba(34, 197, 94, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(34, 197, 94, 0.4);
+            animation: pulseSuccess 1.5s infinite;
+        }
+        .success-tick {
+            font-size: 2.2rem;
+            color: #22c55e;
+            animation: scaleCheck 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes scaleCheck {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes pulseSuccess {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
         .alert-title { 
             font-size: 1.4rem; 
             margin-bottom: 10px; 
@@ -389,9 +418,10 @@
     </div>
 </div>
 
+<!-- Custom Alert Modal with Success Tick Support -->
 <div class="modal-overlay" id="customAlertModal">
     <div class="modal-card alert-modal-card">
-        <div class="alert-icon-box" id="alertIcon">🔔</div>
+        <div id="alertIconContainer" class="alert-icon-box">🔔</div>
         <div class="alert-title" id="alertTitle">Notification</div>
         <div class="alert-message" id="alertMessage">Message goes here...</div>
         <button class="alert-close-btn" onclick="closeCustomAlert()">OK</button>
@@ -462,8 +492,13 @@
     let fetchedOrdersList = []; 
     let selectedOrderForReturn = null;
 
-    window.showCustomAlert = function(title, message, icon = '🔔') {
-        document.getElementById('alertIcon').innerText = icon;
+    window.showCustomAlert = function(title, message, icon = '🔔', isSuccess = false) {
+        const iconContainer = document.getElementById('alertIconContainer');
+        if (isSuccess) {
+            iconContainer.innerHTML = `<div class="success-tick-wrapper"><span class="success-tick">✓</span></div>`;
+        } else {
+            iconContainer.innerHTML = icon;
+        }
         document.getElementById('alertTitle').innerText = title;
         document.getElementById('alertMessage').innerText = message;
         document.getElementById('customAlertModal').classList.add('active');
@@ -801,10 +836,11 @@
 
         try {
             await set(ref(db, `complaints/${complaintId}`), data);
-            showCustomAlert("Success", `Complaint Submitted Successfully!\nYour Ticket ID: ${complaintId}`, "✅");
+            // Triggering the success popup with animated green tick icon
+            showCustomAlert("Complaint Registered", `Your complaint has been submitted successfully!\n\nTicket ID: #${complaintId}`, "✓", true);
             this.reset();
         } catch (err) {
-            showCustomAlert("Error", "Failed to submit complaint. Please try again later.", "❌");
+            showCustomAlert("Error", "Failed to submit complaint. Please try again later.", "❌", false);
         } finally {
             submitBtn.innerText = "Submit Complaint";
             submitBtn.disabled = false;
@@ -837,15 +873,15 @@
                 await update(ref(db, `orders/${selectedOrderForReturn.phoneKey}/${selectedOrderForReturn.orderId}`), { status: "Return Requested" });
             }
             closeReturnModal();
-            showCustomAlert("Request Sent", "Return request submitted successfully!", "🔄");
+            showCustomAlert("Request Sent", "Return request submitted successfully!", "🔄", false);
         } catch (err) {
-            showCustomAlert("Error", "Error submitting return request. Please try again.", "❌");
+            showCustomAlert("Error", "Error submitting return request. Please try again.", "❌", false);
         }
     };
 
     window.generateAllOrdersPDF = async function() {
         if (!fetchedOrdersList.length) {
-            showCustomAlert("No Data", "No orders found to generate PDF receipt!", "📄");
+            showCustomAlert("No Data", "No orders found to generate PDF receipt!", "📄", false);
             return;
         }
         document.getElementById('pdf-statement-date').innerText = new Date().toLocaleDateString();
