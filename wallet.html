@@ -357,6 +357,25 @@
             color: var(--text-primary);
         }
 
+        .btn-refresh {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--brand-primary);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-refresh:active {
+            background: var(--border-color);
+        }
+
         .referral-orders-list {
             list-style: none;
         }
@@ -804,6 +823,7 @@
             <div class="card-box">
                 <div class="box-header">
                     <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--brand-primary);"></i> Transaction History</h3>
+                    <button class="btn-refresh" onclick="refreshTransactions()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
                 </div>
                 <ul class="referral-orders-list" id="full-transaction-list">
                     <li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">Your withdrawal requests and credit history will appear here.</li>
@@ -1290,83 +1310,103 @@
 
             // Direct Realtime Listener on Firebase payout_requests Node
             db.ref('payout_requests').on('value', (snapshot) => {
-                const allRequests = snapshot.val() || {};
-                list.innerHTML = '';
+                renderTransactionsList(snapshot.val());
+            });
+        }
 
-                let matchedRequests = [];
+        function refreshTransactions() {
+            const list = document.getElementById('full-transaction-list');
+            if (!list) return;
 
-                // Filter payout requests for current user (by partnerId, userPhone, or key)
-                Object.keys(allRequests).forEach(key => {
-                    const item = allRequests[key];
-                    const reqPartnerId = String(item.partnerId || '').replace(/\D/g, '');
-                    const reqPhone = String(item.userPhone || item.phone || '').replace(/\D/g, '');
-                    const currentCleanPhone = String(userPhone).replace(/\D/g, '');
+            list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Refreshing...</li>`;
 
-                    if (
-                        item.partnerId === activeUserId || 
-                        (currentCleanPhone && (reqPartnerId.includes(currentCleanPhone) || reqPhone.includes(currentCleanPhone)))
-                    ) {
-                        matchedRequests.push({ key: key, ...item });
-                    }
-                });
+            db.ref('payout_requests').once('value', (snapshot) => {
+                renderTransactionsList(snapshot.val());
+            });
+        }
 
-                // Sort by latest timestamp
-                matchedRequests.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        function renderTransactionsList(allRequests) {
+            const list = document.getElementById('full-transaction-list');
+            if (!list) return;
 
-                if (matchedRequests.length === 0) {
-                    list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">Your withdrawal requests and credit history will appear here.</li>`;
-                    return;
+            allRequests = allRequests || {};
+            list.innerHTML = '';
+
+            let matchedRequests = [];
+
+            // Filter payout requests for current user (by partnerId, userPhone, or key)
+            Object.keys(allRequests).forEach(key => {
+                const item = allRequests[key];
+                const reqPartnerId = String(item.partnerId || '').replace(/\D/g, '');
+                const reqPhone = String(item.userPhone || item.phone || '').replace(/\D/g, '');
+                const currentCleanPhone = String(userPhone).replace(/\D/g, '');
+
+                if (
+                    item.partnerId === activeUserId || 
+                    (currentCleanPhone && (reqPartnerId.includes(currentCleanPhone) || reqPhone.includes(currentCleanPhone)))
+                ) {
+                    matchedRequests.push({ key: key, ...item });
+                }
+            });
+
+            // Sort by latest timestamp
+            matchedRequests.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+            if (matchedRequests.length === 0) {
+                list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">Your withdrawal requests and credit history will appear here.</li>`;
+                return;
+            }
+
+            matchedRequests.forEach(item => {
+                const currentStatus = item.status || 'Pending';
+
+                let badgeClass = 'badge-pending';
+                let iconClass = 'pending-icon';
+                let statusIcon = 'fa-clock';
+                let isPaidSuccess = false;
+
+                const lowerStatus = String(currentStatus).toLowerCase();
+                
+                // When status is approved, success, completed, or paid
+                if (lowerStatus === 'approved' || lowerStatus === 'success' || lowerStatus === 'completed' || lowerStatus === 'paid') {
+                    badgeClass = 'badge-success';
+                    iconClass = 'income';
+                    statusIcon = 'fa-circle-check';
+                    isPaidSuccess = true;
+                } else if (lowerStatus === 'rejected' || lowerStatus === 'failed') {
+                    badgeClass = 'badge-rejected';
+                    iconClass = 'expense';
+                    statusIcon = 'fa-circle-xmark';
                 }
 
-                matchedRequests.forEach(item => {
-                    const currentStatus = item.status || 'Pending';
+                const reqDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                }) : 'Recent';
 
-                    let badgeClass = 'badge-pending';
-                    let iconClass = 'pending-icon';
-                    let statusIcon = 'fa-clock';
+                const shortId = item.key ? item.key.substring(0, 8) : 'REQ';
 
-                    const lowerStatus = String(currentStatus).toLowerCase();
-                    
-                    // 'paid' സ്റ്റാറ്റസ് കൂടി അനുവദിച്ച് green കളറാക്കുന്നു
-                    if (lowerStatus === 'approved' || lowerStatus === 'success' || lowerStatus === 'completed' || lowerStatus === 'paid') {
-                        badgeClass = 'badge-success';
-                        iconClass = 'income';
-                        statusIcon = 'fa-circle-check';
-                    } else if (lowerStatus === 'rejected' || lowerStatus === 'failed') {
-                        badgeClass = 'badge-rejected';
-                        iconClass = 'expense';
-                        statusIcon = 'fa-circle-xmark';
-                    }
-
-                    const reqDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString('en-IN', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric'
-                    }) : 'Recent';
-
-                    const shortId = item.key ? item.key.substring(0, 8) : 'REQ';
-
-                    const li = document.createElement('li');
-                    li.className = 'ref-order-item';
-                    li.innerHTML = `
-                        <div class="t-info">
-                            <div class="t-icon ${iconClass}">
-                                <i class="fa-solid ${statusIcon}"></i>
-                            </div>
-                            <div class="t-details">
-                                <h4>Payout Request (${item.method || 'UPI / Bank'})</h4>
-                                <p>${reqDate} • ID: ${shortId}</p>
-                            </div>
+                const li = document.createElement('li');
+                li.className = 'ref-order-item';
+                li.innerHTML = `
+                    <div class="t-info">
+                        <div class="t-icon ${iconClass}">
+                            <i class="fa-solid ${statusIcon}"></i>
                         </div>
-                        <div class="t-amount">
-                            <div class="amt minus">- ₹${parseFloat(item.amount || 0).toFixed(2)}</div>
-                            <span class="badge ${badgeClass}">
-                                ${currentStatus}
-                            </span>
+                        <div class="t-details">
+                            <h4>Payout Request (${item.method || 'UPI / Bank'})</h4>
+                            <p>${reqDate} • ID: ${shortId}</p>
                         </div>
-                    `;
-                    list.appendChild(li);
-                });
+                    </div>
+                    <div class="t-amount">
+                        <div class="amt ${isPaidSuccess ? 'plus' : 'minus'}">${isPaidSuccess ? '+' : '-'} ₹${parseFloat(item.amount || 0).toFixed(2)}</div>
+                        <span class="badge ${badgeClass}">
+                            ${currentStatus}
+                        </span>
+                    </div>
+                `;
+                list.appendChild(li);
             });
         }
     </script>
