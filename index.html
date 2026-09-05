@@ -54,11 +54,10 @@ body {
   min-height: 100vh; 
   display: flex; 
   flex-direction: column; 
-  padding-bottom: 75px; /* Space for Bottom Navigation Bar */
+  padding-bottom: 75px; 
   -webkit-tap-highlight-color: transparent; 
   transition: background-color 0.3s ease, color 0.3s ease; 
 } 
-/* --- Global Button Touch & Interactive Reset --- */ 
 button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip { 
   touch-action: manipulation; 
   user-select: none; 
@@ -67,7 +66,6 @@ button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .pro
 button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active { 
   transform: scale(0.96) !important; 
 } 
-/* --- Navigation --- */ 
 nav { 
   display: flex; 
   justify-content: space-between; 
@@ -125,8 +123,6 @@ nav {
   color: var(--text-muted); 
   font-size: 0.85rem; 
 } 
-
-/* --- Top Profile Section Badge --- */
 .nav-right { 
   display: flex; 
   align-items: center; 
@@ -181,8 +177,6 @@ nav {
   font-size: 0.78rem;
   margin-left: 4px;
 }
-
-/* --- Bottom Navigation Bar --- */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -223,8 +217,6 @@ nav {
   top: -2px;
   right: 14px;
 }
-
-/* --- Loading Spinner Inside Modal --- */
 .verify-loading-box {
   display: none;
   flex-direction: column;
@@ -245,8 +237,6 @@ nav {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-/* --- Compact Search Suggestion Box --- */ 
 .search-suggestions-box { 
   position: absolute; 
   top: calc(100% + 8px); 
@@ -301,7 +291,6 @@ nav {
   font-weight: 700; 
   margin: 0; 
 } 
-/* --- Header / Hero --- */ 
 .hero { 
   padding: 30px 6% 10px; 
   display: flex; 
@@ -322,7 +311,6 @@ nav {
   margin-top: 8px; 
   font-size: 0.95rem; 
 } 
-/* Trust Stats Widget */ 
 .trust-stats { 
   display: flex; 
   align-items: center; 
@@ -360,7 +348,6 @@ nav {
   height: 25px; 
   background: var(--border); 
 } 
-/* --- Trust Badges Grid Bar --- */ 
 .trust-bar-section { 
   padding: 10px 6% 15px 6%; 
 } 
@@ -401,7 +388,6 @@ nav {
   font-size: 0.72rem; 
   color: var(--text-muted); 
 } 
-/* --- Category Bar Styling --- */ 
 .category-bar { 
   padding: 10px 6% 5px 6%; 
   display: flex; 
@@ -438,7 +424,8 @@ nav {
   border-color: var(--primary); 
   box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
 } 
-/* --- Dynamic Banner Slider --- */ 
+
+/* --- High Clarity Banner Styling (Arrows Removed) --- */ 
 .banner-section { 
   padding: 15px 6% 10px 6%; 
   position: relative; 
@@ -467,15 +454,15 @@ nav {
   scroll-snap-align: start; 
   border-radius: 20px; 
   overflow: hidden; 
-  height: auto; 
-  max-height: 220px; 
+  height: 200px; 
   background: var(--surface); 
   display: flex; 
   align-items: center; 
   justify-content: center; 
   cursor: pointer; 
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06); 
   transition: transform 0.3s ease; 
+  border: 1px solid var(--border);
 } 
 .banner-item:hover { 
   transform: scale(1.005); 
@@ -483,39 +470,9 @@ nav {
 .banner-item img { 
   width: 100%; 
   height: 100%; 
-  object-fit: contain; 
+  object-fit: cover; /* High clarity full fill */
   border-radius: 20px; 
-} 
-/* Banner Navigation Arrows */ 
-.banner-arrow { 
-  position: absolute; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  width: 40px; 
-  height: 40px; 
-  background: var(--card-bg); 
-  color: var(--text-main); 
-  border: 1px solid var(--border); 
-  border-radius: 50%; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  cursor: pointer; 
-  z-index: 10; 
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
-  transition: all 0.2s ease; 
-  backdrop-filter: blur(4px); 
-} 
-.banner-arrow:hover { 
-  background: var(--primary); 
-  color: var(--bg); 
-  transform: translateY(-50%) scale(1.08); 
-} 
-.banner-arrow.prev { 
-  left: -12px; 
-} 
-.banner-arrow.next { 
-  right: -12px; 
+  image-rendering: -webkit-optimize-contrast;
 } 
 .banner-dots { 
   display: flex; 
@@ -537,7 +494,7 @@ nav {
   width: 20px; 
   border-radius: 4px; 
 } 
-/* --- Product Grid --- */ 
+
 .container { 
   padding: 10px 6% 40px; 
   flex: 1; 
@@ -547,7 +504,6 @@ nav {
   grid-template-columns: repeat(2, 1fr); 
   gap: 15px; 
 } 
-/* --- Modal Universal Styles --- */ 
 .modal-overlay { 
   display: none; 
   position: fixed; 
@@ -606,8 +562,6 @@ nav {
   align-items: center; 
   justify-content: center; 
 } 
-
-/* --- Premium Custom Notification Modal --- */
 .custom-toast-overlay {
   display: none;
   position: fixed;
@@ -623,7 +577,6 @@ nav {
   padding: 20px;
   animation: fadeIn 0.3s ease;
 }
-
 .custom-toast-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -639,7 +592,6 @@ nav {
   gap: 16px;
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .toast-icon-wrap {
   width: 60px;
   height: 60px;
@@ -649,33 +601,28 @@ nav {
   justify-content: center;
   font-size: 1.8rem;
 }
-
 .toast-icon-wrap.success {
   background: rgba(34, 197, 94, 0.12);
   color: #22c55e;
   border: 1px solid rgba(34, 197, 94, 0.2);
 }
-
 .toast-icon-wrap.error {
   background: rgba(239, 68, 68, 0.12);
   color: #ef4444;
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
-
 .custom-toast-card h4 {
   font-size: 1.15rem;
   font-weight: 800;
   color: var(--text-main);
   margin: 0;
 }
-
 .custom-toast-card p {
   font-size: 0.88rem;
   color: var(--text-muted);
   margin: 0;
   line-height: 1.5;
 }
-
 .toast-close-btn {
   width: 100%;
   padding: 12px;
@@ -689,23 +636,18 @@ nav {
   margin-top: 8px;
   transition: all 0.2s ease;
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
-/* --- Slide Up Animation --- */ 
 @keyframes slideUpFade { 
   0% { opacity: 0; transform: translateY(30px); } 
   100% { opacity: 1; transform: translateY(0); } 
 } 
-/* --- Card Styling --- */ 
 .card { 
   background: var(--card-bg); 
   border-radius: 20px; 
@@ -885,7 +827,6 @@ nav {
   padding: 2px; 
   border: 2px solid var(--card-bg); 
 } 
-/* --- Skeleton Loading Placeholder Cards --- */ 
 .skeleton-card { 
   background: var(--card-bg); 
   border-radius: 20px; 
@@ -915,7 +856,6 @@ nav {
   0% { background-position: 200% 0; } 
   100% { background-position: -200% 0; } 
 } 
-/* --- Safe Checkout Assurance Section --- */ 
 .safe-checkout-box { 
   margin: 20px 6% 40px; 
   background: var(--surface); 
@@ -957,7 +897,6 @@ nav {
   border-radius: 8px; 
   border: 1px solid var(--border); 
 } 
-/* --- Cookies Consent Banner --- */ 
 .cookie-banner { 
   position: fixed; 
   bottom: 80px; 
@@ -1008,8 +947,6 @@ nav {
 .cookie-accept:hover { 
   opacity: 0.9; 
 } 
-
-/* --- Contact Modal Options --- */
 .contact-option {
   display: flex;
   align-items: center;
@@ -1031,8 +968,6 @@ nav {
 .contact-option i {
   font-size: 1.4rem;
 }
-
-/* --- Responsive Adjustments --- */ 
 @media (max-width: 768px) { 
   nav { 
     padding: 10px 4%; 
@@ -1102,22 +1037,11 @@ nav {
   } 
   .banner-item { 
     flex: 0 0 100%; 
-    max-height: 160px; 
+    height: 160px; 
     border-radius: 14px; 
   } 
   .banner-item img { 
     border-radius: 14px; 
-  } 
-  .banner-arrow { 
-    width: 32px; 
-    height: 32px; 
-    font-size: 0.75rem; 
-  } 
-  .banner-arrow.prev { 
-    left: 2px; 
-  } 
-  .banner-arrow.next { 
-    right: 2px; 
   } 
   .dot { 
     width: 6px; 
@@ -1210,7 +1134,6 @@ nav {
       </div> 
     </form> 
 
-    <!-- Verification Loading Indicator -->
     <div id="verifyLoadingBox" class="verify-loading-box">
       <div class="spinner"></div>
       <p style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin: 0;">Checking Mobile Number...</p>
@@ -1314,14 +1237,15 @@ nav {
   </div> 
 </div> 
 <div class="category-bar" id="categoryBar"></div> 
+
+<!-- Banner Section (Arrows Removed, High Clarity) -->
 <div class="banner-section" id="bannerSection" style="display: none;"> 
   <div class="banner-wrapper"> 
-    <button class="banner-arrow prev" id="bannerPrevBtn"><i class="fa-solid fa-chevron-left"></i></button> 
     <div class="banner-slider" id="bannerSlider"></div> 
-    <button class="banner-arrow next" id="bannerNextBtn"><i class="fa-solid fa-chevron-right"></i></button> 
   </div> 
   <div class="banner-dots" id="bannerDots"></div> 
 </div> 
+
 <div class="container"> 
   <div class="grid" id="productGrid"></div> 
 </div> 
@@ -1383,7 +1307,6 @@ nav {
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"; 
   import { getDatabase, ref, onValue, get, set, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js"; 
 
-  // --- FIREBASE INITIALIZATION --- 
   const firebaseConfig = { 
     apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc", 
     authDomain: "cartprime-shopping.firebaseapp.com", 
@@ -1402,7 +1325,6 @@ nav {
     return `CP-REF-${randomDigits}`;
   }
 
-  // --- TOP PROFILE HEADER LOGIC ---
   const profileChip = document.getElementById('profileChip');
   const navProfileAvatar = document.getElementById('navProfileAvatar');
   const navProfileName = document.getElementById('navProfileName');
@@ -1418,7 +1340,7 @@ nav {
   const welcomeModalTitle = document.getElementById('welcomeModalTitle');
   const welcomeModalSub = document.getElementById('welcomeModalSub');
 
-  let registrationStep = 1; // 1: Phone Check, 2: New User Name Entry
+  let registrationStep = 1;
 
   function updateHeaderProfileUI() {
     const name = localStorage.getItem('userName') || "User";
@@ -1486,7 +1408,6 @@ nav {
           welcomeForm.style.display = 'flex';
 
           if (snapshot.exists()) {
-            // Already registered! Load existing name directly
             const userData = snapshot.val();
             const existingName = userData.name || "User";
 
@@ -1499,7 +1420,6 @@ nav {
             updateBadges(currentUser);
             resetRegistrationForm();
           } else {
-            // New user! Step 2: Show name input
             registrationStep = 2;
             userWelcomeName.style.display = 'block';
             welcomeModalTitle.textContent = "Create Your Profile";
@@ -1548,7 +1468,6 @@ nav {
     });
   }
 
-  // --- PREMIUM TOAST NOTIFICATION ---
   function showCustomAlert(title, message, isSuccess = true) {
     const toastModal = document.getElementById('customToast');
     const toastTitle = document.getElementById('toastTitle');
@@ -1574,7 +1493,6 @@ nav {
     };
   }
 
-  // --- AFFILIATE TRACKING --- 
   (function handleAffiliateTracking() { 
     const urlParams = new URLSearchParams(window.location.search); 
     const affId = urlParams.get('ref') || urlParams.get('aff'); 
@@ -1583,7 +1501,6 @@ nav {
     } 
   })(); 
 
-  // --- COOKIES CONSENT --- 
   const cookieBanner = document.getElementById('cookieBanner'); 
   const acceptCookiesBtn = document.getElementById('acceptCookiesBtn'); 
   if (!localStorage.getItem('cookiesAccepted')) { 
@@ -1594,7 +1511,6 @@ nav {
     cookieBanner.style.display = 'none'; 
   }); 
 
-  // --- CONTACT MODAL LOGIC ---
   const contactModal = document.getElementById('contactModal');
   const bottomContactBtn = document.getElementById('bottomContactBtn');
   const closeContactModal = document.getElementById('closeContactModal');
@@ -1611,7 +1527,7 @@ nav {
     });
   }
 
-  // --- EARN VERIFICATION & REDIRECTION LOGIC --- 
+  /* --- EARN PARTNER LOGIC (FIXED) --- */ 
   const earnModal = document.getElementById('earnModal'); 
   const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
@@ -1668,12 +1584,12 @@ nav {
           );
         }
       } else {
-        // Not registered as Earn Partner yet, ask for Name and UPI
         earnStep = 2;
         partnerName.style.display = 'block';
         partnerUpi.style.display = 'block';
         partnerName.value = localStorage.getItem('userName') || "";
         earnSubmitBtn.textContent = "Submit Request";
+        earnModal.style.display = 'flex';
       }
     }).catch(() => {
       openEarnRegistrationModal();
@@ -1682,7 +1598,6 @@ nav {
 
   function handleEarnClick() {
     const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-    
     if (!phone) {
       openEarnRegistrationModal();
     } else {
@@ -1774,7 +1689,6 @@ nav {
     } 
   } 
 
-  // --- REDIRECTION WITH USER & EARN PARTNER PARAMETERS ---
   function trackProductClickAndRedirect(productId) { 
     let viewedProducts = JSON.parse(localStorage.getItem('viewedProductIds') || "[]"); 
     let visitCounted = localStorage.getItem('visitCounted') === 'true'; 
@@ -1822,7 +1736,6 @@ nav {
     window.location.href = "/"; 
   }); 
 
-  // --- UPDATED BADGES & WISHLIST LOGIC --- 
   function updateBadges(user) { 
     const bottomWishlistBadge = document.getElementById('bottomWishlistBadge'); 
     const bottomOrdersBadge = document.getElementById('bottomOrdersBadge'); 
@@ -1962,8 +1875,6 @@ nav {
   function initializeSliderScroll() { 
     const slider = document.getElementById('bannerSlider'); 
     const dots = document.querySelectorAll('.dot'); 
-    const prevBtn = document.getElementById('bannerPrevBtn'); 
-    const nextBtn = document.getElementById('bannerNextBtn'); 
     const totalBanners = dots.length; 
     if (totalBanners === 0) return; 
     if (autoScrollInterval) clearInterval(autoScrollInterval); 
@@ -1977,24 +1888,9 @@ nav {
           nextIndex = 0; 
         } 
         slider.scrollTo({ left: nextIndex * width, behavior: 'smooth' }); 
-      }, 3000); 
+      }, 3500); 
     }; 
     startAutoScroll(); 
-
-    if (prevBtn && nextBtn) { 
-      prevBtn.onclick = () => { 
-        clearInterval(autoScrollInterval); 
-        const width = slider.clientWidth; 
-        slider.scrollBy({ left: -width, behavior: 'smooth' }); 
-        startAutoScroll(); 
-      }; 
-      nextBtn.onclick = () => { 
-        clearInterval(autoScrollInterval); 
-        const width = slider.clientWidth; 
-        slider.scrollBy({ left: width, behavior: 'smooth' }); 
-        startAutoScroll(); 
-      }; 
-    } 
 
     slider.addEventListener('scroll', () => { 
       const width = slider.clientWidth; 
