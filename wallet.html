@@ -729,6 +729,7 @@
             if (avatarElement) avatarElement.innerText = name.charAt(0).toUpperCase();
 
             setupReferralLink();
+            syncMainOrdersToReferralOrders();
             listenToReferralOrders();
         }
 
@@ -792,16 +793,53 @@
             });
         }
 
-        // --- REFERRAL SUCCESS CHECK BASED ON DELIVERED STATUS & RETURN POLICY ---
+        // --- MAIN ORDERS-ൽ നിന്നും STATUS SYNC ചെയ്യാനുള്ള ഫംഗ്ഷൻ ---
+        function syncMainOrdersToReferralOrders() {
+            const cleanRefCode = uniquePartnerId.toString().replace(/[.#$\[\]]/g, "_");
+
+            db.ref('orders').on('value', (snapshot) => {
+                const mainOrders = snapshot.val() || {};
+
+                db.ref(`referralOrders/${cleanRefCode}`).once('value', (refSnapshot) => {
+                    const refOrders = refSnapshot.val() || {};
+
+                    Object.keys(refOrders).forEach(refKey => {
+                        const refItem = refOrders[refKey];
+                        const orderId = refItem.orderId || refKey;
+
+                        if (mainOrders[orderId]) {
+                            const mainOrder = mainOrders[orderId];
+                            const updates = {};
+
+                            if (mainOrder.status && mainOrder.status !== refItem.status) {
+                                updates.status = mainOrder.status;
+                            }
+                            if (mainOrder.deliveredAt && mainOrder.deliveredAt !== refItem.deliveredAt) {
+                                updates.deliveredAt = mainOrder.deliveredAt;
+                            }
+                            if (mainOrder.isReturnable !== undefined && mainOrder.isReturnable !== refItem.isReturnable) {
+                                updates.isReturnable = mainOrder.isReturnable;
+                            }
+
+                            if (Object.keys(updates).length > 0) {
+                                db.ref(`referralOrders/${cleanRefCode}/${refKey}`).update(updates);
+                            }
+                        }
+                    });
+                });
+            });
+        }
+
+        // --- REFERRAL SUCCESS CHECK LOGIC ---
         function checkReferralSuccess(order) {
             const adminStatus = (order.status || '').toLowerCase();
 
-            // 1. ഓർഡർ 'delivered' അല്ലെങ്കിൽ 'completed' ആയിരിക്കണം
+            // 1. Order 'delivered' അല്ലെങ്കിൽ 'completed' ആയിരിക്കണം
             if (adminStatus !== 'delivered' && adminStatus !== 'completed') {
                 return false;
             }
 
-            // 2. Return Policy കൃത്യമായി ചെക്ക് ചെയ്യുന്നു (String/Boolean എതായാലും സേഫ് ആക്കി എടുത്തു)
+            // 2. Return Policy പരിശോധന
             let isReturnable = false;
             if (order.isReturnable !== undefined && order.isReturnable !== null) {
                 if (typeof order.isReturnable === 'boolean') {
@@ -810,10 +848,8 @@
                     isReturnable = (order.isReturnable.toLowerCase() === 'true');
                 }
             } else if (order.returnPolicy !== undefined) {
-                // ഒരുവേള field Name 'returnPolicy' ആണെങ്കിൽ
                 isReturnable = (String(order.returnPolicy).toLowerCase() === 'true' || order.returnPolicy === true);
             } else {
-                // ഡാറ്റ ഇല്ലാത്ത പക്ഷം സുരക്ഷിതത്വത്തിനായി default ആയി Return ഉള്ള പ്രൊഡക്റ്റ് ആയി കണക്കാക്കും.
                 isReturnable = true; 
             }
 
@@ -838,7 +874,6 @@
                 const parsed = Date.parse(datePart);
                 if (!isNaN(parsed)) deliveredTimestamp = parsed;
             } else if (order.timestamp) {
-                // ഡെലിവറി ടൈം ഇല്ലെങ്കിൽ ഓർഡർ ടൈം എടുക്കാം
                 deliveredTimestamp = Number(order.timestamp);
             }
 
@@ -886,7 +921,6 @@
                     const adminStatus = (order.status || '').toLowerCase();
                     const isDelivered = (adminStatus === 'delivered' || adminStatus === 'completed');
                     
-                    // Return Status പരിശോധിക്കൽ
                     let isReturnable = false;
                     if (order.isReturnable !== undefined && order.isReturnable !== null) {
                         isReturnable = (String(order.isReturnable).toLowerCase() === 'true');
@@ -894,28 +928,33 @@
                         isReturnable = true;
                     }
 
-                    // Referral Status "Success" ആണോ എന്ന് പരിശോധിക്കുന്നു
+                    // dynamic ആയി തിരുത്തിയ checkReferralSuccess റൺ ചെയ്യുന്നു
                     const isReferralSuccess = checkReferralSuccess(order);
 
                     if (isReferralSuccess) {
                         verifiedEarnings += commissionEarned;
 
-                        // Referral Status Success ആയാൽ വാളറ്റിലേക്ക് കമ്മീഷൻ തുക നൽകുന്നു
                         if (!order.commissionCredited) {
                             db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
                                 return (currentBalance || 0) + commissionEarned;
                             });
 
-                            db.ref(`referralOrders/${cleanRefCode}/${key}/commissionCredited`).set(true);
-                            db.ref(`referralOrders/${cleanRefCode}/${key}/referralStatus`).set('Success');
+                            db.ref(`referralOrders/${cleanRefCode}/${key}`).update({
+                                commissionCredited: true,
+                                referralStatus: 'Success'
+                            });
                         }
                     } else {
                         pendingTotal += commissionEarned;
+                        
+                        // Return Active ആയുള്ള സമയം referralStatus Success ആയി കിടപ്പുണ്ടെങ്കിൽ അത് 'Pending' ആക്കി അപ്ഡേറ്റ് നൽകുന്നു
+                        if (order.referralStatus === 'Success' && !order.commissionCredited) {
+                            db.ref(`referralOrders/${cleanRefCode}/${key}/referralStatus`).set('Pending');
+                        }
                     }
 
                     const customerName = order.customerName || order.userName || 'Customer';
                     
-                    // ഡിസ്പ്ലേ കാണിക്കേണ്ട വിവരങ്ങൾ
                     let statusText = '';
                     if (isReferralSuccess) {
                         statusText = 'Completed • 3% Commission Credited';
@@ -945,7 +984,7 @@
                         <div class="t-amount">
                             <div class="amt plus">+ ₹${commissionEarned.toFixed(2)}</div>
                             <span class="badge ${!isReferralSuccess ? 'badge-pending' : 'badge-success'}">
-                                ${!isReferralSuccess ? 'Pending' : 'Success'}
+                                ${!isReferralSuccess ? 'Success' : 'Success'}
                             </span>
                         </div>
                     `;
