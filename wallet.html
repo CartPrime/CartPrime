@@ -793,7 +793,7 @@
             });
         }
 
-        // --- MAIN ORDERS-ൽ നിന്നും STATUS SYNC ചെയ്യാനുള്ള ഫംഗ്ഷൻ ---
+        // --- MAIN ORDERS-ൽ നിന്നും STATUS, RETURN POLICY SYNC ചെയ്യാനുള്ള ഫംഗ്ഷൻ ---
         function syncMainOrdersToReferralOrders() {
             const cleanRefCode = uniquePartnerId.toString().replace(/[.#$\[\]]/g, "_");
 
@@ -834,7 +834,7 @@
         function checkReferralSuccess(order) {
             const adminStatus = (order.status || '').toLowerCase();
 
-            // 1. Order 'delivered' അല്ലെങ്കിൽ 'completed' ആയിരിക്കണം
+            // 1. Order status 'delivered' അല്ലെങ്കിൽ 'completed' ആയിരിക്കണം
             if (adminStatus !== 'delivered' && adminStatus !== 'completed') {
                 return false;
             }
@@ -850,7 +850,7 @@
             } else if (order.returnPolicy !== undefined) {
                 isReturnable = (String(order.returnPolicy).toLowerCase() === 'true' || order.returnPolicy === true);
             } else {
-                isReturnable = true; 
+                isReturnable = true; // Default true
             }
 
             // CASE A: Return ഇല്ലാത്ത ഉൽപ്പന്നം (isReturnable === false) -> Admin Delivered ആക്കിയാൽ ഉടൻ Success
@@ -881,15 +881,15 @@
                 const now = Date.now();
                 const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
                 
-                // Delivered ആയിട്ട് 7 ദിവസം തികഞ്ഞെങ്കിൽ മാത്രം true
                 if (now >= (deliveredTimestamp + sevenDaysInMs)) {
                     return true;
                 }
             }
 
-            return false; // Delivered ആണ്, പക്ഷേ 7 ദിവസത്തെ Return Period കഴിയാൻ ബാക്കിയുണ്ട്
+            return false;
         }
 
+        // --- LISTEN AND DISPLAY REFERRAL ORDERS ---
         function listenToReferralOrders() {
             const cleanRefCode = uniquePartnerId.toString().replace(/[.#$\[\]]/g, "_");
 
@@ -928,7 +928,6 @@
                         isReturnable = true;
                     }
 
-                    // dynamic ആയി തിരുത്തിയ checkReferralSuccess റൺ ചെയ്യുന്നു
                     const isReferralSuccess = checkReferralSuccess(order);
 
                     if (isReferralSuccess) {
@@ -947,7 +946,6 @@
                     } else {
                         pendingTotal += commissionEarned;
                         
-                        // Return Active ആയുള്ള സമയം referralStatus Success ആയി കിടപ്പുണ്ടെങ്കിൽ അത് 'Pending' ആക്കി അപ്ഡേറ്റ് നൽകുന്നു
                         if (order.referralStatus === 'Success' && !order.commissionCredited) {
                             db.ref(`referralOrders/${cleanRefCode}/${key}/referralStatus`).set('Pending');
                         }
@@ -956,8 +954,13 @@
                     const customerName = order.customerName || order.userName || 'Customer';
                     
                     let statusText = '';
+                    let badgeLabel = 'Pending';
+                    let badgeClass = 'badge-pending';
+
                     if (isReferralSuccess) {
                         statusText = 'Completed • 3% Commission Credited';
+                        badgeLabel = 'Success';
+                        badgeClass = 'badge-success';
                     } else if (isDelivered) {
                         if (isReturnable) {
                             statusText = 'Delivered • Return Period Active (7 Days)';
@@ -973,8 +976,8 @@
                     li.className = 'ref-order-item';
                     li.innerHTML = `
                         <div class="t-info">
-                            <div class="t-icon ${!isReferralSuccess ? 'pending-icon' : 'income'}">
-                                <i class="fa-solid ${!isReferralSuccess ? 'fa-clock' : 'fa-circle-check'}"></i>
+                            <div class="t-icon ${isReferralSuccess ? 'income' : 'pending-icon'}">
+                                <i class="fa-solid ${isReferralSuccess ? 'fa-circle-check' : 'fa-clock'}"></i>
                             </div>
                             <div class="t-details">
                                 <h4>${customerName} (Order #${order.orderId || key})</h4>
@@ -983,8 +986,8 @@
                         </div>
                         <div class="t-amount">
                             <div class="amt plus">+ ₹${commissionEarned.toFixed(2)}</div>
-                            <span class="badge ${!isReferralSuccess ? 'badge-pending' : 'badge-success'}">
-                                ${!isReferralSuccess ? 'Success' : 'Success'}
+                            <span class="badge ${badgeClass}">
+                                ${badgeLabel}
                             </span>
                         </div>
                     `;
