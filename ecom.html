@@ -1493,10 +1493,10 @@ onValue(ref(db, 'earn_partners'), snap => {
             </td>
             <td>
                 ${status === 'Pending' ? `
-                    <button style="background:#10b981; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="window.updateAffiliateStatus('${reqId}', '${targetUserId}', 'Approved')" title="Approve Request">
+                    <button style="background:#10b981; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="earn_partners.status('${reqId}', '${targetUserId}', 'Approved')" title="Approve Request">
                         <i class="fa fa-check"></i> Approve
                     </button>
-                    <button style="background:#ef4444; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:4px;" onclick="window.updateAffiliateStatus('${reqId}', '${targetUserId}', 'Rejected')" title="Reject Request">
+                    <button style="background:#ef4444; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:4px;" onclick="earn_partners.status('${reqId}', '${targetUserId}', 'Rejected')" title="Reject Request">
                         <i class="fa fa-times"></i> Reject
                     </button>
                 ` : `
