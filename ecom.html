@@ -1312,7 +1312,7 @@ window.updateStatus = async (path, s) => {
     }
 };
 
-/* PAYOUT REQUEST HANDLING LOGIC */
+/* ENHANCED PAYOUT REQUEST HANDLING LOGIC WITH RECURSIVE PARSING */
 onValue(ref(db, 'payoutRequests'), snap => {
     const list = document.getElementById('payoutRequestList');
     if (!list) return;
@@ -1323,11 +1323,33 @@ onValue(ref(db, 'payoutRequests'), snap => {
         return;
     }
 
-    let hasRequests = false;
+    let payoutsMap = {};
 
-    function renderPayoutRow(req, reqPathKey) {
-        if (!req || typeof req !== 'object') return;
-        hasRequests = true;
+    function fetchPayouts(obj, path = "") {
+        if (!obj || typeof obj !== 'object') return;
+
+        if (obj.amount !== undefined || obj.upiId !== undefined || obj.paymentInfo !== undefined || obj.upi !== undefined || obj.withdrawAmount !== undefined || obj.details !== undefined) {
+            payoutsMap[path] = obj;
+            return;
+        }
+
+        for (let key in obj) {
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
+                fetchPayouts(obj[key], path ? `${path}/${key}` : key);
+            }
+        }
+    }
+
+    fetchPayouts(snap.val());
+
+    const keys = Object.keys(payoutsMap);
+    if (keys.length === 0) {
+        list.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No withdrawal requests found.</td></tr>`;
+        return;
+    }
+
+    keys.forEach(reqPathKey => {
+        const req = payoutsMap[reqPathKey];
         const status = req.status || "Unpaid";
         
         let statusBadgeClass = "pay-Unpaid";
@@ -1367,25 +1389,7 @@ onValue(ref(db, 'payoutRequests'), snap => {
                 </div>
             </td>
         </tr>`;
-    }
-
-    snap.forEach(child => {
-        const val = child.val();
-        if (val && (val.amount !== undefined || val.upiId !== undefined || val.paymentInfo !== undefined || val.upi !== undefined || val.withdrawAmount !== undefined || val.details !== undefined)) {
-            renderPayoutRow(val, child.key);
-        } else if (typeof val === 'object' && val !== null) {
-            child.forEach(subChild => {
-                const subVal = subChild.val();
-                if (typeof subVal === 'object' && subVal !== null) {
-                    renderPayoutRow(subVal, `${child.key}/${subChild.key}`);
-                }
-            });
-        }
     });
-
-    if (!hasRequests) {
-        list.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No withdrawal requests found.</td></tr>`;
-    }
 });
 
 window.updatePayoutStatus = async (requestPathKey, newStatus) => {
@@ -1397,7 +1401,6 @@ window.updatePayoutStatus = async (requestPathKey, newStatus) => {
 
         await update(ref(db, `payoutRequests/${requestPathKey}`), updateData);
 
-        // If marked as Paid, deduct user's balance if required
         const snap = await get(ref(db, `payoutRequests/${requestPathKey}`));
         if (snap.exists()) {
             const reqData = snap.val();
