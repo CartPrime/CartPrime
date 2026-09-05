@@ -286,18 +286,7 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // --- REFERRAL STATUS CALCULATOR LOGIC ---
-        window.getCalculatedReferralStatus = function(order) {
-            if (!order) return "Pending";
-            const orderStatus = (order.status || "").toLowerCase();
-
-            if (orderStatus === "delivered") {
-                return "Delivered";
-            }
-            return "Pending";
-        };
-
-        // --- URL REFERRAL CODE DETECTION ---
+        // --- URL REFERRAL CODE DETECTION & SAVING ---
         const urlParams = new URLSearchParams(window.location.search);
         const refFromUrl = urlParams.get('ref') || urlParams.get('referredBy');
         const commFromUrl = urlParams.get('comm') || urlParams.get('commission');
@@ -537,6 +526,7 @@
             } catch (e) { console.error(e); }
         };
 
+        // --- FULLY RESTARTED REFERRAL ORDER PROCESSING LOGIC ---
         window.placeOrder = () => {
             const fields = {
                 name: document.getElementById('custName').value.trim(),
@@ -576,7 +566,7 @@
                     text: 'Please enter a valid 6-digit pincode.',
                     icon: 'warning',
                     confirmButtonText: 'Ok',
-                    customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
+                    customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-cancel' }
                 });
             }
 
@@ -590,15 +580,14 @@
                     const orderId = Date.now(); 
                     const now = new Date();
                     
-                    // Fetch Referral Info
+                    // 1. Fetch Referral Code & Commission Info
                     const refUser = refFromUrl || orderInfo.referredBy || localStorage.getItem('referredBy') || null;
                     const commAmt = commFromUrl || orderInfo.commissionAmount || localStorage.getItem('commissionAmount') || 0;
 
                     const actualDeliveryDate = getDeliveryDateStr();
-
-                    // Check return policy
                     const isOrderReturnable = orderInfo.return === true || orderInfo.return === 'true' || orderInfo.returnPolicy === true || orderInfo.isReturnable === true || false;
 
+                    // Base Order Object Construction
                     let finalOrder = { 
                         customerName: fields.name, 
                         customerPhone: fields.phone, 
@@ -669,42 +658,50 @@
                         }];
                     }
 
-                    // 1. Save Primary Order
-                    const primaryOrderRef = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
+                    // A. Primary Order Creation
+                    const primaryOrderPromise = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
 
-                    // 2. Save Referral Order Logic
-                    let referralOrderRef = Promise.resolve();
+                    // B. Fully Restarted Referral Processing
+                    let referralOrderPromise = Promise.resolve();
+
                     if (refUser) {
+                        // Sanitize referral code for Firebase RTDB path safety
                         const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
-                        
-                        const referralOrderData = {
+
+                        // Build detailed Referral Order Object
+                        const referralPayload = {
                             ...finalOrder,
+                            referralCode: cleanRefCode,
                             status: "Order Confirmed",
-                            referralStatus: "Pending",
+                            referralStatus: "Pending", // Initial status set to Pending
+                            commission: parseFloat(commAmt) || 0,
                             returnPolicy: isOrderReturnable ? "7 Days Return Policy" : "No Return",
                             isReturnable: isOrderReturnable,
                             referralCreatedAt: now.toISOString()
                         };
 
-                        referralOrderRef = set(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), referralOrderData);
+                        // Save under `referralOrders/{cleanRefCode}/{orderId}`
+                        referralOrderPromise = set(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), referralPayload);
 
-                        // 3. Realtime Sync Logic: അഡ്മിൻ Order Status മാറ്റുമ്പോൾ Referral Status തത്സമയം മാറാൻ
-                        const orderStatusRef = ref(db, `orders/${fields.phone}/${orderId}/status`);
-                        onValue(orderStatusRef, (snapshot) => {
-                            const newStatus = snapshot.val();
-                            if (newStatus) {
-                                const isDelivered = newStatus.toString().trim().toLowerCase() === "delivered";
-                                const updatedReferralStatus = isDelivered ? "Delivered" : "Pending";
+                        // Realtime Observer: Sync status from main order to referral order
+                        const masterStatusRef = ref(db, `orders/${fields.phone}/${orderId}/status`);
+                        onValue(masterStatusRef, (snapshot) => {
+                            const currentStatus = snapshot.val();
+                            if (currentStatus) {
+                                const statusNormalized = currentStatus.toString().trim().toLowerCase();
+                                const calculatedRefStatus = (statusNormalized === "delivered") ? "Delivered" : "Pending";
 
                                 update(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), {
-                                    status: newStatus,
-                                    referralStatus: updatedReferralStatus
+                                    status: currentStatus,
+                                    referralStatus: calculatedRefStatus,
+                                    lastUpdated: new Date().toISOString()
                                 });
                             }
                         });
                     }
 
-                    Promise.all([primaryOrderRef, referralOrderRef]).then(() => {
+                    // C. Complete All Database Operations
+                    Promise.all([primaryOrderPromise, referralOrderPromise]).then(() => {
                         const activeUser = auth.currentUser;
                         const emailToSend = activeUser ? activeUser.email : currentUserEmail;
 
