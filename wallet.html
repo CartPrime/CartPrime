@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartprime - Creator Wallet & Referral Tracking</title>
+    <title>Cartprime - Creator & Referral Partner Hub</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <!-- Firebase SDK Setup -->
@@ -21,15 +21,16 @@
         }
 
         :root {
-            --bg-main: #f8f9fe;
+            --bg-main: #f4f7fe;
             --sidebar-bg: #ffffff;
             --text-primary: #1b2559;
             --text-secondary: #a3aed0;
             --brand-purple: #5936f5;
-            --card-gradient: linear-gradient(135deg, #6c47ff 0%, #4318ff 100%);
+            --brand-gradient: linear-gradient(135deg, #7015ff 0%, #4318ff 100%);
+            --creator-gold: linear-gradient(135deg, #ffb302 0%, #f77062 100%);
             --success-green: #05cd99;
             --warning-orange: #ffb547;
-            --border-color: #f0f3fa;
+            --border-color: #e9edf7;
             --whatsapp-green: #25d366;
         }
 
@@ -39,7 +40,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            padding-bottom: 75px;
+            padding-bottom: 80px;
             user-select: none;
         }
 
@@ -50,7 +51,7 @@
 
         .top-navbar {
             background-color: var(--sidebar-bg);
-            padding: 15px 25px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -67,28 +68,62 @@
         }
 
         .brand-icon {
-            background: var(--card-gradient);
+            background: var(--brand-gradient);
             color: white;
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            box-shadow: 0 8px 16px rgba(89, 54, 245, 0.2);
+            font-size: 18px;
+            box-shadow: 0 8px 16px rgba(89, 54, 245, 0.25);
         }
 
         .brand-text h2 {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 800;
             color: var(--text-primary);
+            line-height: 1.2;
         }
 
         .brand-text span {
             font-size: 11px;
-            color: var(--text-secondary);
-            display: block;
+            color: var(--brand-purple);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f4f7fe;
+            padding: 5px 12px 5px 6px;
+            border-radius: 40px;
+        }
+
+        .profile-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--brand-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .creator-badge-mini {
+            font-size: 11px;
+            font-weight: 700;
+            color: #d97706;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .bottom-nav {
@@ -131,54 +166,58 @@
 
         .main-content {
             flex: 1;
-            padding: 25px 20px;
+            padding: 20px 16px;
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
         }
 
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .header-title h1 {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text-primary);
-        }
-
-        .header-title p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: white;
-            padding: 6px 14px 6px 8px;
-            border-radius: 40px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
-        }
-
-        .profile-img {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #111;
+        .welcome-card {
+            background: var(--brand-gradient);
+            border-radius: 20px;
+            padding: 22px;
             color: white;
-            display: flex;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(89, 54, 245, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::after {
+            content: '\f005';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 100px;
+            color: rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+
+        .creator-tag {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: bold;
+            gap: 6px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .welcome-card h1 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .welcome-card p {
+            font-size: 12px;
+            opacity: 0.85;
         }
 
         .page-view {
@@ -201,61 +240,63 @@
             }
         }
 
-        .stats-vertical {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-bottom: 25px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
             background-color: white;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
-            position: relative;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             border: 1px solid var(--border-color);
         }
 
+        .stat-card.full-width {
+            grid-column: span 2;
+        }
+
         .stat-card.featured {
-            background: var(--card-gradient);
+            background: var(--creator-gold);
             color: white;
             border: none;
-            box-shadow: 0 15px 30px rgba(89, 54, 245, 0.3);
         }
 
         .stat-title {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .stat-card.featured .stat-title {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
         }
 
         .stat-sub {
-            font-size: 12px;
+            font-size: 11px;
             margin-top: 4px;
             color: var(--text-secondary);
             font-weight: 500;
         }
 
         .stat-card.featured .stat-sub {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .card-box {
             background-color: white;
-            padding: 22px;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             border: 1px solid var(--border-color);
             margin-bottom: 20px;
         }
@@ -264,15 +305,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
         }
 
         .box-header h3 {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .transaction-list, .referral-orders-list {
+        .referral-orders-list {
             list-style: none;
         }
 
@@ -280,7 +324,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 0;
+            padding: 12px 0;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -291,17 +335,17 @@
         .t-info {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .t-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .t-icon.income {
@@ -315,7 +359,7 @@
         }
 
         .t-details h4 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
         }
 
@@ -331,7 +375,7 @@
 
         .t-amount .amt {
             font-weight: 800;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .t-amount .amt.plus { color: var(--success-green); }
@@ -356,20 +400,20 @@
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .form-input {
             width: 100%;
             padding: 12px;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
             font-size: 14px;
             outline: none;
@@ -384,20 +428,20 @@
             background: var(--brand-purple);
             color: white;
             border: none;
-            padding: 14px 20px;
+            padding: 14px;
             border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
             width: 100%;
             font-size: 14px;
-            box-shadow: 0 8px 20px rgba(89, 54, 245, 0.3);
+            box-shadow: 0 8px 20px rgba(89, 54, 245, 0.25);
         }
 
         .link-copy-box {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-top: 12px;
+            margin-top: 10px;
         }
 
         .link-input-group {
@@ -409,9 +453,9 @@
             flex: 1;
             background: var(--bg-main);
             border: 1px solid var(--border-color);
-            padding: 10px 14px;
+            padding: 10px 12px;
             border-radius: 10px;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-primary);
             font-weight: 600;
         }
@@ -420,16 +464,16 @@
             background: var(--brand-purple);
             color: white;
             border: none;
-            padding: 10px 16px;
+            padding: 10px 14px;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
         }
 
         .share-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .btn-share-wa {
@@ -437,10 +481,10 @@
             background: var(--whatsapp-green);
             color: white;
             border: none;
-            padding: 10px 14px;
+            padding: 10px;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -453,70 +497,131 @@
             background: #eef2f6;
             color: var(--text-primary);
             border: none;
-            padding: 10px 14px;
+            padding: 10px;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
         }
+
+        .creator-benefits {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .benefit-chip {
+            flex: 1;
+            background: #f8f9fe;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .benefit-chip i {
+            color: var(--brand-purple);
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .benefit-chip span {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .benefit-chip p {
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
 
+    <!-- Top Header Bar -->
     <header class="top-navbar">
         <div class="brand">
-            <div class="brand-icon"><i class="fa-solid fa-wallet"></i></div>
+            <div class="brand-icon"><i class="fa-solid fa-crown"></i></div>
             <div class="brand-text">
                 <h2>Cartprime</h2>
-                <span>Creator Hub</span>
+                <span>Creator & Referral Hub</span>
             </div>
         </div>
         <div class="user-profile">
-            <div class="profile-img" id="user-avatar">U</div>
+            <div class="profile-img" id="user-avatar">C</div>
+            <div class="creator-badge-mini">
+                <i class="fa-solid fa-circle-check"></i> VIP
+            </div>
         </div>
     </header>
 
     <main class="main-content">
-        <div class="top-header">
-            <div class="header-title">
-                <h1>Welcome back, <span id="user-display-name">Loading...</span>! 👋</h1>
-                <p>Track your earnings and grow your revenue</p>
-            </div>
+        <!-- Welcome Banner -->
+        <div class="welcome-card">
+            <div class="creator-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Verified Creator Partner</div>
+            <h1>Hey, <span id="user-display-name">Loading...</span> 👋</h1>
+            <p>Share product links, track order conversions, and earn 3% instant lifetime commission!</p>
         </div>
 
-        <!-- 1. REFERRAL VIEW (Default View) -->
+        <!-- 1. REFERRAL & CREATOR HUB (Default View) -->
         <section id="referral" class="page-view active-view">
-            <div class="stats-vertical">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-title">Total Referred Orders</div>
-                    <div class="stat-value"><span id="ref-count">0</span> Orders</div>
-                    <div class="stat-sub">Tracked via your referral link</div>
+                    <div class="stat-title">Referred Orders</div>
+                    <div class="stat-value"><span id="ref-count">0</span></div>
+                    <div class="stat-sub">Tracked via your link</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Commission Rate</div>
+                    <div class="stat-value">3.0%</div>
+                    <div class="stat-sub">Fixed Creator Margin</div>
                 </div>
             </div>
 
-            <!-- Referral Share Box -->
+            <!-- Creator Referral Share Box -->
             <div class="card-box">
                 <div class="box-header">
-                    <h3>Your Unique Referral Link</h3>
+                    <h3><i class="fa-solid fa-link" style="color: var(--brand-purple);"></i> Unique Creator Referral Link</h3>
                 </div>
-                <p style="font-size: 12px; color: var(--text-secondary);">Share this link to direct users to shop and earn 3% commission on sales.</p>
+                <p style="font-size: 12px; color: var(--text-secondary);">Promote this link across your Instagram, WhatsApp, or YouTube to earn cash back on every checkout.</p>
                 
                 <div class="link-copy-box">
                     <div class="link-input-group">
-                        <input type="text" id="referral-url" class="link-input" readonly placeholder="Generating link...">
+                        <input type="text" id="referral-url" class="link-input" readonly placeholder="Generating unique link...">
                         <button class="btn-copy" onclick="copyReferralLink()"><i class="fa-regular fa-copy"></i> Copy</button>
                     </div>
                     <div class="share-actions">
                         <button class="btn-share-wa" onclick="shareToWhatsApp()">
-                            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                            <i class="fa-brands fa-whatsapp"></i> Share WhatsApp
                         </button>
                         <button class="btn-share-more" onclick="shareNative()">
-                            <i class="fa-solid fa-share-nodes"></i> Share
+                            <i class="fa-solid fa-share-nodes"></i> Share Link
                         </button>
+                    </div>
+                </div>
+
+                <!-- Benefits Row -->
+                <div class="creator-benefits">
+                    <div class="benefit-chip">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Auto Credit</span>
+                        <p>After 7-Day Return</p>
+                    </div>
+                    <div class="benefit-chip">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Realtime</span>
+                        <p>Order Tracking</p>
+                    </div>
+                    <div class="benefit-chip">
+                        <i class="fa-solid fa-money-bill-transfer"></i>
+                        <span>Instant</span>
+                        <p>UPI Payouts</p>
                     </div>
                 </div>
             </div>
@@ -524,7 +629,7 @@
             <!-- Referred Orders Status List -->
             <div class="card-box">
                 <div class="box-header">
-                    <h3>Referred Orders Status</h3>
+                    <h3><i class="fa-solid fa-bag-shopping" style="color: var(--brand-purple);"></i> Referred Orders Status</h3>
                 </div>
                 <ul class="referral-orders-list" id="referral-orders-list"></ul>
             </div>
@@ -532,21 +637,21 @@
 
         <!-- 2. EARNINGS VIEW -->
         <section id="earnings" class="page-view">
-            <div class="stats-vertical">
-                <div class="stat-card featured">
-                    <div class="stat-title">Available Balance</div>
+            <div class="stats-grid">
+                <div class="stat-card full-width featured">
+                    <div class="stat-title">Available Wallet Balance</div>
                     <div class="stat-value">₹ <span class="val-balance">0.00</span></div>
-                    <div class="stat-sub">Ready for instant payout</div>
+                    <div class="stat-sub">Ready for withdrawal to your bank account</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title">Lifetime Earnings</div>
+                    <div class="stat-title">Lifetime Earned</div>
                     <div class="stat-value">₹ <span class="val-earnings">0.00</span></div>
-                    <div class="stat-sub">Total verified earnings (3% Commission)</div>
+                    <div class="stat-sub">Verified Commission</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Pending Earnings</div>
                     <div class="stat-value">₹ <span class="val-pending">0.00</span></div>
-                    <div class="stat-sub">Awaiting return window completion</div>
+                    <div class="stat-sub">In 7-Day Return Window</div>
                 </div>
             </div>
         </section>
@@ -555,22 +660,22 @@
         <section id="withdraw" class="page-view">
             <div class="card-box">
                 <div class="box-header">
-                    <h3>Payout Request</h3>
+                    <h3><i class="fa-solid fa-building-columns" style="color: var(--brand-purple);"></i> Request Creator Payout</h3>
                 </div>
-                <div style="margin-bottom: 20px;">
-                    <p style="font-size: 13px; color: var(--text-secondary);">Available Balance for Withdrawal:</p>
-                    <h2 style="font-size: 26px; color: var(--brand-purple);">₹ <span class="val-balance">0.00</span></h2>
+                <div style="margin-bottom: 20px; background: #f8f9fe; padding: 14px; border-radius: 12px; text-align: center; border: 1px dashed var(--brand-purple);">
+                    <p style="font-size: 12px; color: var(--text-secondary);">Available Balance for Withdrawal:</p>
+                    <h2 style="font-size: 26px; color: var(--brand-purple); font-weight: 800;">₹ <span class="val-balance">0.00</span></h2>
                 </div>
                 <form onsubmit="handleWithdraw(event)">
                     <div class="form-group">
-                        <label>UPI ID or Bank Account Details</label>
-                        <input type="text" id="withdraw-method" class="form-input" placeholder="e.g. user@upi" required>
+                        <label>UPI ID / Bank Account Details</label>
+                        <input type="text" id="withdraw-method" class="form-input" placeholder="e.g. name@okaxis or GooglePay" required>
                     </div>
                     <div class="form-group">
-                        <label>Amount (₹)</label>
+                        <label>Withdrawal Amount (₹)</label>
                         <input type="number" id="withdraw-amt" class="form-input" placeholder="Enter amount to withdraw" required>
                     </div>
-                    <button type="submit" class="btn-submit">Request Payout</button>
+                    <button type="submit" class="btn-submit"><i class="fa-solid fa-paper-plane"></i> Submit Payout Request</button>
                 </form>
             </div>
         </section>
@@ -579,22 +684,24 @@
         <section id="transactions" class="page-view">
             <div class="card-box">
                 <div class="box-header">
-                    <h3>Transaction History</h3>
+                    <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--brand-purple);"></i> Transaction History</h3>
                 </div>
-                <ul class="transaction-list" id="full-transaction-list"></ul>
+                <ul class="referral-orders-list" id="full-transaction-list">
+                    <li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">Your withdrawal requests and credit history will appear here.</li>
+                </ul>
             </div>
         </section>
     </main>
 
-    <!-- BOTTOM NAVIGATION -->
+    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
         <a class="nav-item-bottom" href="index.html">
             <i class="fa-solid fa-house"></i>
             <span>Home</span>
         </a>
         <a class="nav-item-bottom active" onclick="switchTab('referral', this)">
-            <i class="fa-solid fa-user-plus"></i>
-            <span>Referral</span>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Creator Hub</span>
         </a>
         <a class="nav-item-bottom" onclick="switchTab('earnings', this)">
             <i class="fa-solid fa-chart-line"></i>
@@ -641,8 +748,8 @@
         }
 
         const userPhone = getUserPhoneNumber();
-        let activeUserId = userPhone || 'guest_user';
-        let partnerName = "User";
+        let activeUserId = userPhone || 'guest_creator';
+        let partnerName = "Creator Partner";
         let uniquePartnerId = activeUserId; 
 
         window.onload = function() {
@@ -651,7 +758,7 @@
 
         function verifyAndFetchPartnerDetails() {
             if (!userPhone) {
-                updateUIWithPartnerName("Partner");
+                updateUIWithPartnerName("Creator");
                 listenToWalletData();
                 return;
             }
@@ -757,7 +864,7 @@
             if (linkInput) {
                 linkInput.select();
                 navigator.clipboard.writeText(linkInput.value);
-                alert("Referral Link copied to clipboard!");
+                alert("Creator Referral Link copied to clipboard!");
             }
         }
 
@@ -765,7 +872,7 @@
             const linkInput = document.getElementById('referral-url');
             if (linkInput) {
                 const refUrl = linkInput.value;
-                const message = `Check out Cartprime! Shop using my link: ${refUrl}`;
+                const message = `Check out Cartprime! Shop top deals using my link: ${refUrl}`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
             }
         }
@@ -776,7 +883,7 @@
                 const refUrl = linkInput.value;
                 if (navigator.share) {
                     navigator.share({
-                        title: 'Cartprime Referral',
+                        title: 'Cartprime Creator Deal',
                         text: 'Shop on Cartprime using my link:',
                         url: refUrl,
                     }).catch(() => {});
@@ -793,7 +900,6 @@
             });
         }
 
-        // MAIN ORDERS-ൽ നിന്നും STATUS, RETURN POLICY SYNC ചെയ്യാനുള്ള ഫംഗ്ഷൻ
         function syncMainOrdersToReferralOrders() {
             const cleanRefCode = uniquePartnerId.toString().replace(/[.#$\[\]]/g, "_");
 
@@ -833,16 +939,13 @@
             });
         }
 
-        // --- REFERRAL SUCCESS CHECK LOGIC (FIXED DATE PARSING & BUG FIXES) ---
         function checkReferralSuccess(order) {
             const adminStatus = (order.status || '').toLowerCase();
 
-            // 1. Order status 'delivered' അല്ലെങ്കിൽ 'completed' ആയിരിക്കണം
             if (adminStatus !== 'delivered' && adminStatus !== 'completed') {
                 return false;
             }
 
-            // 2. Return Policy പരിശോധന
             let isReturnable = false;
             if (order.isReturnable !== undefined && order.isReturnable !== null) {
                 if (typeof order.isReturnable === 'boolean') {
@@ -853,24 +956,20 @@
             } else if (order.returnPolicy !== undefined) {
                 isReturnable = (String(order.returnPolicy).toLowerCase().includes('true') || String(order.returnPolicy).toLowerCase().includes('7 days'));
             } else {
-                isReturnable = true; // Default true
+                isReturnable = true;
             }
 
-            // CASE A: Return ഇല്ലാത്ത ഉൽപ്പന്നം (isReturnable === false) -> Delivered ആക്കിയാൽ ഉടൻ Success
             if (!isReturnable) {
                 return true;
             }
 
-            // CASE B: Return ഉള്ള ഉൽപ്പന്നം (isReturnable === true) -> Delivered ചെയ്ത തീയതിയിൽ നിന്ന് 7 ദിവസങ്ങൾ തികയണം
             let deliveredTimestamp = null;
 
-            // Timestamp or String format parsing
             if (order.deliveredAt && !isNaN(Number(order.deliveredAt))) {
                 deliveredTimestamp = Number(order.deliveredAt);
             } else if (order.deliveryTimestamp && !isNaN(Number(order.deliveryTimestamp))) {
                 deliveredTimestamp = Number(order.deliveryTimestamp);
             } else if (order.deliveryDate) {
-                // Parse "YYYY-MM-DD" or similar ISO date string safely
                 const rawDateStr = String(order.deliveryDate).replace(/Delivered by|on/gi, '').trim();
                 const parsed = Date.parse(rawDateStr);
                 if (!isNaN(parsed)) deliveredTimestamp = parsed;
@@ -883,7 +982,6 @@
                 const now = Date.now();
                 const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
                 
-                // 7 ദിവസം കഴിഞ്ഞിട്ടുണ്ടെങ്കിൽ മാത്രം True
                 if (now >= (deliveredTimestamp + sevenDaysInMs)) {
                     return true;
                 }
@@ -892,7 +990,6 @@
             return false;
         }
 
-        // LISTEN AND DISPLAY REFERRAL ORDERS
         function listenToReferralOrders() {
             const cleanRefCode = uniquePartnerId.toString().replace(/[.#$\[\]]/g, "_");
 
@@ -907,10 +1004,18 @@
                 let pendingTotal = 0;
                 let verifiedEarnings = 0;
 
+                const processedOrders = new Set();
                 const orderKeys = Object.keys(orders).reverse();
                 
                 orderKeys.forEach(key => {
                     const order = orders[key];
+                    const orderId = order.orderId || key;
+
+                    if (processedOrders.has(orderId)) {
+                        return;
+                    }
+                    processedOrders.add(orderId);
+
                     count++;
                     
                     let rawPrice = order.price || order.totalPrice || order.amount || "0";
@@ -939,23 +1044,17 @@
                         verifiedEarnings += commissionEarned;
 
                         if (!order.commissionCredited) {
-                            db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
-                                return (currentBalance || 0) + commissionEarned;
-                            });
-
                             db.ref(`referralOrders/${cleanRefCode}/${key}`).update({
                                 commissionCredited: true,
                                 referralStatus: 'Success'
+                            }).then(() => {
+                                db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
+                                    return (currentBalance || 0) + commissionEarned;
+                                });
                             });
                         }
                     } else {
                         pendingTotal += commissionEarned;
-                        
-                        if (order.referralStatus === 'Success' && !order.commissionCredited) {
-                            db.ref(`referralOrders/${cleanRefCode}/${key}`).update({
-                                referralStatus: 'Pending'
-                            });
-                        }
                     }
 
                     const customerName = order.customerName || order.userName || 'Customer';
@@ -987,7 +1086,7 @@
                                 <i class="fa-solid ${isReferralSuccess ? 'fa-circle-check' : 'fa-clock'}"></i>
                             </div>
                             <div class="t-details">
-                                <h4>${customerName} (Order #${order.orderId || key})</h4>
+                                <h4>${customerName} (Order #${orderId})</h4>
                                 <p>${statusText}</p>
                             </div>
                         </div>
@@ -1002,7 +1101,7 @@
                 });
 
                 if (count === 0) {
-                    list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No referred orders found for your account yet.</li>`;
+                    list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No creator orders tracked yet. Share your referral link to get started!</li>`;
                 }
 
                 document.querySelectorAll('.val-pending').forEach(el => el.innerText = pendingTotal.toFixed(2));
@@ -1040,11 +1139,11 @@
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     });
 
-                    alert("Withdrawal Request Submitted Successfully!");
+                    alert("Creator Payout Request Submitted Successfully!");
                     amtInput.value = '';
                     switchTab('referral', document.querySelectorAll('.nav-item-bottom')[1]);
                 } else {
-                    alert("Insufficient balance for withdrawal!");
+                    alert("Insufficient wallet balance for withdrawal!");
                 }
             });
         }
