@@ -1312,7 +1312,7 @@ window.updateStatus = async (path, s) => {
     }
 };
 
-/* ENHANCED PAYOUT REQUEST HANDLING LOGIC WITH RECURSIVE PARSING */
+/* REFINED PAYOUT REQUEST HANDLING LOGIC */
 onValue(ref(db, 'payoutRequests'), snap => {
     const list = document.getElementById('payoutRequestList');
     if (!list) return;
@@ -1328,6 +1328,7 @@ onValue(ref(db, 'payoutRequests'), snap => {
     function fetchPayouts(obj, path = "") {
         if (!obj || typeof obj !== 'object') return;
 
+        // Check if the current object level itself is a request
         if (obj.amount !== undefined || obj.upiId !== undefined || obj.paymentInfo !== undefined || obj.upi !== undefined || obj.withdrawAmount !== undefined || obj.details !== undefined) {
             payoutsMap[path] = obj;
             return;
@@ -1399,6 +1400,7 @@ window.updatePayoutStatus = async (requestPathKey, newStatus) => {
             updatedAt: new Date().toISOString()
         };
 
+        // Update exact path inside payoutRequests
         await update(ref(db, `payoutRequests/${requestPathKey}`), updateData);
 
         const snap = await get(ref(db, `payoutRequests/${requestPathKey}`));
