@@ -238,7 +238,42 @@ nav {
   100% { transform: rotate(360deg); }
 }
 
-/* --- Redesigned Trust Welcome Modal Styles --- */
+/* --- Redesigned Trust Welcome Modal Styles with Animation --- */
+.modal-overlay { 
+  display: none; 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  background: rgba(0,0,0,0.6); 
+  backdrop-filter: blur(4px);
+  z-index: 10000; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 15px; 
+  opacity: 0;
+  transition: opacity 0.3s ease;
+} 
+.modal-overlay.active {
+  opacity: 1;
+}
+.modal-card { 
+  background: var(--card-bg); 
+  color: var(--text-main); 
+  padding: 25px; 
+  border-radius: 20px; 
+  width: 100%; 
+  max-width: 400px; 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+  border: 1px solid var(--border); 
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+} 
+.modal-overlay.active .modal-card {
+  transform: translateY(0) scale(1);
+}
+
 .welcome-modal-header {
   display: flex;
   align-items: center;
@@ -588,30 +623,6 @@ nav {
   display: grid; 
   grid-template-columns: repeat(2, 1fr); 
   gap: 15px; 
-} 
-.modal-overlay { 
-  display: none; 
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-  width: 100%; 
-  height: 100%; 
-  background: rgba(0,0,0,0.6); 
-  backdrop-filter: blur(4px);
-  z-index: 10000; 
-  align-items: center; 
-  justify-content: center; 
-  padding: 15px; 
-} 
-.modal-card { 
-  background: var(--card-bg); 
-  color: var(--text-main); 
-  padding: 25px; 
-  border-radius: 20px; 
-  width: 100%; 
-  max-width: 400px; 
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-  border: 1px solid var(--border); 
 } 
 .modal-form { 
   display: flex; 
@@ -1438,6 +1449,21 @@ nav {
     return `CP-REF-${randomDigits}`;
   }
 
+  // Helper functions for animated modals
+  function openModal(modalElement) {
+    modalElement.style.display = 'flex';
+    setTimeout(() => {
+      modalElement.classList.add('active');
+    }, 10);
+  }
+
+  function closeModal(modalElement) {
+    modalElement.classList.remove('active');
+    setTimeout(() => {
+      modalElement.style.display = 'none';
+    }, 300);
+  }
+
   const profileChip = document.getElementById('profileChip');
   const navProfileAvatar = document.getElementById('navProfileAvatar');
   const navProfileName = document.getElementById('navProfileName');
@@ -1477,13 +1503,13 @@ nav {
       welcomeModalSub.textContent = "Update your details below.";
       welcomeSubmitBtn.textContent = "Save Changes";
       if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
-      welcomeModal.style.display = 'flex';
+      openModal(welcomeModal);
     });
   }
 
   if (closeWelcomeModal) {
     closeWelcomeModal.addEventListener('click', () => {
-      welcomeModal.style.display = 'none';
+      closeModal(welcomeModal);
       resetRegistrationForm();
     });
   }
@@ -1501,7 +1527,7 @@ nav {
   if (!storedUserPhone) {
     if (closeWelcomeModal) closeWelcomeModal.style.display = "none";
     resetRegistrationForm();
-    welcomeModal.style.display = 'flex';
+    openModal(welcomeModal);
   }
 
   if (welcomeForm) {
@@ -1527,7 +1553,7 @@ nav {
             localStorage.setItem('userName', existingName);
             localStorage.setItem('userPhone', phone);
 
-            welcomeModal.style.display = 'none';
+            closeModal(welcomeModal);
             updateHeaderProfileUI();
             showCustomAlert("Welcome Back!", `Successfully logged in as ${existingName}`, true);
             updateBadges(currentUser);
@@ -1560,7 +1586,7 @@ nav {
             phone: phone,
             joinedAt: Date.now()
           }).then(() => {
-            welcomeModal.style.display = 'none';
+            closeModal(welcomeModal);
             verifyLoadingBox.style.display = 'none';
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
@@ -1568,7 +1594,7 @@ nav {
             updateBadges(currentUser);
             resetRegistrationForm();
           }).catch(() => {
-            welcomeModal.style.display = 'none';
+            closeModal(welcomeModal);
             verifyLoadingBox.style.display = 'none';
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
@@ -1630,13 +1656,13 @@ nav {
 
   if (bottomContactBtn) {
     bottomContactBtn.addEventListener('click', () => {
-      contactModal.style.display = 'flex';
+      openModal(contactModal);
     });
   }
 
   if (closeContactModal) {
     closeContactModal.addEventListener('click', () => {
-      contactModal.style.display = 'none';
+      closeModal(contactModal);
     });
   }
 
@@ -1666,7 +1692,7 @@ nav {
   function openEarnRegistrationModal() {
     resetEarnForm();
     partnerPhone.value = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone') || "";
-    earnModal.style.display = 'flex';
+    openModal(earnModal);
   }
 
   function checkEarnPartnerStatus(phone) {
@@ -1680,7 +1706,7 @@ nav {
         if(partnerData.name) localStorage.setItem('partnerName', partnerData.name);
         if(partnerData.partnerId) localStorage.setItem('partnerId', partnerData.partnerId);
 
-        earnModal.style.display = 'none';
+        closeModal(earnModal);
         resetEarnForm();
 
         if (status === 'approved' || status === 'active') {
@@ -1705,7 +1731,7 @@ nav {
         partnerName.value = localStorage.getItem('userName') || "";
         earnSubmitBtn.textContent = "Submit Application";
         if(earnSubText) earnSubText.textContent = "You are eligible! Complete your profile details to register.";
-        earnModal.style.display = 'flex';
+        openModal(earnModal);
       }
     }).catch(() => {
       openEarnRegistrationModal();
@@ -1727,7 +1753,7 @@ nav {
 
   if (closeEarnModal) { 
     closeEarnModal.addEventListener('click', () => { 
-      earnModal.style.display = 'none'; 
+      closeModal(earnModal); 
       resetEarnForm();
     }); 
   } 
@@ -1760,7 +1786,7 @@ nav {
             localStorage.setItem('partnerPhone', phone);
             localStorage.setItem('partnerName', name);
             localStorage.setItem('partnerId', uniquePartnerId);
-            earnModal.style.display = 'none'; 
+            closeModal(earnModal); 
             resetEarnForm();
             showCustomAlert(
               "Application Submitted!", 
