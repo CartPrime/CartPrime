@@ -1198,21 +1198,22 @@ nav {
 <div id="userWelcomeModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;" id="welcomeModalTitle">Welcome to CartPrime</h3> 
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">Please enter your details to get started.</p> 
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">Enter your mobile number to continue.</p> 
     
     <form id="userWelcomeForm" class="modal-form"> 
-      <input type="text" id="userWelcomeName" class="modal-input" placeholder="Full Name" required> 
       <input type="tel" id="userWelcomePhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
+      <input type="text" id="userWelcomeName" class="modal-input" placeholder="Full Name" style="display: none;"> 
+      
       <div class="modal-btn-group"> 
         <button type="button" id="closeWelcomeModal" style="display:none; flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button>
-        <button type="submit" class="modal-btn-submit" id="welcomeSubmitBtn">Save & Continue</button> 
+        <button type="submit" class="modal-btn-submit" id="welcomeSubmitBtn">Continue</button> 
       </div> 
     </form> 
 
     <!-- Verification Loading Indicator -->
     <div id="verifyLoadingBox" class="verify-loading-box">
       <div class="spinner"></div>
-      <p style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin: 0;">Verifying Mobile Number...</p>
+      <p style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin: 0;">Checking Mobile Number...</p>
     </div>
   </div> 
 </div>
@@ -1223,12 +1224,13 @@ nav {
     <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Earn Money Partner</h3> 
     <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Submit your details for separate admin review and verification.</p> 
     <form id="earnForm" class="modal-form"> 
-      <input type="text" id="partnerName" class="modal-input" placeholder="Full Name" required> 
       <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
-      <input type="text" id="partnerUpi" class="modal-input" placeholder="UPI ID / GPay Number for Payouts" required> 
+      <input type="text" id="partnerName" class="modal-input" placeholder="Full Name" style="display: none;"> 
+      <input type="text" id="partnerUpi" class="modal-input" placeholder="UPI ID / GPay Number for Payouts" style="display: none;"> 
+      
       <div class="modal-btn-group"> 
         <button type="button" id="closeEarnModal" style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button> 
-        <button type="submit" class="modal-btn-submit">Submit Request</button> 
+        <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Continue</button> 
       </div> 
     </form> 
   </div> 
@@ -1408,10 +1410,15 @@ nav {
 
   const welcomeModal = document.getElementById('userWelcomeModal');
   const welcomeForm = document.getElementById('userWelcomeForm');
+  const userWelcomePhone = document.getElementById('userWelcomePhone');
+  const userWelcomeName = document.getElementById('userWelcomeName');
+  const welcomeSubmitBtn = document.getElementById('welcomeSubmitBtn');
   const verifyLoadingBox = document.getElementById('verifyLoadingBox');
   const closeWelcomeModal = document.getElementById('closeWelcomeModal');
   const welcomeModalTitle = document.getElementById('welcomeModalTitle');
   const welcomeModalSub = document.getElementById('welcomeModalSub');
+
+  let registrationStep = 1; // 1: Phone Check, 2: New User Name Entry
 
   function updateHeaderProfileUI() {
     const name = localStorage.getItem('userName') || "User";
@@ -1426,10 +1433,14 @@ nav {
 
   if (profileChip) {
     profileChip.addEventListener('click', () => {
-      document.getElementById('userWelcomeName').value = localStorage.getItem('userName') || "";
-      document.getElementById('userWelcomePhone').value = localStorage.getItem('userPhone') || "";
+      userWelcomePhone.value = localStorage.getItem('userPhone') || "";
+      userWelcomeName.value = localStorage.getItem('userName') || "";
+      userWelcomeName.style.display = 'block';
+      userWelcomePhone.style.display = 'block';
+      registrationStep = 2;
       welcomeModalTitle.textContent = "Edit Your Profile";
-      welcomeModalSub.textContent = "Update your name or phone number below.";
+      welcomeModalSub.textContent = "Update your details below.";
+      welcomeSubmitBtn.textContent = "Save Changes";
       if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
       welcomeModal.style.display = 'flex';
     });
@@ -1438,29 +1449,78 @@ nav {
   if (closeWelcomeModal) {
     closeWelcomeModal.addEventListener('click', () => {
       welcomeModal.style.display = 'none';
+      resetRegistrationForm();
     });
+  }
+
+  function resetRegistrationForm() {
+    registrationStep = 1;
+    userWelcomePhone.style.display = 'block';
+    userWelcomeName.style.display = 'none';
+    welcomeSubmitBtn.textContent = "Continue";
+    welcomeModalTitle.textContent = "Welcome to CartPrime";
+    welcomeModalSub.textContent = "Enter your mobile number to continue.";
   }
 
   const storedUserPhone = localStorage.getItem('userPhone');
   if (!storedUserPhone) {
     if (closeWelcomeModal) closeWelcomeModal.style.display = "none";
+    resetRegistrationForm();
     welcomeModal.style.display = 'flex';
   }
 
   if (welcomeForm) {
     welcomeForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const name = document.getElementById('userWelcomeName').value.trim();
-      const phone = document.getElementById('userWelcomePhone').value.trim();
+      const phone = userWelcomePhone.value.trim();
 
-      if (name && phone) {
+      if (registrationStep === 1) {
+        if (!phone) return;
+
         welcomeForm.style.display = 'none';
         verifyLoadingBox.style.display = 'flex';
 
-        setTimeout(() => {
+        const userRef = ref(db, `users/${phone}`);
+        get(userRef).then((snapshot) => {
+          verifyLoadingBox.style.display = 'none';
+          welcomeForm.style.display = 'flex';
+
+          if (snapshot.exists()) {
+            // Already registered! Load existing name directly
+            const userData = snapshot.val();
+            const existingName = userData.name || "User";
+
+            localStorage.setItem('userName', existingName);
+            localStorage.setItem('userPhone', phone);
+
+            welcomeModal.style.display = 'none';
+            updateHeaderProfileUI();
+            showCustomAlert("Welcome Back!", `Successfully logged in as ${existingName}`, true);
+            updateBadges(currentUser);
+            resetRegistrationForm();
+          } else {
+            // New user! Step 2: Show name input
+            registrationStep = 2;
+            userWelcomeName.style.display = 'block';
+            welcomeModalTitle.textContent = "Create Your Profile";
+            welcomeModalSub.textContent = "Number not found. Please enter your full name.";
+            welcomeSubmitBtn.textContent = "Save Profile";
+          }
+        }).catch(() => {
+          verifyLoadingBox.style.display = 'none';
+          welcomeForm.style.display = 'flex';
+          showCustomAlert("Error", "Could not verify details. Try again.", false);
+        });
+
+      } else if (registrationStep === 2) {
+        const name = userWelcomeName.value.trim();
+        if (name && phone) {
+          welcomeForm.style.display = 'none';
+          verifyLoadingBox.style.display = 'flex';
+
           localStorage.setItem('userName', name);
           localStorage.setItem('userPhone', phone);
-          
+
           const userRef = ref(db, `users/${phone}`);
           set(userRef, {
             name: name,
@@ -1471,8 +1531,9 @@ nav {
             verifyLoadingBox.style.display = 'none';
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
-            showCustomAlert("Profile Saved!", "Your details have been saved successfully.", true);
+            showCustomAlert("Profile Saved!", "Welcome to CartPrime!", true);
             updateBadges(currentUser);
+            resetRegistrationForm();
           }).catch(() => {
             welcomeModal.style.display = 'none';
             verifyLoadingBox.style.display = 'none';
@@ -1480,8 +1541,9 @@ nav {
             updateHeaderProfileUI();
             showCustomAlert("Profile Saved!", "Welcome to CartPrime!", true);
             updateBadges(currentUser);
+            resetRegistrationForm();
           });
-        }, 1200);
+        }
       }
     });
   }
@@ -1554,29 +1616,43 @@ nav {
   const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
   const earnForm = document.getElementById('earnForm'); 
+  const partnerPhone = document.getElementById('partnerPhone');
+  const partnerName = document.getElementById('partnerName');
+  const partnerUpi = document.getElementById('partnerUpi');
+  const earnSubmitBtn = document.getElementById('earnSubmitBtn');
+
+  let earnStep = 1;
+
+  function resetEarnForm() {
+    earnStep = 1;
+    partnerPhone.style.display = 'block';
+    partnerName.style.display = 'none';
+    partnerUpi.style.display = 'none';
+    earnSubmitBtn.textContent = "Continue";
+    if (earnForm) earnForm.reset();
+  }
 
   function openEarnRegistrationModal() {
-    document.getElementById('partnerName').value = localStorage.getItem('userName') || "";
-    document.getElementById('partnerPhone').value = localStorage.getItem('userPhone') || "";
+    resetEarnForm();
+    partnerPhone.value = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone') || "";
     earnModal.style.display = 'flex';
   }
 
-  function handleEarnClick() {
-    const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-    
-    if (!phone) {
-      openEarnRegistrationModal();
-      return;
-    }
-
+  function checkEarnPartnerStatus(phone) {
     const partnerRef = ref(db, `earn_partners/${phone}`);
     get(partnerRef).then((snapshot) => {
       if (snapshot.exists()) {
         const partnerData = snapshot.val();
         const status = (partnerData.status || "").toLowerCase();
 
+        localStorage.setItem('partnerPhone', phone);
+        if(partnerData.name) localStorage.setItem('partnerName', partnerData.name);
+        if(partnerData.partnerId) localStorage.setItem('partnerId', partnerData.partnerId);
+
+        earnModal.style.display = 'none';
+        resetEarnForm();
+
         if (status === 'approved' || status === 'active') {
-          // If approved by admin, redirect directly to wallet.html
           window.location.href = '/wallet.html';
         } else if (status === 'pending' || status === 'pending verification') {
           showCustomAlert(
@@ -1592,11 +1668,26 @@ nav {
           );
         }
       } else {
-        openEarnRegistrationModal();
+        // Not registered as Earn Partner yet, ask for Name and UPI
+        earnStep = 2;
+        partnerName.style.display = 'block';
+        partnerUpi.style.display = 'block';
+        partnerName.value = localStorage.getItem('userName') || "";
+        earnSubmitBtn.textContent = "Submit Request";
       }
     }).catch(() => {
       openEarnRegistrationModal();
     });
+  }
+
+  function handleEarnClick() {
+    const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    
+    if (!phone) {
+      openEarnRegistrationModal();
+    } else {
+      checkEarnPartnerStatus(phone);
+    }
   }
   
   if (bottomEarnBtn) { 
@@ -1606,68 +1697,54 @@ nav {
   if (closeEarnModal) { 
     closeEarnModal.addEventListener('click', () => { 
       earnModal.style.display = 'none'; 
+      resetEarnForm();
     }); 
   } 
 
   if (earnForm) { 
     earnForm.addEventListener('submit', (e) => { 
       e.preventDefault(); 
-      const name = document.getElementById('partnerName').value.trim(); 
-      const phone = document.getElementById('partnerPhone').value.trim(); 
-      const upi = document.getElementById('partnerUpi').value.trim(); 
+      const phone = partnerPhone.value.trim(); 
 
-      if (name && phone && upi) { 
-        const partnerRef = ref(db, `earn_partners/${phone}`); 
-        get(partnerRef).then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            const status = (data.status || "").toLowerCase();
-            
-            if (status === 'approved' || status === 'active') {
-              localStorage.setItem('partnerPhone', phone);
-              localStorage.setItem('partnerName', name);
-              localStorage.setItem('partnerId', data.partnerId);
-              earnModal.style.display = 'none';
-              window.location.href = '/wallet.html';
-            } else {
-              showCustomAlert(
-                "Application Already Submitted", 
-                `Your Earn Partner registration is undergoing separate verification by our team. Partner ID: ${data.partnerId || 'N/A'}.`, 
-                true
-              );
-              earnModal.style.display = 'none';
-            }
-          } else {
-            const uniquePartnerId = generateUniquePartnerId();
+      if (earnStep === 1) {
+        if (phone) {
+          checkEarnPartnerStatus(phone);
+        }
+      } else if (earnStep === 2) {
+        const name = partnerName.value.trim(); 
+        const upi = partnerUpi.value.trim(); 
 
-            set(partnerRef, { 
-              partnerId: uniquePartnerId,
-              name: name, 
-              phone: phone, 
-              upi: upi, 
-              status: "Pending Verification", 
-              timestamp: Date.now() 
-            }).then(() => { 
-              localStorage.setItem('partnerPhone', phone);
-              localStorage.setItem('partnerName', name);
-              localStorage.setItem('partnerId', uniquePartnerId);
-              earnForm.reset(); 
-              earnModal.style.display = 'none'; 
-              showCustomAlert(
-                "Request Received!", 
-                `Your registration was submitted successfully to earn_partners for separate verification! Partner ID: ${uniquePartnerId}. Access to wallet.html will be granted after admin approval.`, 
-                true
-              ); 
-            }).catch((err) => { 
-              showCustomAlert(
-                "Submission Failed", 
-                "Error submitting request: " + err.message, 
-                false
-              ); 
-            }); 
-          }
-        });
-      } 
+        if (name && phone && upi) { 
+          const partnerRef = ref(db, `earn_partners/${phone}`); 
+          const uniquePartnerId = generateUniquePartnerId();
+
+          set(partnerRef, { 
+            partnerId: uniquePartnerId,
+            name: name, 
+            phone: phone, 
+            upi: upi, 
+            status: "Pending Verification", 
+            timestamp: Date.now() 
+          }).then(() => { 
+            localStorage.setItem('partnerPhone', phone);
+            localStorage.setItem('partnerName', name);
+            localStorage.setItem('partnerId', uniquePartnerId);
+            earnModal.style.display = 'none'; 
+            resetEarnForm();
+            showCustomAlert(
+              "Request Received!", 
+              `Your registration was submitted successfully for verification! Partner ID: ${uniquePartnerId}. Access to wallet.html will be granted after admin approval.`, 
+              true
+            ); 
+          }).catch((err) => { 
+            showCustomAlert(
+              "Submission Failed", 
+              "Error submitting request: " + err.message, 
+              false
+            ); 
+          }); 
+        } 
+      }
     }); 
   } 
 
