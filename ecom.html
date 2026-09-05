@@ -1312,6 +1312,7 @@ window.updateStatus = async (path, s) => {
     }
 };
 
+/* PAYOUT REQUEST HANDLING LOGIC */
 onValue(ref(db, 'payoutRequests'), snap => {
     const list = document.getElementById('payoutRequestList');
     if (!list) return;
@@ -1370,7 +1371,7 @@ onValue(ref(db, 'payoutRequests'), snap => {
 
     snap.forEach(child => {
         const val = child.val();
-        if (val.amount !== undefined || val.upiId !== undefined || val.paymentInfo !== undefined || val.upi !== undefined || val.withdrawAmount !== undefined || val.details !== undefined) {
+        if (val && (val.amount !== undefined || val.upiId !== undefined || val.paymentInfo !== undefined || val.upi !== undefined || val.withdrawAmount !== undefined || val.details !== undefined)) {
             renderPayoutRow(val, child.key);
         } else if (typeof val === 'object' && val !== null) {
             child.forEach(subChild => {
@@ -1389,10 +1390,31 @@ onValue(ref(db, 'payoutRequests'), snap => {
 
 window.updatePayoutStatus = async (requestPathKey, newStatus) => {
     try {
-        await update(ref(db, `payoutRequests/${requestPathKey}`), { 
+        const updateData = { 
             status: newStatus,
             updatedAt: new Date().toISOString()
-        });
+        };
+
+        await update(ref(db, `payoutRequests/${requestPathKey}`), updateData);
+
+        // If marked as Paid, deduct user's balance if required
+        const snap = await get(ref(db, `payoutRequests/${requestPathKey}`));
+        if (snap.exists()) {
+            const reqData = snap.val();
+            const userId = reqData.userId || reqData.uid;
+            const amount = parseFloat(reqData.amount || reqData.withdrawAmount || 0);
+
+            if (newStatus === "Paid" && userId && amount > 0) {
+                const walletRef = ref(db, `wallets/${userId}`);
+                const walletSnap = await get(walletRef);
+                if (walletSnap.exists()) {
+                    let currentBal = parseFloat(walletSnap.val().balance || 0);
+                    if (currentBal >= amount) {
+                        await update(walletRef, { balance: currentBal - amount });
+                    }
+                }
+            }
+        }
 
         Swal.fire({
             toast: true,
