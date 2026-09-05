@@ -1339,7 +1339,7 @@ onValue(ref(db, 'payoutRequests'), snap => {
 /* UPDATE PAYOUT REQUEST STATUS FUNCTION */
 window.updatePayoutStatus = async (requestId, newStatus) => {
     try {
-        await update(ref(db, `payoutRequests/${requestId}`), { 
+        await update(ref(db, `payout_requests/${requestId}`), { 
             status: newStatus,
             updatedAt: new Date().toISOString()
         });
