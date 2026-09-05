@@ -302,20 +302,10 @@
         let currentUserId = null;
         let currentUserEmail = null; 
 
-        // Helper function to generate estimated delivery date range (5 to 7 days from today)
-        const getEstimatedDeliveryDateStr = () => {
+        // Delivery Date set to Order Date (Today)
+        const getDeliveryDateStr = () => {
             const today = new Date();
-            const startDate = new Date(today);
-            startDate.setDate(today.getDate() + 5);
-            
-            const endDate = new Date(today);
-            endDate.setDate(today.getDate() + 7);
-            
-            const options = { month: 'short', day: 'numeric' };
-            const startStr = startDate.toLocaleDateString('en-US', options);
-            const endStr = endDate.toLocaleDateString('en-US', options);
-            
-            return `Delivered by ${startStr} - ${endStr}`;
+            return today.toISOString().split('T')[0]; // Returns YYYY-MM-DD
         };
 
         // Helper function for cleaning price string to safe Float number
@@ -577,7 +567,7 @@
                     text: 'Please enter a valid 6-digit pincode.',
                     icon: 'warning',
                     confirmButtonText: 'Ok',
-                    customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
+                    customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-cancel' }
                 });
             }
 
@@ -591,14 +581,14 @@
                     const orderId = Date.now(); 
                     const now = new Date();
                     
-                    // Fetch Referral Info (URL Parameter > Order Object > LocalStorage)
+                    // Fetch Referral Info
                     const refUser = refFromUrl || orderInfo.referredBy || localStorage.getItem('referredBy') || null;
                     const commAmt = commFromUrl || orderInfo.commissionAmount || localStorage.getItem('commissionAmount') || 0;
 
-                    // Calculate estimated delivery date string
-                    const estimatedDeliveryText = getEstimatedDeliveryDateStr();
+                    // Set Delivery Date as Order Date (Today)
+                    const actualDeliveryDate = getDeliveryDateStr();
 
-                    // Determine overall return policy status
+                    // Determine return policy status
                     const isOrderReturnable = orderInfo.return === true || orderInfo.return === 'true' || orderInfo.returnPolicy === true || orderInfo.isReturnable === true || false;
 
                     let finalOrder = { 
@@ -616,10 +606,10 @@
                         orderId: orderId,
                         referredBy: refUser,
                         commissionAmount: parseFloat(commAmt) || 0,
-                        orderLink: window.location.href, // Checkout URL field
+                        orderLink: window.location.href,
                         returnPolicy: isOrderReturnable,
                         isReturnable: isOrderReturnable,
-                        deliveryDate: estimatedDeliveryText
+                        deliveryDate: actualDeliveryDate
                     };
 
                     if (orderInfo.orderType === "Cart" && orderInfo.items) {
@@ -641,7 +631,7 @@
                                 return: itemReturnStatus,
                                 returnPolicy: itemReturnStatus,
                                 isReturnable: itemReturnStatus,
-                                deliveryDate: estimatedDeliveryText
+                                deliveryDate: actualDeliveryDate
                             };
                         });
                         
@@ -667,26 +657,28 @@
                             return: isOrderReturnable,
                             returnPolicy: isOrderReturnable,
                             isReturnable: isOrderReturnable,
-                            deliveryDate: estimatedDeliveryText
+                            deliveryDate: actualDeliveryDate
                         }];
                     }
 
-                    // 1. Save primary order under customer's phone number
+                    // 1. Save primary order
                     const primaryOrderRef = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
 
-                    // 2. Save referral order details under `referralOrders/{referralCode}/{orderId}`
+                    // 2. Save referral order with 7-days auto status logic
                     let referralOrderRef = Promise.resolve();
                     if (refUser) {
                         const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
                         
-                        // 7 Days Return Period Limit Date Calculation
+                        // 7 Days Limit Date Calculation
                         const returnExpiryDate = new Date();
                         returnExpiryDate.setDate(now.getDate() + 7);
 
-                        // Referral Specific Data with Return Policy Details
+                        // Automatic status logic: 7 days kazhinjal 'Completed', allengil 'Pending'
+                        const initialReferralStatus = now >= returnExpiryDate ? "Completed" : "Pending";
+
                         const referralOrderData = {
                             ...finalOrder,
-                            referralStatus: "Pending", // Initial status is set to Pending
+                            referralStatus: initialReferralStatus, 
                             returnPolicy: isOrderReturnable ? "7 Days Return Policy" : "No Return",
                             returnPeriodDays: 7,
                             returnEligibleUntil: returnExpiryDate.toISOString(),
@@ -704,7 +696,6 @@
 
                         if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
                         
-                        // Clear active temporary order data
                         localStorage.removeItem('pendingOrder');
                         localStorage.removeItem('referredBy');
                         localStorage.removeItem('commissionAmount');
