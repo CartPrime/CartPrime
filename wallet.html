@@ -792,7 +792,7 @@
             });
         }
 
-        // --- CHECK COMPLETION ELIGIBILITY BASED ON 'isReturnable' FIELD ---
+        // --- COMPLETION CHECK BASED ON STRICT RETURN RULES ---
         function checkCompletionEligibility(order) {
             const orderStatus = (order.status || '').toLowerCase();
             
@@ -803,19 +803,19 @@
 
             // 2. MUST BE DELIVERED FIRST
             if (orderStatus !== 'delivered') {
-                return false; // Order is pending dispatch/shipping
+                return false; // Order is pending dispatch/shipping/transit
             }
 
             // 3. Check Return Policy via 'isReturnable'
             // Default to false if isReturnable field is undefined or null
             const isReturnable = (order.isReturnable !== undefined) ? order.isReturnable : false;
 
-            // CASE A: Product is NOT Returnable (isReturnable === false) -> Delivered ആയ ഉടൻ Completed ആകും.
+            // CASE A: Product is NOT Returnable (isReturnable === false) -> Delivered ആയാൽ ഉടൻ Completed ആകാം
             if (!isReturnable) {
                 return true;
             }
 
-            // CASE B: Product IS Returnable (isReturnable === true) -> 7 Days Return Period ചെക്ക് ചെയ്യുന്നു.
+            // CASE B: Product IS Returnable (isReturnable === true) -> 7 Days Return Period നിർബന്ധമായി കഴിഞ്ഞിരിക്കണം
             let deliveredTimestamp = null;
 
             if (order.deliveredAt || order.deliveryTimestamp) {
@@ -839,11 +839,11 @@
                 const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
                 
                 if (now >= (deliveredTimestamp + sevenDaysInMs)) {
-                    return true; // Delivered AND 7 days return period passed
+                    return true; // Delivered + 7 days completed
                 }
             }
 
-            return false; // Delivered, but still inside 7-day return window
+            return false; // Delivered, but inside active 7-day return period
         }
 
         function listenToReferralOrders() {
@@ -877,10 +877,10 @@
                     const orderStatus = (order.status || '').toLowerCase();
                     const isDelivered = (orderStatus === 'delivered');
                     
-                    // Direct check for isReturnable field
+                    // Check Returnable Status
                     const isReturnable = (order.isReturnable !== undefined) ? order.isReturnable : false;
 
-                    // Verify if Eligible for Success/Completion
+                    // Verify if Eligible for Completed State
                     const isEligibleForSuccess = checkCompletionEligibility(order);
 
                     if (isEligibleForSuccess) {
@@ -905,6 +905,8 @@
                     if (!isEligibleForSuccess) {
                         if (isDelivered && isReturnable) {
                             statusText = 'Delivered • Return Period Active (7 Days)';
+                        } else if (isDelivered && !isReturnable) {
+                            statusText = 'Delivered • Processing Final Status';
                         } else {
                             statusText = `Pending • ${order.status || 'In Transit'}`;
                         }
