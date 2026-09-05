@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CartPrime Help Center | Support</title>
+    <title>CartPrime Help Center | Luxury Support</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath d='M320 64C178.6 64 64 178.6 64 320S178.6 576 320 576 576 461.4 576 320 461.4 64 320 64zM320 144a72 72 0 1 1 0 144 72 72 0 0 1 0-144zm0 384c-79.5 0-144-64.5-144-144 0-8.8 7.2-16 16-16h256c8.8 0 16 7.2 16 16 0 79.5-64.5 144-144 144z'/%3E%3C/svg%3E">
     <style>
@@ -109,11 +109,55 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         .modal-header h3 { font-size: 1.3rem; font-weight: 700; }
 
-        .alert-modal-card { text-align: center; max-width: 420px; padding: 36px 28px; }
-        .alert-icon-box { font-size: 3rem; margin-bottom: 14px; }
-        .alert-title { font-size: 1.35rem; margin-bottom: 10px; font-weight: 700; }
-        .alert-message { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; white-space: pre-line; }
-        .alert-close-btn { width: 100%; padding: 13px; background: var(--gradient-primary); color: #09090b; border: none; border-radius: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(234, 179, 8, 0.4); }
+        /* Modernized Luxurious Alert Modal Styling */
+        .alert-modal-card { 
+            text-align: center; 
+            max-width: 400px; 
+            padding: 38px 28px; 
+            background: rgba(18, 18, 21, 0.95); 
+            border: 1px solid var(--border); 
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(234, 179, 8, 0.15); 
+            border-radius: 28px;
+        }
+        .alert-icon-box { 
+            font-size: 3rem; 
+            margin-bottom: 14px; 
+            filter: drop-shadow(0 4px 10px rgba(234, 179, 8, 0.3));
+        }
+        .alert-title { 
+            font-size: 1.4rem; 
+            margin-bottom: 10px; 
+            font-weight: 800; 
+            letter-spacing: -0.5px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .alert-message { 
+            font-size: 0.95rem; 
+            color: var(--text-muted); 
+            margin-bottom: 28px; 
+            line-height: 1.6; 
+            white-space: pre-line; 
+        }
+        .alert-close-btn { 
+            width: 100%; 
+            padding: 13px; 
+            background: var(--gradient-primary); 
+            color: #09090b; 
+            border: none; 
+            border-radius: 14px; 
+            font-size: 1rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            box-shadow: 0 10px 20px -5px rgba(234, 179, 8, 0.4); 
+            transition: all 0.25s ease;
+        }
+        .alert-close-btn:hover {
+            opacity: 0.92;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(234, 179, 8, 0.6);
+        }
 
         .history-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-top: 14px; text-align: left; box-shadow: var(--card-shadow); }
         .status-badge { display: inline-block; padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
@@ -300,7 +344,7 @@
 <div class="chatbot-container">
     <div class="chat-header">
         <span>Support Assistant 🤖</span>
-        <span style="cursor:pointer; font-size:1.1rem;" onclick="document.body.classList.remove('show-chatbot')">✕</span>
+        <span style="cursor:pointer; font-size:1.1rem;" onclick="closeChatbot()">✕</span>
     </div>
     <ul class="chatbox" id="chatbox">
         <li class="chat incoming">
@@ -387,9 +431,9 @@
         <svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
         <span>My Complaints</span>
     </div>
-    <div class="bottom-nav-item" onclick="document.body.classList.toggle('show-chatbot')">
+    <div class="bottom-nav-item" onclick="toggleChatbot()">
         <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-        <span>'24/7'Chat Support</span>
+        <span>24/7 Chat Support</span>
     </div>
 </nav>
 
@@ -441,6 +485,29 @@
     window.closeHistoryModal = function() {
         document.getElementById('complaintHistoryModal').classList.remove('active');
     };
+
+    window.toggleChatbot = function() {
+        document.body.classList.toggle('show-chatbot');
+    };
+
+    window.closeChatbot = function() {
+        document.body.classList.remove('show-chatbot');
+        resetChatbotState();
+    };
+
+    function resetChatbotState() {
+        awaitingPhone = false;
+        awaitingReturnOrderId = false;
+        awaitingComplaintPhone = false;
+        currentCustomerPhone = "";
+        const chatbox = document.getElementById('chatbox');
+        chatbox.innerHTML = `
+            <li class="chat incoming">
+                <p>Hi there! 👋 Type "Hi" to explore our luxury support options or ask any question!</p>
+            </li>
+        `;
+        document.getElementById('chatInput').value = "";
+    }
 
     window.fetchModalComplaintHistory = async function() {
         const phone = document.getElementById('modalSearchPhone').value.trim();
