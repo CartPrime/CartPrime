@@ -792,7 +792,7 @@
             });
         }
 
-        // --- UPDATED CONDITIONAL COMPLETION LOGIC BASED ON RETURN AVAILABILITY ---
+        // --- CHECK COMPLETION ELIGIBILITY BASED ON 'isReturnable' FIELD ---
         function checkCompletionEligibility(order) {
             const orderStatus = (order.status || '').toLowerCase();
             
@@ -806,17 +806,16 @@
                 return false; // Order is pending dispatch/shipping
             }
 
-            // 3. Check Return Policy for Product
-            // Check if return policy is explicitly set to false
-            const isReturnAvailable = (order.returnAvailable !== undefined) ? order.returnAvailable : 
-                                      ((order.returnAllowed !== undefined) ? order.returnAllowed : true);
+            // 3. Check Return Policy via 'isReturnable'
+            // Default to false if isReturnable field is undefined or null
+            const isReturnable = (order.isReturnable !== undefined) ? order.isReturnable : false;
 
-            // CASE A: Return is FALSE -> Delivered ആയാൽ ഉടൻ തന്നെ Completed ആകാം.
-            if (!isReturnAvailable) {
+            // CASE A: Product is NOT Returnable (isReturnable === false) -> Delivered ആയ ഉടൻ Completed ആകും.
+            if (!isReturnable) {
                 return true;
             }
 
-            // CASE B: Return is TRUE -> 7 Days Return Period ചെക്ക് ചെയ്യുന്നു.
+            // CASE B: Product IS Returnable (isReturnable === true) -> 7 Days Return Period ചെക്ക് ചെയ്യുന്നു.
             let deliveredTimestamp = null;
 
             if (order.deliveredAt || order.deliveryTimestamp) {
@@ -844,7 +843,7 @@
                 }
             }
 
-            return false; // Delivered but still inside 7-day return period for returnable item
+            return false; // Delivered, but still inside 7-day return window
         }
 
         function listenToReferralOrders() {
@@ -878,11 +877,10 @@
                     const orderStatus = (order.status || '').toLowerCase();
                     const isDelivered = (orderStatus === 'delivered');
                     
-                    // Check Return policy availability
-                    const isReturnAvailable = (order.returnAvailable !== undefined) ? order.returnAvailable : 
-                                              ((order.returnAllowed !== undefined) ? order.returnAllowed : true);
+                    // Direct check for isReturnable field
+                    const isReturnable = (order.isReturnable !== undefined) ? order.isReturnable : false;
 
-                    // Verify if Delivered AND Eligibility (No Return OR 7 Days passed) met
+                    // Verify if Eligible for Success/Completion
                     const isEligibleForSuccess = checkCompletionEligibility(order);
 
                     if (isEligibleForSuccess) {
@@ -905,7 +903,7 @@
                     
                     let statusText = 'Pending • Processing Order';
                     if (!isEligibleForSuccess) {
-                        if (isDelivered && isReturnAvailable) {
+                        if (isDelivered && isReturnable) {
                             statusText = 'Delivered • Return Period Active (7 Days)';
                         } else {
                             statusText = `Pending • ${order.status || 'In Transit'}`;
