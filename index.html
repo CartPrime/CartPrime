@@ -296,6 +296,30 @@ nav {
   margin: 0; 
 } 
 
+/* Side-Slide & Blink Keyframe Animations */
+@keyframes slideInLeft { 
+  0% { opacity: 0; transform: translateX(-50px); } 
+  50% { opacity: 0.6; }
+  100% { opacity: 1; transform: translateX(0); } 
+} 
+@keyframes slideInRight { 
+  0% { opacity: 0; transform: translateX(50px); } 
+  50% { opacity: 0.6; }
+  100% { opacity: 1; transform: translateX(0); } 
+} 
+@keyframes sideBlinkSlideLeft {
+  0% { opacity: 0; transform: translateX(-40px); }
+  30% { opacity: 0.3; }
+  60% { opacity: 0.8; }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes sideBlinkSlideRight {
+  0% { opacity: 0; transform: translateX(40px); }
+  30% { opacity: 0.3; }
+  60% { opacity: 0.8; }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
 /* Hero & Section Animations */
 .hero { 
   padding: 30px 6% 10px; 
@@ -311,13 +335,13 @@ nav {
   letter-spacing: -1.5px; 
   line-height: 1.1; 
   color: var(--text-main); 
-  animation: slideInLeft 0.7s ease-out forwards;
+  animation: sideBlinkSlideLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 } 
 .hero-text p { 
   color: var(--text-muted); 
   margin-top: 8px; 
   font-size: 0.95rem; 
-  animation: slideInLeft 0.8s ease-out forwards;
+  animation: sideBlinkSlideLeft 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 } 
 .trust-stats { 
   display: flex; 
@@ -327,7 +351,7 @@ nav {
   padding: 12px 20px; 
   border-radius: 16px; 
   border: 1px solid var(--border); 
-  animation: slideInRight 0.8s ease-out forwards;
+  animation: sideBlinkSlideRight 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 } 
 .stat-item { 
   display: flex; 
@@ -427,7 +451,7 @@ nav {
   align-items: center; 
   justify-content: center; 
   min-height: 40px; 
-  animation: slideInRight 0.6s ease-out forwards;
+  animation: sideBlinkSlideRight 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 } 
 .category-btn:hover, .category-btn.active { 
   background: var(--primary); 
@@ -671,16 +695,6 @@ nav {
   margin-top: 8px;
 }
 
-/* Side-Slide Keyframe Animations */
-@keyframes slideInLeft { 
-  0% { opacity: 0; transform: translateX(-40px); } 
-  100% { opacity: 1; transform: translateX(0); } 
-} 
-@keyframes slideInRight { 
-  0% { opacity: 0; transform: translateX(40px); } 
-  100% { opacity: 1; transform: translateX(0); } 
-} 
-
 .card { 
   background: var(--card-bg); 
   border-radius: 20px; 
@@ -696,10 +710,10 @@ nav {
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease; 
 } 
 .card.slide-left {
-  animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: sideBlinkSlideLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .card.slide-right {
-  animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: sideBlinkSlideRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .card:hover { 
   transform: translateY(-8px); 
@@ -996,7 +1010,7 @@ nav {
 }
 
 /* Mobile Responsiveness Improvements */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   nav {
     padding: 10px 4%;
     gap: 10px;
@@ -1007,9 +1021,8 @@ nav {
     max-width: 100%;
     margin-top: 4px;
   }
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+  .hero {
+    padding: 20px 4% 10px;
   }
   .hero-text h1 {
     font-size: 1.8rem;
@@ -1017,6 +1030,44 @@ nav {
   .trust-stats {
     width: 100%;
     justify-content: space-between;
+  }
+  .container {
+    padding: 10px 4% 40px;
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .image-box {
+    height: 140px;
+  }
+  .banner-item {
+    flex: 0 0 100%;
+  }
+}
+@media (max-width: 480px) {
+  .hero-text h1 {
+    font-size: 1.5rem;
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .card {
+    padding: 8px;
+  }
+  .image-box {
+    height: 120px;
+  }
+  .card h3 {
+    font-size: 0.8rem;
+  }
+  .price {
+    font-size: 0.9rem;
+  }
+  .buy-btn {
+    padding: 8px;
+    font-size: 0.78rem;
   }
 }
 </style> 
@@ -1511,7 +1562,7 @@ nav {
       if (p.showOnHome === false) return; 
       const card = document.createElement('div'); 
       
-      // Alternating Side-Slide Animation Effect for Grid Items
+      // Alternating Side-Slide Blink Animation Effect for Grid Items
       const animClass = index % 2 === 0 ? 'slide-left' : 'slide-right';
       card.className = `card ${animClass}`; 
       
