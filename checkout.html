@@ -286,30 +286,27 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // --- UPDATED REFERRAL STATUS CALCULATOR LOGIC ---
+        // --- REFERRAL STATUS CALCULATOR LOGIC ---
         window.getCalculatedReferralStatus = function(order) {
             if (!order) return "Pending";
 
-            // If manual override exists (e.g., Cancelled / Refunded)
-            if (order.referralStatus && (order.referralStatus === "Cancelled" || order.referralStatus === "Refunded")) {
-                return order.referralStatus;
-            }
+            const orderStatus = (order.status || "").toLowerCase();
 
-            // Order Status Delivered aakatha samayathu status "Pending" aayirikkum
-            if (order.status !== "Delivered") {
+            // 1. Order Delivered ആകുന്നതിന് മുൻപ് എപ്പോഴും Status 'Pending' ആയിരിക്കും
+            if (orderStatus !== "delivered" && orderStatus !== "completed") {
                 return "Pending";
             }
 
-            // Check if return policy exists
+            // 2. റിട്ടേൺ പോളിസി പരിശോധന
             const hasReturn = order.isReturnable === true || order.returnPolicy === true || order.returnPolicy === "7 Days Return Policy";
 
-            // RULE 1: Return policy ILLATHA product -> Delivered aakubol "Completed" aakum
-            if (!hasReturn) {
+            // Case A: റിട്ടേൺ പോളിസി ഇല്ലെങ്കിൽ Delivered ആകുമ്പോൾ Completed ആക്കാം (അഡ്മിൻ മാനുവലായി Completed ആക്കുകയോ സിസ്റ്റം വാലിഡേറ്റ് ചെയ്യുകയോ ചെയ്യാം)
+            if (!hasReturn && orderStatus === "completed") {
                 return "Completed";
             }
 
-            // RULE 2: Return policy ULLA product -> Delivered aayaalum return period kazhiyunna date aayale "Completed" aaku
-            if (order.returnEligibleUntil) {
+            // Case B: റിട്ടേൺ പോളിസി ഉണ്ടെങ്കിൽ 7 ദിവസത്തെ എക്സ്പയറി ഡേറ്റ് കഴിഞ്ഞാൽ മാത്രം Completed ആകും
+            if (hasReturn && order.returnEligibleUntil) {
                 const now = new Date();
                 const expiryDate = new Date(order.returnEligibleUntil);
                 if (now >= expiryDate) {
@@ -317,10 +314,11 @@
                 }
             }
 
-            return "Pending";
+            // Delivered ആയെങ്കിലും റിട്ടേൺ വിൻഡോ ആക്ടീവ് ആണെങ്കിൽ 'Delivered' അല്ലെങ്കിൽ 'Pending' ആയി തുടരും
+            return orderStatus === "delivered" ? "Delivered" : "Pending";
         };
 
-        // --- 1. URL REFERRAL CODE DETECTION & LOCALSTORAGE SAVING ---
+        // --- URL REFERRAL CODE DETECTION ---
         const urlParams = new URLSearchParams(window.location.search);
         const refFromUrl = urlParams.get('ref') || urlParams.get('referredBy');
         const commFromUrl = urlParams.get('comm') || urlParams.get('commission');
@@ -336,13 +334,11 @@
         let currentUserId = null;
         let currentUserEmail = null; 
 
-        // Delivery Date set to Order Date (Today)
         const getDeliveryDateStr = () => {
             const today = new Date();
             return today.toISOString().split('T')[0];
         };
 
-        // Helper function for cleaning price string to safe Float number
         const parsePrice = (priceStr) => {
             if (!priceStr) return 0;
             const cleaned = priceStr.toString().replace(/[^0-9.]/g, '');
@@ -356,7 +352,7 @@
             });
         };
 
-        // --- CURRENT LOCATION (GPS) AUTO-FILL LOGIC ---
+        // GPS Location Fetching
         window.getCurrentLocation = function() {
             const locBtnText = document.getElementById('locBtnText');
             
@@ -619,10 +615,9 @@
                     const refUser = refFromUrl || orderInfo.referredBy || localStorage.getItem('referredBy') || null;
                     const commAmt = commFromUrl || orderInfo.commissionAmount || localStorage.getItem('commissionAmount') || 0;
 
-                    // Set Delivery Date as Order Date (Today)
                     const actualDeliveryDate = getDeliveryDateStr();
 
-                    // Check return policy presence
+                    // Check return policy
                     const isOrderReturnable = orderInfo.return === true || orderInfo.return === 'true' || orderInfo.returnPolicy === true || orderInfo.isReturnable === true || false;
 
                     let finalOrder = { 
@@ -695,21 +690,22 @@
                         }];
                     }
 
-                    // 1. Save primary order
+                    // 1. Save Primary Order
                     const primaryOrderRef = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
 
-                    // 2. Save referral order with Return-Policy logic
+                    // 2. Save Referral Order Logic
                     let referralOrderRef = Promise.resolve();
                     if (refUser) {
                         const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
                         
-                        // Calculate 7 Days Expiry Date
+                        // Calculate 7 Days Return Expiry Date
                         const returnExpiryDate = new Date();
                         returnExpiryDate.setDate(now.getDate() + 7);
 
                         const referralOrderData = {
                             ...finalOrder,
-                            referralStatus: "Pending", // Direct creation time is always Pending until delivered
+                            status: "Order Confirmed", // ഡെലിവറി ആകുന്നത് വരെ Status 'Order Confirmed'
+                            referralStatus: "Pending", // അഡ്മിൻ 'Delivered' ആക്കിയാലും കമ്മീഷൻ 'Pending' ആയിരിക്കും
                             returnPolicy: isOrderReturnable ? "7 Days Return Policy" : "No Return",
                             isReturnable: isOrderReturnable,
                             returnPeriodDays: isOrderReturnable ? 7 : 0,
