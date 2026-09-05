@@ -92,21 +92,21 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        /* Flipkart-style Success Animation Overlay */
+        /* Flipkart-style Order Processing & Success Animation Overlay */
         #successAnimationOverlay {
-            backdrop-filter: blur(4px);
-            background-color: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(6px);
+            background-color: rgba(15, 23, 42, 0.75);
             transition: opacity 0.3s ease;
         }
         .success-checkmark {
-            width: 80px;
-            height: 80px;
+            width: 75px;
+            height: 75px;
             margin: 0 auto;
             position: relative;
         }
         .check-icon {
-            width: 80px;
-            height: 80px;
+            width: 75px;
+            height: 75px;
             border-radius: 50%;
             background: #22c55e;
             display: flex;
@@ -132,20 +132,36 @@
         </div>
     </div>
 
-    <!-- Flipkart-style Success Overlay (Hidden by Default) -->
+    <!-- Flipkart-style Order Processing & Success Animation Overlay (Hidden by Default) -->
     <div id="successAnimationOverlay" class="fixed inset-0 z-50 hidden flex items-center justify-center">
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center shadow-2xl transform transition-all">
-            <div class="success-checkmark mb-4">
-                <div class="check-icon text-white text-3xl">
-                    <i class="fa-solid fa-check"></i>
+            
+            <!-- Step 1: Processing Loader State -->
+            <div id="processingState" class="py-4">
+                <div class="w-16 h-16 mx-auto mb-4 relative flex items-center justify-center">
+                    <div class="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
+                    <div class="absolute inset-0 border-4 border-blue-600 rounded-full animate-spin border-t-transparent"></div>
+                    <i class="fa-solid fa-bag-shopping text-blue-600 text-xl animate-pulse"></i>
                 </div>
+                <h3 class="text-lg font-extrabold text-slate-900 mb-1" id="processTitle">Placing Your Order...</h3>
+                <p class="text-xs text-slate-500" id="processDesc">Securing your transaction and updating details</p>
             </div>
-            <h3 class="text-xl font-extrabold text-slate-900 mb-1">Order Placed!</h3>
-            <p class="text-xs text-slate-500 mb-4">Your order has been successfully confirmed.</p>
-            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                <div class="bg-green-500 h-full w-full animate-pulse"></div>
+
+            <!-- Step 2: Success Checkmark State (Hidden initially) -->
+            <div id="successState" class="hidden py-2">
+                <div class="success-checkmark mb-4">
+                    <div class="check-icon text-white text-3xl">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                </div>
+                <h3 class="text-xl font-extrabold text-slate-900 mb-1">Order Placed Successfully!</h3>
+                <p class="text-xs text-slate-500 mb-4">Your order has been confirmed & email sent.</p>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-green-500 h-full w-full animate-pulse"></div>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-3 font-medium">Redirecting to your orders...</p>
             </div>
-            <p class="text-[11px] text-slate-400 mt-3 font-medium">Redirecting to your orders...</p>
+
         </div>
     </div>
 
@@ -337,7 +353,6 @@
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 
-                // Play a pleasant 2-tone chime (like e-commerce apps)
                 const playTone = (frequency, startTime, duration) => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
@@ -654,6 +669,18 @@
                 customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
             }).then((res) => {
                 if(res.isConfirmed) {
+                    
+                    // Show Processing Animation State first
+                    const successOverlay = document.getElementById('successAnimationOverlay');
+                    const processingState = document.getElementById('processingState');
+                    const successState = document.getElementById('successState');
+                    
+                    if (successOverlay) {
+                        successOverlay.classList.remove('hidden');
+                        processingState.classList.remove('hidden');
+                        successState.classList.add('hidden');
+                    }
+
                     const orderId = Date.now(); 
                     const now = new Date();
                     
@@ -773,7 +800,7 @@
                         });
                     }
 
-                    // C. Complete All Database Operations & Trigger Flipkart-style Success UI/Sound
+                    // C. Complete All Database Operations & Trigger Success UI/Sound
                     Promise.all([primaryOrderPromise, referralOrderPromise]).then(() => {
                         const activeUser = auth.currentUser;
                         const emailToSend = activeUser ? activeUser.email : currentUserEmail;
@@ -786,11 +813,11 @@
                         localStorage.removeItem('referredBy');
                         localStorage.removeItem('commissionAmount');
 
-                        // --- TRIGGER SUCCESS SOUND & ANIMATION OVERLAY ---
+                        // --- SWITCH TO SUCCESS CHECKMARK STATE & PLAY SOUND ---
                         playSuccessSound();
-                        const successOverlay = document.getElementById('successAnimationOverlay');
-                        if (successOverlay) {
-                            successOverlay.classList.remove('hidden');
+                        if (processingState && successState) {
+                            processingState.classList.add('hidden');
+                            successState.classList.remove('hidden');
                         }
 
                         // Redirect after 2 seconds
@@ -800,6 +827,7 @@
 
                     }).catch((err) => {
                         console.error("Order save error:", err);
+                        if (successOverlay) successOverlay.classList.add('hidden');
                         showAlert('Error', 'Order could not be saved.', 'error');
                     });
                 }
