@@ -264,7 +264,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getDatabase, ref, set, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const EMAILJS_PUBLIC_KEY = "v9Kubn2pDJOSM8iL8";
 
@@ -287,35 +287,15 @@
         const db = getDatabase(app);
 
         // --- REFERRAL STATUS CALCULATOR LOGIC ---
+        // അഡ്മിൻ Delivered എന്ന് മാറ്റിയാൽ സ്റ്റാറ്റസ് ഓട്ടോമാറ്റിക്കായി 'Delivered' ആയി തുടരും (Completed ആകില്ല)
         window.getCalculatedReferralStatus = function(order) {
             if (!order) return "Pending";
-
             const orderStatus = (order.status || "").toLowerCase();
 
-            // 1. Order Delivered ആകുന്നതിന് മുൻപ് എപ്പോഴും Status 'Pending' ആയിരിക്കും
-            if (orderStatus !== "delivered" && orderStatus !== "completed") {
-                return "Pending";
+            if (orderStatus === "delivered") {
+                return "Delivered";
             }
-
-            // 2. റിട്ടേൺ പോളിസി പരിശോധന
-            const hasReturn = order.isReturnable === true || order.returnPolicy === true || order.returnPolicy === "7 Days Return Policy";
-
-            // Case A: റിട്ടേൺ പോളിസി ഇല്ലെങ്കിൽ Delivered ആകുമ്പോൾ Completed ആക്കാം (അഡ്മിൻ മാനുവലായി Completed ആക്കുകയോ സിസ്റ്റം വാലിഡേറ്റ് ചെയ്യുകയോ ചെയ്യാം)
-            if (!hasReturn && orderStatus === "completed") {
-                return "Completed";
-            }
-
-            // Case B: റിട്ടേൺ പോളിസി ഉണ്ടെങ്കിൽ 7 ദിവസത്തെ എക്സ്പയറി ഡേറ്റ് കഴിഞ്ഞാൽ മാത്രം Completed ആകും
-            if (hasReturn && order.returnEligibleUntil) {
-                const now = new Date();
-                const expiryDate = new Date(order.returnEligibleUntil);
-                if (now >= expiryDate) {
-                    return "Completed";
-                }
-            }
-
-            // Delivered ആയെങ്കിലും റിട്ടേൺ വിൻഡോ ആക്ടീവ് ആണെങ്കിൽ 'Delivered' അല്ലെങ്കിൽ 'Pending' ആയി തുടരും
-            return orderStatus === "delivered" ? "Delivered" : "Pending";
+            return "Pending";
         };
 
         // --- URL REFERRAL CODE DETECTION ---
@@ -698,22 +678,30 @@
                     if (refUser) {
                         const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
                         
-                        // Calculate 7 Days Return Expiry Date
-                        const returnExpiryDate = new Date();
-                        returnExpiryDate.setDate(now.getDate() + 7);
-
                         const referralOrderData = {
                             ...finalOrder,
-                            status: "Order Confirmed", // ഡെലിവറി ആകുന്നത് വരെ Status 'Order Confirmed'
-                            referralStatus: "Pending", // അഡ്മിൻ 'Delivered' ആക്കിയാലും കമ്മീഷൻ 'Pending' ആയിരിക്കും
+                            status: "Order Confirmed",
+                            referralStatus: "Pending",
                             returnPolicy: isOrderReturnable ? "7 Days Return Policy" : "No Return",
                             isReturnable: isOrderReturnable,
-                            returnPeriodDays: isOrderReturnable ? 7 : 0,
-                            returnEligibleUntil: isOrderReturnable ? returnExpiryDate.toISOString() : null,
                             referralCreatedAt: now.toISOString()
                         };
 
                         referralOrderRef = set(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), referralOrderData);
+
+                        // 3. Realtime Sync: അഡ്മിൻ Main Order ന്റെ സ്റ്റാറ്റസ് 'Delivered' ആക്കിയാൽ Referral Order ലും 'Delivered' ആകും
+                        const orderStatusRef = ref(db, `orders/${fields.phone}/${orderId}/status`);
+                        onValue(orderStatusRef, (snapshot) => {
+                            const newStatus = snapshot.val();
+                            if (newStatus) {
+                                const refUpdateData = {
+                                    status: newStatus,
+                                    referralStatus: (newStatus.toLowerCase() === "delivered") ? "Delivered" : "Pending"
+                                };
+                                set(ref(db, `referralOrders/${cleanRefCode}/${orderId}/status`), newStatus);
+                                set(ref(db, `referralOrders/${cleanRefCode}/${orderId}/referralStatus`), refUpdateData.referralStatus);
+                            }
+                        });
                     }
 
                     Promise.all([primaryOrderRef, referralOrderRef]).then(() => {
