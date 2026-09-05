@@ -75,7 +75,7 @@
         .pay-badge, .status-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase; display: inline-block; }
         
         .pay-Verified, .pay-Paid, .pay-Approved { background: #dcfce7; color: #166534; }
-        .pay-Rejected { background: #fee2e2; color: #991b1b; }
+        .pay-Rejected, .pay-Unpaid { background: #fee2e2; color: #991b1b; }
         .pay-Pending { background: #fef3c7; color: #92400e; }
         .status-Pending { background: #fef3c7; color: #92400e; }
         .status-Confirmed { background: #dcfce7; color: #166534; }
@@ -213,7 +213,7 @@
         <div class="admin-card">
             <div class="search-box">
                 <i class="fa fa-search"></i>
-                <input type="text" id="searchOrderInput" placeholder="Search by customer, address or order ID..." onkeyup="filterOrders()">
+                <input type="text" id="searchOrderInput" placeholder="Search by customer, phone, address or order ID..." onkeyup="filterOrders()">
             </div>
             <div class="table-responsive">
                 <table>
@@ -958,6 +958,7 @@ onValue(ref(db, 'orders'), snap => {
         if (data.productName || data.customerName) {
             totalOrderCount++;
             let path = childSnap.key;
+            data.phone = data.phone || data.mobile || data.customerPhone || childSnap.key;
             globalOrdersCache[path] = { ...data, pathKey: path };
 
             let st = data.status || "Pending";
@@ -977,6 +978,7 @@ onValue(ref(db, 'orders'), snap => {
                 if (nestedData.productName || nestedData.customerName) {
                     totalOrderCount++;
                     let path = `${childSnap.key}/${nestedSnap.key}`;
+                    nestedData.phone = nestedData.phone || nestedData.mobile || nestedData.customerPhone || childSnap.key;
                     globalOrdersCache[path] = { ...nestedData, pathKey: path, parentPhone: childSnap.key };
 
                     let st = nestedData.status || "Pending";
@@ -1011,6 +1013,7 @@ function renderOrderRow(container, o, path) {
     const currentStatus = o.status || "Pending";
     const statusClass = currentStatus.replace(/\s+/g, '');
     const fullOrderId = o.orderId || path.split('/').pop();
+    const userPhone = o.phone || o.mobile || o.customerPhone || o.parentPhone || 'N/A';
 
     container.innerHTML += `
     <tr>
@@ -1019,6 +1022,7 @@ function renderOrderRow(container, o, path) {
                 ID: #${fullOrderId}
             </div>
             <strong style="color:var(--text-main); font-size: 14px;">${o.customerName || 'Customer'}</strong><br>
+            <small style="color: #2563eb; font-weight: 700;"><i class="fa fa-phone" style="font-size:10px;"></i> ${userPhone}</small><br>
             <small style="color:var(--text-muted);">${o.date || ''}</small>
         </td>
         <td><strong style="color:#10b981;">₹${o.price || '0'}</strong></td>
@@ -1058,6 +1062,7 @@ window.viewFullOrderDetails = (path) => {
     const payMethod = o.paymentMethod || (o.transactionId ? "UPI Payment" : "Cash On Delivery");
     const fullAddress = o.address || 'No Address Provided';
     const fullOrderId = o.orderId || path.split('/').pop();
+    const userPhone = o.phone || o.mobile || o.customerPhone || o.parentPhone || 'N/A';
 
     let productsListHtml = "";
     if (o.items && Array.isArray(o.items) && o.items.length > 0) {
@@ -1106,6 +1111,7 @@ window.viewFullOrderDetails = (path) => {
         <div class="order-detail-section">
             <div class="order-detail-title"><i class="fa fa-user"></i> Customer Info</div>
             <p><strong>Name:</strong> ${o.customerName || 'N/A'}</p>
+            <p style="margin-top:4px;"><strong>Phone Number:</strong> <span style="color:#2563eb; font-weight:700;">${userPhone}</span></p>
             
             <div style="margin-top: 8px;">
                 <strong>Delivery Address:</strong>
@@ -1300,11 +1306,10 @@ onValue(ref(db, 'payoutRequests'), snap => {
     snap.forEach(child => {
         const req = child.val();
         const reqId = child.key;
-        const status = req.status || "Pending";
+        const status = req.status || "Unpaid";
         
-        let statusBadgeClass = "pay-Pending";
-        if (status === "Approved") statusBadgeClass = "pay-Approved";
-        if (status === "Rejected") statusBadgeClass = "pay-Rejected";
+        let statusBadgeClass = "pay-Unpaid";
+        if (status === "Paid" || status === "Approved") statusBadgeClass = "pay-Paid";
 
         list.innerHTML += `
         <tr>
@@ -1320,16 +1325,12 @@ onValue(ref(db, 'payoutRequests'), snap => {
                 <span class="pay-badge ${statusBadgeClass}">${status}</span>
             </td>
             <td>
-                ${status === 'Pending' ? `
-                    <button style="background:#10b981; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="window.updatePayoutStatus('${reqId}', 'Approved')">
-                        <i class="fa fa-check"></i> Approve
-                    </button>
-                    <button style="background:#ef4444; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:4px;" onclick="window.updatePayoutStatus('${reqId}', 'Rejected')">
-                        <i class="fa fa-times"></i> Reject
-                    </button>
-                ` : `
-                    <span style="font-size:12px; font-weight:bold; color:${status === 'Approved' ? '#10b981' : '#ef4444'};">${status}</span>
-                `}
+                <button style="background:#10b981; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="window.updatePayoutStatus('${reqId}', 'Paid')">
+                    <i class="fa fa-check"></i> Paid
+                </button>
+                <button style="background:#ef4444; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:4px;" onclick="window.updatePayoutStatus('${reqId}', 'Unpaid')">
+                    <i class="fa fa-times"></i> Unpaid
+                </button>
             </td>
         </tr>`;
     });
@@ -1347,7 +1348,7 @@ window.updatePayoutStatus = async (requestId, newStatus) => {
             toast: true,
             position: 'top-end',
             icon: 'success',
-            title: `Payout request ${newStatus.toLowerCase()} successfully!`,
+            title: `Payout request marked as ${newStatus}!`,
             showConfirmButton: false,
             timer: 2000
         });
