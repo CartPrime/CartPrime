@@ -1249,6 +1249,7 @@
                 const currentBalance = snapshot.val() || 0;
 
                 if (amount > 0 && amount <= currentBalance) {
+                    // Deduct balance from wallet
                     db.ref(`earn_partners/${activeUserId}/wallet/balance`).set(currentBalance - amount);
                     
                     const requestRef = db.ref(`payout_requests`).push();
@@ -1265,14 +1266,18 @@
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     };
 
+                    // 1. Save to central payout_requests node
                     requestRef.set(payload);
 
-                    // Add to partner's personal withdrawal list for real-time history tracking
+                    // 2. Save reference to partner's personal withdrawals node
                     db.ref(`earn_partners/${activeUserId}/withdrawals/${newReqKey}`).set(payload);
 
                     alert("Creator Payout Request Submitted Successfully!");
                     amtInput.value = '';
-                    switchTab('transactions', document.querySelectorAll('.nav-item-bottom')[4]);
+                    
+                    // Switch view directly to History tab
+                    const historyTabBtn = document.querySelectorAll('.nav-item-bottom')[4];
+                    switchTab('transactions', historyTabBtn);
                 } else {
                     alert("Insufficient wallet balance for withdrawal!");
                 }
@@ -1280,16 +1285,18 @@
         }
 
         function listenToWithdrawalHistory() {
-            // Listen to current partner's recorded withdrawals and update status in sync with global payout_requests
-            db.ref(`earn_partners/${activeUserId}/withdrawals`).on('value', (snapshot) => {
-                const userWithdrawals = snapshot.val() || {};
-                const list = document.getElementById('full-transaction-list');
-                if (!list) return;
+            const list = document.getElementById('full-transaction-list');
+            if (!list) return;
 
-                db.ref(`payout_requests`).once('value', (globalSnapshot) => {
-                    const globalRequests = globalSnapshot.val() || {};
+            // Real-time listener on central payout_requests node
+            db.ref('payout_requests').on('value', (globalSnapshot) => {
+                const globalRequests = globalSnapshot.val() || {};
 
+                // Fetch partner's specific record
+                db.ref(`earn_partners/${activeUserId}/withdrawals`).once('value', (userSnapshot) => {
+                    const userWithdrawals = userSnapshot.val() || {};
                     list.innerHTML = '';
+                    
                     const keys = Object.keys(userWithdrawals).reverse();
 
                     if (keys.length === 0) {
@@ -1298,15 +1305,16 @@
                     }
 
                     keys.forEach(key => {
-                        const item = userWithdrawals[key];
-                        const globalMatch = globalRequests[key] || {};
-                        const currentStatus = globalMatch.status || item.status || 'Pending';
+                        const localItem = userWithdrawals[key];
+                        // Get updated status from payout_requests node
+                        const globalItem = globalRequests[key] || localItem;
+                        const currentStatus = globalItem.status || 'Pending';
 
                         let badgeClass = 'badge-pending';
                         let iconClass = 'pending-icon';
                         let statusIcon = 'fa-clock';
 
-                        const lowerStatus = currentStatus.toLowerCase();
+                        const lowerStatus = String(currentStatus).toLowerCase();
                         if (lowerStatus === 'approved' || lowerStatus === 'success' || lowerStatus === 'completed') {
                             badgeClass = 'badge-success';
                             iconClass = 'income';
@@ -1317,7 +1325,7 @@
                             statusIcon = 'fa-circle-xmark';
                         }
 
-                        const reqDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : 'Recent';
+                        const reqDate = globalItem.timestamp ? new Date(globalItem.timestamp).toLocaleDateString() : 'Recent';
 
                         const li = document.createElement('li');
                         li.className = 'ref-order-item';
@@ -1327,12 +1335,12 @@
                                     <i class="fa-solid ${statusIcon}"></i>
                                 </div>
                                 <div class="t-details">
-                                    <h4>Payout Request (${item.method || 'UPI/Bank'})</h4>
+                                    <h4>Payout Request (${globalItem.method || 'UPI/Bank'})</h4>
                                     <p>${reqDate} • ID: ${key.substring(1, 8)}</p>
                                 </div>
                             </div>
                             <div class="t-amount">
-                                <div class="amt minus">- ₹${parseFloat(item.amount || 0).toFixed(2)}</div>
+                                <div class="amt minus">- ₹${parseFloat(globalItem.amount || 0).toFixed(2)}</div>
                                 <span class="badge ${badgeClass}">
                                     ${currentStatus}
                                 </span>
