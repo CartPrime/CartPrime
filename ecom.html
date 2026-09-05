@@ -1356,7 +1356,7 @@ onValue(ref(db, 'payout_requests'), snap => {
         let statusBadgeClass = "pay-Unpaid";
         if (status === "Paid" || status === "Approved") statusBadgeClass = "pay-Paid";
 
-        const formattedUpi = req.upiId || req.upi || req.paymentInfo || req.upi_id || req.details || 'N/A';
+        const formattedUpi = req.method || req.method || req.paymentInfo || req.method || req.method|| 'N/A';
         const partnerName = req.name || req.userName || req.partnerName || req.customerName || 'Earn Partner';
         const partnerPhone = req.phone || req.mobile || req.userPhone || '';
         const reqUserId = req.userId || req.uid || 'N/A';
@@ -1401,9 +1401,9 @@ window.updatePayoutStatus = async (requestPathKey, newStatus) => {
         };
 
         // Update exact path inside payoutRequests
-        await update(ref(db, `payoutRequests/${requestPathKey}`), updateData);
+        await update(ref(db, `payout_requests/${requestPathKey}`), updateData);
 
-        const snap = await get(ref(db, `payoutRequests/${requestPathKey}`));
+        const snap = await get(ref(db, `payout_requests/${requestPathKey}`));
         if (snap.exists()) {
             const reqData = snap.val();
             const userId = reqData.userId || reqData.uid;
