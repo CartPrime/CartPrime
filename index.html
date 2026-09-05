@@ -79,6 +79,7 @@ nav {
   border-bottom: 1px solid var(--border); 
   gap: 15px; 
   transition: background 0.3s ease, border-color 0.3s ease; 
+  flex-wrap: wrap;
 } 
 .logo { 
   font-weight: 800; 
@@ -94,9 +95,12 @@ nav {
   color: var(--text-muted); 
   font-weight: 300; 
 } 
+
+/* Responsive Search Container Fix */
 .search-container { 
   flex: 1; 
   max-width: 500px; 
+  min-width: 200px;
   position: relative; 
 } 
 .search-container input { 
@@ -291,6 +295,8 @@ nav {
   font-weight: 700; 
   margin: 0; 
 } 
+
+/* Hero & Section Animations */
 .hero { 
   padding: 30px 6% 10px; 
   display: flex; 
@@ -305,11 +311,13 @@ nav {
   letter-spacing: -1.5px; 
   line-height: 1.1; 
   color: var(--text-main); 
+  animation: slideInLeft 0.7s ease-out forwards;
 } 
 .hero-text p { 
   color: var(--text-muted); 
   margin-top: 8px; 
   font-size: 0.95rem; 
+  animation: slideInLeft 0.8s ease-out forwards;
 } 
 .trust-stats { 
   display: flex; 
@@ -319,6 +327,7 @@ nav {
   padding: 12px 20px; 
   border-radius: 16px; 
   border: 1px solid var(--border); 
+  animation: slideInRight 0.8s ease-out forwards;
 } 
 .stat-item { 
   display: flex; 
@@ -350,6 +359,7 @@ nav {
 } 
 .trust-bar-section { 
   padding: 10px 6% 15px 6%; 
+  animation: slideInLeft 0.9s ease-out forwards;
 } 
 .trust-bar-grid { 
   display: grid; 
@@ -417,6 +427,7 @@ nav {
   align-items: center; 
   justify-content: center; 
   min-height: 40px; 
+  animation: slideInRight 0.6s ease-out forwards;
 } 
 .category-btn:hover, .category-btn.active { 
   background: var(--primary); 
@@ -659,10 +670,17 @@ nav {
   cursor: pointer;
   margin-top: 8px;
 }
-@keyframes slideUpFade { 
-  0% { opacity: 0; transform: translateY(30px); } 
-  100% { opacity: 1; transform: translateY(0); } 
+
+/* Side-Slide Keyframe Animations */
+@keyframes slideInLeft { 
+  0% { opacity: 0; transform: translateX(-40px); } 
+  100% { opacity: 1; transform: translateX(0); } 
 } 
+@keyframes slideInRight { 
+  0% { opacity: 0; transform: translateX(40px); } 
+  100% { opacity: 1; transform: translateX(0); } 
+} 
+
 .card { 
   background: var(--card-bg); 
   border-radius: 20px; 
@@ -674,10 +692,15 @@ nav {
   flex-direction: column; 
   height: 100%; 
   cursor: pointer; 
-  animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
   opacity: 0; 
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease; 
 } 
+.card.slide-left {
+  animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.card.slide-right {
+  animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
 .card:hover { 
   transform: translateY(-8px); 
   box-shadow: 0 20px 40px rgba(0,0,0,0.12); 
@@ -882,6 +905,7 @@ nav {
   flex-direction: column; 
   align-items: center; 
   gap: 12px; 
+  animation: slideInLeft 0.8s ease-out forwards;
 } 
 .safe-checkout-box h3 { 
   font-size: 0.95rem; 
@@ -970,16 +994,36 @@ nav {
   font-weight: 700;
   font-size: 0.9rem;
 }
+
+/* Mobile Responsiveness Improvements */
+@media (max-width: 600px) {
+  nav {
+    padding: 10px 4%;
+    gap: 10px;
+  }
+  .search-container {
+    order: 3;
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-top: 4px;
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .hero-text h1 {
+    font-size: 1.8rem;
+  }
+  .trust-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
 </style> 
 </head> 
 <body> 
 <nav> 
   <div id="navLogo" class="logo">CART<span>PRIME</span></div> 
-  <div class="search-container"> 
-    <i class="fa fa-search"></i> 
-    <input type="text" id="searchInput" placeholder="Search verified products..." autocomplete="off"> 
-    <div id="searchSuggestions" class="search-suggestions-box"></div> 
-  </div> 
   <div class="nav-right"> 
     <div class="profile-chip" id="profileChip" title="Click to edit profile">
       <div class="profile-avatar" id="navProfileAvatar">U</div>
@@ -988,6 +1032,11 @@ nav {
         <span class="profile-phone" id="navProfilePhone">Not set</span>
       </div>
     </div>
+  </div> 
+  <div class="search-container"> 
+    <i class="fa fa-search"></i> 
+    <input type="text" id="searchInput" placeholder="Search verified products..." autocomplete="off"> 
+    <div id="searchSuggestions" class="search-suggestions-box"></div> 
   </div> 
 </nav> 
 
@@ -1304,7 +1353,7 @@ nav {
     document.getElementById('toastCloseBtn').onclick = () => toastModal.style.display = 'none';
   }
 
-  // --- EARN PARTNER LOGIC (FIXED) ---
+  // --- EARN PARTNER LOGIC ---
   const earnModal = document.getElementById('earnModal'); 
   const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
@@ -1458,10 +1507,14 @@ nav {
   function renderProducts(products) { 
     const grid = document.getElementById('productGrid'); 
     grid.innerHTML = ""; 
-    products.forEach((p) => { 
+    products.forEach((p, index) => { 
       if (p.showOnHome === false) return; 
       const card = document.createElement('div'); 
-      card.className = 'card'; 
+      
+      // Alternating Side-Slide Animation Effect for Grid Items
+      const animClass = index % 2 === 0 ? 'slide-left' : 'slide-right';
+      card.className = `card ${animClass}`; 
+      
       card.innerHTML = ` 
         <div class="image-box"> 
           <img src="${p.images?.[0] || 'https://via.placeholder.com/150'}" alt="${p.name}"> 
