@@ -469,6 +469,8 @@ nav {
   border-color: var(--primary); 
   box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
 } 
+
+/* Banner Section Clean Auto Slider */ 
 .banner-section { 
   padding: 15px 6% 10px 6%; 
   position: relative; 
@@ -476,8 +478,7 @@ nav {
 } 
 .banner-wrapper { 
   position: relative; 
-  display: flex; 
-  align-items: center; 
+  width: 100%; 
 } 
 .banner-slider { 
   display: flex; 
@@ -493,12 +494,12 @@ nav {
   display: none; 
 } 
 .banner-item { 
-  flex: 0 0 calc(50% - 8px); 
+  flex: 0 0 100%; 
   scroll-snap-align: start; 
   border-radius: 20px; 
   overflow: hidden; 
   height: auto; 
-  max-height: 220px; 
+  max-height: 250px; 
   background: var(--surface); 
   display: flex; 
   align-items: center; 
@@ -515,36 +516,6 @@ nav {
   height: 100%; 
   object-fit: cover; 
   border-radius: 20px; 
-} 
-.banner-arrow { 
-  position: absolute; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  width: 40px; 
-  height: 40px; 
-  background: var(--card-bg); 
-  color: var(--text-main); 
-  border: 1px solid var(--border); 
-  border-radius: 50%; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  cursor: pointer; 
-  z-index: 10; 
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
-  transition: all 0.2s ease; 
-  backdrop-filter: blur(4px); 
-} 
-.banner-arrow:hover { 
-  background: var(--primary); 
-  color: var(--bg); 
-  transform: translateY(-50%) scale(1.08); 
-} 
-.banner-arrow.prev { 
-  left: -12px; 
-} 
-.banner-arrow.next { 
-  right: -12px; 
 } 
 .banner-dots { 
   display: flex; 
@@ -566,6 +537,7 @@ nav {
   width: 20px; 
   border-radius: 4px; 
 } 
+
 .container { 
   padding: 10px 6% 40px; 
   flex: 1; 
@@ -1051,9 +1023,6 @@ nav {
   .image-box {
     height: 140px;
   }
-  .banner-item {
-    flex: 0 0 100%;
-  }
 }
 @media (max-width: 480px) {
   .hero-text h1 {
@@ -1205,12 +1174,10 @@ nav {
 
 <div class="category-bar" id="categoryBar"></div> 
 
-<!-- Banner Section Restored -->
+<!-- Banner Section Cleaned Up -->
 <div class="banner-section" id="bannerSection"> 
   <div class="banner-wrapper"> 
-    <button class="banner-arrow prev" id="bannerPrevBtn"><i class="fa-solid fa-chevron-left"></i></button> 
     <div class="banner-slider" id="bannerSlider"></div> 
-    <button class="banner-arrow next" id="bannerNextBtn"><i class="fa-solid fa-chevron-right"></i></button> 
   </div> 
   <div class="banner-dots" id="bannerDots"></div> 
 </div> 
@@ -1514,14 +1481,13 @@ nav {
   document.getElementById('bottomContactBtn').onclick = () => contactModal.style.display = 'flex';
   document.getElementById('closeContactModal').onclick = () => contactModal.style.display = 'none';
 
-  // --- BANNER SLIDER LOGIC RESTORED ---
+  // --- BANNER SLIDER LOGIC FIXED & IMPROVED ---
   const bannerSection = document.getElementById('bannerSection');
   const bannerSlider = document.getElementById('bannerSlider');
   const bannerDots = document.getElementById('bannerDots');
-  const bannerPrevBtn = document.getElementById('bannerPrevBtn');
-  const bannerNextBtn = document.getElementById('bannerNextBtn');
 
   let bannerInterval = null;
+  let currentBannerIndex = 0;
 
   onValue(ref(db, 'banners'), (snapshot) => {
     if (!snapshot.exists()) {
@@ -1547,41 +1513,56 @@ nav {
       const item = document.createElement('div');
       item.className = 'banner-item';
       item.innerHTML = `<img src="${b.imageUrl || b.image}" alt="Banner ${idx + 1}">`;
-      if (b.link) {
-        item.onclick = () => window.location.href = b.link;
+      
+      const targetUrl = b.link || b.url;
+      if (targetUrl) {
+        item.onclick = () => window.open(targetUrl, '_blank');
       }
+
       bannerSlider.appendChild(item);
 
       const dot = document.createElement('div');
       dot.className = `dot ${idx === 0 ? 'active' : ''}`;
       dot.onclick = () => {
-        bannerSlider.scrollTo({ left: item.offsetLeft, behavior: 'smooth' });
-        updateDots(idx);
+        scrollToBanner(idx);
       };
       bannerDots.appendChild(dot);
     });
 
-    // Auto Scroll Banners
+    function scrollToBanner(index) {
+      const bannerItems = bannerSlider.querySelectorAll('.banner-item');
+      if (bannerItems[index]) {
+        bannerSlider.scrollTo({
+          left: bannerItems[index].offsetLeft,
+          behavior: 'smooth'
+        });
+        currentBannerIndex = index;
+        updateDots(index);
+      }
+    }
+
+    function updateDots(index) {
+      const dots = bannerDots.querySelectorAll('.dot');
+      dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    }
+
+    // Smooth Infinite Auto Scroll Loop
     if (bannerInterval) clearInterval(bannerInterval);
     bannerInterval = setInterval(() => {
-      const maxScroll = bannerSlider.scrollWidth - bannerSlider.clientWidth;
-      if (bannerSlider.scrollLeft >= maxScroll - 10) {
-        bannerSlider.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        bannerSlider.scrollBy({ left: bannerSlider.clientWidth / 2, behavior: 'smooth' });
+      currentBannerIndex = (currentBannerIndex + 1) % banners.length;
+      scrollToBanner(currentBannerIndex);
+    }, 3500);
+
+    // Sync dots on manual drag/scroll
+    bannerSlider.addEventListener('scroll', () => {
+      const bannerWidth = bannerSlider.clientWidth;
+      if (bannerWidth > 0) {
+        const activeIdx = Math.round(bannerSlider.scrollLeft / bannerWidth);
+        updateDots(activeIdx);
+        currentBannerIndex = activeIdx;
       }
-    }, 4000);
+    });
   });
-
-  function updateDots(index) {
-    const dots = bannerDots.querySelectorAll('.dot');
-    dots.forEach((d, i) => d.classList.toggle('active', i === index));
-  }
-
-  if (bannerPrevBtn && bannerNextBtn) {
-    bannerPrevBtn.onclick = () => bannerSlider.scrollBy({ left: -250, behavior: 'smooth' });
-    bannerNextBtn.onclick = () => bannerSlider.scrollBy({ left: 250, behavior: 'smooth' });
-  }
 
   let allProducts = []; 
   let activeCategory = "All"; 
@@ -1643,7 +1624,6 @@ nav {
       if (p.showOnHome === false) return; 
       const card = document.createElement('div'); 
       
-      // Alternating Side-Slide Blink Animation Effect for Grid Items
       const animClass = index % 2 === 0 ? 'slide-left' : 'slide-right';
       card.className = `card ${animClass}`; 
       
