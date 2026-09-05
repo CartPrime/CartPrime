@@ -793,7 +793,7 @@
             });
         }
 
-        // --- MAIN ORDERS-ൽ നിന്നും STATUS, RETURN POLICY SYNC ചെയ്യാനുള്ള ഫംഗ്ഷൻ ---
+        // MAIN ORDERS-ൽ നിന്നും STATUS, RETURN POLICY SYNC ചെയ്യാനുള്ള ഫംഗ്ഷൻ
         function syncMainOrdersToReferralOrders() {
             const cleanRefCode = uniquePartnerId.toString().replace(/[.#$\[\]]/g, "_");
 
@@ -814,6 +814,9 @@
                             if (mainOrder.status && mainOrder.status !== refItem.status) {
                                 updates.status = mainOrder.status;
                             }
+                            if (mainOrder.deliveryDate && mainOrder.deliveryDate !== refItem.deliveryDate) {
+                                updates.deliveryDate = mainOrder.deliveryDate;
+                            }
                             if (mainOrder.deliveredAt && mainOrder.deliveredAt !== refItem.deliveredAt) {
                                 updates.deliveredAt = mainOrder.deliveredAt;
                             }
@@ -830,7 +833,7 @@
             });
         }
 
-        // --- REFERRAL SUCCESS CHECK LOGIC ---
+        // --- REFERRAL SUCCESS CHECK LOGIC (FIXED DATE PARSING & BUG FIXES) ---
         function checkReferralSuccess(order) {
             const adminStatus = (order.status || '').toLowerCase();
 
@@ -848,12 +851,12 @@
                     isReturnable = (order.isReturnable.toLowerCase() === 'true');
                 }
             } else if (order.returnPolicy !== undefined) {
-                isReturnable = (String(order.returnPolicy).toLowerCase() === 'true' || order.returnPolicy === true);
+                isReturnable = (String(order.returnPolicy).toLowerCase().includes('true') || String(order.returnPolicy).toLowerCase().includes('7 days'));
             } else {
                 isReturnable = true; // Default true
             }
 
-            // CASE A: Return ഇല്ലാത്ത ഉൽപ്പന്നം (isReturnable === false) -> Admin Delivered ആക്കിയാൽ ഉടൻ Success
+            // CASE A: Return ഇല്ലാത്ത ഉൽപ്പന്നം (isReturnable === false) -> Delivered ആക്കിയാൽ ഉടൻ Success
             if (!isReturnable) {
                 return true;
             }
@@ -861,26 +864,26 @@
             // CASE B: Return ഉള്ള ഉൽപ്പന്നം (isReturnable === true) -> Delivered ചെയ്ത തീയതിയിൽ നിന്ന് 7 ദിവസങ്ങൾ തികയണം
             let deliveredTimestamp = null;
 
+            // Timestamp or String format parsing
             if (order.deliveredAt && !isNaN(Number(order.deliveredAt))) {
                 deliveredTimestamp = Number(order.deliveredAt);
             } else if (order.deliveryTimestamp && !isNaN(Number(order.deliveryTimestamp))) {
                 deliveredTimestamp = Number(order.deliveryTimestamp);
+            } else if (order.deliveryDate) {
+                // Parse "YYYY-MM-DD" or similar ISO date string safely
+                const rawDateStr = String(order.deliveryDate).replace(/Delivered by|on/gi, '').trim();
+                const parsed = Date.parse(rawDateStr);
+                if (!isNaN(parsed)) deliveredTimestamp = parsed;
             } else if (order.deliveredDate) {
                 const parsed = Date.parse(order.deliveredDate);
                 if (!isNaN(parsed)) deliveredTimestamp = parsed;
-            } else if (order.deliveryDate) {
-                const parts = String(order.deliveryDate).split('-');
-                const datePart = parts[parts.length - 1].replace(/Delivered by|on/gi, '').trim();
-                const parsed = Date.parse(datePart);
-                if (!isNaN(parsed)) deliveredTimestamp = parsed;
-            } else if (order.timestamp) {
-                deliveredTimestamp = Number(order.timestamp);
             }
 
             if (deliveredTimestamp) {
                 const now = Date.now();
                 const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
                 
+                // 7 ദിവസം കഴിഞ്ഞിട്ടുണ്ടെങ്കിൽ മാത്രം True
                 if (now >= (deliveredTimestamp + sevenDaysInMs)) {
                     return true;
                 }
@@ -889,7 +892,7 @@
             return false;
         }
 
-        // --- LISTEN AND DISPLAY REFERRAL ORDERS ---
+        // LISTEN AND DISPLAY REFERRAL ORDERS
         function listenToReferralOrders() {
             const cleanRefCode = uniquePartnerId.toString().replace(/[.#$\[\]]/g, "_");
 
@@ -924,6 +927,8 @@
                     let isReturnable = false;
                     if (order.isReturnable !== undefined && order.isReturnable !== null) {
                         isReturnable = (String(order.isReturnable).toLowerCase() === 'true');
+                    } else if (order.returnPolicy) {
+                        isReturnable = String(order.returnPolicy).toLowerCase().includes('7 days') || String(order.returnPolicy).toLowerCase().includes('true');
                     } else {
                         isReturnable = true;
                     }
@@ -947,7 +952,9 @@
                         pendingTotal += commissionEarned;
                         
                         if (order.referralStatus === 'Success' && !order.commissionCredited) {
-                            db.ref(`referralOrders/${cleanRefCode}/${key}/referralStatus`).set('Pending');
+                            db.ref(`referralOrders/${cleanRefCode}/${key}`).update({
+                                referralStatus: 'Pending'
+                            });
                         }
                     }
 
@@ -963,7 +970,7 @@
                         badgeClass = 'badge-success';
                     } else if (isDelivered) {
                         if (isReturnable) {
-                            statusText = 'Delivered • Return Period Active (7 Days)';
+                            statusText = 'Delivered • Return Window Active (7 Days)';
                         } else {
                             statusText = 'Delivered • Processing Final Status';
                         }
