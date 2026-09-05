@@ -1570,7 +1570,7 @@ nav {
 
         if (status === 'approved' || status === 'active') {
           window.location.href = '/wallet.html';
-        } else if (status === 'pending' || status === 'pending verification') {
+        } else if (status === 'pending' || status === 'pending') {
           showCustomAlert(
             "Under Verification", 
             `Your Earn Partner registration is under admin review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access to wallet after approval.`, 
