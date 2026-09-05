@@ -286,17 +286,23 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // --- HELPER FUNCTION: DYNAMIC STATUS CHECKER ---
-        // Referral Page / Dashboard view cheyyumbol eppozhum dynamic status calculate cheyyan ith use cheyyaam.
+        // --- DYNAMIC REFERRAL STATUS CHECKER ---
+        // Referral Dashboard / View page-il ith point-to-point calculation execute cheyyam.
         window.getCalculatedReferralStatus = function(order) {
             if (!order) return "Pending";
             
-            // Return Policy illatha product aannengil Order 'Delivered' aayal udan 'Completed' aakum
-            if (!order.isReturnable && !order.returnPolicy) {
-                return (order.status === "Delivered") ? "Completed" : "Pending";
+            // Order Delivered aayillel Status Cancelled plain standard custom handler handle cheyyam, allel standard Pending:
+            if (order.status !== "Delivered") {
+                return order.referralStatus || "Pending";
             }
 
-            // Return Policy ullathaanengil Return date Expire aayaal 'Completed' aakum
+            // Return policy ILATTHA product: Order Delivered aayal thudakkathile Completed aakum
+            const hasReturn = order.isReturnable || order.returnPolicy === true || order.returnPolicy === "7 Days Return Policy";
+            if (!hasReturn) {
+                return "Completed";
+            }
+
+            // Return policy ULLA product: Order Delivered aayalum, 7-Days return period kazhinjaal MATHRAM Completed aakum
             if (order.returnEligibleUntil) {
                 const now = new Date();
                 const expiryDate = new Date(order.returnEligibleUntil);
@@ -305,7 +311,7 @@
                 }
             }
 
-            return order.referralStatus || "Pending";
+            return "Pending";
         };
 
         // --- 1. URL REFERRAL CODE DETECTION & LOCALSTORAGE SAVING ---
@@ -589,7 +595,7 @@
                     text: 'Please enter a valid 6-digit pincode.',
                     icon: 'warning',
                     confirmButtonText: 'Ok',
-                    customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-cancel' }
+                    customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
                 });
             }
 
@@ -691,17 +697,12 @@
                     if (refUser) {
                         const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
                         
-                        // 7 Days Limit Date Calculation
+                        // Calculate 7 Days Expiry Date
                         const returnExpiryDate = new Date();
                         returnExpiryDate.setDate(now.getDate() + 7);
 
-                        // Initial Status Logic: Return-Policy illatha Product Delivered aayal direct 'Completed' aakum
+                        // Initial Status setup upon Order Creation: ALWAYS Pending
                         let initialReferralStatus = "Pending";
-                        if (!isOrderReturnable && finalOrder.status === "Delivered") {
-                            initialReferralStatus = "Completed";
-                        } else if (now >= returnExpiryDate) {
-                            initialReferralStatus = "Completed";
-                        }
 
                         const referralOrderData = {
                             ...finalOrder,
