@@ -308,16 +308,26 @@ nav {
   100% { opacity: 1; transform: translateX(0); } 
 } 
 @keyframes sideBlinkSlideLeft {
-  0% { opacity: 0; transform: translateX(-40px); }
-  30% { opacity: 0.3; }
+  0% { opacity: 0; transform: translateX(-40px); filter: blur(4px); }
+  30% { opacity: 0.4; }
   60% { opacity: 0.8; }
-  100% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 1; transform: translateX(0); filter: blur(0); }
 }
 @keyframes sideBlinkSlideRight {
-  0% { opacity: 0; transform: translateX(40px); }
-  30% { opacity: 0.3; }
+  0% { opacity: 0; transform: translateX(40px); filter: blur(4px); }
+  30% { opacity: 0.4; }
   60% { opacity: 0.8; }
-  100% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+}
+
+/* Text Glowing & Pulse Loading Animation */
+@keyframes textGlowPulse {
+  0% { opacity: 0.3; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.text-pulse-anim {
+  animation: textGlowPulse 1.2s ease-out forwards;
 }
 
 /* Hero & Section Animations */
@@ -335,7 +345,7 @@ nav {
   letter-spacing: -1.5px; 
   line-height: 1.1; 
   color: var(--text-main); 
-  animation: sideBlinkSlideLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: sideBlinkSlideLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards, textGlowPulse 1.5s ease-in-out;
 } 
 .hero-text p { 
   color: var(--text-muted); 
@@ -503,7 +513,7 @@ nav {
 .banner-item img { 
   width: 100%; 
   height: 100%; 
-  object-fit: contain; 
+  object-fit: cover; 
   border-radius: 20px; 
 } 
 .banner-arrow { 
@@ -1074,7 +1084,7 @@ nav {
 </head> 
 <body> 
 <nav> 
-  <div id="navLogo" class="logo">CART<span>PRIME</span></div> 
+  <div id="navLogo" class="logo text-pulse-anim">CART<span>PRIME</span></div> 
   <div class="nav-right"> 
     <div class="profile-chip" id="profileChip" title="Click to edit profile">
       <div class="profile-avatar" id="navProfileAvatar">U</div>
@@ -1149,9 +1159,9 @@ nav {
 
 <header class="hero"> 
   <div class="hero-text"> 
-    <h1>Welcome To <br> CartPrime </h1> 
-    <h1 style="color: rgb(65, 155, 65);">Online Shop</h1> 
-    <p>100% Verified & Premium Quality Shopping Store.</p> 
+    <h1 class="text-pulse-anim">Welcome To <br> CartPrime </h1> 
+    <h1 style="color: rgb(65, 155, 65);" class="text-pulse-anim">Online Shop</h1> 
+    <p class="text-pulse-anim">100% Verified & Premium Quality Shopping Store.</p> 
   </div> 
   <div class="trust-stats"> 
     <div class="stat-item"> 
@@ -1194,7 +1204,9 @@ nav {
 </div> 
 
 <div class="category-bar" id="categoryBar"></div> 
-<div class="banner-section" id="bannerSection" style="display: none;"> 
+
+<!-- Banner Section Restored -->
+<div class="banner-section" id="bannerSection"> 
   <div class="banner-wrapper"> 
     <button class="banner-arrow prev" id="bannerPrevBtn"><i class="fa-solid fa-chevron-left"></i></button> 
     <div class="banner-slider" id="bannerSlider"></div> 
@@ -1501,6 +1513,75 @@ nav {
   const contactModal = document.getElementById('contactModal');
   document.getElementById('bottomContactBtn').onclick = () => contactModal.style.display = 'flex';
   document.getElementById('closeContactModal').onclick = () => contactModal.style.display = 'none';
+
+  // --- BANNER SLIDER LOGIC RESTORED ---
+  const bannerSection = document.getElementById('bannerSection');
+  const bannerSlider = document.getElementById('bannerSlider');
+  const bannerDots = document.getElementById('bannerDots');
+  const bannerPrevBtn = document.getElementById('bannerPrevBtn');
+  const bannerNextBtn = document.getElementById('bannerNextBtn');
+
+  let bannerInterval = null;
+
+  onValue(ref(db, 'banners'), (snapshot) => {
+    if (!snapshot.exists()) {
+      bannerSection.style.display = 'none';
+      return;
+    }
+    const banners = [];
+    snapshot.forEach(child => {
+      const b = child.val();
+      if (b.imageUrl || b.image) banners.push(b);
+    });
+
+    if (banners.length === 0) {
+      bannerSection.style.display = 'none';
+      return;
+    }
+
+    bannerSection.style.display = 'block';
+    bannerSlider.innerHTML = '';
+    bannerDots.innerHTML = '';
+
+    banners.forEach((b, idx) => {
+      const item = document.createElement('div');
+      item.className = 'banner-item';
+      item.innerHTML = `<img src="${b.imageUrl || b.image}" alt="Banner ${idx + 1}">`;
+      if (b.link) {
+        item.onclick = () => window.location.href = b.link;
+      }
+      bannerSlider.appendChild(item);
+
+      const dot = document.createElement('div');
+      dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+      dot.onclick = () => {
+        bannerSlider.scrollTo({ left: item.offsetLeft, behavior: 'smooth' });
+        updateDots(idx);
+      };
+      bannerDots.appendChild(dot);
+    });
+
+    // Auto Scroll Banners
+    if (bannerInterval) clearInterval(bannerInterval);
+    bannerInterval = setInterval(() => {
+      const maxScroll = bannerSlider.scrollWidth - bannerSlider.clientWidth;
+      if (bannerSlider.scrollLeft >= maxScroll - 10) {
+        bannerSlider.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        bannerSlider.scrollBy({ left: bannerSlider.clientWidth / 2, behavior: 'smooth' });
+      }
+    }, 4000);
+  });
+
+  function updateDots(index) {
+    const dots = bannerDots.querySelectorAll('.dot');
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+  }
+
+  if (bannerPrevBtn && bannerNextBtn) {
+    bannerPrevBtn.onclick = () => bannerSlider.scrollBy({ left: -250, behavior: 'smooth' });
+    bannerNextBtn.onclick = () => bannerSlider.scrollBy({ left: 250, behavior: 'smooth' });
+  }
 
   let allProducts = []; 
   let activeCategory = "All"; 
