@@ -264,7 +264,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getDatabase, ref, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const EMAILJS_PUBLIC_KEY = "v9Kubn2pDJOSM8iL8";
 
@@ -287,7 +287,6 @@
         const db = getDatabase(app);
 
         // --- REFERRAL STATUS CALCULATOR LOGIC ---
-        // അഡ്മിൻ Delivered എന്ന് മാറ്റിയാൽ സ്റ്റാറ്റസ് ഓട്ടോമാറ്റിക്കായി 'Delivered' ആയി തുടരും (Completed ആകില്ല)
         window.getCalculatedReferralStatus = function(order) {
             if (!order) return "Pending";
             const orderStatus = (order.status || "").toLowerCase();
@@ -567,7 +566,7 @@
                     text: 'Please enter a valid 10-digit phone number.',
                     icon: 'warning',
                     confirmButtonText: 'Ok',
-                    customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
+                    customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-cancel' }
                 });
             }
 
@@ -689,17 +688,18 @@
 
                         referralOrderRef = set(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), referralOrderData);
 
-                        // 3. Realtime Sync: അഡ്മിൻ Main Order ന്റെ സ്റ്റാറ്റസ് 'Delivered' ആക്കിയാൽ Referral Order ലും 'Delivered' ആകും
+                        // 3. Realtime Sync Logic: അഡ്മിൻ Order Status മാറ്റുമ്പോൾ Referral Status തത്സമയം മാറാൻ
                         const orderStatusRef = ref(db, `orders/${fields.phone}/${orderId}/status`);
                         onValue(orderStatusRef, (snapshot) => {
                             const newStatus = snapshot.val();
                             if (newStatus) {
-                                const refUpdateData = {
+                                const isDelivered = newStatus.toString().trim().toLowerCase() === "delivered";
+                                const updatedReferralStatus = isDelivered ? "Delivered" : "Pending";
+
+                                update(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), {
                                     status: newStatus,
-                                    referralStatus: (newStatus.toLowerCase() === "delivered") ? "Delivered" : "Pending"
-                                };
-                                set(ref(db, `referralOrders/${cleanRefCode}/${orderId}/status`), newStatus);
-                                set(ref(db, `referralOrders/${cleanRefCode}/${orderId}/referralStatus`), refUpdateData.referralStatus);
+                                    referralStatus: updatedReferralStatus
+                                });
                             }
                         });
                     }
