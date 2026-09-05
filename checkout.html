@@ -286,23 +286,29 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // --- DYNAMIC REFERRAL STATUS CHECKER ---
-        // Referral Dashboard / View page-il ith point-to-point calculation execute cheyyam.
+        // --- UPDATED REFERRAL STATUS CALCULATOR LOGIC ---
         window.getCalculatedReferralStatus = function(order) {
             if (!order) return "Pending";
-            
-            // Order Delivered aayillel Status Cancelled plain standard custom handler handle cheyyam, allel standard Pending:
-            if (order.status !== "Delivered") {
-                return order.referralStatus || "Pending";
+
+            // If manual override exists (e.g., Cancelled / Refunded)
+            if (order.referralStatus && (order.referralStatus === "Cancelled" || order.referralStatus === "Refunded")) {
+                return order.referralStatus;
             }
 
-            // Return policy ILATTHA product: Order Delivered aayal thudakkathile Completed aakum
-            const hasReturn = order.isReturnable || order.returnPolicy === true || order.returnPolicy === "7 Days Return Policy";
+            // Order Status Delivered aakatha samayathu status "Pending" aayirikkum
+            if (order.status !== "Delivered") {
+                return "Pending";
+            }
+
+            // Check if return policy exists
+            const hasReturn = order.isReturnable === true || order.returnPolicy === true || order.returnPolicy === "7 Days Return Policy";
+
+            // RULE 1: Return policy ILLATHA product -> Delivered aakubol "Completed" aakum
             if (!hasReturn) {
                 return "Completed";
             }
 
-            // Return policy ULLA product: Order Delivered aayalum, 7-Days return period kazhinjaal MATHRAM Completed aakum
+            // RULE 2: Return policy ULLA product -> Delivered aayaalum return period kazhiyunna date aayale "Completed" aaku
             if (order.returnEligibleUntil) {
                 const now = new Date();
                 const expiryDate = new Date(order.returnEligibleUntil);
@@ -333,7 +339,7 @@
         // Delivery Date set to Order Date (Today)
         const getDeliveryDateStr = () => {
             const today = new Date();
-            return today.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+            return today.toISOString().split('T')[0];
         };
 
         // Helper function for cleaning price string to safe Float number
@@ -616,7 +622,7 @@
                     // Set Delivery Date as Order Date (Today)
                     const actualDeliveryDate = getDeliveryDateStr();
 
-                    // Determine return policy status
+                    // Check return policy presence
                     const isOrderReturnable = orderInfo.return === true || orderInfo.return === 'true' || orderInfo.returnPolicy === true || orderInfo.isReturnable === true || false;
 
                     let finalOrder = { 
@@ -692,7 +698,7 @@
                     // 1. Save primary order
                     const primaryOrderRef = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
 
-                    // 2. Save referral order with 7-days & Return-Policy logic
+                    // 2. Save referral order with Return-Policy logic
                     let referralOrderRef = Promise.resolve();
                     if (refUser) {
                         const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
@@ -701,16 +707,13 @@
                         const returnExpiryDate = new Date();
                         returnExpiryDate.setDate(now.getDate() + 7);
 
-                        // Initial Status setup upon Order Creation: ALWAYS Pending
-                        let initialReferralStatus = "Pending";
-
                         const referralOrderData = {
                             ...finalOrder,
-                            referralStatus: initialReferralStatus, 
+                            referralStatus: "Pending", // Direct creation time is always Pending until delivered
                             returnPolicy: isOrderReturnable ? "7 Days Return Policy" : "No Return",
                             isReturnable: isOrderReturnable,
                             returnPeriodDays: isOrderReturnable ? 7 : 0,
-                            returnEligibleUntil: isOrderReturnable ? returnExpiryDate.toISOString() : now.toISOString(),
+                            returnEligibleUntil: isOrderReturnable ? returnExpiryDate.toISOString() : null,
                             referralCreatedAt: now.toISOString()
                         };
 
