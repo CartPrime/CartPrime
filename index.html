@@ -237,6 +237,92 @@ nav {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* --- Redesigned Trust Welcome Modal Styles --- */
+.welcome-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.welcome-modal-icon {
+  width: 50px;
+  height: 50px;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--accent);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
+.welcome-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+  background: var(--surface);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.welcome-benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.welcome-benefit-item i {
+  color: #22c55e;
+  font-size: 0.9rem;
+}
+
+/* --- Redesigned Earn Modal Styles --- */
+.earn-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.earn-modal-icon {
+  width: 44px;
+  height: 44px;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--accent);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.earn-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+  background: var(--surface);
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.earn-benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.earn-benefit-item i {
+  color: #22c55e;
+  font-size: 0.85rem;
+}
+
 .search-suggestions-box { 
   position: absolute; 
   top: calc(100% + 8px); 
@@ -425,7 +511,6 @@ nav {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
 } 
 
-/* --- High Clarity Banner Styling (Arrows Removed) --- */ 
 .banner-section { 
   padding: 15px 6% 10px 6%; 
   position: relative; 
@@ -470,7 +555,7 @@ nav {
 .banner-item img { 
   width: 100%; 
   height: 100%; 
-  object-fit: cover; /* High clarity full fill */
+  object-fit: cover; 
   border-radius: 20px; 
   image-rendering: -webkit-optimize-contrast;
 } 
@@ -1118,19 +1203,32 @@ nav {
   </div> 
 </nav> 
 
-<!-- User Registration/Welcome/Edit Modal -->
+<!-- Redesigned Trustworthy User Registration/Welcome/Edit Modal -->
 <div id="userWelcomeModal" class="modal-overlay"> 
   <div class="modal-card"> 
-    <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;" id="welcomeModalTitle">Welcome to CartPrime</h3> 
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">Enter your mobile number to continue.</p> 
+    <div class="welcome-modal-header">
+      <div class="welcome-modal-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <div>
+        <h3 style="margin: 0 0 2px 0; font-size: 1.15rem;" id="welcomeModalTitle">Welcome to CartPrime</h3> 
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">100% Secure & Verified Shopping Platform</p>
+      </div>
+    </div>
+
+    <div class="welcome-benefits">
+      <div class="welcome-benefit-item"><i class="fa-solid fa-circle-check"></i> Fast & Free Shipping Across India</div>
+      <div class="welcome-benefit-item"><i class="fa-solid fa-circle-check"></i> 7 Days Easy Returns & Buyer Protection</div>
+      <div class="welcome-benefit-item"><i class="fa-solid fa-circle-check"></i> Cash on Delivery (COD) Available</div>
+    </div>
     
-    <form id="userWelcomeForm" class="modal-form"> 
-      <input type="tel" id="userWelcomePhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
+    <form id="userWelcomeForm" class="modal-form" style="margin-top: 0;"> 
+      <input type="tel" id="userWelcomePhone" class="modal-input" placeholder="Enter Mobile / WhatsApp Number" required> 
       <input type="text" id="userWelcomeName" class="modal-input" placeholder="Full Name" style="display: none;"> 
       
       <div class="modal-btn-group"> 
         <button type="button" id="closeWelcomeModal" style="display:none; flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button>
-        <button type="submit" class="modal-btn-submit" id="welcomeSubmitBtn">Continue</button> 
+        <button type="submit" class="modal-btn-submit" id="welcomeSubmitBtn">Continue Securely</button> 
       </div> 
     </form> 
 
@@ -1144,16 +1242,32 @@ nav {
 <!-- Earn Partner Request Modal -->
 <div id="earnModal" class="modal-overlay"> 
   <div class="modal-card"> 
-    <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Earn Money Partner</h3> 
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Submit your details for separate admin review and verification.</p> 
-    <form id="earnForm" class="modal-form"> 
+    <div class="earn-modal-header">
+      <div class="earn-modal-icon">
+        <i class="fa-solid fa-hand-holding-dollar"></i>
+      </div>
+      <div>
+        <h3 style="margin: 0 0 2px 0; font-size: 1.15rem;">CartPrime Partner Program</h3>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;">Earn commissions on every referral</p>
+      </div>
+    </div>
+
+    <div class="earn-benefits">
+      <div class="earn-benefit-item"><i class="fa-solid fa-circle-check"></i> Instant Admin Verification</div>
+      <div class="earn-benefit-item"><i class="fa-solid fa-circle-check"></i> Direct UPI Payouts to your Account</div>
+      <div class="earn-benefit-item"><i class="fa-solid fa-circle-check"></i> Real-time Earnings Dashboard</div>
+    </div>
+
+    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;" id="earnSubText">Enter your WhatsApp or mobile number to check your partnership eligibility status.</p> 
+
+    <form id="earnForm" class="modal-form" style="margin-top: 0;"> 
       <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
       <input type="text" id="partnerName" class="modal-input" placeholder="Full Name" style="display: none;"> 
       <input type="text" id="partnerUpi" class="modal-input" placeholder="UPI ID / GPay Number for Payouts" style="display: none;"> 
       
       <div class="modal-btn-group"> 
         <button type="button" id="closeEarnModal" style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button> 
-        <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Continue</button> 
+        <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Check Eligibility</button> 
       </div> 
     </form> 
   </div> 
@@ -1238,7 +1352,6 @@ nav {
 </div> 
 <div class="category-bar" id="categoryBar"></div> 
 
-<!-- Banner Section (Arrows Removed, High Clarity) -->
 <div class="banner-section" id="bannerSection" style="display: none;"> 
   <div class="banner-wrapper"> 
     <div class="banner-slider" id="bannerSlider"></div> 
@@ -1379,9 +1492,9 @@ nav {
     registrationStep = 1;
     userWelcomePhone.style.display = 'block';
     userWelcomeName.style.display = 'none';
-    welcomeSubmitBtn.textContent = "Continue";
+    welcomeSubmitBtn.textContent = "Continue Securely";
     welcomeModalTitle.textContent = "Welcome to CartPrime";
-    welcomeModalSub.textContent = "Enter your mobile number to continue.";
+    welcomeModalSub.textContent = "100% Secure & Verified Shopping Platform";
   }
 
   const storedUserPhone = localStorage.getItem('userPhone');
@@ -1527,7 +1640,7 @@ nav {
     });
   }
 
-  /* --- EARN PARTNER LOGIC (FIXED) --- */ 
+  /* --- EARN PARTNER LOGIC --- */ 
   const earnModal = document.getElementById('earnModal'); 
   const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
@@ -1536,6 +1649,7 @@ nav {
   const partnerName = document.getElementById('partnerName');
   const partnerUpi = document.getElementById('partnerUpi');
   const earnSubmitBtn = document.getElementById('earnSubmitBtn');
+  const earnSubText = document.getElementById('earnSubText');
 
   let earnStep = 1;
 
@@ -1544,7 +1658,8 @@ nav {
     partnerPhone.style.display = 'block';
     partnerName.style.display = 'none';
     partnerUpi.style.display = 'none';
-    earnSubmitBtn.textContent = "Continue";
+    earnSubmitBtn.textContent = "Check Eligibility";
+    if(earnSubText) earnSubText.textContent = "Enter your WhatsApp or mobile number to check your partnership eligibility status.";
     if (earnForm) earnForm.reset();
   }
 
@@ -1570,16 +1685,16 @@ nav {
 
         if (status === 'approved' || status === 'active') {
           window.location.href = '/wallet.html';
-        } else if (status === 'pending' || status === 'pending') {
+        } else if (status === 'pending') {
           showCustomAlert(
             "Under Verification", 
-            `Your Earn Partner registration is under admin review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access to wallet after approval.`, 
+            `Your Partner Account is currently under review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access once approved.`, 
             true
           );
         } else {
           showCustomAlert(
             "Application Status", 
-            `Status: ${partnerData.status || 'Pending'}. Please contact support if you need help.`, 
+            `Status: ${partnerData.status || 'Pending'}. Please contact support if you need assistance.`, 
             false
           );
         }
@@ -1588,7 +1703,8 @@ nav {
         partnerName.style.display = 'block';
         partnerUpi.style.display = 'block';
         partnerName.value = localStorage.getItem('userName') || "";
-        earnSubmitBtn.textContent = "Submit Request";
+        earnSubmitBtn.textContent = "Submit Application";
+        if(earnSubText) earnSubText.textContent = "You are eligible! Complete your profile details to register.";
         earnModal.style.display = 'flex';
       }
     }).catch(() => {
@@ -1647,8 +1763,8 @@ nav {
             earnModal.style.display = 'none'; 
             resetEarnForm();
             showCustomAlert(
-              "Request Received!", 
-              `Your registration was submitted successfully for verification! Partner ID: ${uniquePartnerId}. Access to wallet.html will be granted after admin approval.`, 
+              "Application Submitted!", 
+              `Your partner application was received successfully! Partner ID: ${uniquePartnerId}. Access will be granted after verification.`, 
               true
             ); 
           }).catch((err) => { 
