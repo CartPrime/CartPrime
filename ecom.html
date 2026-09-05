@@ -1240,8 +1240,8 @@ window.verifyPayment = (path, status) => {
     });
 };
 
-/* DELIVERED CLICK LOGIC - ONLY UPDATES DELIVERED STATUS FIELD */
-window.updateStatus = (path, s) => {
+/* DELIVERED CLICK LOGIC - UPDATES ORDERS DB AND REFERRALORDERS DB SIMULTANEOUSLY */
+window.updateStatus = async (path, s) => {
     let updateData = { status: s };
     
     if (s === "Delivered") {
@@ -1249,17 +1249,44 @@ window.updateStatus = (path, s) => {
         updateData.commissionPaid = false; 
     }
 
-    update(ref(db, 'orders/' + path), updateData).then(() => {
+    try {
+        await update(ref(db, 'orders/' + path), updateData);
+
+        const o = globalOrdersCache[path];
+        if (o) {
+            const orderIdKey = o.orderId || path.split('/').pop();
+            
+            // Search & update referralOrders if present in DB
+            const refOrdersSnap = await get(ref(db, 'referralOrders'));
+            if (refOrdersSnap.exists()) {
+                const refOrders = refOrdersSnap.val();
+                for (let rKey in refOrders) {
+                    const refItem = refOrders[rKey];
+                    if (refItem.orderId === orderIdKey || rKey === orderIdKey) {
+                        await update(ref(db, `referralOrders/${rKey}`), updateData);
+                    } else if (typeof refItem === 'object') {
+                        for (let subKey in refItem) {
+                            if (refItem[subKey].orderId === orderIdKey || subKey === orderIdKey) {
+                                await update(ref(db, `referralOrders/${rKey}/${subKey}`), updateData);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Swal.close();
         Swal.fire('Updated', `Order status marked as ${s}`, 'success');
         
         if (window.checkAndCreditCommissions) {
             window.checkAndCreditCommissions();
         }
-    });
+    } catch (err) {
+        Swal.fire('Error', 'Failed to update order status: ' + err.message, 'error');
+    }
 };
 
-/* PAYOUT REQUESTS LISTENER FROM payoutRequests */
+/* PAYOUT REQUESTS LISTENER FROM payoutRequests WITH REALTIME SYNC TO EARN PARTNERS TAB */
 onValue(ref(db, 'payoutRequests'), snap => {
     const list = document.getElementById('payoutRequestList');
     if (!list) return;
