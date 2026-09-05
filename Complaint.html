@@ -3,42 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CartPrime Help Center</title>
+    <title>CartPrime Help Center | Luxury Support</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath d='M320 64C178.6 64 64 178.6 64 320S178.6 576 320 576 576 461.4 576 320 461.4 64 320 64zM320 144a72 72 0 1 1 0 144 72 72 0 0 1 0-144zm0 384c-79.5 0-144-64.5-144-144 0-8.8 7.2-16 16-16h256c8.8 0 16 7.2 16 16 0 79.5-64.5 144-144 144z'/%3E%3C/svg%3E">
     <style>
         :root {
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
+            --bg-color: #f4f6f9;
+            --card-bg: rgba(255, 255, 255, 0.85);
             --text-color: #0f172a;
             --text-muted: #64748b;
-            --border: #e2e8f0;
-            --input-bg: #f8fafc;
+            --border: rgba(226, 232, 240, 0.8);
+            --input-bg: #ffffff;
             --chat-bg: #ffffff;
             --chat-header-bg: #ffffff;
             --chat-header-text: #0f172a;
-            --primary-neutral: #2563eb;
-            --primary-hover: #1d4ed8;
-            --accent-border: #cbd5e1;
-            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
-            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+            --primary-neutral: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent-border: rgba(99, 102, 241, 0.2);
+            --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03);
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
         }
 
         body.dark-theme {
-            --bg-color: #09090b;
-            --card-bg: #121214;
+            --bg-color: #070709;
+            --card-bg: rgba(18, 18, 24, 0.75);
             --text-color: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --border: #27272a;
+            --text-muted: #94a3b8;
+            --border: rgba(39, 39, 42, 0.8);
             --input-bg: #18181b;
-            --chat-bg: #121214;
+            --chat-bg: #121216;
             --chat-header-bg: #18181b;
             --chat-header-text: #f4f4f5;
-            --primary-neutral: #3b82f6;
-            --primary-hover: #60a5fa;
-            --accent-border: #3f3f46;
-            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
-            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+            --primary-neutral: #818cf8;
+            --primary-hover: #6366f1;
+            --accent-border: rgba(129, 140, 248, 0.3);
+            --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+            --gradient-primary: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
         }
 
         * { 
@@ -49,8 +51,15 @@
             -webkit-tap-highlight-color: transparent; 
         }
 
-        button, input, select, textarea {
-            outline: none !important;
+        body { 
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 2.5rem 1rem; 
+            transition: background 0.4s ease, color 0.4s ease; 
         }
 
         #page-loader {
@@ -65,93 +74,93 @@
             border-color: var(--primary-neutral) transparent transparent transparent;
         }
         @keyframes ringRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loader-text { margin-top: 15px; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+        .loader-text { margin-top: 15px; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
 
-        body { background: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; transition: background 0.3s, color 0.3s; }
-        
         .top-action-bar { width: 100%; max-width: 900px; display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 2rem; }
-        .action-btn { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); padding: 9px 18px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.85rem; box-shadow: var(--card-shadow); transition: all 0.2s ease; }
-        .action-btn:hover { border-color: var(--primary-neutral); transform: translateY(-1px); }
+        .action-btn { background: var(--card-bg); backdrop-filter: blur(10px); color: var(--text-color); border: 1px solid var(--border); padding: 10px 20px; border-radius: 14px; cursor: pointer; font-weight: 600; font-size: 0.85rem; box-shadow: var(--card-shadow); transition: all 0.3s ease; }
+        .action-btn:hover { border-color: var(--primary-neutral); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15); }
         
         .container { max-width: 900px; width: 100%; }
+        
         header { text-align: center; margin-bottom: 3rem; }
-        header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, var(--text-color), var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        header p { color: var(--text-muted); font-size: 1.05rem; font-weight: 400; }
+        header h1 { font-size: 3rem; margin-bottom: 0.7rem; font-weight: 800; letter-spacing: -1px; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header p { color: var(--text-muted); font-size: 1.1rem; font-weight: 400; letter-spacing: 0.2px; }
         
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 1.8rem; box-shadow: var(--card-shadow); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .card:hover { border-color: var(--primary-neutral); transform: translateY(-3px); box-shadow: var(--shadow); }
-        .card h3 { margin-bottom: 0.6rem; font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
-        .highlight-email { display: inline-block; margin-top: 0.8rem; padding: 0.5rem 0.9rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; font-family: monospace; font-size: 0.85rem; color: var(--primary-neutral); }
+        .card { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; box-shadow: var(--card-shadow); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); text-align: left; }
+        .card:hover { border-color: var(--primary-neutral); transform: translateY(-4px); box-shadow: var(--shadow); }
+        .card h3 { margin-bottom: 0.8rem; font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--text-color); }
+        .card p { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; }
+        .highlight-email { display: inline-block; margin-top: 1rem; padding: 0.6rem 1rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; font-weight: 600; font-family: monospace; font-size: 0.85rem; color: var(--primary-neutral); letter-spacing: 0.5px; }
 
-        .form-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 2.5rem; margin-bottom: 2rem; box-shadow: var(--shadow); }
-        .form-section h2 { margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1.2rem; font-size: 1.35rem; font-weight: 700; }
-        .form-group { margin-bottom: 1.4rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.88rem; color: var(--text-color); }
-        .form-control { width: 100%; padding: 0.9rem 1.1rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; color: var(--text-color); font-size: 0.92rem; transition: all 0.2s ease; }
-        .form-control:focus { border-color: var(--primary-neutral); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); background: var(--card-bg); }
-        textarea.form-control { resize: vertical; min-height: 130px; }
+        .form-section { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 28px; padding: 3rem; margin-bottom: 2rem; box-shadow: var(--shadow); }
+        .form-section h2 { margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.2rem; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+        .form-group { margin-bottom: 1.6rem; text-align: left; }
+        .form-group label { display: block; margin-bottom: 0.6rem; font-weight: 600; font-size: 0.9rem; color: var(--text-color); letter-spacing: 0.2px; }
         
-        .submit-btn { width: 100%; padding: 1rem; background: var(--primary-neutral); color: #ffffff; border: none; border-radius: 12px; font-size: 0.98rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
-        .submit-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .form-control { width: 100%; padding: 1rem 1.2rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 14px; color: var(--text-color); font-size: 0.95rem; transition: all 0.3s ease; }
+        .form-control:focus { border-color: var(--primary-neutral); box-shadow: 0 0 0 4px var(--accent-border); }
+        textarea.form-control { resize: vertical; min-height: 140px; }
+        
+        .submit-btn { width: 100%; padding: 1.1rem; background: var(--gradient-primary); color: #ffffff; border: none; border-radius: 14px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4); letter-spacing: 0.3px; }
+        .submit-btn:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.5); }
         .submit-btn:active { transform: scale(0.99); }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; width: 90%; max-width: 480px; padding: 28px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-card { background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 28px; width: 90%; max-width: 500px; padding: 32px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .modal-overlay.active .modal-card { transform: scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-        .modal-header h3 { font-size: 1.2rem; font-weight: 700; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .modal-header h3 { font-size: 1.3rem; font-weight: 700; }
 
-        .alert-modal-card { text-align: center; max-width: 400px; padding: 32px 24px; }
-        .alert-icon-box { font-size: 2.5rem; margin-bottom: 12px; }
-        .alert-title { font-size: 1.25rem; margin-bottom: 8px; font-weight: 700; }
-        .alert-message { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; white-space: pre-line; }
-        .alert-close-btn { width: 100%; padding: 12px; background: var(--primary-neutral); color: #ffffff; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+        .alert-modal-card { text-align: center; max-width: 420px; padding: 36px 28px; }
+        .alert-icon-box { font-size: 3rem; margin-bottom: 14px; }
+        .alert-title { font-size: 1.35rem; margin-bottom: 10px; font-weight: 700; }
+        .alert-message { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; white-space: pre-line; }
+        .alert-close-btn { width: 100%; padding: 13px; background: var(--gradient-primary); color: #ffffff; border: none; border-radius: 14px; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4); }
 
-        .history-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-top: 12px; text-align: left; }
-        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .status-Pending { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
-        .status-InProgress { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-        .status-Resolved, .status-Solved { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .history-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-top: 14px; text-align: left; box-shadow: var(--card-shadow); }
+        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+        .status-Pending { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+        .status-InProgress { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+        .status-Resolved, .status-Solved { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
 
-        .chatbot-toggler { position: fixed; bottom: 25px; right: 25px; border: 1px solid var(--border); height: 56px; width: 56px; display: flex; cursor: pointer; align-items: center; justify-content: center; border-radius: 50%; background: var(--primary-neutral); z-index: 1000; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3); transition: transform 0.2s ease; }
-        .chatbot-toggler:hover { transform: scale(1.08); }
-        .chatbot-toggler svg { fill: none; stroke: #ffffff; stroke-width: 2; width: 24px; height: 24px; }
+        .chatbot-toggler { position: fixed; bottom: 30px; right: 30px; border: 1px solid var(--border); height: 60px; width: 60px; display: flex; cursor: pointer; align-items: center; justify-content: center; border-radius: 50%; background: var(--gradient-primary); z-index: 1000; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4); transition: transform 0.3s ease; }
+        .chatbot-toggler:hover { transform: scale(1.1); }
+        .chatbot-toggler svg { fill: none; stroke: #ffffff; stroke-width: 2.2; width: 26px; height: 26px; }
 
-        .chatbot-container { position: fixed; right: 25px; bottom: 95px; width: calc(100% - 40px); max-width: 380px; background: var(--chat-bg); border: 1px solid var(--border); border-radius: 22px; overflow: hidden; opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.98); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1000; box-shadow: var(--shadow); }
+        .chatbot-container { position: fixed; right: 30px; bottom: 105px; width: calc(100% - 40px); max-width: 400px; background: var(--chat-bg); border: 1px solid var(--border); border-radius: 26px; overflow: hidden; opacity: 0; pointer-events: none; transform: translateY(25px) scale(0.97); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1000; box-shadow: var(--shadow); }
         body.show-chatbot .chatbot-container { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
-        .chat-header { padding: 16px 20px; background: var(--chat-header-bg); color: var(--chat-header-text); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 0.95rem; }
-        .chatbox { overflow-y: auto; height: 340px; padding: 16px; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .chat-header { padding: 18px 22px; background: var(--chat-header-bg); color: var(--chat-header-text); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 1rem; }
+        .chatbox { overflow-y: auto; height: 360px; padding: 18px; list-style: none; display: flex; flex-direction: column; gap: 14px; }
         .chatbox .chat { display: flex; flex-direction: column; }
         .chatbox .outgoing { align-items: flex-end; }
         .chatbox .incoming { align-items: flex-start; }
-        .chatbox .chat p { padding: 10px 14px; border-radius: 14px; max-width: 88%; font-size: 0.88rem; line-height: 1.45; }
+        .chatbox .chat p { padding: 12px 16px; border-radius: 16px; max-width: 88%; font-size: 0.9rem; line-height: 1.5; }
         .chatbox .incoming p { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border); }
-        .chatbox .outgoing p { background: var(--primary-neutral); color: #ffffff; }
+        .chatbox .outgoing p { background: var(--gradient-primary); color: #ffffff; box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3); }
 
-        .typing-bubble { display: flex !important; gap: 5px !important; padding: 12px 14px !important; background: var(--input-bg) !important; border: 1px solid var(--border) !important; }
-        .glow-dot { width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: glowingWave 1.4s infinite ease-in-out; }
+        .typing-bubble { display: flex !important; gap: 6px !important; padding: 14px 16px !important; background: var(--input-bg) !important; border: 1px solid var(--border) !important; }
+        .glow-dot { width: 7px; height: 7px; background: var(--text-muted); border-radius: 50%; animation: glowingWave 1.4s infinite ease-in-out; }
         .glow-dot:nth-child(2) { animation-delay: 0.2s; } .glow-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes glowingWave { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; background: var(--primary-neutral); } }
 
-        .option-container { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; width: 100%; }
-        .option-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-color); padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; text-align: left; cursor: pointer; transition: all 0.2s ease; box-shadow: var(--card-shadow); }
-        .option-btn:hover { border-color: var(--primary-neutral); background: var(--input-bg); }
+        .option-container { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; width: 100%; }
+        .option-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-color); padding: 11px 16px; border-radius: 12px; font-size: 0.88rem; font-weight: 600; text-align: left; cursor: pointer; transition: all 0.25s ease; box-shadow: var(--card-shadow); }
+        .option-btn:hover { border-color: var(--primary-neutral); background: var(--input-bg); transform: translateX(4px); }
 
-        .chat-input-area { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); background: var(--chat-header-bg); }
-        .chat-input-area input { flex: 1; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; outline: none; color: var(--text-color); padding: 9px 12px; font-size: 0.88rem; }
-        .chat-input-area input:focus { border-color: var(--primary-neutral); }
-        .chat-input-area button { background: var(--primary-neutral); border: none; color: #ffffff; padding: 9px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.88rem; transition: background 0.2s; }
-        .chat-input-area button:hover { background: var(--primary-hover); }
+        .chat-input-area { display: flex; gap: 10px; padding: 14px; border-top: 1px solid var(--border); background: var(--chat-header-bg); }
+        .chat-input-area input { flex: 1; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; outline: none; color: var(--text-color); padding: 10px 14px; font-size: 0.9rem; }
+        .chat-input-area input:focus { border-color: var(--primary-neutral); box-shadow: 0 0 0 3px var(--accent-border); }
+        .chat-input-area button { background: var(--gradient-primary); border: none; color: #ffffff; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: opacity 0.2s; }
+        .chat-input-area button:hover { opacity: 0.9; }
 
         #pdf-receipt-wrapper { position: absolute; left: -9999px; top: -9999px; }
-        .pdf-receipt-container { background: #ffffff; color: #000000; padding: 30px; font-family: sans-serif; width: 750px; }
-        .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000000; padding-bottom: 12px; margin-bottom: 15px; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; }
-        .pdf-table th { background: #000000; color: #ffffff; padding: 8px; }
-        .pdf-table td { padding: 8px; border-bottom: 1px solid #e4e4e7; }
+        .pdf-receipt-container { background: #ffffff; color: #000000; padding: 35px; font-family: sans-serif; width: 750px; }
+        .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000000; padding-bottom: 15px; margin-bottom: 20px; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; }
+        .pdf-table th { background: #000000; color: #ffffff; padding: 10px; text-align: left; }
+        .pdf-table td { padding: 10px; border-bottom: 1px solid #e4e4e7; text-align: left; }
     </style>
 </head>
 <body>
@@ -169,7 +178,7 @@
 <div class="container">
     <header>
         <h1>CartPrime Help Center</h1>
-        <p>How can we assist you today?</p>
+        <p>Premium support designed for your seamless shopping experience.</p>
     </header>
 
     <div class="cards-grid">
@@ -179,12 +188,12 @@
             <span class="highlight-email">cartprimeshop@gmail.com</span>
         </div>
         <div class="card">
-            <h3>⏰ Working Time</h3>
-            <p>Mon-Fri (5:00 PM - 12:00 PM)</p>
+            <h3>⏰ Working Hours</h3>
+            <p>Monday – Friday<br>(5:00 PM – 12:00 AM)</p>
         </div>
         <div class="card">
             <h3>❓ FAQ & Resources</h3>
-            <p>Find answers to common questions here.</p>
+            <p>Access intuitive answers to all your common questions instantly.</p>
         </div>
     </div>
 
@@ -226,14 +235,14 @@
     <div class="modal-card">
         <div class="modal-header">
             <h3>📋 My Complaint History</h3>
-            <span style="cursor:pointer; font-size:1.1rem; font-weight:bold;" onclick="closeHistoryModal()">✕</span>
+            <span style="cursor:pointer; font-size:1.2rem; font-weight:bold;" onclick="closeHistoryModal()">✕</span>
         </div>
         <div>
             <div class="form-group">
                 <label>Registered Phone Number</label>
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 10px;">
                     <input type="tel" id="modalSearchPhone" class="form-control" placeholder="Enter phone number">
-                    <button type="button" class="submit-btn" style="width: auto; padding: 0 1.2rem;" onclick="fetchModalComplaintHistory()">Search</button>
+                    <button type="button" class="submit-btn" style="width: auto; padding: 0 1.5rem;" onclick="fetchModalComplaintHistory()">Search</button>
                 </div>
             </div>
             <div id="modalHistoryContainer">
@@ -249,11 +258,11 @@
 <div class="chatbot-container">
     <div class="chat-header">
         <span>Support Assistant 🤖</span>
-        <span style="cursor:pointer; font-size:1rem;" onclick="document.body.classList.remove('show-chatbot')">✕</span>
+        <span style="cursor:pointer; font-size:1.1rem;" onclick="document.body.classList.remove('show-chatbot')">✕</span>
     </div>
     <ul class="chatbox" id="chatbox">
         <li class="chat incoming">
-            <p>Hi there! 👋 Type "Hi" to see our service options or ask any question!</p>
+            <p>Hi there! 👋 Type "Hi" to explore our luxury support options or ask any question!</p>
         </li>
     </ul>
     <div class="chat-input-area">
@@ -266,7 +275,7 @@
     <div class="modal-card">
         <div class="modal-header">
             <h3>Return & Refund Request</h3>
-            <span style="cursor:pointer; font-weight:bold;" onclick="closeReturnModal()">✕</span>
+            <span style="cursor:pointer; font-weight:bold; font-size:1.2rem;" onclick="closeReturnModal()">✕</span>
         </div>
         <form id="returnForm" onsubmit="submitReturnRequest(event)">
             <div class="form-group">
@@ -314,7 +323,7 @@
                 <p><b>Date:</b> <span id="pdf-statement-date"></span></p>
             </div>
         </div>
-        <div style="background:#f4f4f5; padding:10px; margin-bottom:15px;">
+        <div style="background:#f4f4f5; padding:12px; margin-bottom:20px; border-radius:6px;">
             <p><b>Phone Number:</b> <span id="pdf-cust-phone"></span></p>
             <p><b>Customer Name:</b> <span id="pdf-cust-name"></span></p>
         </div>
@@ -326,7 +335,7 @@
             </thead>
             <tbody id="pdf-orders-rows"></tbody>
         </table>
-        <div style="text-align:right; font-weight:bold;">Total Amount: ₹<span id="pdf-grand-total">0</span></div>
+        <div style="text-align:right; font-weight:bold; font-size:1.1rem;">Total Amount: ₹<span id="pdf-grand-total">0</span></div>
     </div>
 </div>
 
@@ -392,7 +401,7 @@
             return;
         }
 
-        container.innerHTML = "<p style='margin-top:10px; color:var(--text-muted);'>Searching Database...</p>";
+        container.innerHTML = "<p style='margin-top:15px; color:var(--text-muted);'>Searching Database...</p>";
 
         try {
             const snapshot = await get(ref(db, 'complaints'));
@@ -422,23 +431,23 @@
                     
                     html += `
                         <div class="history-card">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                                 <strong>Ticket #${c.complaintId}</strong>
                                 <span class="status-badge status-${statusClass}">${status}</span>
                             </div>
-                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;"><b>Date:</b> ${dateText}</p>
-                            <p style="font-size:0.85rem; margin-bottom:6px;"><b>Message:</b> ${messageText}</p>
-                            ${c.adminReply ? `<div style="background:var(--card-bg); padding:8px; border-left:3px solid var(--primary-neutral); font-size:0.8rem; margin-top:6px; border-radius:4px;"><b>Reply:</b> ${c.adminReply}</div>` : ''}
+                            <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:6px;"><b>Date:</b> ${dateText}</p>
+                            <p style="font-size:0.88rem; margin-bottom:8px;"><b>Message:</b> ${messageText}</p>
+                            ${c.adminReply ? `<div style="background:var(--card-bg); padding:10px; border-left:3px solid var(--primary-neutral); font-size:0.82rem; margin-top:8px; border-radius:6px;"><b>Reply:</b> ${c.adminReply}</div>` : ''}
                         </div>
                     `;
                 });
                 container.innerHTML = html;
             } else {
-                container.innerHTML = `<p style="color:var(--text-muted); margin-top:10px;">No complaints found for <b>${phone}</b></p>`;
+                container.innerHTML = `<p style="color:var(--text-muted); margin-top:15px;">No complaints found for <b>${phone}</b></p>`;
             }
         } catch (err) {
             console.error(err);
-            container.innerHTML = "<p style='color:red; margin-top:10px;'>Error fetching status from Database!</p>";
+            container.innerHTML = "<p style='color:red; margin-top:15px;'>Error fetching status from Database!</p>";
         }
     };
 
@@ -503,7 +512,7 @@
                 if (snapshot.exists()) {
                     fetchedOrdersList = [];
                     snapshot.forEach((child) => fetchedOrdersList.push({ orderId: child.key, ...child.val() }));
-                    resultLi.innerHTML = `<p>✅ Order receipt is ready to download 👇<button class="submit-btn" style="margin-top:8px;" onclick="generateAllOrdersPDF()">📄 Download PDF Receipt</button></p>`;
+                    resultLi.innerHTML = `<p>✅ Order receipt is ready to download 👇<button class="submit-btn" style="margin-top:10px; padding:10px;" onclick="generateAllOrdersPDF()">📄 Download PDF Receipt</button></p>`;
                 } else {
                     resultLi.innerHTML = `<p>❌ No orders found for phone number: <b>${currentCustomerPhone}</b>.</p>`;
                 }
@@ -547,7 +556,7 @@
                             <b>Category:</b> ${c.category || 'General'}<br>
                             <b>Status:</b> <span style="font-weight:bold;">${status}</span><br>
                             ${c.adminReply ? `<b>Reply:</b> ${c.adminReply}<br>` : ''}
-                            <hr style="border:0.5px solid var(--border); margin:6px 0;">
+                            <hr style="border:0.5px solid var(--border); margin:8px 0;">
                         `;
                     });
                     resultLi.innerHTML = `<p>${htmlContent}</p>`;
@@ -589,7 +598,7 @@
                 if (foundOrder) {
                     selectedOrderForReturn = foundOrder;
                     if ((foundOrder.status || '').toLowerCase() === "delivered") {
-                        resultLi.innerHTML = `<p>📦 Order Found (#${foundOrder.orderId})<br>Status: Delivered<br><br><button class="submit-btn" onclick="openReturnModal('${foundOrder.orderId}')">🔄 Request Return</button></p>`;
+                        resultLi.innerHTML = `<p>📦 Order Found (#${foundOrder.orderId})<br>Status: Delivered<br><br><button class="submit-btn" style="padding:10px;" onclick="openReturnModal('${foundOrder.orderId}')">🔄 Request Return</button></p>`;
                     } else {
                         resultLi.innerHTML = `<p>🚫 Return allowed only for delivered orders. Current Status: <b>${foundOrder.status || 'Pending'}</b></p>`;
                     }
@@ -608,7 +617,7 @@
             const li = document.createElement('li');
             li.classList.add('chat', 'incoming');
             li.innerHTML = `
-                <p>Hello! How can I assist you today?</p>
+                <p>Hello! How can I assist your luxury experience today?</p>
                 <div class="option-container">
                     <button class="option-btn" onclick="selectOption('Order Status')">📦 Order Status</button>
                     <button class="option-btn" onclick="selectOption('Check Complaint Status')">📋 Check Complaint Status</button>
@@ -620,7 +629,7 @@
         } else {
             const li = document.createElement('li');
             li.classList.add('chat', 'incoming');
-            li.innerHTML = `<p>For assistance, please mail us at <b>cartprimeshop@gmail.com</b></p>`;
+            li.innerHTML = `<p>For priority assistance, please mail us at <b>cartprimeshop@gmail.com</b></p>`;
             chatbox.appendChild(li);
         }
         chatbox.scrollTop = chatbox.scrollHeight;
