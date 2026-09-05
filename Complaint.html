@@ -10,27 +10,31 @@
         :root {
             --bg-color: #ffffff;
             --card-bg: #f8fafc;
-            --text-color: #000000;
+            --text-color: #0f172a;
             --text-muted: #475569;
             --border: #e2e8f0;
             --input-bg: #ffffff;
             --chat-bg: #ffffff;
             --chat-header-bg: #f1f5f9;
-            --chat-header-text: #000000;
-            --primary-blue: #2563eb;
-            --primary-blue-hover: #1d4ed8;
+            --chat-header-text: #0f172a;
+            --primary-neutral: #0f172a;
+            --primary-hover: #334155;
+            --accent-border: #cbd5e1;
         }
 
         body.dark-theme {
-            --bg-color: #000000;
-            --card-bg: #111111;
-            --text-color: #ffffff;
+            --bg-color: #09090b;
+            --card-bg: #18181b;
+            --text-color: #f4f4f5;
             --text-muted: #a1a1aa;
             --border: #27272a;
-            --input-bg: #000000;
-            --chat-bg: #000000;
-            --chat-header-bg: #111111;
-            --chat-header-text: #ffffff;
+            --input-bg: #09090b;
+            --chat-bg: #09090b;
+            --chat-header-bg: #18181b;
+            --chat-header-text: #f4f4f5;
+            --primary-neutral: #f4f4f5;
+            --primary-hover: #ffffff;
+            --accent-border: #3f3f46;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
@@ -44,7 +48,7 @@
         .modern-loader-ring div {
             box-sizing: border-box; display: block; position: absolute; width: 56px; height: 56px; margin: 6px;
             border: 3px solid transparent; border-radius: 50%; animation: ringRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-            border-color: var(--primary-blue) transparent transparent transparent;
+            border-color: var(--text-color) transparent transparent transparent;
         }
         @keyframes ringRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loader-text { margin-top: 15px; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-color); font-weight: 600; }
@@ -53,14 +57,15 @@
         
         .top-action-bar { width: 100%; max-width: 950px; display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 1rem; }
         .action-btn { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .action-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+        .action-btn:hover { border-color: var(--accent-border); background: var(--border); }
         
         .container { max-width: 950px; width: 100%; }
         header { text-align: center; margin-bottom: 2.5rem; }
         header h1 { font-size: 2.5rem; margin-bottom: 0.8rem; }
         
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-bottom: 2.5rem; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; transition: transform 0.2s; }
+        .card:hover { border-color: var(--accent-border); }
         .card h3 { margin-bottom: 0.6rem; }
         .highlight-email { display: inline-block; margin-top: 0.6rem; padding: 0.45rem 0.85rem; background: var(--bg-color); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; font-family: monospace; }
 
@@ -68,36 +73,34 @@
         .form-section h2 { margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; }
         .form-group { margin-bottom: 1.2rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
-        .form-control { width: 100%; padding: 0.8rem 1rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text-color); font-size: 0.95rem; outline: none; }
-        .form-control:focus { border-color: var(--primary-blue); }
+        .form-control { width: 100%; padding: 0.8rem 1rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text-color); font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+        .form-control:focus { border-color: var(--text-color); }
         textarea.form-control { resize: vertical; min-height: 120px; }
         
-        .submit-btn { width: 100%; padding: 0.9rem; background: var(--primary-blue); color: #ffffff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; }
-        .submit-btn:hover { background: var(--primary-blue-hover); }
+        .submit-btn { width: 100%; padding: 0.9rem; background: var(--primary-neutral); color: var(--bg-color); border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+        .submit-btn:hover { opacity: 0.9; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-card { background: var(--bg-color); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 480px; padding: 20px; max-height: 85vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 
-        /* Custom Alert Popup Box Styling */
         .alert-modal-card { text-align: center; max-width: 400px; padding: 24px 20px; }
         .alert-icon-box { font-size: 2.2rem; margin-bottom: 10px; }
         .alert-title { font-size: 1.2rem; margin-bottom: 8px; font-weight: 700; color: var(--text-color); }
         .alert-message { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; white-space: pre-line; }
-        .alert-close-btn { width: 100%; padding: 10px; background: var(--primary-blue); color: #ffffff; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
-        .alert-close-btn:hover { background: var(--primary-blue-hover); }
+        .alert-close-btn { width: 100%; padding: 10px; background: var(--primary-neutral); color: var(--bg-color); border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
 
         .history-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-top: 10px; text-align: left; }
         .status-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-        .status-Pending { background: #fee2e2; color: #dc2626; }
-        .status-InProgress { background: #fef3c7; color: #d97706; }
-        .status-Resolved, .status-Solved { background: #dcfce7; color: #16a34a; }
+        .status-Pending { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .status-InProgress { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .status-Resolved, .status-Solved { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
 
-        .chatbot-toggler { position: fixed; bottom: 25px; right: 25px; border: none; height: 56px; width: 56px; display: flex; cursor: pointer; align-items: center; justify-content: center; border-radius: 50%; background: var(--primary-blue); z-index: 1000; }
-        .chatbot-toggler svg { fill: none; stroke: #ffffff; stroke-width: 2; width: 28px; height: 28px; }
+        .chatbot-toggler { position: fixed; bottom: 25px; right: 25px; border: 1px solid var(--border); height: 56px; width: 56px; display: flex; cursor: pointer; align-items: center; justify-content: center; border-radius: 50%; background: var(--card-bg); z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .chatbot-toggler svg { fill: none; stroke: var(--text-color); stroke-width: 2; width: 26px; height: 26px; }
 
-        .chatbot-container { position: fixed; right: 20px; bottom: 90px; width: calc(100% - 40px); max-width: 380px; background: var(--chat-bg); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; opacity: 0; pointer-events: none; transform: translateY(20px); transition: all 0.35s ease; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .chatbot-container { position: fixed; right: 20px; bottom: 90px; width: calc(100% - 40px); max-width: 380px; background: var(--chat-bg); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; opacity: 0; pointer-events: none; transform: translateY(20px); transition: all 0.35s ease; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
         body.show-chatbot .chatbot-container { opacity: 1; pointer-events: auto; transform: translateY(0); }
         .chat-header { padding: 14px 18px; background: var(--chat-header-bg); color: var(--chat-header-text); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
         .chatbox { overflow-y: auto; height: 340px; padding: 15px; list-style: none; }
@@ -106,20 +109,20 @@
         .chatbox .incoming { align-items: flex-start; }
         .chatbox .chat p { padding: 10px 14px; border-radius: 12px; max-width: 90%; font-size: 0.88rem; line-height: 1.4; }
         .chatbox .incoming p { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); }
-        .chatbox .outgoing p { background: var(--primary-blue); color: #fff; }
+        .chatbox .outgoing p { background: var(--primary-neutral); color: var(--bg-color); }
 
         .typing-bubble { display: flex !important; gap: 6px !important; padding: 12px 18px !important; background: var(--card-bg) !important; border: 1px solid var(--border) !important; }
         .glow-dot { width: 8px; height: 8px; background: var(--text-color); border-radius: 50%; animation: glowingWave 1.4s infinite ease-in-out; }
         .glow-dot:nth-child(2) { animation-delay: 0.2s; } .glow-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes glowingWave { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; background: var(--primary-blue); } }
+        @keyframes glowingWave { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; background: var(--text-color); } }
 
         .option-container { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; width: 100%; }
-        .option-btn { background: var(--card-bg); border: 1px solid var(--primary-blue); color: var(--primary-blue); padding: 8px 12px; border-radius: 8px; font-size: 0.82rem; text-align: left; cursor: pointer; }
-        .option-btn:hover { background: var(--primary-blue); color: #ffffff; }
+        .option-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-color); padding: 8px 12px; border-radius: 8px; font-size: 0.82rem; text-align: left; cursor: pointer; transition: 0.2s; }
+        .option-btn:hover { border-color: var(--accent-border); background: var(--border); }
 
         .chat-input-area { display: flex; gap: 5px; padding: 10px; border-top: 1px solid var(--border); background: var(--chat-header-bg); }
         .chat-input-area input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-color); padding: 8px; }
-        .chat-input-area button { background: var(--primary-blue); border: none; color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+        .chat-input-area button { background: var(--primary-neutral); border: none; color: var(--bg-color); padding: 8px 14px; border-radius: 8px; cursor: pointer; }
 
         #pdf-receipt-wrapper { position: absolute; left: -9999px; top: -9999px; }
         .pdf-receipt-container { background: #ffffff; color: #000000; padding: 30px; font-family: sans-serif; width: 750px; }
@@ -138,7 +141,7 @@
 
 <div class="top-action-bar">
     <button class="action-btn" onclick="openHistoryModal()">📋 My Complaints</button>
-    <button class="action-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Switch Theme</button>
+    <button class="action-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 Theme</button>
 </div>
 
 <div class="container">
@@ -330,7 +333,6 @@
     let fetchedOrdersList = []; 
     let selectedOrderForReturn = null;
 
-    // CUSTOM DESIGNED ALERT SYSTEM FUNCTION
     window.showCustomAlert = function(title, message, icon = '🔔') {
         document.getElementById('alertIcon').innerText = icon;
         document.getElementById('alertTitle').innerText = title;
@@ -352,17 +354,14 @@
         document.body.classList.toggle('dark-theme');
     };
 
-    // HISTORY MODAL LOGIC (AUTO RELOAD ON CLOSE)
     window.openHistoryModal = function() {
         document.getElementById('complaintHistoryModal').classList.add('active');
     };
     window.closeHistoryModal = function() {
         document.getElementById('complaintHistoryModal').classList.remove('active');
-        // Auto reload page when modal is closed
         location.reload();
     };
 
-    // SEARCH COMPLAINTS FROM FIREBASE DATABASE
     window.fetchModalComplaintHistory = async function() {
         const phone = document.getElementById('modalSearchPhone').value.trim();
         const container = document.getElementById('modalHistoryContainer');
@@ -408,13 +407,13 @@
                             </div>
                             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;"><b>Date:</b> ${dateText}</p>
                             <p style="font-size:0.85rem; margin-bottom:6px;"><b>Message:</b> ${messageText}</p>
-                            ${c.adminReply ? `<div style="background:var(--bg-color); padding:6px; border-left:3px solid var(--primary-blue); font-size:0.8rem; margin-top:5px;"><b>Reply:</b> ${c.adminReply}</div>` : ''}
+                            ${c.adminReply ? `<div style="background:var(--bg-color); padding:6px; border-left:3px solid var(--text-color); font-size:0.8rem; margin-top:5px;"><b>Reply:</b> ${c.adminReply}</div>` : ''}
                         </div>
                     `;
                 });
                 container.innerHTML = html;
             } else {
-                container.innerHTML = `<p style="color:red; margin-top:10px;">No complaints found for <b>${phone}</b></p>`;
+                container.innerHTML = `<p style="color:var(--text-muted); margin-top:10px;">No complaints found for <b>${phone}</b></p>`;
             }
         } catch (err) {
             console.error(err);
@@ -469,7 +468,6 @@
         const chatbox = document.getElementById('chatbox');
         const lowerMsg = userMsg.toLowerCase();
 
-        // 1. Order Status Check
         if (awaitingPhone) {
             awaitingPhone = false;
             currentCustomerPhone = userMsg.trim();
@@ -496,7 +494,6 @@
             return;
         }
 
-        // 2. Complaint Status Check
         if (awaitingComplaintPhone) {
             awaitingComplaintPhone = false;
             const phoneInput = userMsg.trim();
@@ -524,11 +521,10 @@
                     let htmlContent = `<b>📋 Your Complaint History:</b><br><br>`;
                     userComplaints.forEach((c) => {
                         const status = c.status || 'Pending';
-                        let color = (status === "Solved" || status === "Resolved") ? "green" : (status === "In Progress" ? "orange" : "red");
                         htmlContent += `
                             <b>ID:</b> #${c.complaintId}<br>
                             <b>Category:</b> ${c.category || 'General'}<br>
-                            <b>Status:</b> <span style="color:${color}; font-weight:bold;">${status}</span><br>
+                            <b>Status:</b> <span style="font-weight:bold;">${status}</span><br>
                             ${c.adminReply ? `<b>Reply:</b> ${c.adminReply}<br>` : ''}
                             <hr style="border:0.5px solid var(--border); margin:5px 0;">
                         `;
@@ -545,7 +541,6 @@
             return;
         }
 
-        // 3. Return & Refund Request Check
         if (awaitingReturnOrderId) {
             awaitingReturnOrderId = false;
             const enteredOrderId = userMsg.trim();
@@ -638,7 +633,6 @@
         }, 1000);
     };
 
-    // SUBMIT COMPLAINT DIRECTLY TO FIREBASE
     document.getElementById('complaintForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const submitBtn = document.getElementById('submitBtn');
@@ -670,7 +664,6 @@
         }
     });
 
-    // Modal & Return Submit
     window.openReturnModal = function(id) {
         document.getElementById('retOrderId').value = id;
         document.getElementById('returnModal').classList.add('active');
@@ -703,7 +696,6 @@
         }
     };
 
-    // PDF Generator
     window.generateAllOrdersPDF = async function() {
         if (!fetchedOrdersList.length) {
             showCustomAlert("No Data", "No orders found to generate PDF receipt!", "📄");
