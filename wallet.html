@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartprime - Creator & Referral Partner Hub</title>
+    <title>Cartprime - Official Creator & Partner Hub</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK Setup -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -15,23 +16,30 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-tap-highlight-color: transparent;
             outline: none;
         }
 
         :root {
-            --bg-main: #f4f7fe;
-            --sidebar-bg: #ffffff;
-            --text-primary: #1b2559;
-            --text-secondary: #a3aed0;
-            --brand-purple: #5936f5;
-            --brand-gradient: linear-gradient(135deg, #7015ff 0%, #4318ff 100%);
-            --creator-gold: linear-gradient(135deg, #ffb302 0%, #f77062 100%);
-            --success-green: #05cd99;
-            --warning-orange: #ffb547;
-            --border-color: #e9edf7;
-            --whatsapp-green: #25d366;
+            --bg-main: #F4F7FE;
+            --surface-white: #FFFFFF;
+            --text-primary: #1B2559;
+            --text-secondary: #707EAE;
+            --text-muted: #A3AED0;
+            
+            --brand-primary: #4318FF;
+            --brand-gradient: linear-gradient(135deg, #868CFF 0%, #4318FF 100%);
+            --brand-gold: linear-gradient(135deg, #FFB800 0%, #FF8A00 100%);
+            --card-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+            --card-shadow-sm: 0px 6px 16px rgba(112, 144, 176, 0.08);
+
+            --success-green: #05CD99;
+            --success-bg: #E6F9F5;
+            --warning-orange: #FFB547;
+            --warning-bg: #FFF8E6;
+            --border-color: #E9EDF7;
+            --whatsapp-green: #25D366;
         }
 
         body {
@@ -40,7 +48,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
             user-select: none;
         }
 
@@ -49,9 +57,10 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* Navbar Styling */
         .top-navbar {
-            background-color: var(--sidebar-bg);
-            padding: 15px 20px;
+            background-color: var(--surface-white);
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -59,6 +68,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
 
         .brand {
@@ -70,38 +80,53 @@
         .brand-icon {
             background: var(--brand-gradient);
             color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
-            box-shadow: 0 8px 16px rgba(89, 54, 245, 0.25);
+            box-shadow: 0 8px 16px rgba(67, 24, 255, 0.25);
         }
 
         .brand-text h2 {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 800;
             color: var(--text-primary);
             line-height: 1.2;
+            letter-spacing: -0.3px;
         }
 
         .brand-text span {
-            font-size: 11px;
-            color: var(--brand-purple);
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            font-size: 10px;
+            color: var(--brand-primary);
+            font-weight: 800;
+            letter-spacing: 0.8px;
             text-transform: uppercase;
+        }
+
+        .trust-badge-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(5, 205, 153, 0.1);
+            color: var(--success-green);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid rgba(0, 230, 153, 0.2);
         }
 
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: #f4f7fe;
-            padding: 5px 12px 5px 6px;
+            gap: 10px;
+            background: var(--bg-main);
+            padding: 4px 12px 4px 4px;
             border-radius: 40px;
+            border: 1px solid var(--border-color);
         }
 
         .profile-img {
@@ -120,24 +145,25 @@
         .creator-badge-mini {
             font-size: 11px;
             font-weight: 700;
-            color: #d97706;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
+        /* Bottom Nav Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: var(--sidebar-bg);
+            background-color: var(--surface-white);
             border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 10px 0;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+            padding: 12px 0;
+            box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.05);
             z-index: 1000;
         }
 
@@ -150,7 +176,7 @@
             text-decoration: none;
             font-size: 11px;
             font-weight: 600;
-            gap: 4px;
+            gap: 5px;
             cursor: pointer;
             width: 20%;
             transition: all 0.2s ease;
@@ -161,63 +187,67 @@
         }
 
         .nav-item-bottom:hover, .nav-item-bottom.active {
-            color: var(--brand-purple);
+            color: var(--brand-primary);
+            font-weight: 700;
         }
 
         .main-content {
             flex: 1;
-            padding: 20px 16px;
+            padding: 24px 20px;
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
         }
 
+        /* Welcome Banner */
         .welcome-card {
             background: var(--brand-gradient);
-            border-radius: 20px;
-            padding: 22px;
+            border-radius: 24px;
+            padding: 24px;
             color: white;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(89, 54, 245, 0.25);
+            margin-bottom: 24px;
+            box-shadow: 0 12px 30px rgba(67, 24, 255, 0.25);
             position: relative;
             overflow: hidden;
         }
 
         .welcome-card::after {
-            content: '\f005';
+            content: '\f058';
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             position: absolute;
-            right: -10px;
-            bottom: -10px;
-            font-size: 100px;
-            color: rgba(255, 255, 255, 0.08);
+            right: -20px;
+            bottom: -20px;
+            font-size: 130px;
+            color: rgba(255, 255, 255, 0.06);
             pointer-events: none;
         }
 
         .creator-tag {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         .welcome-card h1 {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
         }
 
         .welcome-card p {
-            font-size: 12px;
-            opacity: 0.85;
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.5;
         }
 
         .page-view {
@@ -226,7 +256,7 @@
 
         .page-view.active-view {
             display: block;
-            animation: fadeIn 0.35s ease-in-out forwards;
+            animation: fadeIn 0.3s ease-in-out forwards;
         }
 
         @keyframes fadeIn {
@@ -240,19 +270,22 @@
             }
         }
 
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
         .stat-card {
-            background-color: white;
-            padding: 16px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            background-color: var(--surface-white);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow-sm);
             border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
         }
 
         .stat-card.full-width {
@@ -260,52 +293,57 @@
         }
 
         .stat-card.featured {
-            background: var(--creator-gold);
+            background: var(--brand-gold);
             color: white;
             border: none;
+            box-shadow: 0 12px 25px rgba(255, 138, 0, 0.25);
         }
 
         .stat-title {
             font-size: 12px;
             color: var(--text-secondary);
-            font-weight: 600;
-            margin-bottom: 4px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .stat-card.featured .stat-title {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.95);
         }
 
         .stat-value {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .stat-sub {
             font-size: 11px;
-            margin-top: 4px;
-            color: var(--text-secondary);
-            font-weight: 500;
+            margin-top: 6px;
+            color: var(--text-muted);
+            font-weight: 600;
         }
 
         .stat-card.featured .stat-sub {
             color: rgba(255, 255, 255, 0.9);
         }
 
+        /* Card Container */
         .card-box {
-            background-color: white;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            background-color: var(--surface-white);
+            padding: 24px;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .box-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .box-header h3 {
@@ -313,7 +351,8 @@
             font-weight: 800;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            color: var(--text-primary);
         }
 
         .referral-orders-list {
@@ -324,49 +363,52 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 16px 0;
             border-bottom: 1px solid var(--border-color);
         }
 
         .ref-order-item:last-child {
             border-bottom: none;
+            padding-bottom: 0;
         }
 
         .t-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
         .t-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
+            font-size: 18px;
         }
 
         .t-icon.income {
-            background-color: #e6f9f5;
+            background-color: var(--success-bg);
             color: var(--success-green);
         }
 
         .t-icon.pending-icon {
-            background-color: #fff8e6;
+            background-color: var(--warning-bg);
             color: var(--warning-orange);
         }
 
         .t-details h4 {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 700;
+            color: var(--text-primary);
         }
 
         .t-details p {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-secondary);
             margin-top: 2px;
+            font-weight: 500;
         }
 
         .t-amount {
@@ -375,105 +417,121 @@
 
         .t-amount .amt {
             font-weight: 800;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .t-amount .amt.plus { color: var(--success-green); }
 
         .badge {
             font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 800;
             display: inline-block;
-            margin-top: 3px;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .badge-success {
-            background-color: #e6f9f5;
+            background-color: var(--success-bg);
             color: var(--success-green);
         }
 
         .badge-pending {
-            background-color: #fff8e6;
+            background-color: var(--warning-bg);
             color: var(--warning-orange);
         }
 
+        /* Forms */
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
             font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 6px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
 
         .form-input {
             width: 100%;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 14px 16px;
+            border-radius: 14px;
             border: 1px solid var(--border-color);
+            background: var(--bg-main);
             font-size: 14px;
-            outline: none;
-            transition: 0.2s;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all 0.2s;
         }
 
         .form-input:focus {
-            border-color: var(--brand-purple);
+            border-color: var(--brand-primary);
+            background: var(--surface-white);
+            box-shadow: 0 0 0 4px rgba(67, 24, 255, 0.1);
         }
 
         .btn-submit {
-            background: var(--brand-purple);
+            background: var(--brand-gradient);
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 700;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 800;
             cursor: pointer;
             width: 100%;
             font-size: 14px;
-            box-shadow: 0 8px 20px rgba(89, 54, 245, 0.25);
+            box-shadow: 0 10px 20px rgba(67, 24, 255, 0.25);
+            transition: transform 0.2s;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
         }
 
         .link-copy-box {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 12px;
+            margin-top: 14px;
         }
 
         .link-input-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
 
         .link-input {
             flex: 1;
             background: var(--bg-main);
             border: 1px solid var(--border-color);
-            padding: 10px 12px;
-            border-radius: 10px;
-            font-size: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 13px;
             color: var(--text-primary);
             font-weight: 600;
         }
 
         .btn-copy {
-            background: var(--brand-purple);
+            background: var(--brand-primary);
             color: white;
             border: none;
-            padding: 10px 14px;
-            border-radius: 10px;
+            padding: 12px 18px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
+            transition: opacity 0.2s;
         }
 
         .share-actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
 
         .btn-share-wa {
@@ -481,63 +539,97 @@
             background: var(--whatsapp-green);
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.2);
         }
 
         .btn-share-more {
             flex: 1;
-            background: #eef2f6;
+            background: var(--bg-main);
             color: var(--text-primary);
-            border: none;
-            padding: 10px;
-            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
         }
 
+        /* Creator Benefits Grid */
         .creator-benefits {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-top: 12px;
+            margin-top: 16px;
         }
 
         .benefit-chip {
-            flex: 1;
-            background: #f8f9fe;
+            background: var(--bg-main);
             border: 1px solid var(--border-color);
-            padding: 10px;
-            border-radius: 12px;
+            padding: 12px 8px;
+            border-radius: 14px;
             text-align: center;
         }
 
         .benefit-chip i {
-            color: var(--brand-purple);
-            font-size: 16px;
-            margin-bottom: 4px;
+            color: var(--brand-primary);
+            font-size: 18px;
+            margin-bottom: 6px;
         }
 
         .benefit-chip span {
             display: block;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
+            color: var(--text-primary);
         }
 
         .benefit-chip p {
             font-size: 10px;
             color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* Trust Banner Footer */
+        .trust-banner {
+            background: #EBF3FF;
+            border-radius: 16px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+            border: 1px solid #D0E2FF;
+        }
+
+        .trust-banner i {
+            font-size: 24px;
+            color: var(--brand-primary);
+        }
+
+        .trust-banner-text h5 {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .trust-banner-text p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 500;
         }
     </style>
 </head>
@@ -546,16 +638,19 @@
     <!-- Top Header Bar -->
     <header class="top-navbar">
         <div class="brand">
-            <div class="brand-icon"><i class="fa-solid fa-crown"></i></div>
+            <div class="brand-icon"><i class="fa-solid fa-shield-halved"></i></div>
             <div class="brand-text">
                 <h2>Cartprime</h2>
-                <span>Creator & Referral Hub</span>
+                <span>Verified Partner Hub</span>
             </div>
+        </div>
+        <div class="trust-badge-header">
+            <i class="fa-solid fa-circle-check"></i> Official
         </div>
         <div class="user-profile">
             <div class="profile-img" id="user-avatar">C</div>
             <div class="creator-badge-mini">
-                <i class="fa-solid fa-circle-check"></i> VIP
+                <i class="fa-solid fa-square-check" style="color: var(--brand-primary);"></i> VIP
             </div>
         </div>
     </header>
@@ -563,9 +658,20 @@
     <main class="main-content">
         <!-- Welcome Banner -->
         <div class="welcome-card">
-            <div class="creator-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Verified Creator Partner</div>
+            <div class="creator-tag">
+                <i class="fa-solid fa-certificate"></i> Verified Creator Partner
+            </div>
             <h1>Hey, <span id="user-display-name">Loading...</span> 👋</h1>
-            <p>Share product links, track order conversions, and earn 3% instant lifetime commission!</p>
+            <p>Share official product links, track transparent order conversions, and earn 3% guaranteed lifetime commission.</p>
+        </div>
+
+        <!-- Trust Security Banner -->
+        <div class="trust-banner">
+            <i class="fa-solid fa-lock"></i>
+            <div class="trust-banner-text">
+                <h5>100% Encrypted & Verified Program</h5>
+                <p>Automated tracking via official Cartprime Partner API</p>
+            </div>
         </div>
 
         <!-- 1. REFERRAL & CREATOR HUB (Default View) -->
@@ -587,9 +693,9 @@
             <!-- Creator Referral Share Box -->
             <div class="card-box">
                 <div class="box-header">
-                    <h3><i class="fa-solid fa-link" style="color: var(--brand-purple);"></i> Unique Creator Referral Link</h3>
+                    <h3><i class="fa-solid fa-link" style="color: var(--brand-primary);"></i> Unique Referral Link</h3>
                 </div>
-                <p style="font-size: 12px; color: var(--text-secondary);">Promote this link across your Instagram, WhatsApp, or YouTube to earn cash back on every checkout.</p>
+                <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Promote this link across your Instagram, WhatsApp, or YouTube channel to earn direct cashback on every customer checkout.</p>
                 
                 <div class="link-copy-box">
                     <div class="link-input-group">
@@ -598,7 +704,7 @@
                     </div>
                     <div class="share-actions">
                         <button class="btn-share-wa" onclick="shareToWhatsApp()">
-                            <i class="fa-brands fa-whatsapp"></i> Share WhatsApp
+                            <i class="fa-brands fa-whatsapp"></i> WhatsApp
                         </button>
                         <button class="btn-share-more" onclick="shareNative()">
                             <i class="fa-solid fa-share-nodes"></i> Share Link
@@ -611,15 +717,15 @@
                     <div class="benefit-chip">
                         <i class="fa-solid fa-bolt"></i>
                         <span>Auto Credit</span>
-                        <p>After 7-Day Return</p>
+                        <p>After 7-Day Window</p>
                     </div>
                     <div class="benefit-chip">
                         <i class="fa-solid fa-chart-line"></i>
                         <span>Realtime</span>
-                        <p>Order Tracking</p>
+                        <p>Order Syncing</p>
                     </div>
                     <div class="benefit-chip">
-                        <i class="fa-solid fa-money-bill-transfer"></i>
+                        <i class="fa-solid fa-building-columns"></i>
                         <span>Instant</span>
                         <p>UPI Payouts</p>
                     </div>
@@ -629,7 +735,7 @@
             <!-- Referred Orders Status List -->
             <div class="card-box">
                 <div class="box-header">
-                    <h3><i class="fa-solid fa-bag-shopping" style="color: var(--brand-purple);"></i> Referred Orders Status</h3>
+                    <h3><i class="fa-solid fa-bag-shopping" style="color: var(--brand-primary);"></i> Referred Orders Tracked</h3>
                 </div>
                 <ul class="referral-orders-list" id="referral-orders-list"></ul>
             </div>
@@ -641,7 +747,7 @@
                 <div class="stat-card full-width featured">
                     <div class="stat-title">Available Wallet Balance</div>
                     <div class="stat-value">₹ <span class="val-balance">0.00</span></div>
-                    <div class="stat-sub">Ready for withdrawal to your bank account</div>
+                    <div class="stat-sub">Ready for instant withdrawal to bank / UPI</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Lifetime Earned</div>
@@ -660,16 +766,16 @@
         <section id="withdraw" class="page-view">
             <div class="card-box">
                 <div class="box-header">
-                    <h3><i class="fa-solid fa-building-columns" style="color: var(--brand-purple);"></i> Request Creator Payout</h3>
+                    <h3><i class="fa-solid fa-building-columns" style="color: var(--brand-primary);"></i> Request Creator Payout</h3>
                 </div>
-                <div style="margin-bottom: 20px; background: #f8f9fe; padding: 14px; border-radius: 12px; text-align: center; border: 1px dashed var(--brand-purple);">
-                    <p style="font-size: 12px; color: var(--text-secondary);">Available Balance for Withdrawal:</p>
-                    <h2 style="font-size: 26px; color: var(--brand-purple); font-weight: 800;">₹ <span class="val-balance">0.00</span></h2>
+                <div style="margin-bottom: 20px; background: var(--bg-main); padding: 18px; border-radius: 16px; text-align: center; border: 1px dashed var(--brand-primary);">
+                    <p style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Available Balance for Withdrawal:</p>
+                    <h2 style="font-size: 28px; color: var(--brand-primary); font-weight: 800; margin-top: 4px;">₹ <span class="val-balance">0.00</span></h2>
                 </div>
                 <form onsubmit="handleWithdraw(event)">
                     <div class="form-group">
                         <label>UPI ID / Bank Account Details</label>
-                        <input type="text" id="withdraw-method" class="form-input" placeholder="e.g. name@okaxis or GooglePay" required>
+                        <input type="text" id="withdraw-method" class="form-input" placeholder="e.g. name@okaxis or Google Pay" required>
                     </div>
                     <div class="form-group">
                         <label>Withdrawal Amount (₹)</label>
@@ -684,10 +790,10 @@
         <section id="transactions" class="page-view">
             <div class="card-box">
                 <div class="box-header">
-                    <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--brand-purple);"></i> Transaction History</h3>
+                    <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--brand-primary);"></i> Transaction History</h3>
                 </div>
                 <ul class="referral-orders-list" id="full-transaction-list">
-                    <li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">Your withdrawal requests and credit history will appear here.</li>
+                    <li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">Your withdrawal requests and credit history will appear here.</li>
                 </ul>
             </div>
         </section>
@@ -758,7 +864,7 @@
 
         function verifyAndFetchPartnerDetails() {
             if (!userPhone) {
-                updateUIWithPartnerName("Creator");
+                updateUIWithPartnerName("Creator Partner");
                 listenToWalletData();
                 return;
             }
@@ -1101,7 +1207,7 @@
                 });
 
                 if (count === 0) {
-                    list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No creator orders tracked yet. Share your referral link to get started!</li>`;
+                    list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">No creator orders tracked yet. Share your referral link to get started!</li>`;
                 }
 
                 document.querySelectorAll('.val-pending').forEach(el => el.innerText = pendingTotal.toFixed(2));
