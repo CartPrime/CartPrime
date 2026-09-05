@@ -1056,6 +1056,7 @@ nav {
   font-weight: 700;
   font-size: 0.9rem;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 .contact-option:hover {
   border-color: var(--accent);
@@ -1299,6 +1300,10 @@ nav {
         <i class="fa-brands fa-instagram" style="color: #e1306c;"></i>
         <span>Instagram: @cartprimeonlinestore</span>
       </a>
+      <div id="customerCareBtn" class="contact-option">
+        <i class="fa-solid fa-headset" style="color: #22c55e;"></i>
+        <span>Customer care</span>
+      </div>
     </div>
 
     <button type="button" id="closeContactModal" style="width:100%; margin-top:16px; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--text-main); font-weight:700; cursor:pointer;">Close</button> 
@@ -1653,6 +1658,7 @@ nav {
   const contactModal = document.getElementById('contactModal');
   const bottomContactBtn = document.getElementById('bottomContactBtn');
   const closeContactModal = document.getElementById('closeContactModal');
+  const customerCareBtn = document.getElementById('customerCareBtn');
 
   if (bottomContactBtn) {
     bottomContactBtn.addEventListener('click', () => {
@@ -1663,6 +1669,12 @@ nav {
   if (closeContactModal) {
     closeContactModal.addEventListener('click', () => {
       closeModal(contactModal);
+    });
+  }
+
+  if (customerCareBtn) {
+    customerCareBtn.addEventListener('click', () => {
+      window.location.href = '/wallet.html';
     });
   }
 
