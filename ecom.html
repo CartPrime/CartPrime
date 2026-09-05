@@ -1312,7 +1312,6 @@ window.updateStatus = async (path, s) => {
     }
 };
 
-/* REFINED PAYOUT REQUEST HANDLING LOGIC */
 onValue(ref(db, 'payout_requests'), snap => {
     const list = document.getElementById('payoutRequestList');
     if (!list) return;
@@ -1328,7 +1327,6 @@ onValue(ref(db, 'payout_requests'), snap => {
     function fetchPayouts(obj, path = "") {
         if (!obj || typeof obj !== 'object') return;
 
-        // Check if the current object level itself is a request
         if (obj.amount !== undefined || obj.upiId !== undefined || obj.paymentInfo !== undefined || obj.upi !== undefined || obj.withdrawAmount !== undefined || obj.details !== undefined) {
             payoutsMap[path] = obj;
             return;
@@ -1400,7 +1398,6 @@ window.updatePayoutStatus = async (requestPathKey, newStatus) => {
             updatedAt: new Date().toISOString()
         };
 
-        // Update exact path inside payoutRequests
         await update(ref(db, `payout_requests/${requestPathKey}`), updateData);
 
         const snap = await get(ref(db, `payout_requests/${requestPathKey}`));
@@ -1434,6 +1431,7 @@ window.updatePayoutStatus = async (requestPathKey, newStatus) => {
     }
 };
 
+/* FIXED EARN PARTNERS STATUS UPDATE FUNCTIONS */
 window.updateAffiliateStatus = async (requestId, userId, newStatus) => {
     try {
         await update(ref(db, `earn_partners/${requestId}`), { 
@@ -1493,10 +1491,10 @@ onValue(ref(db, 'earn_partners'), snap => {
             </td>
             <td>
                 ${status === 'Pending' ? `
-                    <button style="background:#10b981; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="earn_partners.status('${reqId}', '${targetUserId}', 'Approved')" title="Approve Request">
+                    <button style="background:#10b981; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="updateAffiliateStatus('${reqId}', '${targetUserId}', 'Approved')" title="Approve Request">
                         <i class="fa fa-check"></i> Approve
                     </button>
-                    <button style="background:#ef4444; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:4px;" onclick="earn_partners.status('${reqId}', '${targetUserId}', 'Rejected')" title="Reject Request">
+                    <button style="background:#ef4444; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:4px;" onclick="updateAffiliateStatus('${reqId}', '${targetUserId}', 'Rejected')" title="Reject Request">
                         <i class="fa fa-times"></i> Reject
                     </button>
                 ` : `
