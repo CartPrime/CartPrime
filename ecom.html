@@ -22,7 +22,13 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent; /* Removes blue tap highlight on mobile/clicks */
+        }
         body { background: var(--bg-light); min-height: 100vh; color: var(--text-main); padding-bottom: 75px; }
         
         /* Bottom Navigation Bar Styling */
@@ -58,6 +64,7 @@
             white-space: nowrap; 
             transition: all 0.2s ease; 
             flex-shrink: 0;
+            outline: none;
         }
         .bottom-nav button i, .bottom-nav a i { 
             font-size: 18px; 
@@ -89,7 +96,8 @@
         .chart-container { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); height: 300px; display: flex; flex-direction: column; justify-content: center; position: relative; }
 
         /* Form Controls */
-        input, textarea, select { width: 100%; padding: 12px 14px; margin: 6px 0 14px 0; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; background: #ffffff; color: var(--text-main); transition: 0.2s; }
+        input, textarea, select, button { outline: none; }
+        input, textarea, select { width: 100%; padding: 12px 14px; margin: 6px 0 14px 0; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; background: #ffffff; color: var(--text-main); transition: 0.2s; }
         input:focus, textarea:focus, select:focus { border-color: var(--accent); }
         
         .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -1335,11 +1343,11 @@ onValue(ref(db, 'payoutRequests'), snap => {
         let statusBadgeClass = "pay-Unpaid";
         if (status === "Paid" || status === "Approved") statusBadgeClass = "pay-Paid";
 
-        const formattedUpi = req.upiId || req.paymentInfo || req.upi || req.upi_id || 'N/A';
-        const partnerName = req.userName || req.name || req.partnerName || req.customerName || 'Earn Partner';
+        const formattedUpi = req.upiId || req.upi || req.paymentInfo || req.upi_id || req.details || 'N/A';
+        const partnerName = req.name || req.userName || req.partnerName || req.customerName || 'Earn Partner';
         const partnerPhone = req.phone || req.mobile || req.userPhone || '';
         const reqUserId = req.userId || req.uid || 'N/A';
-        const reqAmount = req.amount || req.withdrawAmount || 0;
+        const reqAmount = req.amount || req.withdrawAmount || req.price || 0;
 
         list.innerHTML += `
         <tr>
@@ -1373,7 +1381,7 @@ onValue(ref(db, 'payoutRequests'), snap => {
 
     snap.forEach(child => {
         const val = child.val();
-        if (val.amount !== undefined || val.upiId !== undefined || val.paymentInfo !== undefined || val.upi !== undefined || val.withdrawAmount !== undefined) {
+        if (val.amount !== undefined || val.upiId !== undefined || val.paymentInfo !== undefined || val.upi !== undefined || val.withdrawAmount !== undefined || val.details !== undefined) {
             renderPayoutRow(val, child.key);
         } else if (typeof val === 'object' && val !== null) {
             child.forEach(subChild => {
