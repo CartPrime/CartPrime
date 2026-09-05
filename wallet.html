@@ -38,6 +38,8 @@
             --success-bg: #E6F9F5;
             --warning-orange: #FFB547;
             --warning-bg: #FFF8E6;
+            --danger-red: #EE5D50;
+            --danger-bg: #FDE8E8;
             --border-color: #E9EDF7;
             --whatsapp-green: #25D366;
         }
@@ -398,6 +400,11 @@
             color: var(--warning-orange);
         }
 
+        .t-icon.expense {
+            background-color: var(--danger-bg);
+            color: var(--danger-red);
+        }
+
         .t-details h4 {
             font-size: 14px;
             font-weight: 700;
@@ -421,6 +428,7 @@
         }
 
         .t-amount .amt.plus { color: var(--success-green); }
+        .t-amount .amt.minus { color: var(--danger-red); }
 
         .badge {
             font-size: 10px;
@@ -441,6 +449,11 @@
         .badge-pending {
             background-color: var(--warning-bg);
             color: var(--warning-orange);
+        }
+
+        .badge-rejected {
+            background-color: var(--danger-bg);
+            color: var(--danger-red);
         }
 
         /* Forms */
@@ -866,6 +879,7 @@
             if (!userPhone) {
                 updateUIWithPartnerName("Creator Partner");
                 listenToWalletData();
+                listenToWithdrawalHistory();
                 return;
             }
 
@@ -890,6 +904,7 @@
                     
                     updateUIWithPartnerName(partnerName);
                     listenToWalletData();
+                    listenToWithdrawalHistory();
                 } else {
                     db.ref('users').once('value', (userSnapshot) => {
                         const users = userSnapshot.val() || {};
@@ -920,9 +935,11 @@
                         db.ref(`earn_partners/${activeUserId}`).set(newPartnerData).then(() => {
                             updateUIWithPartnerName(partnerName);
                             listenToWalletData();
+                            listenToWithdrawalHistory();
                         }).catch(() => {
                             updateUIWithPartnerName(partnerName);
                             listenToWalletData();
+                            listenToWithdrawalHistory();
                         });
                     });
                 }
@@ -1235,7 +1252,10 @@
                     db.ref(`earn_partners/${activeUserId}/wallet/balance`).set(currentBalance - amount);
                     
                     const requestRef = db.ref(`payout_requests`).push();
-                    requestRef.set({
+                    const newReqKey = requestRef.key;
+                    
+                    const payload = {
+                        requestId: newReqKey,
                         partnerId: activeUserId,
                         partnerName: partnerName,
                         userPhone: userPhone,
@@ -1243,14 +1263,84 @@
                         method: method,
                         status: 'Pending',
                         timestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
+                    };
+
+                    requestRef.set(payload);
+
+                    // Add to partner's personal withdrawal list for real-time history tracking
+                    db.ref(`earn_partners/${activeUserId}/withdrawals/${newReqKey}`).set(payload);
 
                     alert("Creator Payout Request Submitted Successfully!");
                     amtInput.value = '';
-                    switchTab('referral', document.querySelectorAll('.nav-item-bottom')[1]);
+                    switchTab('transactions', document.querySelectorAll('.nav-item-bottom')[4]);
                 } else {
                     alert("Insufficient wallet balance for withdrawal!");
                 }
+            });
+        }
+
+        function listenToWithdrawalHistory() {
+            // Listen to current partner's recorded withdrawals and update status in sync with global payout_requests
+            db.ref(`earn_partners/${activeUserId}/withdrawals`).on('value', (snapshot) => {
+                const userWithdrawals = snapshot.val() || {};
+                const list = document.getElementById('full-transaction-list');
+                if (!list) return;
+
+                db.ref(`payout_requests`).once('value', (globalSnapshot) => {
+                    const globalRequests = globalSnapshot.val() || {};
+
+                    list.innerHTML = '';
+                    const keys = Object.keys(userWithdrawals).reverse();
+
+                    if (keys.length === 0) {
+                        list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">Your withdrawal requests and credit history will appear here.</li>`;
+                        return;
+                    }
+
+                    keys.forEach(key => {
+                        const item = userWithdrawals[key];
+                        const globalMatch = globalRequests[key] || {};
+                        const currentStatus = globalMatch.status || item.status || 'Pending';
+
+                        let badgeClass = 'badge-pending';
+                        let iconClass = 'pending-icon';
+                        let statusIcon = 'fa-clock';
+
+                        const lowerStatus = currentStatus.toLowerCase();
+                        if (lowerStatus === 'approved' || lowerStatus === 'success' || lowerStatus === 'completed') {
+                            badgeClass = 'badge-success';
+                            iconClass = 'income';
+                            statusIcon = 'fa-circle-check';
+                        } else if (lowerStatus === 'rejected' || lowerStatus === 'failed') {
+                            badgeClass = 'badge-rejected';
+                            iconClass = 'expense';
+                            statusIcon = 'fa-circle-xmark';
+                        }
+
+                        const reqDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : 'Recent';
+
+                        const li = document.createElement('li');
+                        li.className = 'ref-order-item';
+                        li.innerHTML = `
+                            <div class="t-info">
+                                <div class="t-icon ${iconClass}">
+                                    <i class="fa-solid ${statusIcon}"></i>
+                                </div>
+                                <div class="t-details">
+                                    <h4>Payout Request (${item.method || 'UPI/Bank'})</h4>
+                                    <p>${reqDate} • ID: ${key.substring(1, 8)}</p>
+                                </div>
+                            </div>
+                            <div class="t-amount">
+                                <div class="amt minus">- ₹${parseFloat(item.amount || 0).toFixed(2)}</div>
+                                <span class="badge ${badgeClass}">
+                                    ${currentStatus}
+                                </span>
+                            </div>
+                        `;
+                        list.appendChild(li);
+                    });
+                });
             });
         }
     </script>
