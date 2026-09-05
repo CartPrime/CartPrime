@@ -1314,7 +1314,7 @@ window.updateStatus = async (path, s) => {
     }
 };
 
-/* ROBUST PAYOUT / WITHDRAWAL REQUESTS LISTENER (Handled Recursive Structure) */
+/* ROBUST PAYOUT / WITHDRAWAL REQUESTS LISTENER (Renders into Earn tab) */
 onValue(ref(db, 'payoutRequests'), snap => {
     const list = document.getElementById('payoutRequestList');
     if (!list) return;
@@ -1371,7 +1371,6 @@ onValue(ref(db, 'payoutRequests'), snap => {
         </tr>`;
     }
 
-    // Flexible parsing for flat or nested structures
     snap.forEach(child => {
         const val = child.val();
         if (val.amount !== undefined || val.upiId !== undefined || val.paymentInfo !== undefined || val.upi !== undefined || val.withdrawAmount !== undefined) {
