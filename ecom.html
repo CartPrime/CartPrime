@@ -72,7 +72,7 @@
         .search-box input { padding-left: 42px; margin: 0; background: #ffffff; border: 1px solid var(--border); }
         
         /* Badges & Tables */
-        .pay-badge, .status-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+        .pay-badge, .status-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase; display: inline-block; white-space: nowrap; }
         
         .pay-Verified, .pay-Paid, .pay-Approved { background: #dcfce7; color: #166534; }
         .pay-Rejected, .pay-Unpaid { background: #fee2e2; color: #991b1b; }
@@ -96,7 +96,7 @@
 
         /* Tables */
         .table-responsive { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        table { width: 100%; border-collapse: collapse; min-width: 650px; }
         th { color: var(--text-muted); padding: 12px 14px; text-align: left; font-size: 12px; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid var(--border); }
         td { padding: 14px; background: white; border-bottom: 1px solid var(--border); font-size: 13.5px; vertical-align: middle; color: var(--text-main); }
 
@@ -399,11 +399,11 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Partner Details</th>
-                            <th>Amount</th>
-                            <th>UPI / Payment Info</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th style="width: 25%;">Partner Details</th>
+                            <th style="width: 15%;">Amount</th>
+                            <th style="width: 25%;">UPI / Payment Info</th>
+                            <th style="width: 15%;">Status</th>
+                            <th style="width: 20%;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="payoutRequestList">
@@ -421,11 +421,11 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>User Details</th>
-                            <th>Contact / Email</th>
-                            <th>Status</th>
-                            <th>Approve</th>
-                            <th>Action</th>
+                            <th style="width: 25%;">User Details</th>
+                            <th style="width: 25%;">Contact / Email</th>
+                            <th style="width: 15%;">Status</th>
+                            <th style="width: 20%;">Approve</th>
+                            <th style="width: 15%;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="affiliateRequestList">
@@ -1311,26 +1311,33 @@ onValue(ref(db, 'payoutRequests'), snap => {
         let statusBadgeClass = "pay-Unpaid";
         if (status === "Paid" || status === "Approved") statusBadgeClass = "pay-Paid";
 
+        const formattedUpi = req.upiId || req.paymentInfo || req.upi || 'N/A';
+        const partnerName = req.userName || req.name || req.partnerName || 'Earn Partner';
+        const partnerPhone = req.phone || req.mobile || req.userPhone || '';
+
         list.innerHTML += `
         <tr>
             <td>
-                <strong style="color:var(--text-main); font-size:14px;">${req.userName || req.name || 'Earn Partner'}</strong><br>
+                <strong style="color:var(--text-main); font-size:14px;">${partnerName}</strong><br>
+                ${partnerPhone ? `<small style="color:#2563eb; font-weight:700;"><i class="fa fa-phone"></i> ${partnerPhone}</small><br>` : ''}
                 <small style="color:var(--text-muted);">UID: ${req.userId || 'N/A'}</small>
             </td>
-            <td><strong style="color:#10b981;">₹${req.amount || 0}</strong></td>
+            <td><strong style="color:#10b981; font-size: 15px;">₹${req.amount || 0}</strong></td>
             <td>
-                <span style="font-family:monospace; background:#f1f5f9; padding:2px 6px; border-radius:4px; font-weight:700;">${req.upiId || req.paymentInfo || 'N/A'}</span>
+                <span style="font-family:monospace; background:#f1f5f9; padding:4px 8px; border-radius:6px; font-weight:700; color:var(--primary); display:inline-block;">${formattedUpi}</span>
             </td>
             <td>
                 <span class="pay-badge ${statusBadgeClass}">${status}</span>
             </td>
             <td>
-                <button style="background:#10b981; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="window.updatePayoutStatus('${reqId}', 'Paid')">
-                    <i class="fa fa-check"></i> Paid
-                </button>
-                <button style="background:#ef4444; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px; margin-left:4px;" onclick="window.updatePayoutStatus('${reqId}', 'Unpaid')">
-                    <i class="fa fa-times"></i> Unpaid
-                </button>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button style="background:#10b981; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="window.updatePayoutStatus('${reqId}', 'Paid')">
+                        <i class="fa fa-check"></i> Paid
+                    </button>
+                    <button style="background:#ef4444; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="window.updatePayoutStatus('${reqId}', 'Unpaid')">
+                        <i class="fa fa-times"></i> Unpaid
+                    </button>
+                </div>
             </td>
         </tr>`;
     });
@@ -1339,7 +1346,7 @@ onValue(ref(db, 'payoutRequests'), snap => {
 /* UPDATE PAYOUT REQUEST STATUS FUNCTION */
 window.updatePayoutStatus = async (requestId, newStatus) => {
     try {
-        await update(ref(db, `payout_requests/${requestId}`), { 
+        await update(ref(db, `payoutRequests/${requestId}`), { 
             status: newStatus,
             updatedAt: new Date().toISOString()
         });
