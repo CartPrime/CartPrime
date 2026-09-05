@@ -99,9 +99,12 @@
         .phone-input-box button { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s; font-size: 0.95rem; }
         .phone-input-box button:hover { background: #1e293b; }
 
-        /* SweetAlert Custom Overrides (Removed Backdrop/Overlay) */
-        .swal2-backdrop-show { background: transparent !important; backdrop-filter: none !important; }
-        .swal-custom-popup { border-radius: 24px !important; padding: 1.5rem !important; width: 90% !important; max-width: 440px !important; border: 1px solid var(--border-color) !important; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important; }
+        /* SweetAlert Custom Overrides (Completely Removed Backdrop Overlay) */
+        body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) { overflow: auto !important; }
+        .swal2-container.swal2-backdrop-show, .swal2-container.swal2-shown { background: transparent !important; backdrop-filter: none !important; pointer-events: none !important; }
+        .swal2-popup { pointer-events: auto !important; }
+        
+        .swal-custom-popup { border-radius: 24px !important; padding: 1.5rem !important; width: 90% !important; max-width: 440px !important; border: 1px solid var(--border-color) !important; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important; background: #ffffff !important; }
         .swal-custom-title { font-weight: 800 !important; color: var(--primary) !important; font-size: 1.3rem !important; letter-spacing: -0.5px; }
         .swal-custom-confirm { background-color: var(--primary) !important; border-radius: 12px !important; padding: 10px 24px !important; font-weight: 700 !important; font-size: 0.9rem !important; box-shadow: none !important; }
         .swal2-cancel { border-radius: 12px !important; padding: 10px 24px !important; font-weight: 700 !important; font-size: 0.9rem !important; background: #f1f5f9 !important; color: var(--text-main) !important; box-shadow: none !important; }
@@ -243,6 +246,7 @@
     const showAlert = (title, text, icon, showConfirm = true) => {
         Swal.fire({
             title: title, text: text, icon: icon, showConfirmButton: showConfirm,
+            backdrop: false,
             customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
         });
     };
@@ -531,6 +535,7 @@
 
         Swal.fire({
             title: `Order Details (#${order.id})`,
+            backdrop: false,
             html: `
                 <div class="modal-detail-box">
                     <div class="modal-section-title">Items Ordered</div>
@@ -567,6 +572,7 @@
 
         Swal.fire({
             title: 'Rate Product',
+            backdrop: false,
             html: `
                 <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom: 5px;">Share your experience with this item</p>
                 <div class="star-rating" id="starContainer" data-rating="5">
@@ -639,6 +645,7 @@
     window.requestReturn = (orderId, phone) => {
         Swal.fire({
             title: 'Select Refund Method',
+            backdrop: false,
             html: `
                 <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Where would you like to receive your refund?</p>
                 <div class="swal-radio-group">
@@ -706,6 +713,7 @@
     window.cancelOrder = (orderId, phone) => {
         Swal.fire({
             title: 'Cancel Order?', text: "Confirm to cancel this order.", icon: 'warning',
+            backdrop: false,
             showCancelButton: true, confirmButtonText: 'Yes, Cancel',
             customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
         }).then((res) => {
