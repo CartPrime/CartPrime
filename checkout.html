@@ -286,6 +286,28 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
+        // --- HELPER FUNCTION: DYNAMIC STATUS CHECKER ---
+        // Referral Page / Dashboard view cheyyumbol eppozhum dynamic status calculate cheyyan ith use cheyyaam.
+        window.getCalculatedReferralStatus = function(order) {
+            if (!order) return "Pending";
+            
+            // Return Policy illatha product aannengil Order 'Delivered' aayal udan 'Completed' aakum
+            if (!order.isReturnable && !order.returnPolicy) {
+                return (order.status === "Delivered") ? "Completed" : "Pending";
+            }
+
+            // Return Policy ullathaanengil Return date Expire aayaal 'Completed' aakum
+            if (order.returnEligibleUntil) {
+                const now = new Date();
+                const expiryDate = new Date(order.returnEligibleUntil);
+                if (now >= expiryDate) {
+                    return "Completed";
+                }
+            }
+
+            return order.referralStatus || "Pending";
+        };
+
         // --- 1. URL REFERRAL CODE DETECTION & LOCALSTORAGE SAVING ---
         const urlParams = new URLSearchParams(window.location.search);
         const refFromUrl = urlParams.get('ref') || urlParams.get('referredBy');
@@ -664,7 +686,7 @@
                     // 1. Save primary order
                     const primaryOrderRef = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
 
-                    // 2. Save referral order with 7-days auto status logic
+                    // 2. Save referral order with 7-days & Return-Policy logic
                     let referralOrderRef = Promise.resolve();
                     if (refUser) {
                         const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
@@ -673,15 +695,21 @@
                         const returnExpiryDate = new Date();
                         returnExpiryDate.setDate(now.getDate() + 7);
 
-                        // Automatic status logic: 7 days kazhinjal 'Completed', allengil 'Pending'
-                        const initialReferralStatus = now >= returnExpiryDate ? "Completed" : "Pending";
+                        // Initial Status Logic: Return-Policy illatha Product Delivered aayal direct 'Completed' aakum
+                        let initialReferralStatus = "Pending";
+                        if (!isOrderReturnable && finalOrder.status === "Delivered") {
+                            initialReferralStatus = "Completed";
+                        } else if (now >= returnExpiryDate) {
+                            initialReferralStatus = "Completed";
+                        }
 
                         const referralOrderData = {
                             ...finalOrder,
                             referralStatus: initialReferralStatus, 
                             returnPolicy: isOrderReturnable ? "7 Days Return Policy" : "No Return",
-                            returnPeriodDays: 7,
-                            returnEligibleUntil: returnExpiryDate.toISOString(),
+                            isReturnable: isOrderReturnable,
+                            returnPeriodDays: isOrderReturnable ? 7 : 0,
+                            returnEligibleUntil: isOrderReturnable ? returnExpiryDate.toISOString() : now.toISOString(),
                             referralCreatedAt: now.toISOString()
                         };
 
