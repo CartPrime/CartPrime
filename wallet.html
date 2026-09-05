@@ -796,36 +796,50 @@
         function checkReferralSuccess(order) {
             const adminStatus = (order.status || '').toLowerCase();
 
-            // 1. ഓർഡർ 'delivered' അല്ലെങ്കിൽ മാന്യമായി 'completed' എങ്കിലും ആയിരിക്കണം
+            // 1. ഓർഡർ 'delivered' അല്ലെങ്കിൽ 'completed' ആയിരിക്കണം
             if (adminStatus !== 'delivered' && adminStatus !== 'completed') {
                 return false;
             }
 
-            // 2. Return Policy നോക്കുന്നു (Default: false)
-            const isReturnable = (order.isReturnable !== undefined) ? (order.isReturnable === true || order.isReturnable === "true") : false;
+            // 2. Return Policy കൃത്യമായി ചെക്ക് ചെയ്യുന്നു (String/Boolean എതായാലും സേഫ് ആക്കി എടുത്തു)
+            let isReturnable = false;
+            if (order.isReturnable !== undefined && order.isReturnable !== null) {
+                if (typeof order.isReturnable === 'boolean') {
+                    isReturnable = order.isReturnable;
+                } else if (typeof order.isReturnable === 'string') {
+                    isReturnable = (order.isReturnable.toLowerCase() === 'true');
+                }
+            } else if (order.returnPolicy !== undefined) {
+                // ഒരുവേള field Name 'returnPolicy' ആണെങ്കിൽ
+                isReturnable = (String(order.returnPolicy).toLowerCase() === 'true' || order.returnPolicy === true);
+            } else {
+                // ഡാറ്റ ഇല്ലാത്ത പക്ഷം സുരക്ഷിതത്വത്തിനായി default ആയി Return ഉള്ള പ്രൊഡക്റ്റ് ആയി കണക്കാക്കും.
+                isReturnable = true; 
+            }
 
-            // CASE A: Return ഇല്ലാത്ത ഉൽപ്പന്നം (isReturnable === false) -> Admin Delivered ആക്കിയാൽ ഉടൻ Referral Status "Success"
+            // CASE A: Return ഇല്ലാത്ത ഉൽപ്പന്നം (isReturnable === false) -> Admin Delivered ആക്കിയാൽ ഉടൻ Success
             if (!isReturnable) {
                 return true;
             }
 
-            // CASE B: Return ഉള്ള ഉൽപ്പന്നം (isReturnable === true) -> Delivered തീയതിയിൽ നിന്ന് 7 ദിവസങ്ങൾ കഴിയണം
+            // CASE B: Return ഉള്ള ഉൽപ്പന്നം (isReturnable === true) -> Delivered ചെയ്ത തീയതിയിൽ നിന്ന് 7 ദിവസങ്ങൾ തികയണം
             let deliveredTimestamp = null;
 
-            if (order.deliveredAt || order.deliveryTimestamp) {
-                deliveredTimestamp = order.deliveredAt || order.deliveryTimestamp;
+            if (order.deliveredAt && !isNaN(Number(order.deliveredAt))) {
+                deliveredTimestamp = Number(order.deliveredAt);
+            } else if (order.deliveryTimestamp && !isNaN(Number(order.deliveryTimestamp))) {
+                deliveredTimestamp = Number(order.deliveryTimestamp);
+            } else if (order.deliveredDate) {
+                const parsed = Date.parse(order.deliveredDate);
+                if (!isNaN(parsed)) deliveredTimestamp = parsed;
             } else if (order.deliveryDate) {
                 const parts = String(order.deliveryDate).split('-');
                 const datePart = parts[parts.length - 1].replace(/Delivered by|on/gi, '').trim();
                 const parsed = Date.parse(datePart);
-                if (!isNaN(parsed)) {
-                    deliveredTimestamp = parsed;
-                }
-            } else if (order.date) {
-                const parsed = Date.parse(order.date);
-                if (!isNaN(parsed)) {
-                    deliveredTimestamp = parsed;
-                }
+                if (!isNaN(parsed)) deliveredTimestamp = parsed;
+            } else if (order.timestamp) {
+                // ഡെലിവറി ടൈം ഇല്ലെങ്കിൽ ഓർഡർ ടൈം എടുക്കാം
+                deliveredTimestamp = Number(order.timestamp);
             }
 
             if (deliveredTimestamp) {
@@ -873,7 +887,12 @@
                     const isDelivered = (adminStatus === 'delivered' || adminStatus === 'completed');
                     
                     // Return Status പരിശോധിക്കൽ
-                    const isReturnable = (order.isReturnable !== undefined) ? (order.isReturnable === true || order.isReturnable === "true") : false;
+                    let isReturnable = false;
+                    if (order.isReturnable !== undefined && order.isReturnable !== null) {
+                        isReturnable = (String(order.isReturnable).toLowerCase() === 'true');
+                    } else {
+                        isReturnable = true;
+                    }
 
                     // Referral Status "Success" ആണോ എന്ന് പരിശോധിക്കുന്നു
                     const isReferralSuccess = checkReferralSuccess(order);
