@@ -1288,66 +1288,82 @@
             const list = document.getElementById('full-transaction-list');
             if (!list) return;
 
-            // Real-time listener on central payout_requests node
-            db.ref('payout_requests').on('value', (globalSnapshot) => {
-                const globalRequests = globalSnapshot.val() || {};
+            // Direct Realtime Listener on Firebase payout_requests Node
+            db.ref('payout_requests').on('value', (snapshot) => {
+                const allRequests = snapshot.val() || {};
+                list.innerHTML = '';
 
-                // Fetch partner's specific record
-                db.ref(`earn_partners/${activeUserId}/withdrawals`).once('value', (userSnapshot) => {
-                    const userWithdrawals = userSnapshot.val() || {};
-                    list.innerHTML = '';
-                    
-                    const keys = Object.keys(userWithdrawals).reverse();
+                let matchedRequests = [];
 
-                    if (keys.length === 0) {
-                        list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">Your withdrawal requests and credit history will appear here.</li>`;
-                        return;
+                // Filter payout requests for current user (by partnerId, userPhone, or key)
+                Object.keys(allRequests).forEach(key => {
+                    const item = allRequests[key];
+                    const reqPartnerId = String(item.partnerId || '').replace(/\D/g, '');
+                    const reqPhone = String(item.userPhone || item.phone || '').replace(/\D/g, '');
+                    const currentCleanPhone = String(userPhone).replace(/\D/g, '');
+
+                    if (
+                        item.partnerId === activeUserId || 
+                        (currentCleanPhone && (reqPartnerId.includes(currentCleanPhone) || reqPhone.includes(currentCleanPhone)))
+                    ) {
+                        matchedRequests.push({ key: key, ...item });
+                    }
+                });
+
+                // Sort by latest timestamp
+                matchedRequests.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                if (matchedRequests.length === 0) {
+                    list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">Your withdrawal requests and credit history will appear here.</li>`;
+                    return;
+                }
+
+                matchedRequests.forEach(item => {
+                    const currentStatus = item.status || 'Pending';
+
+                    let badgeClass = 'badge-pending';
+                    let iconClass = 'pending-icon';
+                    let statusIcon = 'fa-clock';
+
+                    const lowerStatus = String(currentStatus).toLowerCase();
+                    if (lowerStatus === 'approved' || lowerStatus === 'success' || lowerStatus === 'completed') {
+                        badgeClass = 'badge-success';
+                        iconClass = 'income';
+                        statusIcon = 'fa-circle-check';
+                    } else if (lowerStatus === 'rejected' || lowerStatus === 'failed') {
+                        badgeClass = 'badge-rejected';
+                        iconClass = 'expense';
+                        statusIcon = 'fa-circle-xmark';
                     }
 
-                    keys.forEach(key => {
-                        const localItem = userWithdrawals[key];
-                        // Get updated status from payout_requests node
-                        const globalItem = globalRequests[key] || localItem;
-                        const currentStatus = globalItem.status || 'Pending';
+                    const reqDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    }) : 'Recent';
 
-                        let badgeClass = 'badge-pending';
-                        let iconClass = 'pending-icon';
-                        let statusIcon = 'fa-clock';
+                    const shortId = item.key ? item.key.substring(0, 8) : 'REQ';
 
-                        const lowerStatus = String(currentStatus).toLowerCase();
-                        if (lowerStatus === 'approved' || lowerStatus === 'success' || lowerStatus === 'completed') {
-                            badgeClass = 'badge-success';
-                            iconClass = 'income';
-                            statusIcon = 'fa-circle-check';
-                        } else if (lowerStatus === 'rejected' || lowerStatus === 'failed') {
-                            badgeClass = 'badge-rejected';
-                            iconClass = 'expense';
-                            statusIcon = 'fa-circle-xmark';
-                        }
-
-                        const reqDate = globalItem.timestamp ? new Date(globalItem.timestamp).toLocaleDateString() : 'Recent';
-
-                        const li = document.createElement('li');
-                        li.className = 'ref-order-item';
-                        li.innerHTML = `
-                            <div class="t-info">
-                                <div class="t-icon ${iconClass}">
-                                    <i class="fa-solid ${statusIcon}"></i>
-                                </div>
-                                <div class="t-details">
-                                    <h4>Payout Request (${globalItem.method || 'UPI/Bank'})</h4>
-                                    <p>${reqDate} • ID: ${key.substring(1, 8)}</p>
-                                </div>
+                    const li = document.createElement('li');
+                    li.className = 'ref-order-item';
+                    li.innerHTML = `
+                        <div class="t-info">
+                            <div class="t-icon ${iconClass}">
+                                <i class="fa-solid ${statusIcon}"></i>
                             </div>
-                            <div class="t-amount">
-                                <div class="amt minus">- ₹${parseFloat(globalItem.amount || 0).toFixed(2)}</div>
-                                <span class="badge ${badgeClass}">
-                                    ${currentStatus}
-                                </span>
+                            <div class="t-details">
+                                <h4>Payout Request (${item.method || 'UPI / Bank'})</h4>
+                                <p>${reqDate} • ID: ${shortId}</p>
                             </div>
-                        `;
-                        list.appendChild(li);
-                    });
+                        </div>
+                        <div class="t-amount">
+                            <div class="amt minus">- ₹${parseFloat(item.amount || 0).toFixed(2)}</div>
+                            <span class="badge ${badgeClass}">
+                                ${currentStatus}
+                            </span>
+                        </div>
+                    `;
+                    list.appendChild(li);
                 });
             });
         }
