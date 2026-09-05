@@ -792,36 +792,30 @@
             });
         }
 
-        // --- COMPLETION CHECK BASED ON STRICT RETURN RULES ---
-        function checkCompletionEligibility(order) {
-            const orderStatus = (order.status || '').toLowerCase();
-            
-            // 1. Manually marked completed or return flags set closed
-            if (orderStatus === 'completed' || order.returnWindowClosed === true || order.returnClosed === true) {
-                return true;
+        // --- REFERRAL SUCCESS CHECK BASED ON DELIVERED STATUS & RETURN POLICY ---
+        function checkReferralSuccess(order) {
+            const adminStatus = (order.status || '').toLowerCase();
+
+            // 1. ഓർഡർ 'delivered' അല്ലെങ്കിൽ മാന്യമായി 'completed' എങ്കിലും ആയിരിക്കണം
+            if (adminStatus !== 'delivered' && adminStatus !== 'completed') {
+                return false;
             }
 
-            // 2. MUST BE DELIVERED FIRST
-            if (orderStatus !== 'delivered') {
-                return false; // Order is pending dispatch/shipping/transit
-            }
+            // 2. Return Policy നോക്കുന്നു (Default: false)
+            const isReturnable = (order.isReturnable !== undefined) ? (order.isReturnable === true || order.isReturnable === "true") : false;
 
-            // 3. Check Return Policy via 'isReturnable'
-            // Default to false if isReturnable field is undefined or null
-            const isReturnable = (order.isReturnable !== undefined) ? order.isReturnable : false;
-
-            // CASE A: Product is NOT Returnable (isReturnable === false) -> Delivered ആയാൽ ഉടൻ Completed ആകാം
+            // CASE A: Return ഇല്ലാത്ത ഉൽപ്പന്നം (isReturnable === false) -> Admin Delivered ആക്കിയാൽ ഉടൻ Referral Status "Success"
             if (!isReturnable) {
                 return true;
             }
 
-            // CASE B: Product IS Returnable (isReturnable === true) -> 7 Days Return Period നിർബന്ധമായി കഴിഞ്ഞിരിക്കണം
+            // CASE B: Return ഉള്ള ഉൽപ്പന്നം (isReturnable === true) -> Delivered തീയതിയിൽ നിന്ന് 7 ദിവസങ്ങൾ കഴിയണം
             let deliveredTimestamp = null;
 
             if (order.deliveredAt || order.deliveryTimestamp) {
                 deliveredTimestamp = order.deliveredAt || order.deliveryTimestamp;
             } else if (order.deliveryDate) {
-                const parts = order.deliveryDate.split('-');
+                const parts = String(order.deliveryDate).split('-');
                 const datePart = parts[parts.length - 1].replace(/Delivered by|on/gi, '').trim();
                 const parsed = Date.parse(datePart);
                 if (!isNaN(parsed)) {
@@ -838,12 +832,13 @@
                 const now = Date.now();
                 const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
                 
+                // Delivered ആയിട്ട് 7 ദിവസം തികഞ്ഞെങ്കിൽ മാത്രം true
                 if (now >= (deliveredTimestamp + sevenDaysInMs)) {
-                    return true; // Delivered + 7 days completed
+                    return true;
                 }
             }
 
-            return false; // Delivered, but inside active 7-day return period
+            return false; // Delivered ആണ്, പക്ഷേ 7 ദിവസത്തെ Return Period കഴിയാൻ ബാക്കിയുണ്ട്
         }
 
         function listenToReferralOrders() {
@@ -874,26 +869,26 @@
                     
                     const commissionEarned = order.commissionAmount ? parseFloat(order.commissionAmount) : (productAmount * 0.03); 
 
-                    const orderStatus = (order.status || '').toLowerCase();
-                    const isDelivered = (orderStatus === 'delivered');
+                    const adminStatus = (order.status || '').toLowerCase();
+                    const isDelivered = (adminStatus === 'delivered' || adminStatus === 'completed');
                     
-                    // Check Returnable Status
-                    const isReturnable = (order.isReturnable !== undefined) ? order.isReturnable : false;
+                    // Return Status പരിശോധിക്കൽ
+                    const isReturnable = (order.isReturnable !== undefined) ? (order.isReturnable === true || order.isReturnable === "true") : false;
 
-                    // Verify if Eligible for Completed State
-                    const isEligibleForSuccess = checkCompletionEligibility(order);
+                    // Referral Status "Success" ആണോ എന്ന് പരിശോധിക്കുന്നു
+                    const isReferralSuccess = checkReferralSuccess(order);
 
-                    if (isEligibleForSuccess) {
+                    if (isReferralSuccess) {
                         verifiedEarnings += commissionEarned;
 
-                        // Auto credit commission to Creator Wallet when eligible
+                        // Referral Status Success ആയാൽ വാളറ്റിലേക്ക് കമ്മീഷൻ തുക നൽകുന്നു
                         if (!order.commissionCredited) {
                             db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
                                 return (currentBalance || 0) + commissionEarned;
                             });
 
                             db.ref(`referralOrders/${cleanRefCode}/${key}/commissionCredited`).set(true);
-                            db.ref(`referralOrders/${cleanRefCode}/${key}/status`).set('Completed');
+                            db.ref(`referralOrders/${cleanRefCode}/${key}/referralStatus`).set('Success');
                         }
                     } else {
                         pendingTotal += commissionEarned;
@@ -901,9 +896,9 @@
 
                     const customerName = order.customerName || order.userName || 'Customer';
                     
-                    // Dynamic Status Text Logic based on Admin Order Updates
+                    // ഡിസ്പ്ലേ കാണിക്കേണ്ട വിവരങ്ങൾ
                     let statusText = '';
-                    if (orderStatus === 'completed' || isEligibleForSuccess) {
+                    if (isReferralSuccess) {
                         statusText = 'Completed • 3% Commission Credited';
                     } else if (isDelivered) {
                         if (isReturnable) {
@@ -920,8 +915,8 @@
                     li.className = 'ref-order-item';
                     li.innerHTML = `
                         <div class="t-info">
-                            <div class="t-icon ${!isEligibleForSuccess ? 'pending-icon' : 'income'}">
-                                <i class="fa-solid ${!isEligibleForSuccess ? 'fa-clock' : 'fa-circle-check'}"></i>
+                            <div class="t-icon ${!isReferralSuccess ? 'pending-icon' : 'income'}">
+                                <i class="fa-solid ${!isReferralSuccess ? 'fa-clock' : 'fa-circle-check'}"></i>
                             </div>
                             <div class="t-details">
                                 <h4>${customerName} (Order #${order.orderId || key})</h4>
@@ -930,8 +925,8 @@
                         </div>
                         <div class="t-amount">
                             <div class="amt plus">+ ₹${commissionEarned.toFixed(2)}</div>
-                            <span class="badge ${!isEligibleForSuccess ? 'badge-pending' : 'badge-success'}">
-                                ${!isEligibleForSuccess ? 'Pending' : 'Success'}
+                            <span class="badge ${!isReferralSuccess ? 'badge-pending' : 'badge-success'}">
+                                ${!isReferralSuccess ? 'Pending' : 'Success'}
                             </span>
                         </div>
                     `;
