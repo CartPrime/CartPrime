@@ -901,17 +901,19 @@
 
                     const customerName = order.customerName || order.userName || 'Customer';
                     
-                    let statusText = 'Pending • Processing Order';
-                    if (!isEligibleForSuccess) {
-                        if (isDelivered && isReturnable) {
+                    // Dynamic Status Text Logic based on Admin Order Updates
+                    let statusText = '';
+                    if (orderStatus === 'completed' || isEligibleForSuccess) {
+                        statusText = 'Completed • 3% Commission Credited';
+                    } else if (isDelivered) {
+                        if (isReturnable) {
                             statusText = 'Delivered • Return Period Active (7 Days)';
-                        } else if (isDelivered && !isReturnable) {
-                            statusText = 'Delivered • Processing Final Status';
                         } else {
-                            statusText = `Pending • ${order.status || 'In Transit'}`;
+                            statusText = 'Delivered • Processing Final Status';
                         }
                     } else {
-                        statusText = 'Completed • 3% Commission Credited';
+                        const displayStatus = order.status ? order.status : 'Processing Order';
+                        statusText = `Pending • ${displayStatus}`;
                     }
 
                     const li = document.createElement('li');
