@@ -91,6 +91,35 @@
             background-color: #ffffff;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
+
+        /* Flipkart-style Success Animation Overlay */
+        #successAnimationOverlay {
+            backdrop-filter: blur(4px);
+            background-color: rgba(15, 23, 42, 0.7);
+            transition: opacity 0.3s ease;
+        }
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #22c55e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.5);
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen pb-12">
@@ -100,6 +129,23 @@
         <div class="flex flex-col items-center gap-3">
             <i class="fa-solid fa-spinner fa-spin text-3xl text-blue-600"></i>
             <span class="text-sm font-semibold text-slate-600">Loading Checkout...</span>
+        </div>
+    </div>
+
+    <!-- Flipkart-style Success Overlay (Hidden by Default) -->
+    <div id="successAnimationOverlay" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center shadow-2xl transform transition-all">
+            <div class="success-checkmark mb-4">
+                <div class="check-icon text-white text-3xl">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-900 mb-1">Order Placed!</h3>
+            <p class="text-xs text-slate-500 mb-4">Your order has been successfully confirmed.</p>
+            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                <div class="bg-green-500 h-full w-full animate-pulse"></div>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-3 font-medium">Redirecting to your orders...</p>
         </div>
     </div>
 
@@ -285,6 +331,37 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
+
+        // --- AUDIO SOUND EFFECT GENERATOR (Web Audio API) ---
+        const playSuccessSound = () => {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Play a pleasant 2-tone chime (like e-commerce apps)
+                const playTone = (frequency, startTime, duration) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(frequency, audioCtx.currentTime + startTime);
+                    
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + startTime + duration);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.start(audioCtx.currentTime + startTime);
+                    osc.stop(audioCtx.currentTime + startTime + duration);
+                };
+
+                playTone(523.25, 0, 0.2); // C5 note
+                playTone(659.25, 0.15, 0.25); // E5 note
+                playTone(783.99, 0.3, 0.4); // G5 note
+            } catch (e) {
+                console.log("Audio not supported or blocked", e);
+            }
+        };
 
         // --- URL REFERRAL CODE DETECTION & SAVING ---
         const urlParams = new URLSearchParams(window.location.search);
@@ -665,25 +742,21 @@
                     let referralOrderPromise = Promise.resolve();
 
                     if (refUser) {
-                        // Sanitize referral code for Firebase RTDB path safety
                         const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
 
-                        // Build detailed Referral Order Object
                         const referralPayload = {
                             ...finalOrder,
                             referralCode: cleanRefCode,
                             status: "Order Confirmed",
-                            referralStatus: "Pending", // Initial status set to Pending
+                            referralStatus: "Pending",
                             commission: parseFloat(commAmt) || 0,
                             returnPolicy: isOrderReturnable ? "7 Days Return Policy" : "No Return",
                             isReturnable: isOrderReturnable,
                             referralCreatedAt: now.toISOString()
                         };
 
-                        // Save under `referralOrders/{cleanRefCode}/{orderId}`
                         referralOrderPromise = set(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), referralPayload);
 
-                        // Realtime Observer: Sync status from main order to referral order
                         const masterStatusRef = ref(db, `orders/${fields.phone}/${orderId}/status`);
                         onValue(masterStatusRef, (snapshot) => {
                             const currentStatus = snapshot.val();
@@ -700,7 +773,7 @@
                         });
                     }
 
-                    // C. Complete All Database Operations
+                    // C. Complete All Database Operations & Trigger Flipkart-style Success UI/Sound
                     Promise.all([primaryOrderPromise, referralOrderPromise]).then(() => {
                         const activeUser = auth.currentUser;
                         const emailToSend = activeUser ? activeUser.email : currentUserEmail;
@@ -713,8 +786,18 @@
                         localStorage.removeItem('referredBy');
                         localStorage.removeItem('commissionAmount');
 
-                        showAlert('Success', 'Order Placed Successfully!', 'success');
-                        setTimeout(() => location.href = 'orders.html', 1500);
+                        // --- TRIGGER SUCCESS SOUND & ANIMATION OVERLAY ---
+                        playSuccessSound();
+                        const successOverlay = document.getElementById('successAnimationOverlay');
+                        if (successOverlay) {
+                            successOverlay.classList.remove('hidden');
+                        }
+
+                        // Redirect after 2 seconds
+                        setTimeout(() => {
+                            location.href = 'orders.html';
+                        }, 2000);
+
                     }).catch((err) => {
                         console.error("Order save error:", err);
                         showAlert('Error', 'Order could not be saved.', 'error');
