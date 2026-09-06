@@ -187,7 +187,7 @@ nav {
   backdrop-filter: blur(16px);
   border-top: 1px solid var(--border);
   display: flex;
-  justify-content: space-around;
+  justify-style: space-around;
   align-items: center;
   z-index: 9999;
   box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
@@ -1437,6 +1437,24 @@ nav {
     <button id="toastCloseBtn" class="toast-close-btn">Continue</button>
   </div>
 </div>
+
+<!-- Notification Permission Script -->
+<script>
+  window.addEventListener('load', () => {
+    if ("Notification" in window) {
+      if (Notification.permission === "default") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            new Notification("CartPrime", {
+              body: "Welcome to CartPrime! You will now receive updates on offers and orders.",
+              icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
+            });
+          }
+        });
+      }
+    }
+  });
+</script>
 
 <script type="module"> 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"; 
