@@ -1,1 +1,15 @@
 
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "co.median.android.zpkrrop",
+      "sha256_cert_fingerprints": [
+        "C4:9D:05:88:BA:1C:FE:C1:DD:7A:F8:AE:9F:DF:5E:91:A4:33:15:61:82:F8:7F:CD:92:E6:43:59:30:C7:2A:B6"
+      ]
+    }
+  }
+]
