@@ -187,7 +187,7 @@ nav {
   backdrop-filter: blur(16px);
   border-top: 1px solid var(--border);
   display: flex;
-  justify-style: space-around;
+  justify-content: space-around;
   align-items: center;
   z-index: 9999;
   box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
@@ -1980,38 +1980,53 @@ nav {
       if(bottomOrdersBadge) bottomOrdersBadge.style.display = 'none';
     } 
 
-    /* --- EARN / WALLET ORDERS BADGE LOGIC --- */
+    /* --- REALTIME DYNAMIC EARN BADGE LOGIC --- */
     const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    const partnerId = localStorage.getItem('partnerId');
+
     if (partnerPhone) {
-      // Direct path or partner ID based search
-      const earnOrdersRef = ref(db, `earn_orders/${partnerPhone}`);
-      onValue(earnOrdersRef, (snapshot) => {
-        let earnCount = 0;
+      // Direct path listener for earn_orders
+      onValue(ref(db, `earn_orders/${partnerPhone}`), (snapshot) => {
+        let totalEarnOrders = 0;
         if (snapshot.exists()) {
-          earnCount = Object.keys(snapshot.val()).length;
+          totalEarnOrders = Object.keys(snapshot.val()).length;
         }
-        if (earnCount > 0) {
-          if (bottomEarnBadge) {
-            bottomEarnBadge.textContent = earnCount;
-            bottomEarnBadge.style.display = 'flex';
-          }
-        } else {
-          // Check inside wallet path if available
-          const walletRef = ref(db, `wallet/${partnerPhone}/orders`);
-          get(walletRef).then((walletSnap) => {
-            let wCount = walletSnap.exists() ? Object.keys(walletSnap.val()).length : 0;
-            if (wCount > 0) {
-              if (bottomEarnBadge) {
-                bottomEarnBadge.textContent = wCount;
-                bottomEarnBadge.style.display = 'flex';
-              }
-            } else {
-              if (bottomEarnBadge) bottomEarnBadge.style.display = 'none';
+
+        // Wallet path fallback
+        onValue(ref(db, `wallet/${partnerPhone}/orders`), (walletSnap) => {
+          let walletCount = walletSnap.exists() ? Object.keys(walletSnap.val()).length : 0;
+          let finalCount = Math.max(totalEarnOrders, walletCount);
+
+          if (finalCount > 0) {
+            if (bottomEarnBadge) {
+              bottomEarnBadge.textContent = finalCount;
+              bottomEarnBadge.style.display = 'flex';
             }
-          }).catch(() => {
+          } else if (partnerId) {
+            // Universal Search across all orders for matching partner referral ID
+            onValue(ref(db, 'orders'), (allOrdersSnap) => {
+              let refOrderCount = 0;
+              if (allOrdersSnap.exists()) {
+                allOrdersSnap.forEach(userOrders => {
+                  userOrders.forEach(ord => {
+                    const oData = ord.val();
+                    if (oData && (oData.ref === partnerId || oData.partnerId === partnerId || oData.affiliateId === partnerId)) {
+                      refOrderCount++;
+                    }
+                  });
+                });
+              }
+              if (refOrderCount > 0 && bottomEarnBadge) {
+                bottomEarnBadge.textContent = refOrderCount;
+                bottomEarnBadge.style.display = 'flex';
+              } else if (bottomEarnBadge) {
+                bottomEarnBadge.style.display = 'none';
+              }
+            });
+          } else {
             if (bottomEarnBadge) bottomEarnBadge.style.display = 'none';
-          });
-        }
+          }
+        });
       });
     } else {
       if (bottomEarnBadge) bottomEarnBadge.style.display = 'none';
