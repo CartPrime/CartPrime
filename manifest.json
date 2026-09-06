@@ -2,7 +2,7 @@
   "name": "CartPrime",
   "short_name": "CartPrimeStore",
   "description": "Buy Earn To Enjoy",
-  "start_url": "./",
+  "start_url": "https://cartprime.vercel.app",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
