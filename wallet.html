@@ -12,17 +12,31 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    <!-- OneSignal SDK Setup -->
+    <!-- OneSignal SDK Setup & Deep Linking Configuration -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
-          appId: "2a461e57-51ca-4cdf-abb6-273fda96a4d0", // Replace with your actual OneSignal App ID
-          safari_web_id: "web.onesignal.auto.xxxxxx",
+          appId: "2a461e57-51ca-4cdf-abb6-273fda96a4d0", // Cartprime OneSignal App ID
           notifyButton: {
             enable: true,
           },
+          allowLocalhostAsSecureOrigin: true
+        });
+
+        // App-ൽ നോട്ടിഫിക്കേഷനിൽ അമർത്തുമ്പോൾ Browser-ലേക്ക് പോകാതെ ആപ്പിൽ ഉള്ളിൽ തന്നെ Open ആകാൻ:
+        OneSignal.Notifications.addEventListener('click', function(event) {
+            const launchUrl = event.notification.launchURL;
+            if (launchUrl) {
+                window.location.href = launchUrl;
+            } else {
+                // Default-ആയി Earnings/Wallet ടാബിലേക്ക് سوئച്ച് ചെയ്യുന്നു
+                if (typeof switchTab === 'function') {
+                    const walletTabBtn = document.querySelectorAll('.nav-item-bottom')[2];
+                    switchTab('earnings', walletTabBtn);
+                }
+            }
         });
       });
     </script>
@@ -1038,7 +1052,7 @@
 
     <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
-        <a class="nav-item-bottom" href="index.html">
+        <a class="nav-item-bottom" href="javascript:void(0)" onclick="location.href='index.html'">
             <i class="fa-solid fa-house"></i>
             <span>Home</span>
         </a>
@@ -1109,7 +1123,7 @@
                 return;
             }
 
-            // Identify user on OneSignal for Push Notifications
+            // OneSignal-ൽ യൂസറെ ട്രാക്ക് ചെയ്യാൻ Identity Link
             window.OneSignalDeferred = window.OneSignalDeferred || [];
             OneSignalDeferred.push(function(OneSignal) {
                 OneSignal.login(userPhone);
@@ -1251,7 +1265,7 @@
                     li.className = `notification-item ${item.unread ? 'unread' : ''}`;
                     li.innerHTML = `
                         <div class="notif-icon-box">
-                            <i class="fa-solid ${item.icon || 'fa-bell'}"></i>
+                            <div class="fa-solid ${item.icon || 'fa-bell'}"></div>
                         </div>
                         <div class="notif-details">
                             <h5>${item.title || 'Notification'}</h5>
@@ -1273,7 +1287,31 @@
             });
         }
 
-        // Trigger Internal and Push Notification via OneSignal
+        // Direct Mobile Push Notification Function via OneSignal REST API
+        function sendOneSignalPushNotification(title, message) {
+            if (!userPhone) return;
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    accept: 'application/json',
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    app_id: "2a461e57-51ca-4cdf-abb6-273fda96a4d0",
+                    include_external_user_ids: [userPhone], 
+                    headings: { en: title },
+                    contents: { en: message }
+                })
+            };
+
+            fetch('https://onesignal.com/api/v1/notifications', options)
+                .then(res => res.json())
+                .then(data => console.log('Push Sent:', data))
+                .catch(err => console.error('Push Error:', err));
+        }
+
+        // Trigger Internal Database and Mobile Push Notification
         function createNotification(title, message, icon = 'fa-bell') {
             db.ref(`earn_partners/${activeUserId}/notifications`).push({
                 title: title,
@@ -1283,10 +1321,8 @@
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             });
 
-            // Local System Notification if available
-            if ("Notification" in window && Notification.permission === "granted") {
-                new Notification(title, { body: message, icon: "/favicon.ico" });
-            }
+            // Call Mobile Push API
+            sendOneSignalPushNotification(title, message);
         }
 
         function setupReferralLink() {
