@@ -1,21 +1,26 @@
 {
-  "name": "CartPrime",
-  "short_name": "CartPrimeStore",
-  "description": "Buy Earn To Enjoy",
-  "start_url": "https://cartprime.vercel.app",
+  "background_color": "#000000",
+  "dir": "ltr",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "name": "CartPrime.",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "cartprimestore",
+  "start_url": "/",
+  "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "https://plain-apac-prod-public.komododecks.com/202609/06/5BDyGLI7H0ztLoXBAq2P/image.png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "https://plain-apac-prod-public.komododecks.com/202609/06/5BDyGLI7H0ztLoXBAq2P/image.png"
+      "src": "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png",
+      "type": "image/x-icon",
+      "isSquare": false,
+      "isPng": true,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 0,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
     }
-  ]
+  ],
+  "description": "Buy_Earn_To_Enjoy"
 }
