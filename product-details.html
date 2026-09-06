@@ -833,7 +833,10 @@
             const baseMrp = p.mrp ? parseFloat(p.mrp.toString().replace(/,/g, '').replace(/[^\d.]/g, '')) : Math.round(displayPrice * 1.35);
             const discountPct = baseMrp > displayPrice ? Math.round(((baseMrp - displayPrice) / baseMrp) * 100) : 0;
 
-            const commissionAmount = p.commission ? parseFloat(p.commission) : Math.round(displayPrice * 0.05);
+            // Maximum commission set to 10% of product price
+            const maxCommissionAllowed = Math.round(displayPrice * 0.10);
+            const rawCommission = p.commission ? parseFloat(p.commission) : Math.round(displayPrice * 0.05);
+            const commissionAmount = Math.min(rawCommission, maxCommissionAllowed);
 
             const availableSizes = p.sizes || [];
             const freeSizeFound = availableSizes.find(sz => sz.toString().toLowerCase().trim() === 'free size');
