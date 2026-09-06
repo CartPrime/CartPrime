@@ -12,6 +12,21 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+    <!-- OneSignal SDK Setup -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "YOUR_ONESIGNAL_APP_ID", // Replace with your actual OneSignal App ID
+          safari_web_id: "web.onesignal.auto.xxxxxx",
+          notifyButton: {
+            enable: true,
+          },
+        });
+      });
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -63,7 +78,7 @@
         /* Navbar Styling */
         .top-navbar {
             background-color: var(--surface-white);
-            padding: 16px 24px;
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -78,24 +93,24 @@
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .brand-icon {
             background: var(--brand-gradient);
             color: white;
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
             box-shadow: 0 8px 16px rgba(67, 24, 255, 0.25);
         }
 
         .brand-text h2 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 800;
             color: var(--text-primary);
             line-height: 1.2;
@@ -103,46 +118,76 @@
         }
 
         .brand-text span {
-            font-size: 10px;
+            font-size: 9px;
             color: var(--brand-primary);
             font-weight: 800;
             letter-spacing: 0.8px;
             text-transform: uppercase;
         }
 
-        .trust-badge-header {
+        .right-header-actions {
             display: flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(5, 205, 153, 0.1);
-            color: var(--success-green);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            border: 1px solid rgba(0, 230, 153, 0.2);
+            gap: 12px;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .notification-btn:active {
+            transform: scale(0.92);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: var(--danger-red);
+            color: white;
+            font-size: 9px;
+            font-weight: 800;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--surface-white);
         }
 
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: var(--bg-main);
-            padding: 4px 12px 4px 4px;
+            padding: 4px 10px 4px 4px;
             border-radius: 40px;
             border: 1px solid var(--border-color);
         }
 
         .profile-img {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background: var(--brand-gradient);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
         }
 
@@ -155,7 +200,125 @@
             gap: 4px;
         }
 
-        /* Bottom Nav Bar */
+        .notification-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .notification-modal.active {
+            display: flex;
+        }
+
+        .notification-content {
+            background: var(--surface-white);
+            width: 100%;
+            max-width: 500px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            padding: 20px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .notification-header h3 {
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+
+        .close-notif-btn {
+            background: var(--bg-main);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .notification-list {
+            list-style: none;
+            overflow-y: auto;
+            margin-top: 10px;
+            padding-right: 4px;
+        }
+
+        .notification-item {
+            padding: 12px;
+            border-radius: 14px;
+            background: var(--bg-main);
+            margin-bottom: 10px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            border: 1px solid var(--border-color);
+        }
+
+        .notification-item.unread {
+            background: #F4F0FF;
+            border-color: rgba(67, 24, 255, 0.2);
+        }
+
+        .notif-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--surface-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-primary);
+            font-size: 14px;
+            flex-shrink: 0;
+            box-shadow: var(--card-shadow-sm);
+        }
+
+        .notif-details h5 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .notif-details p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .notif-time {
+            font-size: 9px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -203,7 +366,6 @@
             width: 100%;
         }
 
-        /* Welcome Banner */
         .welcome-card {
             background: var(--brand-gradient);
             border-radius: 24px;
@@ -264,7 +426,6 @@
             animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* Slide In and Refresh Keyframe Animations */
         @keyframes slideUp {
             0% {
                 opacity: 0;
@@ -296,7 +457,6 @@
             animation: spin 0.8s linear infinite;
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -356,7 +516,6 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* Card Container */
         .card-box {
             background-color: var(--surface-white);
             padding: 24px;
@@ -503,7 +662,6 @@
             color: var(--danger-red);
         }
 
-        /* Forms */
         .form-group {
             margin-bottom: 18px;
         }
@@ -627,7 +785,6 @@
             gap: 8px;
         }
 
-        /* Creator Benefits Grid */
         .creator-benefits {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -663,7 +820,6 @@
             margin-top: 2px;
         }
 
-        /* Trust Banner Footer */
         .trust-banner {
             background: #EBF3FF;
             border-radius: 16px;
@@ -705,16 +861,35 @@
                 <span>Verified Partner Hub</span>
             </div>
         </div>
-        <div class="trust-badge-header">
-            <i class="fa-solid fa-circle-check"></i> Official
-        </div>
-        <div class="user-profile">
-            <div class="profile-img" id="user-avatar">C</div>
-            <div class="creator-badge-mini">
-                <i class="fa-solid fa-square-check" style="color: var(--brand-primary);"></i> VIP
+
+        <div class="right-header-actions">
+            <!-- Notification Bell Icon -->
+            <button class="notification-btn" onclick="openNotificationModal()">
+                <i class="fa-regular fa-bell"></i>
+                <span class="notification-badge" id="notif-badge">0</span>
+            </button>
+
+            <div class="user-profile">
+                <div class="profile-img" id="user-avatar">C</div>
+                <div class="creator-badge-mini">
+                    <i class="fa-solid fa-square-check" style="color: var(--brand-primary);"></i> VIP
+                </div>
             </div>
         </div>
     </header>
+
+    <!-- Notification Popup Modal -->
+    <div class="notification-modal" id="notification-modal" onclick="closeNotificationModal(event)">
+        <div class="notification-content" onclick="event.stopPropagation()">
+            <div class="notification-header">
+                <h3><i class="fa-solid fa-bell" style="color: var(--brand-primary);"></i> Notifications</h3>
+                <button class="close-notif-btn" onclick="toggleNotificationModal(false)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <ul class="notification-list" id="notification-list">
+                <li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">No notifications yet</li>
+            </ul>
+        </div>
+    </div>
 
     <main class="main-content">
         <!-- Welcome Banner -->
@@ -919,6 +1094,7 @@
         let activeUserId = userPhone || 'guest_creator';
         let partnerName = "Creator Partner";
         let uniquePartnerId = activeUserId; 
+        let knownOrdersMap = {}; 
 
         window.onload = function() {
             verifyAndFetchPartnerDetails();
@@ -929,8 +1105,15 @@
                 updateUIWithPartnerName("Creator Partner");
                 listenToWalletData();
                 listenToWithdrawalHistory();
+                listenToNotifications();
                 return;
             }
+
+            // Identify user on OneSignal for Push Notifications
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(function(OneSignal) {
+                OneSignal.login(userPhone);
+            });
 
             db.ref('earn_partners').once('value', (snapshot) => {
                 const partners = snapshot.val() || {};
@@ -954,6 +1137,7 @@
                     updateUIWithPartnerName(partnerName);
                     listenToWalletData();
                     listenToWithdrawalHistory();
+                    listenToNotifications();
                 } else {
                     db.ref('users').once('value', (userSnapshot) => {
                         const users = userSnapshot.val() || {};
@@ -985,10 +1169,12 @@
                             updateUIWithPartnerName(partnerName);
                             listenToWalletData();
                             listenToWithdrawalHistory();
+                            listenToNotifications();
                         }).catch(() => {
                             updateUIWithPartnerName(partnerName);
                             listenToWalletData();
                             listenToWithdrawalHistory();
+                            listenToNotifications();
                         });
                     });
                 }
@@ -1012,6 +1198,97 @@
             listenToReferralOrders();
         }
 
+        /* --- Notification Functions --- */
+        function toggleNotificationModal(show) {
+            const modal = document.getElementById('notification-modal');
+            if (show) {
+                modal.classList.add('active');
+                db.ref(`earn_partners/${activeUserId}/notifications`).once('value', (snapshot) => {
+                    snapshot.forEach(childSnap => {
+                        childSnap.ref.update({ unread: false });
+                    });
+                });
+            } else {
+                modal.classList.remove('active');
+            }
+        }
+
+        function openNotificationModal() {
+            toggleNotificationModal(true);
+        }
+
+        function closeNotificationModal(e) {
+            if (e.target.id === 'notification-modal') {
+                toggleNotificationModal(false);
+            }
+        }
+
+        function listenToNotifications() {
+            db.ref(`earn_partners/${activeUserId}/notifications`).on('value', (snapshot) => {
+                const notifs = snapshot.val() || {};
+                const list = document.getElementById('notification-list');
+                const badge = document.getElementById('notif-badge');
+                
+                if (!list) return;
+
+                list.innerHTML = '';
+                let unreadCount = 0;
+                let notifKeys = Object.keys(notifs).reverse();
+
+                if (notifKeys.length === 0) {
+                    list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">No notifications yet</li>`;
+                    if (badge) badge.style.display = 'none';
+                    return;
+                }
+
+                notifKeys.forEach(key => {
+                    const item = notifs[key];
+                    if (item.unread) unreadCount++;
+
+                    const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
+
+                    const li = document.createElement('li');
+                    li.className = `notification-item ${item.unread ? 'unread' : ''}`;
+                    li.innerHTML = `
+                        <div class="notif-icon-box">
+                            <i class="fa-solid ${item.icon || 'fa-bell'}"></i>
+                        </div>
+                        <div class="notif-details">
+                            <h5>${item.title || 'Notification'}</h5>
+                            <p>${item.message || ''}</p>
+                            <span class="notif-time">${timeStr}</span>
+                        </div>
+                    `;
+                    list.appendChild(li);
+                });
+
+                if (badge) {
+                    if (unreadCount > 0) {
+                        badge.innerText = unreadCount;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Trigger Internal and Push Notification via OneSignal
+        function createNotification(title, message, icon = 'fa-bell') {
+            db.ref(`earn_partners/${activeUserId}/notifications`).push({
+                title: title,
+                message: message,
+                icon: icon,
+                unread: true,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            // Local System Notification if available
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, { body: message, icon: "/favicon.ico" });
+            }
+        }
+
         function setupReferralLink() {
             const currentOrigin = window.location.origin;
             const refInput = document.getElementById('referral-url');
@@ -1030,9 +1307,8 @@
 
             const selectedView = document.getElementById(viewId);
             if (selectedView) {
-                // Trigger view slide-in animation restart
                 selectedView.classList.remove('active-view');
-                void selectedView.offsetWidth; // Trigger reflow
+                void selectedView.offsetWidth; 
                 selectedView.classList.add('active-view');
             }
 
@@ -1191,6 +1467,18 @@
                     const order = orders[key];
                     const orderId = order.orderId || key;
 
+                    // Trigger OneSignal / In-app Notification for New Tracked Order
+                    if (!knownOrdersMap[orderId]) {
+                        if (Object.keys(knownOrdersMap).length > 0) {
+                            createNotification(
+                                "New Referred Order! 🎉",
+                                `A new order (#${orderId}) was placed using your referral link!`,
+                                "fa-bag-shopping"
+                            );
+                        }
+                        knownOrdersMap[orderId] = true;
+                    }
+
                     if (processedOrders.has(orderId)) {
                         return;
                     }
@@ -1231,6 +1519,13 @@
                                 db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
                                     return (currentBalance || 0) + commissionEarned;
                                 });
+
+                                // Send Commission Credit Notification
+                                createNotification(
+                                    "Commission Credited! 💸",
+                                    `₹${commissionEarned.toFixed(2)} credited to wallet for Order #${orderId}`,
+                                    "fa-wallet"
+                                );
                             });
                         }
                     } else {
@@ -1306,7 +1601,6 @@
                 const currentBalance = snapshot.val() || 0;
 
                 if (amount > 0 && amount <= currentBalance) {
-                    // Deduct balance from wallet
                     db.ref(`earn_partners/${activeUserId}/wallet/balance`).set(currentBalance - amount);
                     
                     const requestRef = db.ref(`payout_requests`).push();
@@ -1323,16 +1617,19 @@
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     };
 
-                    // 1. Save to central payout_requests node
                     requestRef.set(payload);
-
-                    // 2. Save reference to partner's personal withdrawals node
                     db.ref(`earn_partners/${activeUserId}/withdrawals/${newReqKey}`).set(payload);
+
+                    // Send Payout Submitted Notification
+                    createNotification(
+                        "Payout Requested 💸",
+                        `Your payout request for ₹${amount.toFixed(2)} via ${method} has been submitted.`,
+                        "fa-arrow-up-from-bracket"
+                    );
 
                     alert("Creator Payout Request Submitted Successfully!");
                     amtInput.value = '';
                     
-                    // Switch view directly to History tab
                     const historyTabBtn = document.querySelectorAll('.nav-item-bottom')[4];
                     switchTab('transactions', historyTabBtn);
                 } else {
@@ -1345,7 +1642,6 @@
             const list = document.getElementById('full-transaction-list');
             if (!list) return;
 
-            // Direct Realtime Listener on Firebase payout_requests Node
             db.ref('payout_requests').on('value', (snapshot) => {
                 renderTransactionsList(snapshot.val());
             });
@@ -1356,7 +1652,6 @@
             const icon = document.getElementById('refresh-icon');
             if (!list) return;
 
-            // Refresh Icon Spin Animation Trigger
             if (icon) icon.classList.add('spinning');
 
             list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Refreshing...</li>`;
@@ -1378,7 +1673,6 @@
 
             let matchedRequests = [];
 
-            // Filter payout requests for current user (by partnerId, userPhone, or key)
             Object.keys(allRequests).forEach(key => {
                 const item = allRequests[key];
                 const reqPartnerId = String(item.partnerId || '').replace(/\D/g, '');
@@ -1393,7 +1687,6 @@
                 }
             });
 
-            // Sort by latest timestamp
             matchedRequests.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
             if (matchedRequests.length === 0) {
@@ -1411,7 +1704,6 @@
 
                 const lowerStatus = String(currentStatus).toLowerCase();
                 
-                // When status is approved, success, completed, or paid
                 if (lowerStatus === 'approved' || lowerStatus === 'success' || lowerStatus === 'completed' || lowerStatus === 'paid') {
                     badgeClass = 'badge-success';
                     iconClass = 'income';
