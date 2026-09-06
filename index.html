@@ -1244,6 +1244,13 @@ nav {
       </div> 
     </form> 
 
+    <!-- Logout Option inside Edit Profile Modal -->
+    <div id="logoutSection" style="display: none; margin-top: 12px;">
+      <button type="button" id="logoutBtn" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ef4444; background: rgba(239, 68, 68, 0.1); color: #ef4444; font-weight: 700; cursor: pointer;">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+
     <div id="verifyLoadingBox" class="verify-loading-box">
       <div class="spinner"></div>
       <p style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin: 0;">Checking Mobile Number...</p>
@@ -1483,6 +1490,8 @@ nav {
   const closeWelcomeModal = document.getElementById('closeWelcomeModal');
   const welcomeModalTitle = document.getElementById('welcomeModalTitle');
   const welcomeModalSub = document.getElementById('welcomeModalSub');
+  const logoutSection = document.getElementById('logoutSection');
+  const logoutBtn = document.getElementById('logoutBtn');
 
   let registrationStep = 1;
 
@@ -1508,6 +1517,7 @@ nav {
       welcomeModalSub.textContent = "Update your details below.";
       welcomeSubmitBtn.textContent = "Save Changes";
       if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
+      if (logoutSection) logoutSection.style.display = "block";
       openModal(welcomeModal);
     });
   }
@@ -1519,10 +1529,27 @@ nav {
     });
   }
 
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userPhone');
+      localStorage.removeItem('partnerPhone');
+      localStorage.removeItem('partnerName');
+      localStorage.removeItem('partnerId');
+      closeModal(welcomeModal);
+      updateHeaderProfileUI();
+      showCustomAlert("Logged Out", "You have been logged out successfully.", true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    });
+  }
+
   function resetRegistrationForm() {
     registrationStep = 1;
     userWelcomePhone.style.display = 'block';
     userWelcomeName.style.display = 'none';
+    if (logoutSection) logoutSection.style.display = 'none';
     welcomeSubmitBtn.textContent = "Continue Securely";
     welcomeModalTitle.textContent = "Welcome to CartPrime";
     welcomeModalSub.textContent = "100% Secure & Verified Shopping Platform";
@@ -1531,6 +1558,7 @@ nav {
   const storedUserPhone = localStorage.getItem('userPhone');
   if (!storedUserPhone) {
     if (closeWelcomeModal) closeWelcomeModal.style.display = "none";
+    if (logoutSection) logoutSection.style.display = "none";
     resetRegistrationForm();
     openModal(welcomeModal);
   }
