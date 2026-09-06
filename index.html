@@ -1400,7 +1400,7 @@ nav {
   </div> 
 </div> 
 
-<!-- Bottom Navigation Bar with Contact Icon -->
+<!-- Bottom Navigation Bar with Contact Icon and Earn Badge -->
 <div class="bottom-nav">
   <a href="/" class="bottom-nav-item active">
     <i class="fa-solid fa-house"></i>
@@ -1419,6 +1419,7 @@ nav {
   <div id="bottomEarnBtn" class="bottom-nav-item">
     <i class="fa-solid fa-wallet"></i>
     <span>Earn</span>
+    <span id="bottomEarnBadge" class="badge" style="display:none;">0</span>
   </div>
   <div id="bottomContactBtn" class="bottom-nav-item">
     <i class="fa-solid fa-headset"></i>
@@ -1939,6 +1940,7 @@ nav {
   function updateBadges(user) { 
     const bottomWishlistBadge = document.getElementById('bottomWishlistBadge'); 
     const bottomOrdersBadge = document.getElementById('bottomOrdersBadge'); 
+    const bottomEarnBadge = document.getElementById('bottomEarnBadge');
 
     if (user) { 
       onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => { 
@@ -1977,6 +1979,43 @@ nav {
     } else { 
       if(bottomOrdersBadge) bottomOrdersBadge.style.display = 'none';
     } 
+
+    /* --- EARN / WALLET ORDERS BADGE LOGIC --- */
+    const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    if (partnerPhone) {
+      // Direct path or partner ID based search
+      const earnOrdersRef = ref(db, `earn_orders/${partnerPhone}`);
+      onValue(earnOrdersRef, (snapshot) => {
+        let earnCount = 0;
+        if (snapshot.exists()) {
+          earnCount = Object.keys(snapshot.val()).length;
+        }
+        if (earnCount > 0) {
+          if (bottomEarnBadge) {
+            bottomEarnBadge.textContent = earnCount;
+            bottomEarnBadge.style.display = 'flex';
+          }
+        } else {
+          // Check inside wallet path if available
+          const walletRef = ref(db, `wallet/${partnerPhone}/orders`);
+          get(walletRef).then((walletSnap) => {
+            let wCount = walletSnap.exists() ? Object.keys(walletSnap.val()).length : 0;
+            if (wCount > 0) {
+              if (bottomEarnBadge) {
+                bottomEarnBadge.textContent = wCount;
+                bottomEarnBadge.style.display = 'flex';
+              }
+            } else {
+              if (bottomEarnBadge) bottomEarnBadge.style.display = 'none';
+            }
+          }).catch(() => {
+            if (bottomEarnBadge) bottomEarnBadge.style.display = 'none';
+          });
+        }
+      });
+    } else {
+      if (bottomEarnBadge) bottomEarnBadge.style.display = 'none';
+    }
   } 
 
   function updateWishlistUIAndBadge(bottomWishlistBadge) { 
