@@ -25,16 +25,14 @@
           allowLocalhostAsSecureOrigin: true
         });
 
-        // App-ൽ നോട്ടിഫിക്കേഷനിൽ അമർത്തുമ്പോൾ Browser-ലേക്ക് പോകാതെ ആപ്പിൽ ഉള്ളിൽ തന്നെ Open ആകാൻ:
         OneSignal.Notifications.addEventListener('click', function(event) {
             const launchUrl = event.notification.launchURL;
             if (launchUrl) {
                 window.location.href = launchUrl;
             } else {
-                // Default-ആയി Earnings/Wallet ടാബിലേക്ക് سوئച്ച് ചെയ്യുന്നു
                 if (typeof switchTab === 'function') {
-                    const walletTabBtn = document.querySelectorAll('.nav-item-bottom')[2];
-                    switchTab('earnings', walletTabBtn);
+                    const walletTabBtn = document.querySelectorAll('.nav-item-bottom')[1];
+                    switchTab('referral', walletTabBtn);
                 }
             }
         });
@@ -360,6 +358,7 @@
             gap: 5px;
             cursor: pointer;
             width: 20%;
+            position: relative;
             transition: all 0.2s ease;
         }
 
@@ -370,6 +369,23 @@
         .nav-item-bottom:hover, .nav-item-bottom.active {
             color: var(--brand-primary);
             font-weight: 700;
+        }
+
+        .nav-tab-badge {
+            position: absolute;
+            top: -2px;
+            right: 22px;
+            background-color: var(--danger-red);
+            color: white;
+            font-size: 9px;
+            font-weight: 800;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--surface-white);
         }
 
         .main-content {
@@ -1059,6 +1075,7 @@
         <a class="nav-item-bottom active" onclick="switchTab('referral', this)">
             <i class="fa-solid fa-wand-magic-sparkles"></i>
             <span>Creator Hub</span>
+            <span class="nav-tab-badge" id="earn-tab-badge"></span>
         </a>
         <a class="nav-item-bottom" onclick="switchTab('earnings', this)">
             <i class="fa-solid fa-chart-line"></i>
@@ -1109,6 +1126,7 @@
         let partnerName = "Creator Partner";
         let uniquePartnerId = activeUserId; 
         let knownOrdersMap = {}; 
+        let isFirstLoad = true;
 
         window.onload = function() {
             verifyAndFetchPartnerDetails();
@@ -1242,6 +1260,7 @@
                 const notifs = snapshot.val() || {};
                 const list = document.getElementById('notification-list');
                 const badge = document.getElementById('notif-badge');
+                const tabBadge = document.getElementById('earn-tab-badge');
                 
                 if (!list) return;
 
@@ -1252,6 +1271,7 @@
                 if (notifKeys.length === 0) {
                     list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">No notifications yet</li>`;
                     if (badge) badge.style.display = 'none';
+                    if (tabBadge) tabBadge.style.display = 'none';
                     return;
                 }
 
@@ -1276,13 +1296,18 @@
                     list.appendChild(li);
                 });
 
-                if (badge) {
-                    if (unreadCount > 0) {
+                if (unreadCount > 0) {
+                    if (badge) {
                         badge.innerText = unreadCount;
                         badge.style.display = 'flex';
-                    } else {
-                        badge.style.display = 'none';
                     }
+                    if (tabBadge) {
+                        tabBadge.innerText = unreadCount;
+                        tabBadge.style.display = 'flex';
+                    }
+                } else {
+                    if (badge) badge.style.display = 'none';
+                    if (tabBadge) tabBadge.style.display = 'none';
                 }
             });
         }
@@ -1346,6 +1371,11 @@
                 selectedView.classList.remove('active-view');
                 void selectedView.offsetWidth; 
                 selectedView.classList.add('active-view');
+            }
+
+            if (viewId === 'referral') {
+                const tabBadge = document.getElementById('earn-tab-badge');
+                if (tabBadge) tabBadge.style.display = 'none';
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1503,9 +1533,14 @@
                     const order = orders[key];
                     const orderId = order.orderId || key;
 
+                    if (processedOrders.has(orderId)) {
+                        return; // duplicate ignore
+                    }
+                    processedOrders.add(orderId);
+
                     // Trigger OneSignal / In-app Notification for New Tracked Order
                     if (!knownOrdersMap[orderId]) {
-                        if (Object.keys(knownOrdersMap).length > 0) {
+                        if (!isFirstLoad) {
                             createNotification(
                                 "New Referred Order! 🎉",
                                 `A new order (#${orderId}) was placed using your referral link!`,
@@ -1514,11 +1549,6 @@
                         }
                         knownOrdersMap[orderId] = true;
                     }
-
-                    if (processedOrders.has(orderId)) {
-                        return;
-                    }
-                    processedOrders.add(orderId);
 
                     count++;
                     
@@ -1610,6 +1640,8 @@
                     `;
                     list.appendChild(li);
                 });
+
+                isFirstLoad = false;
 
                 if (count === 0) {
                     list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">No creator orders tracked yet. Share your referral link to get started!</li>`;
