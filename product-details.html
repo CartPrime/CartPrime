@@ -117,16 +117,19 @@
         .image-slide {
             min-width: 100%;
             scroll-snap-align: start;
-            aspect-ratio: 1/1;
+            aspect-ratio: 1 / 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #ffffff;
+            cursor: pointer;
         }
 
         .main-img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            padding: 8px;
         }
 
         .thumb-container {
@@ -146,6 +149,7 @@
             border: 2px solid transparent;
             background: #fff;
             transition: 0.2s;
+            flex-shrink: 0;
         }
 
         .thumb.active {
@@ -174,6 +178,131 @@
 
         .wishlist-container i { color: #64748b; transition: 0.2s; }
         .wishlist-container.active i { color: #ef4444; }
+
+        /* Fullscreen Amazon-Style Lightbox Modal */
+        .image-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px 10px;
+        }
+
+        .image-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-header {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            padding: 0 10px;
+        }
+
+        .modal-counter {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .close-modal-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-modal-btn:hover { background: rgba(255, 255, 255, 0.3); }
+
+        .modal-body {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: calc(100vh - 180px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-main-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .modal-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+            z-index: 10;
+        }
+
+        .modal-nav-btn:hover { background: rgba(255, 255, 255, 0.4); }
+        .modal-prev { left: 10px; }
+        .modal-next { right: 10px; }
+
+        .modal-thumbs-wrapper {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+            justify-content: center;
+            scrollbar-width: none;
+        }
+
+        .modal-thumbs-wrapper::-webkit-scrollbar { display: none; }
+
+        .modal-thumb {
+            width: 55px;
+            height: 55px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            opacity: 0.5;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .modal-thumb.active {
+            opacity: 1;
+            border-color: #fff;
+        }
 
         .info-section {
             background: var(--card-bg);
@@ -556,6 +685,20 @@
         <div class="product-grid" id="productDetail"></div>
     </div>
 
+    <!-- Fullscreen Amazon-Style Lightbox Modal -->
+    <div class="image-modal" id="imageModal">
+        <div class="modal-header">
+            <span class="modal-counter" id="modalCounter">1 / 1</span>
+            <button class="close-modal-btn" onclick="window.closeImageModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <button class="modal-nav-btn modal-prev" onclick="window.navModalImg(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <img src="" class="modal-main-img" id="modalMainImg" alt="Product Image Fullscreen">
+            <button class="modal-nav-btn modal-next" onclick="window.navModalImg(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="modal-thumbs-wrapper" id="modalThumbsContainer"></div>
+    </div>
+
     <div class="sticky-action" id="stickyAction"></div>
 
     <script type="module">
@@ -587,6 +730,8 @@
         let selectedProductSize = null;
         let isApprovedEarner = false;
         let earnerPartnerId = null; // Stores earn_partners Node Key / Partner ID
+        let currentProductImages = [];
+        let currentModalImgIndex = 0;
 
         const userId = localStorage.getItem('userId');
         
@@ -735,6 +880,8 @@
         }
 
         function renderProduct(p, reviews) {
+            currentProductImages = p.images || [];
+
             let specsHTML = ""; 
             if (p.specs) {
                 const specEntries = Object.entries(p.specs);
@@ -891,7 +1038,7 @@
                 <div class="image-section">
                     <div class="main-img-container">
                         <div class="image-slider" id="mainSlider">
-                            ${p.images.map(img => `<div class="image-slide"><img src="${img}" class="main-img"></div>`).join('')}
+                            ${p.images.map((img, i) => `<div class="image-slide" onclick="window.openImageModal(${i})"><img src="${img}" class="main-img" alt="Product Image"></div>`).join('')}
                         </div>
                         
                         <div class="share-container" id="productShareBtn" title="Share Product">
@@ -1004,6 +1151,54 @@
             selectedProductSize = size;
             const label = document.getElementById('selectedSizeLabel');
             if(label) label.innerText = size;
+        };
+
+        /* Amazon-Style Lightbox Functions */
+        window.openImageModal = (index = 0) => {
+            if (!currentProductImages || currentProductImages.length === 0) return;
+            currentModalImgIndex = index;
+
+            const modal = document.getElementById('imageModal');
+            const thumbsContainer = document.getElementById('modalThumbsContainer');
+
+            // Render modal thumbnails bottom row
+            thumbsContainer.innerHTML = currentProductImages.map((img, i) => 
+                `<img src="${img}" class="modal-thumb ${i === index ? 'active' : ''}" onclick="window.setModalImg(${i})">`
+            ).join('');
+
+            window.updateModalView();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeImageModal = () => {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        window.setModalImg = (index) => {
+            currentModalImgIndex = index;
+            window.updateModalView();
+        };
+
+        window.navModalImg = (direction) => {
+            currentModalImgIndex += direction;
+            if (currentModalImgIndex < 0) currentModalImgIndex = currentProductImages.length - 1;
+            if (currentModalImgIndex >= currentProductImages.length) currentModalImgIndex = 0;
+            window.updateModalView();
+        };
+
+        window.updateModalView = () => {
+            const modalImg = document.getElementById('modalMainImg');
+            const counter = document.getElementById('modalCounter');
+            
+            modalImg.src = currentProductImages[currentModalImgIndex];
+            counter.innerText = `${currentModalImgIndex + 1} / ${currentProductImages.length}`;
+
+            document.querySelectorAll('.modal-thumb').forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === currentModalImgIndex);
+            });
         };
 
         window.shareProduct = (title, isAffiliateShare = false) => {
