@@ -383,7 +383,12 @@
         <h2 class="tab-title">Home Banner Management</h2>
         <div class="admin-card" style="max-width: 800px;">
             <label style="font-size: 12px; font-weight: 700; color: var(--text-muted);">BANNER IMAGE URL</label>
-            <input type="text" id="bImgUrl" placeholder="https://...">
+            <div class="img-input-row">
+                <input type="text" id="bImgUrl" class="p-img-link" placeholder="https://...">
+                <button type="button" class="btn-upload-inline" onclick="triggerSingleUpload(this)">
+                    <i class="fa fa-cloud-arrow-up"></i> Upload
+                </button>
+            </div>
             <label style="font-size: 12px; font-weight: 700; color: var(--text-muted);">REDIRECT LINK / PRODUCT ID (OPTIONAL)</label>
             <input type="text" id="bRedirectLink" placeholder="Redirect link or product ID">
             <button onclick="saveBanner()" class="save-btn" style="margin-top: 8px;">ADD BANNER</button>
@@ -630,27 +635,27 @@ window.fetchMeeshoDetails = async () => {
         let pName = "", pPrice = "", pMrp = "", pDesc = [], specs = {}, extractedImageUrls = [];
         const urlRegex = /(https?:\/\/[^\s]+)/gi;
 
-        if (lines.length > 0 && !lines[0].match(urlRegex)) {
-            pName = lines[0].replace(/^(Name|Title|Product Name)\s*:\s*/i, '').trim();
-        }
-
         lines.forEach((line) => {
             let matchedUrls = line.match(urlRegex);
             if (matchedUrls) {
                 matchedUrls.forEach(url => {
-                    if (url.match(/\.(jpeg|jpg|png|webp|gif)/i) || url.includes('images.meesho.com') || url.includes('ibb.co') || url.includes('imgur') || url.includes('googleusercontent') || url.includes('cdn')) {
-                        extractedImageUrls.push(url);
-                    }
+                    let cleanUrl = url.replace(/[>\]\)]*$/, '');
+                    extractedImageUrls.push(cleanUrl);
                 });
                 return;
             }
 
-            if (/price|rate|mrp|₹/i.test(line) && /\d+/.test(line)) {
-                let numbers = line.match(/\d+/g);
-                if (numbers) {
-                    let extractedNum = parseInt(numbers[0]);
-                    if (!pPrice || extractedNum < pPrice) pPrice = extractedNum;
+            if (/^(Name|Title|Product Name)\s*:\s*/i.test(line)) {
+                pName = line.replace(/^(Name|Title|Product Name)\s*:\s*/i, '').trim();
+                return;
+            }
+
+            if (/^(Price|MRP|Rate)\s*:\s*/i.test(line)) {
+                let nums = line.match(/\d+/g);
+                if (nums && nums.length > 0) {
+                    pPrice = parseInt(nums[0]);
                 }
+                return;
             }
 
             if (line.includes(':')) {
@@ -658,17 +663,25 @@ window.fetchMeeshoDetails = async () => {
                 let key = parts[0].trim();
                 let val = parts.slice(1).join(':').trim();
 
-                if (key.length < 30 && val.length > 0) {
-                    if (key.toLowerCase().includes('name') || key.toLowerCase().includes('product name')) {
-                        if (!pName) pName = val;
-                    } else {
-                        specs[key] = val;
-                    }
+                if (key.length < 35 && val.length > 0) {
+                    specs[key] = val;
                 }
             }
 
             pDesc.push("• " + line);
         });
+
+        if (!pName && lines.length > 0 && !lines[0].match(urlRegex)) {
+            pName = lines[0];
+        }
+
+        if (!pPrice) {
+            let allText = inputData;
+            let priceMatches = allText.match(/(?:₹|Rs\.?|Price:?)\s*(\d+)/i);
+            if (priceMatches && priceMatches[1]) {
+                pPrice = parseInt(priceMatches[1]);
+            }
+        }
 
         if (pPrice) pMrp = Math.round(pPrice * 1.3);
 
