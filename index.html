@@ -58,12 +58,12 @@ body {
   -webkit-tap-highlight-color: transparent; 
   transition: background-color 0.3s ease, color 0.3s ease; 
 } 
-button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notif-bell-btn { 
+button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notification-btn { 
   touch-action: manipulation; 
   user-select: none; 
   -webkit-tap-highlight-color: transparent; 
 } 
-button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notif-bell-btn:active { 
+button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notification-btn:active { 
   transform: scale(0.96) !important; 
 } 
 nav { 
@@ -77,7 +77,7 @@ nav {
   backdrop-filter: blur(12px); 
   z-index: 1000; 
   border-bottom: 1px solid var(--border); 
-  gap: 15px; 
+  gap: 12px; 
   transition: background 0.3s ease, border-color 0.3s ease; 
 } 
 .logo { 
@@ -126,41 +126,38 @@ nav {
 .nav-right { 
   display: flex; 
   align-items: center; 
-  gap: 12px; 
+  gap: 10px; 
   position: relative; 
   flex-shrink: 0; 
 } 
 
-/* --- Notification Styling --- */
-.notif-wrapper {
+/* Notification Icon in Nav Header */
+.notification-btn {
   position: relative;
-}
-.notif-bell-btn {
-  position: relative;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--surface);
   border: 1px solid var(--border);
-  color: var(--text-main);
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  color: var(--text-main);
   font-size: 1.1rem;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
-.notif-bell-btn:hover {
+.notification-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
-.notif-badge-count {
+.notification-badge {
   position: absolute;
-  top: -2px;
-  right: -2px;
+  top: 2px;
+  right: 2px;
   background: #ef4444;
-  color: #ffffff;
-  font-size: 0.62rem;
+  color: #fff;
+  font-size: 0.65rem;
   font-weight: 800;
   border-radius: 50%;
   min-width: 18px;
@@ -170,116 +167,6 @@ nav {
   justify-content: center;
   padding: 2px;
   border: 2px solid var(--card-bg);
-}
-.notif-dropdown {
-  display: none;
-  position: absolute;
-  top: calc(100% + 12px);
-  right: 0;
-  width: 320px;
-  max-height: 420px;
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  z-index: 2500;
-  flex-direction: column;
-  overflow: hidden;
-}
-.notif-dropdown.active {
-  display: flex;
-}
-.notif-header {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--surface);
-}
-.notif-header h4 {
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: var(--text-main);
-}
-.mark-all-read-btn {
-  font-size: 0.72rem;
-  color: var(--accent);
-  font-weight: 700;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-}
-.notif-body {
-  overflow-y: auto;
-  max-height: 350px;
-  display: flex;
-  flex-direction: column;
-}
-.notif-item {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  transition: background 0.2s ease;
-  position: relative;
-}
-.notif-item.unread {
-  background: rgba(37, 99, 235, 0.05);
-}
-.notif-item:hover {
-  background: var(--surface);
-}
-.notif-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(37, 99, 235, 0.1);
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  flex-shrink: 0;
-}
-.notif-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.notif-title {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
-.notif-msg {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  line-height: 1.3;
-}
-.notif-time {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-.notif-action-btn {
-  font-size: 0.68rem;
-  color: var(--accent);
-  font-weight: 700;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  align-self: flex-start;
-  margin-top: 4px;
-}
-.notif-empty {
-  padding: 30px 15px;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.82rem;
-  font-weight: 600;
 }
 
 .profile-chip {
@@ -390,7 +277,7 @@ nav {
   100% { transform: rotate(360deg); }
 }
 
-/* --- Redesigned Trust Welcome Modal Styles with Animation --- */
+/* Modals */
 .modal-overlay { 
   display: none; 
   position: fixed; 
@@ -416,11 +303,14 @@ nav {
   padding: 25px; 
   border-radius: 20px; 
   width: 100%; 
-  max-width: 400px; 
+  max-width: 420px; 
   box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
   border: 1px solid var(--border); 
   transform: translateY(20px) scale(0.95);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
 } 
 .modal-overlay.active .modal-card {
   transform: translateY(0) scale(1);
@@ -468,7 +358,74 @@ nav {
   font-size: 0.9rem;
 }
 
-/* --- Redesigned Earn Modal Styles --- */
+/* Notification List UI */
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-top: 10px;
+}
+.notification-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+.notification-item.unread {
+  border-left: 4px solid var(--accent);
+  background: rgba(37, 99, 235, 0.03);
+}
+.notification-icon-wrapper {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.notification-content {
+  flex: 1;
+}
+.notification-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+.notification-msg {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+.notification-time {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-weight: 600;
+}
+.mark-read-btn {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 6px;
+  padding: 0;
+  display: inline-block;
+}
+
+/* Earn Modal Styles */
 .earn-modal-header {
   display: flex;
   align-items: center;
@@ -896,49 +853,55 @@ nav {
   0% { opacity: 0; transform: translateY(30px); } 
   100% { opacity: 1; transform: translateY(0); } 
 } 
+
+/* Enhanced Product Card Styles */
 .card { 
   background: var(--card-bg); 
-  border-radius: 20px; 
-  padding: 10px; 
+  border-radius: 18px; 
+  padding: 12px; 
   position: relative; 
   border: 1px solid var(--border); 
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04); 
   display: flex; 
   flex-direction: column; 
   height: 100%; 
   cursor: pointer; 
   animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
   opacity: 0; 
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease; 
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
 } 
 .card:hover { 
-  transform: translateY(-8px); 
-  box-shadow: 0 20px 40px rgba(0,0,0,0.12); 
+  transform: translateY(-6px); 
+  box-shadow: 0 12px 28px rgba(0,0,0,0.1); 
+  border-color: rgba(37, 99, 235, 0.3);
 } 
 .image-box { 
   width: 100%; 
-  height: 180px; 
-  border-radius: 14px; 
+  height: 170px; 
+  border-radius: 12px; 
   overflow: hidden; 
   background: var(--surface); 
-  margin-bottom: 10px; 
+  margin-bottom: 12px; 
   position: relative; 
 } 
 .card img { 
   width: 100%; 
   height: 100%; 
   object-fit: contain; 
-  transition: 0.5s; 
+  transition: transform 0.4s ease; 
 } 
+.card:hover .image-box img {
+  transform: scale(1.06);
+}
 .stock-badge { 
   position: absolute; 
   top: 10px; 
   left: 10px; 
   background: #000; 
   color: white; 
-  padding: 4px 10px; 
+  padding: 4px 8px; 
   border-radius: 6px; 
-  font-size: 0.65rem; 
+  font-size: 0.62rem; 
   font-weight: 700; 
   z-index: 10; 
 } 
@@ -948,9 +911,9 @@ nav {
   right: 10px; 
   background: #22c55e; 
   color: white; 
-  padding: 4px 10px; 
+  padding: 4px 8px; 
   border-radius: 6px; 
-  font-size: 0.65rem; 
+  font-size: 0.62rem; 
   font-weight: 800; 
   z-index: 10; 
 } 
@@ -962,7 +925,7 @@ nav {
   color: #0f172a; 
   padding: 3px 8px; 
   border-radius: 6px; 
-  font-size: 0.65rem; 
+  font-size: 0.62rem; 
   font-weight: 800; 
   display: flex; 
   align-items: center; 
@@ -1009,26 +972,27 @@ nav {
   flex-direction: column; 
 } 
 .card h3 { 
-  font-size: 0.9rem; 
+  font-size: 0.88rem; 
   font-weight: 700; 
   margin-bottom: 6px; 
   color: var(--text-main); 
   display: -webkit-box; 
-  -webkit-line-clamp: 1; 
+  -webkit-line-clamp: 2; 
   -webkit-box-orient: vertical; 
   overflow: hidden; 
   text-overflow: ellipsis; 
+  line-height: 1.3;
 } 
 .price-container { 
   display: flex; 
   align-items: center; 
   gap: 6px; 
-  margin-bottom: 10px; 
+  margin-bottom: 12px; 
   flex-wrap: wrap; 
 } 
 .price { 
   font-weight: 800; 
-  font-size: 1rem; 
+  font-size: 1.05rem; 
   color: var(--text-main); 
 } 
 .mrp { 
@@ -1046,12 +1010,13 @@ nav {
   font-weight: 700; 
   cursor: pointer; 
   transition: 0.25s ease; 
-  font-size: 0.85rem; 
+  font-size: 0.82rem; 
   margin-top: auto; 
-  min-height: 40px; 
+  min-height: 38px; 
   display: flex; 
   align-items: center; 
   justify-content: center; 
+  letter-spacing: 0.3px;
 } 
 .buy-btn:disabled { 
   background: var(--border); 
@@ -1303,7 +1268,7 @@ nav {
     padding: 8px 4% 20px; 
   } 
   .image-box { 
-    height: 140px; 
+    height: 135px; 
   } 
   .stock-badge, .discount-badge { 
     padding: 3px 6px; 
@@ -1345,14 +1310,6 @@ nav {
     width: 100%; 
     min-height: 40px; 
   } 
-  .notif-dropdown {
-    position: fixed;
-    top: 60px;
-    left: 15px;
-    right: 15px;
-    width: auto;
-    max-height: 380px;
-  }
 } 
 </style> 
 </head> 
@@ -1365,21 +1322,10 @@ nav {
     <div id="searchSuggestions" class="search-suggestions-box"></div> 
   </div> 
   <div class="nav-right"> 
-    <!-- Notification Bell Dropdown Button -->
-    <div class="notif-wrapper">
-      <button class="notif-bell-btn" id="notifBellBtn" title="Notifications">
-        <i class="fa-regular fa-bell"></i>
-        <span class="notif-badge-count" id="notifBadge" style="display: none;">0</span>
-      </button>
-      <div class="notif-dropdown" id="notifDropdown">
-        <div class="notif-header">
-          <h4>Notifications</h4>
-          <button class="mark-all-read-btn" id="markAllReadBtn">Mark all as read</button>
-        </div>
-        <div class="notif-body" id="notifContainer">
-          <div class="notif-empty">No notifications yet</div>
-        </div>
-      </div>
+    <!-- Notification Icon Added Here -->
+    <div class="notification-btn" id="navNotificationBtn" title="Notifications">
+      <i class="fa-regular fa-bell"></i>
+      <span class="notification-badge" id="navNotificationBadge" style="display:none;">0</span>
     </div>
 
     <div class="profile-chip" id="profileChip" title="Click to edit profile">
@@ -1391,6 +1337,24 @@ nav {
     </div>
   </div> 
 </nav> 
+
+<!-- Notifications Modal Page -->
+<div id="notificationModal" class="modal-overlay"> 
+  <div class="modal-card"> 
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+      <h3 style="margin: 0; font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-bell" style="color: var(--accent);"></i> Notifications
+      </h3>
+      <button type="button" id="closeNotificationModal" style="background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="notification-list" id="notificationContainer">
+      <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px 0;">Loading notifications...</p>
+    </div>
+  </div> 
+</div>
 
 <!-- Redesigned Trustworthy User Registration/Welcome/Edit Modal -->
 <div id="userWelcomeModal" class="modal-overlay"> 
@@ -1577,7 +1541,7 @@ nav {
   </div> 
 </div> 
 
-<!-- Bottom Navigation Bar with Contact Icon and Earn Badge -->
+<!-- Bottom Navigation Bar -->
 <div class="bottom-nav">
   <a href="/" class="bottom-nav-item active">
     <i class="fa-solid fa-house"></i>
@@ -1689,6 +1653,13 @@ nav {
   const logoutSection = document.getElementById('logoutSection');
   const logoutBtn = document.getElementById('logoutBtn');
 
+  // Notification Elements
+  const navNotificationBtn = document.getElementById('navNotificationBtn');
+  const navNotificationBadge = document.getElementById('navNotificationBadge');
+  const notificationModal = document.getElementById('notificationModal');
+  const closeNotificationModal = document.getElementById('closeNotificationModal');
+  const notificationContainer = document.getElementById('notificationContainer');
+
   let registrationStep = 1;
 
   function updateHeaderProfileUI() {
@@ -1786,7 +1757,7 @@ nav {
             updateHeaderProfileUI();
             showCustomAlert("Welcome Back!", `Successfully logged in as ${existingName}`, true);
             updateBadges(currentUser);
-            listenForUserNotifications();
+            listenUserNotifications();
             resetRegistrationForm();
           } else {
             registrationStep = 2;
@@ -1822,7 +1793,7 @@ nav {
             updateHeaderProfileUI();
             showCustomAlert("Profile Saved!", "Welcome to CartPrime!", true);
             updateBadges(currentUser);
-            listenForUserNotifications();
+            listenUserNotifications();
             resetRegistrationForm();
           }).catch(() => {
             closeModal(welcomeModal);
@@ -1831,13 +1802,115 @@ nav {
             updateHeaderProfileUI();
             showCustomAlert("Profile Saved!", "Welcome to CartPrime!", true);
             updateBadges(currentUser);
-            listenForUserNotifications();
+            listenUserNotifications();
             resetRegistrationForm();
           });
         }
       }
     });
   }
+
+  /* --- REAL-TIME NOTIFICATION SYSTEM (earn_partners/{phone}/notifications) --- */
+  function listenUserNotifications() {
+    const userPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    if (!userPhone) return;
+
+    const notifRef = ref(db, `earn_partners/${userPhone}/notifications`);
+    onValue(notifRef, (snapshot) => {
+      let unreadCount = 0;
+      let notificationsList = [];
+
+      if (snapshot.exists()) {
+        snapshot.forEach((childSnap) => {
+          const item = childSnap.val();
+          item.id = childSnap.key;
+          if (item.unread === true || item.unread === "true" || item.unread === undefined) {
+            unreadCount++;
+          }
+          notificationsList.unshift(item); // Show newest first
+        });
+      }
+
+      // Update Nav Badge
+      if (unreadCount > 0) {
+        navNotificationBadge.textContent = unreadCount;
+        navNotificationBadge.style.display = 'flex';
+      } else {
+        navNotificationBadge.style.display = 'none';
+      }
+
+      // Render Modal Items
+      renderNotifications(notificationsList, userPhone);
+    });
+  }
+
+  function renderNotifications(items, phone) {
+    if (!notificationContainer) return;
+
+    if (items.length === 0) {
+      notificationContainer.innerHTML = `
+        <div style="text-align:center; padding: 30px 10px; color: var(--text-muted);">
+          <i class="fa-regular fa-bell-slash" style="font-size: 2rem; margin-bottom: 8px; opacity: 0.5;"></i>
+          <p style="font-size: 0.85rem;">No notifications found.</p>
+        </div>
+      `;
+      return;
+    }
+
+    notificationContainer.innerHTML = "";
+    items.forEach(item => {
+      const isUnread = item.unread === true || item.unread === "true" || item.unread === undefined;
+      const iconClass = item.icon ? (item.icon.startsWith('fa-') ? item.icon : `fa-${item.icon}`) : 'fa-bell';
+      
+      let dateStr = "";
+      if (item.timestamp) {
+        const d = new Date(item.timestamp);
+        dateStr = d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+
+      const card = document.createElement('div');
+      card.className = `notification-item ${isUnread ? 'unread' : ''}`;
+      card.innerHTML = `
+        <div class="notification-icon-wrapper">
+          <i class="fa-solid ${iconClass}"></i>
+        </div>
+        <div class="notification-content">
+          <div class="notification-title">${item.title || 'Notification'}</div>
+          <div class="notification-msg">${item.message || ''}</div>
+          <div class="notification-time">${dateStr}</div>
+          ${isUnread ? `<button class="mark-read-btn" data-id="${item.id}"><i class="fa-solid fa-check"></i> Mark as read</button>` : ''}
+        </div>
+      `;
+
+      if (isUnread) {
+        const markBtn = card.querySelector('.mark-read-btn');
+        if (markBtn) {
+          markBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const itemKey = markBtn.getAttribute('data-id');
+            const targetRef = ref(db, `earn_partners/${phone}/notifications/${itemKey}`);
+            update(targetRef, { unread: false });
+          });
+        }
+      }
+
+      notificationContainer.appendChild(card);
+    });
+  }
+
+  if (navNotificationBtn) {
+    navNotificationBtn.addEventListener('click', () => {
+      openModal(notificationModal);
+    });
+  }
+
+  if (closeNotificationModal) {
+    closeNotificationModal.addEventListener('click', () => {
+      closeModal(notificationModal);
+    });
+  }
+
+  listenUserNotifications();
 
   function showCustomAlert(title, message, isSuccess = true) {
     const toastModal = document.getElementById('customToast');
@@ -2044,133 +2117,6 @@ nav {
     }); 
   } 
 
-  /* --- REALTIME NOTIFICATIONS LOGIC FROM earn_partners/{phone}/notifications --- */
-  const notifBellBtn = document.getElementById('notifBellBtn');
-  const notifDropdown = document.getElementById('notifDropdown');
-  const notifBadge = document.getElementById('notifBadge');
-  const notifContainer = document.getElementById('notifContainer');
-  const markAllReadBtn = document.getElementById('markAllReadBtn');
-
-  if (notifBellBtn) {
-    notifBellBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      notifDropdown.classList.toggle('active');
-    });
-  }
-
-  document.addEventListener('click', (e) => {
-    if (notifDropdown && !notifDropdown.contains(e.target) && !notifBellBtn.contains(e.target)) {
-      notifDropdown.classList.remove('active');
-    }
-  });
-
-  function listenForUserNotifications() {
-    const userPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-    if (!userPhone) return;
-
-    const notifRef = ref(db, `earn_partners/${userPhone}/notifications`);
-    onValue(notifRef, (snapshot) => {
-      if (!snapshot.exists()) {
-        if (notifBadge) notifBadge.style.display = 'none';
-        if (notifContainer) notifContainer.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
-        return;
-      }
-
-      let unreadCount = 0;
-      let notifications = [];
-
-      snapshot.forEach((childSnap) => {
-        const notifKey = childSnap.key;
-        const data = childSnap.val();
-        data.id = notifKey;
-
-        if (data.unread === true || data.unread === "true") {
-          unreadCount++;
-        }
-        notifications.push(data);
-      });
-
-      // Sort notifications by timestamp descending
-      notifications.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-      if (unreadCount > 0) {
-        if (notifBadge) {
-          notifBadge.textContent = unreadCount;
-          notifBadge.style.display = 'flex';
-        }
-      } else {
-        if (notifBadge) notifBadge.style.display = 'none';
-      }
-
-      renderNotifications(notifications, userPhone);
-    });
-  }
-
-  function renderNotifications(notifications, userPhone) {
-    if (!notifContainer) return;
-
-    if (notifications.length === 0) {
-      notifContainer.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
-      return;
-    }
-
-    notifContainer.innerHTML = "";
-    notifications.forEach((notif) => {
-      const isUnread = (notif.unread === true || notif.unread === "true");
-      const iconClass = notif.icon || "fa-bell";
-      const title = notif.title || "Notification";
-      const message = notif.message || "";
-      const dateStr = notif.timestamp ? new Date(notif.timestamp).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }) : "";
-
-      const item = document.createElement('div');
-      item.className = `notif-item ${isUnread ? 'unread' : ''}`;
-      item.innerHTML = `
-        <div class="notif-icon">
-          <i class="fa-solid ${iconClass}"></i>
-        </div>
-        <div class="notif-content">
-          <span class="notif-title">${title}</span>
-          <span class="notif-msg">${message}</span>
-          <span class="notif-time">${dateStr}</span>
-          ${isUnread ? `<button class="notif-action-btn" data-id="${notif.id}">Mark as read</button>` : ''}
-        </div>
-      `;
-
-      if (isUnread) {
-        const readBtn = item.querySelector('.notif-action-btn');
-        if (readBtn) {
-          readBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const singleNotifRef = ref(db, `earn_partners/${userPhone}/notifications/${notif.id}`);
-            update(singleNotifRef, { unread: false });
-          });
-        }
-      }
-
-      notifContainer.appendChild(item);
-    });
-  }
-
-  if (markAllReadBtn) {
-    markAllReadBtn.addEventListener('click', () => {
-      const userPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-      if (!userPhone) return;
-
-      const notifRef = ref(db, `earn_partners/${userPhone}/notifications`);
-      get(notifRef).then((snapshot) => {
-        if (snapshot.exists()) {
-          const updates = {};
-          snapshot.forEach((childSnap) => {
-            updates[`earn_partners/${userPhone}/notifications/${childSnap.key}/unread`] = false;
-          });
-          update(ref(db), updates);
-        }
-      });
-    });
-  }
-
-  listenForUserNotifications();
-
   let allProducts = []; 
   let activeCategory = "All"; 
   let autoScrollInterval = null; 
@@ -2292,7 +2238,6 @@ nav {
     const partnerId = localStorage.getItem('partnerId');
 
     if (partnerPhone || partnerId) {
-      // 1. Direct phone lookup under ReferralOrders/partnerPhone
       const directRefPath = partnerPhone ? ref(db, `ReferralOrders/${partnerPhone}`) : null;
 
       if (directRefPath) {
@@ -2305,7 +2250,6 @@ nav {
               bottomEarnBadge.style.display = 'flex';
             }
           } else {
-            // 2. Search root ReferralOrders for partnerId / partnerPhone matching
             onValue(ref(db, 'ReferralOrders'), (allRefOrdersSnap) => {
               let totalCount = 0;
               if (allRefOrdersSnap.exists()) {
@@ -2329,7 +2273,6 @@ nav {
                 bottomEarnBadge.textContent = totalCount;
                 bottomEarnBadge.style.display = 'flex';
               } else {
-                // 3. Fallback checks for earn_orders & wallet
                 onValue(ref(db, `earn_orders/${partnerPhone}`), (earnSnap) => {
                   let earnOrdersCount = earnSnap.exists() ? Object.keys(earnSnap.val()).length : 0;
                   onValue(ref(db, `wallet/${partnerPhone}/orders`), (walletSnap) => {
@@ -2559,7 +2502,7 @@ nav {
             ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''} 
           </div> 
           <button class="buy-btn" ${isOut ? 'disabled' : ''}> 
-            ${isOut ? 'Unavailable' : 'View Product'} 
+            ${isOut ? 'Unavailable' : 'View Details'} 
           </button> 
         </div> 
       `; 
