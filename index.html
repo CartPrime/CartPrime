@@ -1752,7 +1752,7 @@ nav {
             <div class="notif-title">${item.title || 'Notification'}</div>
             <div class="notif-message">${item.message || ''}</div>
             <div class="notif-time">${timeStr}</div>
-            ${isUnread ? `<button class="mark-read-btn" data-id="${id}">Mark as read</button>` : ''}
+            <button class="mark-read-btn" data-id="${id}">Mark as read</button>
           </div>
         </div>
       `;
@@ -1760,22 +1760,16 @@ nav {
 
     notifListContainer.innerHTML = html;
 
-    // Attach mark as read listeners
+    // Attach remove listener on "Mark as read" button click
     notifListContainer.querySelectorAll('.mark-read-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const notifId = e.currentTarget.getAttribute('data-id');
         const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
         if (phone && notifId) {
-          if (notificationsData[notifId]) {
-            notificationsData[notifId].unread = false;
-            notificationsData[notifId].read = true;
-          }
+          delete notificationsData[notifId];
           renderNotifications();
 
-          update(ref(db, `earn_partners/${phone}/notifications/${notifId}`), {
-            unread: false,
-            read: true
-          });
+          remove(ref(db, `earn_partners/${phone}/notifications/${notifId}`));
         }
       });
     });
