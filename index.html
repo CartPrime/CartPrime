@@ -1698,7 +1698,7 @@ nav {
         let unreadCount = 0;
         
         Object.keys(notificationsData).forEach((key) => {
-          if (notificationsData[key].unread === true) {
+          if (notificationsData[key].unread === true || notificationsData[key].read === false) {
             unreadCount++;
           }
         });
@@ -1731,7 +1731,7 @@ nav {
     let html = '';
     keys.forEach((id) => {
       const item = notificationsData[id];
-      const isUnread = item.unread === true;
+      const isUnread = item.unread === true || item.read === false;
       const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }) : '';
       const iconClass = item.icon || 'fa-bell';
 
@@ -1759,7 +1759,8 @@ nav {
         const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
         if (phone && notifId) {
           update(ref(db, `earn_partners/${phone}/notifications/${notifId}`), {
-            unread: false
+            unread: false,
+            read: true
           });
         }
       });
