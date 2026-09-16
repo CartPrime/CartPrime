@@ -58,12 +58,12 @@ body {
   -webkit-tap-highlight-color: transparent; 
   transition: background-color 0.3s ease, color 0.3s ease; 
 } 
-button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip { 
+button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notif-bell-btn { 
   touch-action: manipulation; 
   user-select: none; 
   -webkit-tap-highlight-color: transparent; 
 } 
-button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active { 
+button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notif-bell-btn:active { 
   transform: scale(0.96) !important; 
 } 
 nav { 
@@ -130,6 +130,158 @@ nav {
   position: relative; 
   flex-shrink: 0; 
 } 
+
+/* --- Notification Styling --- */
+.notif-wrapper {
+  position: relative;
+}
+.notif-bell-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+.notif-bell-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.notif-badge-count {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border: 2px solid var(--card-bg);
+}
+.notif-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 320px;
+  max-height: 420px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 2500;
+  flex-direction: column;
+  overflow: hidden;
+}
+.notif-dropdown.active {
+  display: flex;
+}
+.notif-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface);
+}
+.notif-header h4 {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+.mark-all-read-btn {
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-weight: 700;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+.notif-body {
+  overflow-y: auto;
+  max-height: 350px;
+  display: flex;
+  flex-direction: column;
+}
+.notif-item {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: background 0.2s ease;
+  position: relative;
+}
+.notif-item.unread {
+  background: rgba(37, 99, 235, 0.05);
+}
+.notif-item:hover {
+  background: var(--surface);
+}
+.notif-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.notif-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.notif-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.notif-msg {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+.notif-time {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.notif-action-btn {
+  font-size: 0.68rem;
+  color: var(--accent);
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+.notif-empty {
+  padding: 30px 15px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
 .profile-chip {
   display: flex;
   align-items: center;
@@ -1193,6 +1345,14 @@ nav {
     width: 100%; 
     min-height: 40px; 
   } 
+  .notif-dropdown {
+    position: fixed;
+    top: 60px;
+    left: 15px;
+    right: 15px;
+    width: auto;
+    max-height: 380px;
+  }
 } 
 </style> 
 </head> 
@@ -1205,6 +1365,23 @@ nav {
     <div id="searchSuggestions" class="search-suggestions-box"></div> 
   </div> 
   <div class="nav-right"> 
+    <!-- Notification Bell Dropdown Button -->
+    <div class="notif-wrapper">
+      <button class="notif-bell-btn" id="notifBellBtn" title="Notifications">
+        <i class="fa-regular fa-bell"></i>
+        <span class="notif-badge-count" id="notifBadge" style="display: none;">0</span>
+      </button>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-header">
+          <h4>Notifications</h4>
+          <button class="mark-all-read-btn" id="markAllReadBtn">Mark all as read</button>
+        </div>
+        <div class="notif-body" id="notifContainer">
+          <div class="notif-empty">No notifications yet</div>
+        </div>
+      </div>
+    </div>
+
     <div class="profile-chip" id="profileChip" title="Click to edit profile">
       <div class="profile-avatar" id="navProfileAvatar">U</div>
       <div class="profile-info">
@@ -1460,7 +1637,7 @@ nav {
 <script type="module"> 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"; 
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"; 
-  import { getDatabase, ref, onValue, get, set, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js"; 
+  import { getDatabase, ref, onValue, get, set, update, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js"; 
 
   const firebaseConfig = { 
     apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc", 
@@ -1609,6 +1786,7 @@ nav {
             updateHeaderProfileUI();
             showCustomAlert("Welcome Back!", `Successfully logged in as ${existingName}`, true);
             updateBadges(currentUser);
+            listenForUserNotifications();
             resetRegistrationForm();
           } else {
             registrationStep = 2;
@@ -1644,6 +1822,7 @@ nav {
             updateHeaderProfileUI();
             showCustomAlert("Profile Saved!", "Welcome to CartPrime!", true);
             updateBadges(currentUser);
+            listenForUserNotifications();
             resetRegistrationForm();
           }).catch(() => {
             closeModal(welcomeModal);
@@ -1652,6 +1831,7 @@ nav {
             updateHeaderProfileUI();
             showCustomAlert("Profile Saved!", "Welcome to CartPrime!", true);
             updateBadges(currentUser);
+            listenForUserNotifications();
             resetRegistrationForm();
           });
         }
@@ -1863,6 +2043,133 @@ nav {
       }
     }); 
   } 
+
+  /* --- REALTIME NOTIFICATIONS LOGIC FROM earn_partners/{phone}/notifications --- */
+  const notifBellBtn = document.getElementById('notifBellBtn');
+  const notifDropdown = document.getElementById('notifDropdown');
+  const notifBadge = document.getElementById('notifBadge');
+  const notifContainer = document.getElementById('notifContainer');
+  const markAllReadBtn = document.getElementById('markAllReadBtn');
+
+  if (notifBellBtn) {
+    notifBellBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notifDropdown.classList.toggle('active');
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if (notifDropdown && !notifDropdown.contains(e.target) && !notifBellBtn.contains(e.target)) {
+      notifDropdown.classList.remove('active');
+    }
+  });
+
+  function listenForUserNotifications() {
+    const userPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    if (!userPhone) return;
+
+    const notifRef = ref(db, `earn_partners/${userPhone}/notifications`);
+    onValue(notifRef, (snapshot) => {
+      if (!snapshot.exists()) {
+        if (notifBadge) notifBadge.style.display = 'none';
+        if (notifContainer) notifContainer.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
+        return;
+      }
+
+      let unreadCount = 0;
+      let notifications = [];
+
+      snapshot.forEach((childSnap) => {
+        const notifKey = childSnap.key;
+        const data = childSnap.val();
+        data.id = notifKey;
+
+        if (data.unread === true || data.unread === "true") {
+          unreadCount++;
+        }
+        notifications.push(data);
+      });
+
+      // Sort notifications by timestamp descending
+      notifications.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+      if (unreadCount > 0) {
+        if (notifBadge) {
+          notifBadge.textContent = unreadCount;
+          notifBadge.style.display = 'flex';
+        }
+      } else {
+        if (notifBadge) notifBadge.style.display = 'none';
+      }
+
+      renderNotifications(notifications, userPhone);
+    });
+  }
+
+  function renderNotifications(notifications, userPhone) {
+    if (!notifContainer) return;
+
+    if (notifications.length === 0) {
+      notifContainer.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
+      return;
+    }
+
+    notifContainer.innerHTML = "";
+    notifications.forEach((notif) => {
+      const isUnread = (notif.unread === true || notif.unread === "true");
+      const iconClass = notif.icon || "fa-bell";
+      const title = notif.title || "Notification";
+      const message = notif.message || "";
+      const dateStr = notif.timestamp ? new Date(notif.timestamp).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }) : "";
+
+      const item = document.createElement('div');
+      item.className = `notif-item ${isUnread ? 'unread' : ''}`;
+      item.innerHTML = `
+        <div class="notif-icon">
+          <i class="fa-solid ${iconClass}"></i>
+        </div>
+        <div class="notif-content">
+          <span class="notif-title">${title}</span>
+          <span class="notif-msg">${message}</span>
+          <span class="notif-time">${dateStr}</span>
+          ${isUnread ? `<button class="notif-action-btn" data-id="${notif.id}">Mark as read</button>` : ''}
+        </div>
+      `;
+
+      if (isUnread) {
+        const readBtn = item.querySelector('.notif-action-btn');
+        if (readBtn) {
+          readBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const singleNotifRef = ref(db, `earn_partners/${userPhone}/notifications/${notif.id}`);
+            update(singleNotifRef, { unread: false });
+          });
+        }
+      }
+
+      notifContainer.appendChild(item);
+    });
+  }
+
+  if (markAllReadBtn) {
+    markAllReadBtn.addEventListener('click', () => {
+      const userPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+      if (!userPhone) return;
+
+      const notifRef = ref(db, `earn_partners/${userPhone}/notifications`);
+      get(notifRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const updates = {};
+          snapshot.forEach((childSnap) => {
+            updates[`earn_partners/${userPhone}/notifications/${childSnap.key}/unread`] = false;
+          });
+          update(ref(db), updates);
+        }
+      });
+    });
+  }
+
+  listenForUserNotifications();
 
   let allProducts = []; 
   let activeCategory = "All"; 
@@ -2181,109 +2488,123 @@ nav {
         startAutoScroll(); 
       }); 
     }); 
+
+    slider.addEventListener('touchstart', () => clearInterval(autoScrollInterval)); 
+    slider.addEventListener('touchend', () => startAutoScroll()); 
   } 
 
   function renderCategoryBar() { 
-    const categoryBar = document.getElementById('categoryBar'); 
-    const categories = ["All", ...new Set(allProducts.map(p => p.category).filter(Boolean))]; 
-    categoryBar.innerHTML = ""; 
-    categories.forEach(cat => { 
-      const btn = document.createElement('button'); 
-      btn.className = `category-btn ${cat.toLowerCase() === activeCategory.toLowerCase() ? 'active' : ''}`; 
-      btn.setAttribute('data-cat', cat); 
-      btn.textContent = cat; 
-      btn.addEventListener('click', () => { 
-        activeCategory = cat; 
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
-        btn.classList.add('active'); 
-        if (cat === "All") { 
-          renderProducts(allProducts); 
-        } else { 
-          renderProducts(allProducts.filter(p => p.category && p.category.trim().toLowerCase() === cat.toLowerCase())); 
-        } 
-      }); 
-      categoryBar.appendChild(btn); 
+    const catBar = document.getElementById('categoryBar'); 
+    const categories = new Set(["Gadgets", "Fashion", "Watches", "Accessories"]); 
+    allProducts.forEach(p => { 
+      if (p.category && p.category.trim() !== "" && p.showOnHome !== false) { 
+        categories.add(p.category.trim()); 
+      } 
     }); 
-  } 
-
-  function toggleWishlist(productId, btnElement, e) { 
-    e.stopPropagation(); 
-    const isWishlisted = !!userWishlistIds[productId]; 
-
-    if (currentUser) { 
-      const itemRef = ref(db, `wishlist/${currentUser.uid}/${productId}`); 
-      if (isWishlisted) { 
-        remove(itemRef); 
-      } else { 
-        set(itemRef, true); 
-      } 
-    } else { 
-      let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
-      if (isWishlisted) { 
-        delete localWishlist[productId]; 
-      } else { 
-        localWishlist[productId] = true; 
-      } 
-      localStorage.setItem('guestWishlist', JSON.stringify(localWishlist)); 
-      userWishlistIds = localWishlist; 
-      updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
-    } 
+    let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All">All</div>`; 
+    categories.forEach(cat => { 
+      barHtml += `<div class="category-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`; 
+    }); 
+    catBar.innerHTML = barHtml; 
+    document.querySelectorAll('.category-btn').forEach(btn => { 
+      btn.addEventListener('click', (e) => { 
+        activeCategory = e.target.getAttribute('data-cat'); 
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
+        e.target.classList.add('active'); 
+        let filtered = allProducts; 
+        if (activeCategory !== "All") { 
+          filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase()); 
+        } 
+        renderProducts(filtered); 
+      }); 
+    }); 
   } 
 
   function renderProducts(products) { 
     const grid = document.getElementById('productGrid'); 
     grid.innerHTML = ""; 
-    if (products.length === 0) { 
-      grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted); font-weight: 600;">No products found in this category.</div>`; 
-      return; 
-    } 
-    products.forEach((product, index) => { 
+    let animationDelayIndex = 0; 
+    products.forEach((p) => { 
+      if (p.showOnHome === false) return; 
+      const isOut = p.outOfStock === true; 
+      const pr = parseFloat(p.price.toString().replace(/,/g, '')); 
+      const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr); 
+      let discTag = ""; 
+      let hasDisc = false; 
+      if(mr > pr) { 
+        const disc = Math.round(((mr - pr) / mr) * 100); 
+        hasDisc = true; 
+        discTag = `<div class="discount-badge ${hasDisc ? 'with-wishlist' : ''}">${disc}% OFF</div>`; 
+      } 
+      const isWishlisted = userWishlistIds[p.id] ? true : false; 
       const card = document.createElement('div'); 
       card.className = 'card'; 
-      card.style.animationDelay = `${index * 0.05}s`; 
-
-      const isWishlisted = !!userWishlistIds[product.id]; 
-      const mrp = parseFloat(product.mrp || 0); 
-      const price = parseFloat(product.price || 0); 
-      let discountBadge = ""; 
-
-      if (mrp > price && price > 0) { 
-        const discount = Math.round(((mrp - price) / mrp) * 100); 
-        if (discount > 0) { 
-          discountBadge = `<span class="discount-badge with-wishlist">${discount}% OFF</span>`; 
-        } 
-      } 
-
-      const stock = parseInt(product.stock !== undefined ? product.stock : 10); 
-      const isOutOfStock = stock <= 0; 
-
+      card.style.animationDelay = `${animationDelayIndex * 0.08}s`; 
+      animationDelayIndex++; 
+      const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150'; 
       card.innerHTML = ` 
+        ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''} 
+        ${!isOut ? discTag : ''} 
+        <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist" data-id="${p.id}"> 
+          <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
+        </button> 
         <div class="image-box"> 
-          ${isOutOfStock ? `<span class="stock-badge" style="background:#ef4444;">OUT OF STOCK</span>` : `<span class="stock-badge">VERIFIED</span>`} 
-          ${discountBadge} 
-          <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist"> 
-            <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
-          </button> 
-          <img src="${product.imageUrl || product.image || 'https://via.placeholder.com/300'}" alt="${product.title || product.name}" loading="lazy"> 
-          <div class="verified-tag"><i class="fa-solid fa-circle-check"></i> Quality Assured</div> 
+          <img src="${productMainImg}" alt="${p.name || 'Product'}" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}"> 
+          <div class="verified-tag"><i class="fa-solid fa-shield-check"></i> Quality Assured</div> 
         </div> 
         <div class="card-info"> 
-          <h3>${product.title || product.name || 'Product Title'}</h3> 
+          <h3>${p.name || 'No Title'}</h3> 
           <div class="price-container"> 
-            <span class="price">₹${price}</span> 
-            ${mrp > price ? `<span class="mrp">₹${mrp}</span>` : ''} 
+            <span class="price">₹${p.price}</span> 
+            ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''} 
           </div> 
-          <button class="buy-btn" ${isOutOfStock ? 'disabled' : ''}> 
-            ${isOutOfStock ? 'Out of Stock' : 'View Details'} 
+          <button class="buy-btn" ${isOut ? 'disabled' : ''}> 
+            ${isOut ? 'Unavailable' : 'View Product'} 
           </button> 
         </div> 
       `; 
 
       const wishlistBtn = card.querySelector('.card-wishlist-btn'); 
-      wishlistBtn.addEventListener('click', (e) => toggleWishlist(product.id, wishlistBtn, e)); 
+      wishlistBtn.addEventListener('click', (e) => { 
+        e.stopPropagation(); 
+        const prodId = wishlistBtn.getAttribute('data-id'); 
+        if (currentUser) { 
+          const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`); 
+          if (userWishlistIds[prodId]) { 
+            remove(wishRef).then(() => { 
+              delete userWishlistIds[prodId]; 
+              wishlistBtn.classList.remove('active'); 
+              wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
+              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+            }); 
+          } else { 
+            set(wishRef, true).then(() => { 
+              userWishlistIds[prodId] = true; 
+              wishlistBtn.classList.add('active'); 
+              wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
+              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+            }); 
+          } 
+        } else { 
+          let guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
+          if (guestWishlist[prodId]) { 
+            delete guestWishlist[prodId]; 
+            wishlistBtn.classList.remove('active'); 
+            wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
+          } else { 
+            guestWishlist[prodId] = true; 
+            wishlistBtn.classList.add('active'); 
+            wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
+          } 
+          localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist)); 
+          userWishlistIds = guestWishlist; 
+          updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+        } 
+      }); 
 
       card.addEventListener('click', () => { 
-        trackProductClickAndRedirect(product.id); 
+        if(isOut) return; 
+        trackProductClickAndRedirect(p.id); 
       }); 
 
       grid.appendChild(card); 
@@ -2291,51 +2612,64 @@ nav {
   } 
 
   const searchInput = document.getElementById('searchInput'); 
-  const searchSuggestions = document.getElementById('searchSuggestions'); 
+  const suggestionsBox = document.getElementById('searchSuggestions'); 
 
-  if (searchInput) { 
-    searchInput.addEventListener('input', (e) => { 
-      const query = e.target.value.trim().toLowerCase(); 
-      if (query.length < 1) { 
-        searchSuggestions.style.display = 'none'; 
+  searchInput.addEventListener('input', (e) => { 
+    const val = e.target.value.toLowerCase().trim(); 
+    suggestionsBox.innerHTML = ""; 
+    if (val.length < 1) { 
+      suggestionsBox.style.display = 'none'; 
+      return; 
+    } 
+    const searchWords = val.split(/\s+/).filter(word => word); 
+    let matchedProducts = allProducts.filter(p => { 
+      const productName = (p.name || "").toLowerCase(); 
+      const productCat = (p.category || "").toLowerCase(); 
+      const productDesc = (p.description || "").toLowerCase(); 
+      return searchWords.some(word => productName.includes(word) || productCat.includes(word) || productDesc.includes(word) ); 
+    }); 
+
+    if (matchedProducts.length > 0) { 
+      suggestionsBox.style.display = 'block'; 
+      matchedProducts.slice(0, 10).forEach(p => { 
+        const div = document.createElement('div'); 
+        div.className = 'suggestion-item'; 
+        const productImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/50'; 
+        div.innerHTML = ` 
+          <img src="${productImg}" alt="${p.name || 'Product'}"> 
+          <div class="suggestion-info"> 
+            <h4>${p.name || 'No Name'}</h4> 
+            <p>₹${p.price || '0'}</p> 
+          </div> 
+        `; 
+        div.addEventListener('click', () => { 
+          trackProductClickAndRedirect(p.id); 
+        }); 
+        suggestionsBox.appendChild(div); 
+      }); 
+    } else { 
+      suggestionsBox.style.display = 'none'; 
+    } 
+  }); 
+
+  searchInput.addEventListener('keydown', (e) => { 
+    if (e.key === 'Enter') { 
+      const searchVal = searchInput.value.trim(); 
+      if (searchVal.toLowerCase() === "cartecom@com") { 
+        window.location.href = "/ecom"; 
         return; 
       } 
-      const matches = allProducts.filter(p => { 
-        const title = (p.title || p.name || '').toLowerCase(); 
-        const category = (p.category || '').toLowerCase(); 
-        return title.includes(query) || category.includes(query); 
-      }).slice(0, 6); 
-
-      if (matches.length > 0) { 
-        searchSuggestions.innerHTML = ""; 
-        matches.forEach(p => { 
-          const item = document.createElement('div'); 
-          item.className = 'suggestion-item'; 
-          item.innerHTML = ` 
-            <img src="${p.imageUrl || p.image || 'https://via.placeholder.com/40'}" alt="${p.title || p.name}"> 
-            <div class="suggestion-info"> 
-              <h4>${p.title || p.name}</h4> 
-              <p>₹${p.price}</p> 
-            </div> 
-          `; 
-          item.addEventListener('click', () => { 
-            searchSuggestions.style.display = 'none'; 
-            trackProductClickAndRedirect(p.id); 
-          }); 
-          searchSuggestions.appendChild(item); 
-        }); 
-        searchSuggestions.style.display = 'block'; 
-      } else { 
-        searchSuggestions.style.display = 'none'; 
+      if (searchVal.length >= 1) { 
+        window.location.href = `/search?q=${encodeURIComponent(searchVal)}`; 
       } 
-    }); 
+    } 
+  }); 
 
-    document.addEventListener('click', (e) => { 
-      if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) { 
-        searchSuggestions.style.display = 'none'; 
-      } 
-    }); 
-  } 
+  document.addEventListener('click', (e) => { 
+    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { 
+      suggestionsBox.style.display = 'none'; 
+    } 
+  }); 
 </script> 
 </body> 
 </html>
