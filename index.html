@@ -1639,6 +1639,41 @@ nav {
   const auth = getAuth(app); 
   const db = getDatabase(app); 
 
+  // Generates a unique token to enforce single-device active session per phone number
+  function generateSessionToken() {
+    return 'ST_' + Math.random().toString(36).substring(2) + Date.now();
+  }
+
+  // Monitor single device login state real-time
+  function monitorSingleDeviceSession() {
+    const userPhone = localStorage.getItem('userPhone');
+    const localToken = localStorage.getItem('sessionToken');
+    if (userPhone && localToken) {
+      const userRef = ref(db, `users/${userPhone}/sessionToken`);
+      onValue(userRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const activeToken = snapshot.val();
+          if (activeToken !== localToken) {
+            // Session invalidated due to login on another device
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userPhone');
+            localStorage.removeItem('sessionToken');
+            localStorage.removeItem('partnerPhone');
+            localStorage.removeItem('partnerName');
+            localStorage.removeItem('partnerId');
+            showCustomAlert("Session Expired", "You have been logged in from another device. Please log in again.", false);
+            setTimeout(() => {
+              window.location.reload();
+            }, 1800);
+          }
+        }
+      });
+    }
+  }
+
+  // Call single session monitor on load
+  monitorSingleDeviceSession();
+
   function generateUniquePartnerId() {
     const randomDigits = Math.floor(100000 + Math.random() * 900000);
     return `CP-REF-${randomDigits}`;
@@ -1679,7 +1714,7 @@ nav {
   const logoutSection = document.getElementById('logoutSection');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  /* --- Notification Modal Logic --- */
+  /* --- Notification Panel Modal Logic --- */
   const notifBtn = document.getElementById('notifBtn');
   const notifBadge = document.getElementById('notifBadge');
   const notifModal = document.getElementById('notifModal');
@@ -1796,6 +1831,22 @@ nav {
   let pendingPhone = "";
   let pendingExistingName = "";
   let isNewUserSession = false;
+  let generatedOtpCode = "123456";
+
+  // Function to send free OTP to user
+  async function sendFreeOtpToUser(phoneNumber) {
+    generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(`[CartPrime Security] Generated OTP for ${phoneNumber}: ${generatedOtpCode}`);
+    
+    // സൗജന്യമായി Fast2SMS / Twilio API വഴി OTP അയക്കുന്നതിന്:
+    /*
+    try {
+      await fetch(`https://your-otp-api-provider.com/send?phone=${phoneNumber}&otp=${generatedOtpCode}`);
+    } catch(err) {
+      console.log("OTP API Send Error:", err);
+    }
+    */
+  }
 
   function updateHeaderProfileUI() {
     const name = localStorage.getItem('userName') || "User";
@@ -1835,8 +1886,14 @@ nav {
 
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
+      const currentPhone = localStorage.getItem('userPhone');
+      if (currentPhone) {
+        // Clear session token in database on explicit logout
+        update(ref(db, `users/${currentPhone}`), { sessionToken: null });
+      }
       localStorage.removeItem('userName');
       localStorage.removeItem('userPhone');
+      localStorage.removeItem('sessionToken');
       localStorage.removeItem('partnerPhone');
       localStorage.removeItem('partnerName');
       localStorage.removeItem('partnerId');
@@ -1873,7 +1930,7 @@ nav {
   }
 
   if (welcomeForm) {
-    welcomeForm.addEventListener('submit', (e) => {
+    welcomeForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       // STEP 1: Phone submission -> Request OTP
@@ -1881,7 +1938,7 @@ nav {
         const phone = userWelcomePhone.value.trim();
         if (!phone) return;
 
-        // SINGLE SESSION CHECK: Already logged in with a different phone number
+        // SINGLE SESSION CHECK: Already logged in with a different phone number locally
         const existingActivePhone = localStorage.getItem('userPhone');
         if (existingActivePhone && existingActivePhone !== phone) {
           showCustomAlert("Already Logged In", "You are already logged in with another number. Please log out first before logging in with a different phone number.", false);
@@ -1892,6 +1949,9 @@ nav {
         welcomeForm.style.display = 'none';
         loadingText.textContent = "Checking Mobile Number & Sending OTP...";
         verifyLoadingBox.style.display = 'flex';
+
+        // Send OTP
+        await sendFreeOtpToUser(phone);
 
         const userRef = ref(db, `users/${phone}`);
         get(userRef).then((snapshot) => {
@@ -1913,7 +1973,7 @@ nav {
           userWelcomeOtp.value = "";
           userWelcomeOtp.focus();
           welcomeModalTitle.textContent = "Enter Verification OTP";
-          welcomeModalSub.textContent = `OTP sent to ${phone} (Demo OTP: 123456)`;
+          welcomeModalSub.textContent = `OTP sent to ${phone} (Demo OTP: 123456 or ${generatedOtpCode})`;
           if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
           welcomeSubmitBtn.textContent = "Verify OTP";
           if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
@@ -1928,8 +1988,8 @@ nav {
       // STEP 2: OTP Verification
       else if (registrationStep === 2) {
         const otpVal = userWelcomeOtp.value.trim();
-        if (otpVal !== "123456") {
-          showCustomAlert("Invalid OTP", "Please enter the correct OTP (Demo OTP is 123456).", false);
+        if (otpVal !== "123456" && otpVal !== generatedOtpCode) {
+          showCustomAlert("Invalid OTP", "Please enter the correct OTP.", false);
           return;
         }
 
@@ -1944,15 +2004,31 @@ nav {
           welcomeModalSub.textContent = "OTP Verified! Please enter your full name.";
           welcomeSubmitBtn.textContent = "Save Profile";
         } else {
-          // Existing user login complete
+          // Existing user login complete -> Generate and store new Single-Device Session Token
           welcomeForm.style.display = 'none';
           verifyLoadingBox.style.display = 'flex';
           loadingText.textContent = "Logging you in...";
 
+          const newSessionToken = generateSessionToken();
           localStorage.setItem('userName', pendingExistingName);
           localStorage.setItem('userPhone', pendingPhone);
+          localStorage.setItem('sessionToken', newSessionToken);
 
-          setTimeout(() => {
+          // Update active single-device session token in Database (Logouts any other phone)
+          update(ref(db, `users/${pendingPhone}`), {
+            sessionToken: newSessionToken,
+            lastLogin: Date.now()
+          }).then(() => {
+            closeModal(welcomeModal);
+            verifyLoadingBox.style.display = 'none';
+            welcomeForm.style.display = 'flex';
+            updateHeaderProfileUI();
+            listenNotifications();
+            monitorSingleDeviceSession();
+            showCustomAlert("Welcome Back!", `Successfully logged in as ${pendingExistingName}`, true);
+            updateBadges(currentUser);
+            resetRegistrationForm();
+          }).catch(() => {
             closeModal(welcomeModal);
             verifyLoadingBox.style.display = 'none';
             welcomeForm.style.display = 'flex';
@@ -1961,7 +2037,7 @@ nav {
             showCustomAlert("Welcome Back!", `Successfully logged in as ${pendingExistingName}`, true);
             updateBadges(currentUser);
             resetRegistrationForm();
-          }, 600);
+          });
         }
       } 
       // STEP 3: Save Name (New User Signup or Profile Edit)
@@ -1974,13 +2050,16 @@ nav {
           verifyLoadingBox.style.display = 'flex';
           loadingText.textContent = "Saving Profile...";
 
+          const newSessionToken = generateSessionToken();
           localStorage.setItem('userName', name);
           localStorage.setItem('userPhone', phone);
+          localStorage.setItem('sessionToken', newSessionToken);
 
           const userRef = ref(db, `users/${phone}`);
-          set(userRef, {
+          update(userRef, {
             name: name,
             phone: phone,
+            sessionToken: newSessionToken,
             joinedAt: Date.now()
           }).then(() => {
             closeModal(welcomeModal);
@@ -1988,6 +2067,7 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
+            monitorSingleDeviceSession();
             showCustomAlert("Profile Saved!", "Welcome to CartPrime!", true);
             updateBadges(currentUser);
             resetRegistrationForm();
