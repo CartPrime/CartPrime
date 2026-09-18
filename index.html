@@ -1378,7 +1378,7 @@ nav {
   </div>
 </div>
 
-<!-- Redesigned Trustworthy User Registration/Welcome/Edit Modal -->
+<!-- Redesigned Trustworthy User Registration/Welcome/Edit Modal with OTP Verification -->
 <div id="userWelcomeModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <div class="welcome-modal-header">
@@ -1391,7 +1391,7 @@ nav {
       </div>
     </div>
 
-    <div class="welcome-benefits">
+    <div class="welcome-benefits" id="welcomeBenefitsBox">
       <div class="welcome-benefit-item"><i class="fa-solid fa-circle-check"></i> Fast & Free Shipping Across India</div>
       <div class="welcome-benefit-item"><i class="fa-solid fa-circle-check"></i> 7 Days Easy Returns & Buyer Protection</div>
       <div class="welcome-benefit-item"><i class="fa-solid fa-circle-check"></i> Cash on Delivery (COD) Available</div>
@@ -1399,6 +1399,7 @@ nav {
     
     <form id="userWelcomeForm" class="modal-form" style="margin-top: 0;"> 
       <input type="tel" id="userWelcomePhone" class="modal-input" placeholder="Enter Mobile / WhatsApp Number" required> 
+      <input type="text" id="userWelcomeOtp" class="modal-input" placeholder="Enter 6-digit OTP (e.g. 123456)" style="display: none;" maxlength="6">
       <input type="text" id="userWelcomeName" class="modal-input" placeholder="Full Name" style="display: none;"> 
       
       <div class="modal-btn-group"> 
@@ -1416,7 +1417,7 @@ nav {
 
     <div id="verifyLoadingBox" class="verify-loading-box">
       <div class="spinner"></div>
-      <p style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin: 0;">Checking Mobile Number...</p>
+      <p style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin: 0;" id="loadingText">Checking Mobile Number...</p>
     </div>
   </div> 
 </div>
@@ -1666,12 +1667,15 @@ nav {
   const welcomeModal = document.getElementById('userWelcomeModal');
   const welcomeForm = document.getElementById('userWelcomeForm');
   const userWelcomePhone = document.getElementById('userWelcomePhone');
+  const userWelcomeOtp = document.getElementById('userWelcomeOtp');
   const userWelcomeName = document.getElementById('userWelcomeName');
   const welcomeSubmitBtn = document.getElementById('welcomeSubmitBtn');
   const verifyLoadingBox = document.getElementById('verifyLoadingBox');
+  const loadingText = document.getElementById('loadingText');
   const closeWelcomeModal = document.getElementById('closeWelcomeModal');
   const welcomeModalTitle = document.getElementById('welcomeModalTitle');
   const welcomeModalSub = document.getElementById('welcomeModalSub');
+  const welcomeBenefitsBox = document.getElementById('welcomeBenefitsBox');
   const logoutSection = document.getElementById('logoutSection');
   const logoutBtn = document.getElementById('logoutBtn');
 
@@ -1788,7 +1792,10 @@ nav {
 
   listenNotifications();
 
-  let registrationStep = 1;
+  let registrationStep = 1; // 1: Enter Phone, 2: Enter OTP, 3: Enter Name (if new user)
+  let pendingPhone = "";
+  let pendingExistingName = "";
+  let isNewUserSession = false;
 
   function updateHeaderProfileUI() {
     const name = localStorage.getItem('userName') || "User";
@@ -1805,11 +1812,13 @@ nav {
     profileChip.addEventListener('click', () => {
       userWelcomePhone.value = localStorage.getItem('userPhone') || "";
       userWelcomeName.value = localStorage.getItem('userName') || "";
-      userWelcomeName.style.display = 'block';
       userWelcomePhone.style.display = 'block';
-      registrationStep = 2;
+      userWelcomeOtp.style.display = 'none';
+      userWelcomeName.style.display = 'block';
+      registrationStep = 3; // Edit mode
       welcomeModalTitle.textContent = "Edit Your Profile";
       welcomeModalSub.textContent = "Update your details below.";
+      if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
       welcomeSubmitBtn.textContent = "Save Changes";
       if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
       if (logoutSection) logoutSection.style.display = "block";
@@ -1842,8 +1851,13 @@ nav {
 
   function resetRegistrationForm() {
     registrationStep = 1;
+    pendingPhone = "";
+    pendingExistingName = "";
+    isNewUserSession = false;
     userWelcomePhone.style.display = 'block';
+    userWelcomeOtp.style.display = 'none';
     userWelcomeName.style.display = 'none';
+    if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'flex';
     if (logoutSection) logoutSection.style.display = 'none';
     welcomeSubmitBtn.textContent = "Continue Securely";
     welcomeModalTitle.textContent = "Welcome to CartPrime";
@@ -1861,19 +1875,22 @@ nav {
   if (welcomeForm) {
     welcomeForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const phone = userWelcomePhone.value.trim();
-
-      // STRICT SINGLE SESSION CHECK: If a user is already logged in with a different phone number
-      const existingActivePhone = localStorage.getItem('userPhone');
-      if (existingActivePhone && existingActivePhone !== phone && registrationStep === 1) {
-        showCustomAlert("Already Logged In", "You are already logged in with another number. Please log out first before logging in with a different phone number.", false);
-        return;
-      }
-
+      
+      // STEP 1: Phone submission -> Request OTP
       if (registrationStep === 1) {
+        const phone = userWelcomePhone.value.trim();
         if (!phone) return;
 
+        // SINGLE SESSION CHECK: Already logged in with a different phone number
+        const existingActivePhone = localStorage.getItem('userPhone');
+        if (existingActivePhone && existingActivePhone !== phone) {
+          showCustomAlert("Already Logged In", "You are already logged in with another number. Please log out first before logging in with a different phone number.", false);
+          return;
+        }
+
+        pendingPhone = phone;
         welcomeForm.style.display = 'none';
+        loadingText.textContent = "Checking Mobile Number & Sending OTP...";
         verifyLoadingBox.style.display = 'flex';
 
         const userRef = ref(db, `users/${phone}`);
@@ -1883,35 +1900,79 @@ nav {
 
           if (snapshot.exists()) {
             const userData = snapshot.val();
-            const existingName = userData.name || "User";
-
-            localStorage.setItem('userName', existingName);
-            localStorage.setItem('userPhone', phone);
-
-            closeModal(welcomeModal);
-            updateHeaderProfileUI();
-            listenNotifications();
-            showCustomAlert("Welcome Back!", `Successfully logged in as ${existingName}`, true);
-            updateBadges(currentUser);
-            resetRegistrationForm();
+            pendingExistingName = userData.name || "User";
+            isNewUserSession = false;
           } else {
-            registrationStep = 2;
-            userWelcomeName.style.display = 'block';
-            welcomeModalTitle.textContent = "Create Your Profile";
-            welcomeModalSub.textContent = "Number not found. Please enter your full name.";
-            welcomeSubmitBtn.textContent = "Save Profile";
+            isNewUserSession = true;
           }
+
+          // Transition to OTP Step
+          registrationStep = 2;
+          userWelcomePhone.style.display = 'none';
+          userWelcomeOtp.style.display = 'block';
+          userWelcomeOtp.value = "";
+          userWelcomeOtp.focus();
+          welcomeModalTitle.textContent = "Enter Verification OTP";
+          welcomeModalSub.textContent = `OTP sent to ${phone} (Demo OTP: 123456)`;
+          if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
+          welcomeSubmitBtn.textContent = "Verify OTP";
+          if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
+
         }).catch(() => {
           verifyLoadingBox.style.display = 'none';
           welcomeForm.style.display = 'flex';
           showCustomAlert("Error", "Could not verify details. Try again.", false);
         });
 
-      } else if (registrationStep === 2) {
+      } 
+      // STEP 2: OTP Verification
+      else if (registrationStep === 2) {
+        const otpVal = userWelcomeOtp.value.trim();
+        if (otpVal !== "123456") {
+          showCustomAlert("Invalid OTP", "Please enter the correct OTP (Demo OTP is 123456).", false);
+          return;
+        }
+
+        if (isNewUserSession) {
+          // Proceed to Name entry step
+          registrationStep = 3;
+          userWelcomeOtp.style.display = 'none';
+          userWelcomeName.style.display = 'block';
+          userWelcomeName.value = "";
+          userWelcomeName.focus();
+          welcomeModalTitle.textContent = "Create Your Profile";
+          welcomeModalSub.textContent = "OTP Verified! Please enter your full name.";
+          welcomeSubmitBtn.textContent = "Save Profile";
+        } else {
+          // Existing user login complete
+          welcomeForm.style.display = 'none';
+          verifyLoadingBox.style.display = 'flex';
+          loadingText.textContent = "Logging you in...";
+
+          localStorage.setItem('userName', pendingExistingName);
+          localStorage.setItem('userPhone', pendingPhone);
+
+          setTimeout(() => {
+            closeModal(welcomeModal);
+            verifyLoadingBox.style.display = 'none';
+            welcomeForm.style.display = 'flex';
+            updateHeaderProfileUI();
+            listenNotifications();
+            showCustomAlert("Welcome Back!", `Successfully logged in as ${pendingExistingName}`, true);
+            updateBadges(currentUser);
+            resetRegistrationForm();
+          }, 600);
+        }
+      } 
+      // STEP 3: Save Name (New User Signup or Profile Edit)
+      else if (registrationStep === 3) {
         const name = userWelcomeName.value.trim();
+        const phone = pendingPhone || localStorage.getItem('userPhone');
+
         if (name && phone) {
           welcomeForm.style.display = 'none';
           verifyLoadingBox.style.display = 'flex';
+          loadingText.textContent = "Saving Profile...";
 
           localStorage.setItem('userName', name);
           localStorage.setItem('userPhone', phone);
