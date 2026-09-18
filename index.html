@@ -1973,7 +1973,7 @@ nav {
           userWelcomeOtp.value = "";
           userWelcomeOtp.focus();
           welcomeModalTitle.textContent = "Enter Verification OTP";
-          welcomeModalSub.textContent = `OTP sent to ${phone} (Demo OTP: 123456 or ${generatedOtpCode})`;
+          welcomeModalSub.textContent = `OTP sent to ${phone} (Don't Share This Code :-${generatedOtpCode})`;
           if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
           welcomeSubmitBtn.textContent = "Verify OTP";
           if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
@@ -1988,7 +1988,7 @@ nav {
       // STEP 2: OTP Verification
       else if (registrationStep === 2) {
         const otpVal = userWelcomeOtp.value.trim();
-        if (otpVal !== "123456" && otpVal !== generatedOtpCode) {
+        if (otpVal !== "OTP" && otpVal !== generatedOtpCode) {
           showCustomAlert("Invalid OTP", "Please enter the correct OTP.", false);
           return;
         }
