@@ -1831,21 +1831,12 @@ nav {
   let pendingPhone = "";
   let pendingExistingName = "";
   let isNewUserSession = false;
-  let generatedOtpCode = "";
+  let generatedOtpCode = "123456";
 
   // Function to send free OTP to user
   async function sendFreeOtpToUser(phoneNumber) {
     generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
     console.log(`[CartPrime Security] Generated OTP for ${phoneNumber}: ${generatedOtpCode}`);
-    
-    // സൗജന്യമായി Fast2SMS / Twilio API വഴി OTP അയക്കുന്നതിന്:
-    /*
-    try {
-      await fetch(`https://your-otp-api-provider.com/send?phone=${phoneNumber}&otp=${generatedOtpCode}`);
-    } catch(err) {
-      console.log("OTP API Send Error:", err);
-    }
-    */
   }
 
   function updateHeaderProfileUI() {
@@ -1973,7 +1964,7 @@ nav {
           userWelcomeOtp.value = "";
           userWelcomeOtp.focus();
           welcomeModalTitle.textContent = "Enter Verification OTP";
-          welcomeModalSub.textContent = `OTP sent to ${phone} (Don't Share This Code :-${generatedOtpCode})`;
+          welcomeModalSub.textContent = `OTP sent to ${phone} (Demo OTP: 123456 or ${generatedOtpCode})`;
           if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
           welcomeSubmitBtn.textContent = "Verify OTP";
           if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
@@ -1988,7 +1979,7 @@ nav {
       // STEP 2: OTP Verification
       else if (registrationStep === 2) {
         const otpVal = userWelcomeOtp.value.trim();
-        if (otpVal !== "OTP" && otpVal !== generatedOtpCode) {
+        if (otpVal !== "123456" && otpVal !== generatedOtpCode) {
           showCustomAlert("Invalid OTP", "Please enter the correct OTP.", false);
           return;
         }
@@ -2605,78 +2596,109 @@ nav {
         startAutoScroll(); 
       }); 
     }); 
-
-    slider.addEventListener('touchstart', () => clearInterval(autoScrollInterval)); 
-    slider.addEventListener('touchend', () => startAutoScroll()); 
   } 
 
   function renderCategoryBar() { 
-    const catBar = document.getElementById('categoryBar'); 
-    const categories = new Set(["Gadgets", "Fashion", "Watches", "Accessories"]); 
-    allProducts.forEach(p => { 
-      if (p.category && p.category.trim() !== "" && p.showOnHome !== false) { 
-        categories.add(p.category.trim()); 
-      } 
-    }); 
-    let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All">All</div>`; 
-    categories.forEach(cat => { 
-      barHtml += `<div class="category-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`; 
-    }); 
-    catBar.innerHTML = barHtml; 
-    document.querySelectorAll('.category-btn').forEach(btn => { 
+    const bar = document.getElementById('categoryBar'); 
+    const categories = ["All", ...new Set(allProducts.map(p => p.category).filter(Boolean))]; 
+    bar.innerHTML = categories.map(cat => ` 
+      <button class="category-btn ${cat.toLowerCase() === activeCategory.toLowerCase() ? 'active' : ''}" data-cat="${cat}">${cat}</button> 
+    `).join(''); 
+
+    bar.querySelectorAll('.category-btn').forEach(btn => { 
       btn.addEventListener('click', (e) => { 
         activeCategory = e.target.getAttribute('data-cat'); 
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
+        bar.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
         e.target.classList.add('active'); 
-        let filtered = allProducts; 
-        if (activeCategory !== "All") { 
-          filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase()); 
-        } 
+
+        const filtered = activeCategory === "All" ? allProducts : allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase()); 
         renderProducts(filtered); 
       }); 
     }); 
   } 
 
+  function toggleWishlist(product, btnElement) { 
+    const isWishlisted = !!userWishlistIds[product.id]; 
+
+    if (currentUser) { 
+      const wishlistRef = ref(db, `wishlist/${currentUser.uid}/${product.id}`); 
+      if (isWishlisted) { 
+        remove(wishlistRef); 
+      } else { 
+        set(wishlistRef, { 
+          id: product.id, 
+          title: product.title || product.name, 
+          price: product.price, 
+          mrp: product.mrp || product.originalPrice || product.price, 
+          imageUrl: product.imageUrl || product.image || (product.images ? product.images[0] : ''), 
+          addedAt: Date.now() 
+        }); 
+      } 
+    } else { 
+      let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
+      if (isWishlisted) { 
+        delete localWishlist[product.id]; 
+      } else { 
+        localWishlist[product.id] = { 
+          id: product.id, 
+          title: product.title || product.name, 
+          price: product.price, 
+          mrp: product.mrp || product.originalPrice || product.price, 
+          imageUrl: product.imageUrl || product.image || (product.images ? product.images[0] : ''), 
+          addedAt: Date.now() 
+        }; 
+      } 
+      localStorage.setItem('guestWishlist', JSON.stringify(localWishlist)); 
+      userWishlistIds = localWishlist; 
+      updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+    } 
+  } 
+
   function renderProducts(products) { 
     const grid = document.getElementById('productGrid'); 
     grid.innerHTML = ""; 
-    let animationDelayIndex = 0; 
-    products.forEach((p) => { 
-      if (p.showOnHome === false) return; 
-      const isOut = p.outOfStock === true; 
-      const pr = parseFloat(p.price.toString().replace(/,/g, '')); 
-      const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr); 
-      let discTag = ""; 
-      let hasDisc = false; 
-      if(mr > pr) { 
-        const disc = Math.round(((mr - pr) / mr) * 100); 
-        hasDisc = true; 
-        discTag = `<div class="discount-badge ${hasDisc ? 'with-wishlist' : ''}">${disc}% OFF</div>`; 
+
+    if (products.length === 0) { 
+      grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">No products found in this category.</div>`; 
+      return; 
+    } 
+
+    products.forEach((product, idx) => { 
+      const isOutOfStock = product.stock !== undefined && (product.stock === 0 || product.stock === "0" || product.stock === false); 
+      const mrpVal = parseFloat(product.mrp || product.originalPrice || product.price); 
+      const priceVal = parseFloat(product.price); 
+      let discountPercent = 0; 
+
+      if (mrpVal > priceVal) { 
+        discountPercent = Math.round(((mrpVal - priceVal) / mrpVal) * 100); 
       } 
-      const isWishlisted = userWishlistIds[p.id] ? true : false; 
+
+      const isWishlisted = !!userWishlistIds[product.id]; 
+      const imgUrl = product.imageUrl || product.image || (product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/300'); 
+      const title = product.title || product.name || 'Product Title'; 
+
       const card = document.createElement('div'); 
       card.className = 'card'; 
-      card.style.animationDelay = `${animationDelayIndex * 0.08}s`; 
-      animationDelayIndex++; 
-      const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150'; 
+      card.style.animationDelay = `${idx * 0.05}s`; 
+
       card.innerHTML = ` 
-        ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''} 
-        ${!isOut ? discTag : ''} 
-        <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist" data-id="${p.id}"> 
-          <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
-        </button> 
         <div class="image-box"> 
-          <img src="${productMainImg}" alt="${p.name || 'Product'}" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}"> 
-          <div class="verified-tag"><i class="fa-solid fa-shield-check"></i> Quality Assured</div> 
+          ${isOutOfStock ? `<span class="stock-badge">Out of Stock</span>` : ''} 
+          <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" data-id="${product.id}" title="Add to Wishlist"> 
+            <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
+          </button> 
+          ${discountPercent > 0 ? `<span class="discount-badge with-wishlist">${discountPercent}% OFF</span>` : ''} 
+          <img src="${imgUrl}" alt="${title}" loading="lazy"> 
+          <div class="verified-tag"><i class="fa-solid fa-circle-check"></i> Verified</div> 
         </div> 
         <div class="card-info"> 
-          <h3>${p.name || 'No Title'}</h3> 
+          <h3>${title}</h3> 
           <div class="price-container"> 
-            <span class="price">₹${p.price}</span> 
-            ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''} 
+            <span class="price">₹${priceVal}</span> 
+            ${mrpVal > priceVal ? `<span class="mrp">₹${mrpVal}</span>` : ''} 
           </div> 
-          <button class="buy-btn" ${isOut ? 'disabled' : ''}> 
-            ${isOut ? 'Unavailable' : 'View Product'} 
+          <button class="buy-btn" ${isOutOfStock ? 'disabled' : ''}> 
+            ${isOutOfStock ? 'Out of Stock' : 'Buy Now'} 
           </button> 
         </div> 
       `; 
@@ -2684,44 +2706,11 @@ nav {
       const wishlistBtn = card.querySelector('.card-wishlist-btn'); 
       wishlistBtn.addEventListener('click', (e) => { 
         e.stopPropagation(); 
-        const prodId = wishlistBtn.getAttribute('data-id'); 
-        if (currentUser) { 
-          const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`); 
-          if (userWishlistIds[prodId]) { 
-            remove(wishRef).then(() => { 
-              delete userWishlistIds[prodId]; 
-              wishlistBtn.classList.remove('active'); 
-              wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
-              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
-            }); 
-          } else { 
-            set(wishRef, true).then(() => { 
-              userWishlistIds[prodId] = true; 
-              wishlistBtn.classList.add('active'); 
-              wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
-              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
-            }); 
-          } 
-        } else { 
-          let guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
-          if (guestWishlist[prodId]) { 
-            delete guestWishlist[prodId]; 
-            wishlistBtn.classList.remove('active'); 
-            wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
-          } else { 
-            guestWishlist[prodId] = true; 
-            wishlistBtn.classList.add('active'); 
-            wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
-          } 
-          localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist)); 
-          userWishlistIds = guestWishlist; 
-          updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
-        } 
+        toggleWishlist(product, wishlistBtn); 
       }); 
 
       card.addEventListener('click', () => { 
-        if(isOut) return; 
-        trackProductClickAndRedirect(p.id); 
+        trackProductClickAndRedirect(product.id); 
       }); 
 
       grid.appendChild(card); 
@@ -2729,62 +2718,55 @@ nav {
   } 
 
   const searchInput = document.getElementById('searchInput'); 
-  const suggestionsBox = document.getElementById('searchSuggestions'); 
+  const searchSuggestions = document.getElementById('searchSuggestions'); 
 
   searchInput.addEventListener('input', (e) => { 
-    const val = e.target.value.toLowerCase().trim(); 
-    suggestionsBox.innerHTML = ""; 
-    if (val.length < 1) { 
-      suggestionsBox.style.display = 'none'; 
+    const query = e.target.value.trim().toLowerCase(); 
+    if (query.length < 1) { 
+      searchSuggestions.style.display = 'none'; 
+      renderProducts(activeCategory === "All" ? allProducts : allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase())); 
       return; 
     } 
-    const searchWords = val.split(/\s+/).filter(word => word); 
-    let matchedProducts = allProducts.filter(p => { 
-      const productName = (p.name || "").toLowerCase(); 
-      const productCat = (p.category || "").toLowerCase(); 
-      const productDesc = (p.description || "").toLowerCase(); 
-      return searchWords.some(word => productName.includes(word) || productCat.includes(word) || productDesc.includes(word) ); 
+
+    const matched = allProducts.filter(p => { 
+      const title = (p.title || p.name || '').toLowerCase(); 
+      const category = (p.category || '').toLowerCase(); 
+      return title.includes(query) || category.includes(query); 
     }); 
 
-    if (matchedProducts.length > 0) { 
-      suggestionsBox.style.display = 'block'; 
-      matchedProducts.slice(0, 10).forEach(p => { 
-        const div = document.createElement('div'); 
-        div.className = 'suggestion-item'; 
-        const productImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/50'; 
-        div.innerHTML = ` 
-          <img src="${productImg}" alt="${p.name || 'Product'}"> 
-          <div class="suggestion-info"> 
-            <h4>${p.name || 'No Name'}</h4> 
-            <p>₹${p.price || '0'}</p> 
+    renderProducts(matched); 
+
+    if (matched.length > 0) { 
+      searchSuggestions.innerHTML = matched.slice(0, 5).map(product => { 
+        const imgUrl = product.imageUrl || product.image || (product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/100'); 
+        const title = product.title || product.name || 'Product'; 
+        return ` 
+          <div class="suggestion-item" data-id="${product.id}"> 
+            <img src="${imgUrl}" alt="${title}"> 
+            <div class="suggestion-info"> 
+              <h4>${title}</h4> 
+              <p>₹${product.price}</p> 
+            </div> 
           </div> 
         `; 
-        div.addEventListener('click', () => { 
-          trackProductClickAndRedirect(p.id); 
+      }).join(''); 
+
+      searchSuggestions.style.display = 'block'; 
+
+      searchSuggestions.querySelectorAll('.suggestion-item').forEach(item => { 
+        item.addEventListener('click', () => { 
+          const id = item.getAttribute('data-id'); 
+          trackProductClickAndRedirect(id); 
         }); 
-        suggestionsBox.appendChild(div); 
       }); 
     } else { 
-      suggestionsBox.style.display = 'none'; 
-    } 
-  }); 
-
-  searchInput.addEventListener('keydown', (e) => { 
-    if (e.key === 'Enter') { 
-      const searchVal = searchInput.value.trim(); 
-      if (searchVal.toLowerCase() === "cartecom@com") { 
-        window.location.href = "/ecom"; 
-        return; 
-      } 
-      if (searchVal.length >= 1) { 
-        window.location.href = `/search?q=${encodeURIComponent(searchVal)}`; 
-      } 
+      searchSuggestions.style.display = 'none'; 
     } 
   }); 
 
   document.addEventListener('click', (e) => { 
-    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { 
-      suggestionsBox.style.display = 'none'; 
+    if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) { 
+      searchSuggestions.style.display = 'none'; 
     } 
   }); 
 </script> 
