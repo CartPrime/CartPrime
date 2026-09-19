@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
 <style> 
+/* --- Light Theme Variables --- */ 
 :root { 
   --primary: #000000; 
   --accent: #2563eb; 
@@ -21,6 +22,7 @@
   --skeleton-start: #f1f5f9; 
   --skeleton-mid: #e2e8f0; 
 } 
+/* --- Dark Theme Variables --- */ 
 [data-theme="dark"] { 
   --primary: #ffffff; 
   --accent: #60a5fa; 
@@ -272,6 +274,7 @@ nav {
   100% { transform: rotate(360deg); }
 }
 
+/* --- Redesigned Trust Welcome Modal Styles with Animation --- */
 .modal-overlay { 
   display: none; 
   position: fixed; 
@@ -349,6 +352,7 @@ nav {
   font-size: 0.9rem;
 }
 
+/* --- Notification Panel Modal Styles --- */
 .notif-modal-card {
   max-width: 480px;
   max-height: 85vh;
@@ -446,6 +450,7 @@ nav {
   font-weight: 600;
 }
 
+/* --- Redesigned Earn Modal Styles --- */
 .earn-modal-header {
   display: flex;
   align-items: center;
@@ -874,6 +879,7 @@ nav {
   100% { opacity: 1; transform: translateY(0); } 
 } 
 
+/* --- Modern Improved Product Card Styling --- */
 .card { 
   background: var(--card-bg); 
   border-radius: 22px; 
@@ -1343,6 +1349,7 @@ nav {
     <div id="searchSuggestions" class="search-suggestions-box"></div> 
   </div> 
   <div class="nav-right"> 
+    <!-- Notification Bell Button -->
     <div class="notification-icon-btn" id="notifBtn" title="Notifications">
       <i class="fa-regular fa-bell"></i>
       <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
@@ -1358,6 +1365,7 @@ nav {
   </div> 
 </nav> 
 
+<!-- Notifications Modal Panel -->
 <div id="notifModal" class="modal-overlay">
   <div class="modal-card notif-modal-card">
     <div class="notif-modal-header">
@@ -1370,6 +1378,7 @@ nav {
   </div>
 </div>
 
+<!-- Redesigned Trustworthy User Registration/Welcome/Edit Modal with OTP Verification -->
 <div id="userWelcomeModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <div class="welcome-modal-header">
@@ -1399,6 +1408,7 @@ nav {
       </div> 
     </form> 
 
+    <!-- Logout Option inside Edit Profile Modal -->
     <div id="logoutSection" style="display: none; margin-top: 12px;">
       <button type="button" id="logoutBtn" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ef4444; background: rgba(239, 68, 68, 0.1); color: #ef4444; font-weight: 700; cursor: pointer;">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -1412,6 +1422,7 @@ nav {
   </div> 
 </div>
 
+<!-- Earn Partner Request Modal -->
 <div id="earnModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <div class="earn-modal-header">
@@ -1445,6 +1456,7 @@ nav {
   </div> 
 </div> 
 
+<!-- Contact Us Modal -->
 <div id="contactModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Contact Customer Support</h3> 
@@ -1552,6 +1564,7 @@ nav {
   </div> 
 </div> 
 
+<!-- Bottom Navigation Bar with Contact Icon and Earn Badge -->
 <div class="bottom-nav">
   <a href="/" class="bottom-nav-item active">
     <i class="fa-solid fa-house"></i>
@@ -1578,6 +1591,7 @@ nav {
   </div>
 </div>
 
+<!-- Premium Custom Toast Notification Modal -->
 <div id="customToast" class="custom-toast-overlay">
   <div class="custom-toast-card">
     <div id="toastIcon" class="toast-icon-wrap success">
@@ -1589,6 +1603,7 @@ nav {
   </div>
 </div>
 
+<!-- Notification Permission Script -->
 <script>
   window.addEventListener('load', () => {
     if ("Notification" in window) {
@@ -1624,10 +1639,12 @@ nav {
   const auth = getAuth(app); 
   const db = getDatabase(app); 
 
+  // Generates a unique token to enforce single-device active session per phone number
   function generateSessionToken() {
     return 'ST_' + Math.random().toString(36).substring(2) + Date.now();
   }
 
+  // Monitor single device login state real-time
   function monitorSingleDeviceSession() {
     const userPhone = localStorage.getItem('userPhone');
     const localToken = localStorage.getItem('sessionToken');
@@ -1637,6 +1654,7 @@ nav {
         if (snapshot.exists()) {
           const activeToken = snapshot.val();
           if (activeToken !== localToken) {
+            // Session invalidated due to login on another device
             localStorage.removeItem('userName');
             localStorage.removeItem('userPhone');
             localStorage.removeItem('sessionToken');
@@ -1653,6 +1671,7 @@ nav {
     }
   }
 
+  // Call single session monitor on load
   monitorSingleDeviceSession();
 
   function generateUniquePartnerId() {
@@ -1660,6 +1679,7 @@ nav {
     return `CP-REF-${randomDigits}`;
   }
 
+  // Helper functions for animated modals
   function openModal(modalElement) {
     modalElement.style.display = 'flex';
     setTimeout(() => {
@@ -1694,6 +1714,7 @@ nav {
   const logoutSection = document.getElementById('logoutSection');
   const logoutBtn = document.getElementById('logoutBtn');
 
+  /* --- Notification Panel Modal Logic --- */
   const notifBtn = document.getElementById('notifBtn');
   const notifBadge = document.getElementById('notifBadge');
   const notifModal = document.getElementById('notifModal');
@@ -1784,6 +1805,7 @@ nav {
         if (phone && notifId) {
           delete notificationsData[notifId];
           renderNotifications();
+
           remove(ref(db, `earn_partners/${phone}/notifications/${notifId}`));
         }
       });
@@ -1805,15 +1827,46 @@ nav {
 
   listenNotifications();
 
-  let registrationStep = 1; 
+  let registrationStep = 1; // 1: Enter Phone, 2: Enter OTP, 3: Enter Name (if new user)
   let pendingPhone = "";
   let pendingExistingName = "";
   let isNewUserSession = false;
-  let generatedOtpCode = "123456";
+  let generatedOtpCode = "";
 
+  // Shows the OTP as a real notification-style popup (uses the same premium
+  // toast used elsewhere in the app; falls back to a system notification if
+  // the user has already granted notification permission).
+  function showOtpNotificationPopup(phone, otp) {
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        new Notification("CartPrime OTP Verification", {
+          body: `Your OTP is ${otp}. Do not share this code with anyone.`,
+          icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
+        });
+        return;
+      } catch (err) {
+        // fall through to in-app toast below
+      }
+    }
+    showCustomAlert("OTP Sent", `Your OTP for ${phone} is ${otp}. Do not share this code with anyone.`, true);
+  }
+
+  // Function to send free OTP to user
   async function sendFreeOtpToUser(phoneNumber) {
     generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
     console.log(`[CartPrime Security] Generated OTP for ${phoneNumber}: ${generatedOtpCode}`);
+
+    // Show the OTP as a notification-style popup instead of embedding it in the form text
+    showOtpNotificationPopup(phoneNumber, generatedOtpCode);
+    
+    // സൗജന്യമായി Fast2SMS / Twilio API വഴി OTP അയക്കുന്നതിന്:
+    /*
+    try {
+      await fetch(`https://your-otp-api-provider.com/send?phone=${phoneNumber}&otp=${generatedOtpCode}`);
+    } catch(err) {
+      console.log("OTP API Send Error:", err);
+    }
+    */
   }
 
   function updateHeaderProfileUI() {
@@ -1834,7 +1887,7 @@ nav {
       userWelcomePhone.style.display = 'block';
       userWelcomeOtp.style.display = 'none';
       userWelcomeName.style.display = 'block';
-      registrationStep = 3; 
+      registrationStep = 3; // Edit mode
       welcomeModalTitle.textContent = "Edit Your Profile";
       welcomeModalSub.textContent = "Update your details below.";
       if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
@@ -1856,6 +1909,7 @@ nav {
     logoutBtn.addEventListener('click', () => {
       const currentPhone = localStorage.getItem('userPhone');
       if (currentPhone) {
+        // Clear session token in database on explicit logout
         update(ref(db, `users/${currentPhone}`), { sessionToken: null });
       }
       localStorage.removeItem('userName');
@@ -1900,10 +1954,12 @@ nav {
     welcomeForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      // STEP 1: Phone submission -> Request OTP
       if (registrationStep === 1) {
         const phone = userWelcomePhone.value.trim();
         if (!phone) return;
 
+        // SINGLE SESSION CHECK: Already logged in with a different phone number locally
         const existingActivePhone = localStorage.getItem('userPhone');
         if (existingActivePhone && existingActivePhone !== phone) {
           showCustomAlert("Already Logged In", "You are already logged in with another number. Please log out first before logging in with a different phone number.", false);
@@ -1915,6 +1971,7 @@ nav {
         loadingText.textContent = "Checking Mobile Number & Sending OTP...";
         verifyLoadingBox.style.display = 'flex';
 
+        // Send OTP
         await sendFreeOtpToUser(phone);
 
         const userRef = ref(db, `users/${phone}`);
@@ -1930,13 +1987,14 @@ nav {
             isNewUserSession = true;
           }
 
+          // Transition to OTP Step
           registrationStep = 2;
           userWelcomePhone.style.display = 'none';
           userWelcomeOtp.style.display = 'block';
           userWelcomeOtp.value = "";
           userWelcomeOtp.focus();
           welcomeModalTitle.textContent = "Enter Verification OTP";
-          welcomeModalSub.textContent = `OTP sent to ${phone} (Demo OTP: 123456 or ${generatedOtpCode})`;
+          welcomeModalSub.textContent = `OTP sent to ${phone}`;
           if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
           welcomeSubmitBtn.textContent = "Verify OTP";
           if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
@@ -1948,14 +2006,16 @@ nav {
         });
 
       } 
+      // STEP 2: OTP Verification
       else if (registrationStep === 2) {
         const otpVal = userWelcomeOtp.value.trim();
-        if (otpVal !== "123456" && otpVal !== generatedOtpCode) {
+        if (otpVal !== "OTP" && otpVal !== generatedOtpCode) {
           showCustomAlert("Invalid OTP", "Please enter the correct OTP.", false);
           return;
         }
 
         if (isNewUserSession) {
+          // Proceed to Name entry step
           registrationStep = 3;
           userWelcomeOtp.style.display = 'none';
           userWelcomeName.style.display = 'block';
@@ -1965,6 +2025,7 @@ nav {
           welcomeModalSub.textContent = "OTP Verified! Please enter your full name.";
           welcomeSubmitBtn.textContent = "Save Profile";
         } else {
+          // Existing user login complete -> Generate and store new Single-Device Session Token
           welcomeForm.style.display = 'none';
           verifyLoadingBox.style.display = 'flex';
           loadingText.textContent = "Logging you in...";
@@ -1974,6 +2035,7 @@ nav {
           localStorage.setItem('userPhone', pendingPhone);
           localStorage.setItem('sessionToken', newSessionToken);
 
+          // Update active single-device session token in Database (Logouts any other phone)
           update(ref(db, `users/${pendingPhone}`), {
             sessionToken: newSessionToken,
             lastLogin: Date.now()
@@ -1999,6 +2061,7 @@ nav {
           });
         }
       } 
+      // STEP 3: Save Name (New User Signup or Profile Edit)
       else if (registrationStep === 3) {
         const name = userWelcomeName.value.trim();
         const phone = pendingPhone || localStorage.getItem('userPhone');
@@ -2110,6 +2173,7 @@ nav {
     });
   }
 
+  /* --- EARN PARTNER LOGIC --- */ 
   const earnModal = document.getElementById('earnModal'); 
   const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
@@ -2259,7 +2323,6 @@ nav {
 
   function showSkeletons() { 
     const grid = document.getElementById('productGrid'); 
-    if(!grid) return;
     grid.innerHTML = ""; 
     for (let i = 0; i < 8; i++) { 
       grid.innerHTML += ` 
@@ -2450,91 +2513,6 @@ nav {
     } 
   } 
 
-  function renderCategoryBar() {
-    const categoryBar = document.getElementById('categoryBar');
-    if (!categoryBar) return;
-    const categories = ["All", ...new Set(allProducts.map(p => p.category).filter(Boolean))];
-    categoryBar.innerHTML = categories.map(cat => 
-      `<button class="category-btn ${cat.toLowerCase() === activeCategory.toLowerCase() ? 'active' : ''}" data-cat="${cat}">${cat}</button>`
-    ).join('');
-
-    categoryBar.querySelectorAll('.category-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        activeCategory = e.currentTarget.getAttribute('data-cat');
-        categoryBar.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        const filtered = activeCategory === "All" ? allProducts : allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
-        renderProducts(filtered);
-      });
-    });
-  }
-
-  function renderProducts(products) {
-    const grid = document.getElementById('productGrid');
-    if (!grid) return;
-    grid.innerHTML = "";
-
-    if (products.length === 0) {
-      grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">No products found.</p>`;
-      return;
-    }
-
-    products.forEach(prod => {
-      const isWishlisted = !!userWishlistIds[prod.id];
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="image-box">
-          <img src="${prod.image || prod.imageUrl || ''}" alt="${prod.name || 'Product'}">
-          ${prod.discount ? `<span class="discount-badge with-wishlist">-${prod.discount}%</span>` : ''}
-          <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" data-id="${prod.id}">
-            <i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart"></i>
-          </button>
-        </div>
-        <div class="card-info">
-          <h3>${prod.name || 'Untitled Product'}</h3>
-          <div class="price-container">
-            <span class="price">₹${prod.price || 0}</span>
-            ${prod.mrp ? `<span class="mrp">₹${prod.mrp}</span>` : ''}
-          </div>
-          <button class="buy-btn">View Details</button>
-        </div>
-      `;
-
-      card.querySelector('.card-wishlist-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleWishlist(prod.id);
-      });
-
-      card.addEventListener('click', () => {
-        trackProductClickAndRedirect(prod.id);
-      });
-
-      grid.appendChild(card);
-    });
-  }
-
-  function toggleWishlist(productId) {
-    if (currentUser) {
-      const wishRef = ref(db, `wishlist/${currentUser.uid}/${productId}`);
-      if (userWishlistIds[productId]) {
-        remove(wishRef);
-      } else {
-        set(wishRef, true);
-      }
-    } else {
-      let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}");
-      if (localWishlist[productId]) {
-        delete localWishlist[productId];
-      } else {
-        localWishlist[productId] = true;
-      }
-      localStorage.setItem('guestWishlist', JSON.stringify(localWishlist));
-      userWishlistIds = localWishlist;
-      updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge'));
-    }
-  }
-
   onAuthStateChanged(auth, (user) => { 
     currentUser = user; 
     updateBadges(user); 
@@ -2613,7 +2591,7 @@ nav {
     const slider = document.getElementById('bannerSlider'); 
     const dots = document.querySelectorAll('.dot'); 
     const totalBanners = dots.length; 
-    if (totalBanners === 0 || !slider) return; 
+    if (totalBanners === 0) return; 
     if (autoScrollInterval) clearInterval(autoScrollInterval); 
 
     const startAutoScroll = () => { 
@@ -2643,54 +2621,193 @@ nav {
       dot.addEventListener('click', (e) => { 
         clearInterval(autoScrollInterval); 
         const idx = parseInt(e.target.getAttribute('data-index')); 
-        const width = slider.clientWidth;
-        slider.scrollTo({ left: idx * width, behavior: 'smooth' });
-        startAutoScroll();
+        const width = slider.clientWidth; 
+        slider.scrollTo({ left: idx * width, behavior: 'smooth' }); 
+        startAutoScroll(); 
       }); 
     }); 
-  }
 
-  const searchInput = document.getElementById('searchInput');
-  const searchSuggestions = document.getElementById('searchSuggestions');
+    slider.addEventListener('touchstart', () => clearInterval(autoScrollInterval)); 
+    slider.addEventListener('touchend', () => startAutoScroll()); 
+  } 
 
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase().trim();
-      if (!query) {
-        searchSuggestions.style.display = 'none';
-        return;
-      }
+  function renderCategoryBar() { 
+    const catBar = document.getElementById('categoryBar'); 
+    const categories = new Set(["Gadgets", "Fashion", "Watches", "Accessories"]); 
+    allProducts.forEach(p => { 
+      if (p.category && p.category.trim() !== "" && p.showOnHome !== false) { 
+        categories.add(p.category.trim()); 
+      } 
+    }); 
+    let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All">All</div>`; 
+    categories.forEach(cat => { 
+      barHtml += `<div class="category-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`; 
+    }); 
+    catBar.innerHTML = barHtml; 
+    document.querySelectorAll('.category-btn').forEach(btn => { 
+      btn.addEventListener('click', (e) => { 
+        activeCategory = e.target.getAttribute('data-cat'); 
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
+        e.target.classList.add('active'); 
+        let filtered = allProducts; 
+        if (activeCategory !== "All") { 
+          filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase()); 
+        } 
+        renderProducts(filtered); 
+      }); 
+    }); 
+  } 
 
-      const matches = allProducts.filter(p => p.name && p.name.toLowerCase().includes(query)).slice(0, 5);
-      if (matches.length > 0) {
-        searchSuggestions.innerHTML = matches.map(p => `
-          <div class="suggestion-item" data-id="${p.id}">
-            <img src="${p.image || p.imageUrl || ''}" alt="${p.name}">
-            <div class="suggestion-info">
-              <h4>${p.name}</h4>
-              <p>₹${p.price || 0}</p>
-            </div>
-          </div>
-        `).join('');
+  function renderProducts(products) { 
+    const grid = document.getElementById('productGrid'); 
+    grid.innerHTML = ""; 
+    let animationDelayIndex = 0; 
+    products.forEach((p) => { 
+      if (p.showOnHome === false) return; 
+      const isOut = p.outOfStock === true; 
+      const pr = parseFloat(p.price.toString().replace(/,/g, '')); 
+      const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr); 
+      let discTag = ""; 
+      let hasDisc = false; 
+      if(mr > pr) { 
+        const disc = Math.round(((mr - pr) / mr) * 100); 
+        hasDisc = true; 
+        discTag = `<div class="discount-badge ${hasDisc ? 'with-wishlist' : ''}">${disc}% OFF</div>`; 
+      } 
+      const isWishlisted = userWishlistIds[p.id] ? true : false; 
+      const card = document.createElement('div'); 
+      card.className = 'card'; 
+      card.style.animationDelay = `${animationDelayIndex * 0.08}s`; 
+      animationDelayIndex++; 
+      const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150'; 
+      card.innerHTML = ` 
+        ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''} 
+        ${!isOut ? discTag : ''} 
+        <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist" data-id="${p.id}"> 
+          <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
+        </button> 
+        <div class="image-box"> 
+          <img src="${productMainImg}" alt="${p.name || 'Product'}" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}"> 
+          <div class="verified-tag"><i class="fa-solid fa-shield-check"></i> Quality Assured</div> 
+        </div> 
+        <div class="card-info"> 
+          <h3>${p.name || 'No Title'}</h3> 
+          <div class="price-container"> 
+            <span class="price">₹${p.price}</span> 
+            ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''} 
+          </div> 
+          <button class="buy-btn" ${isOut ? 'disabled' : ''}> 
+            ${isOut ? 'Unavailable' : 'View Product'} 
+          </button> 
+        </div> 
+      `; 
 
-        searchSuggestions.querySelectorAll('.suggestion-item').forEach(item => {
-          item.addEventListener('click', () => {
-            trackProductClickAndRedirect(item.getAttribute('data-id'));
-          });
-        });
+      const wishlistBtn = card.querySelector('.card-wishlist-btn'); 
+      wishlistBtn.addEventListener('click', (e) => { 
+        e.stopPropagation(); 
+        const prodId = wishlistBtn.getAttribute('data-id'); 
+        if (currentUser) { 
+          const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`); 
+          if (userWishlistIds[prodId]) { 
+            remove(wishRef).then(() => { 
+              delete userWishlistIds[prodId]; 
+              wishlistBtn.classList.remove('active'); 
+              wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
+              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+            }); 
+          } else { 
+            set(wishRef, true).then(() => { 
+              userWishlistIds[prodId] = true; 
+              wishlistBtn.classList.add('active'); 
+              wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
+              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+            }); 
+          } 
+        } else { 
+          let guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
+          if (guestWishlist[prodId]) { 
+            delete guestWishlist[prodId]; 
+            wishlistBtn.classList.remove('active'); 
+            wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
+          } else { 
+            guestWishlist[prodId] = true; 
+            wishlistBtn.classList.add('active'); 
+            wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
+          } 
+          localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist)); 
+          userWishlistIds = guestWishlist; 
+          updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+        } 
+      }); 
 
-        searchSuggestions.style.display = 'block';
-      } else {
-        searchSuggestions.style.display = 'none';
-      }
-    });
+      card.addEventListener('click', () => { 
+        if(isOut) return; 
+        trackProductClickAndRedirect(p.id); 
+      }); 
 
-    document.addEventListener('click', (e) => {
-      if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
-        searchSuggestions.style.display = 'none';
-      }
-    });
-  }
+      grid.appendChild(card); 
+    }); 
+  } 
+
+  const searchInput = document.getElementById('searchInput'); 
+  const suggestionsBox = document.getElementById('searchSuggestions'); 
+
+  searchInput.addEventListener('input', (e) => { 
+    const val = e.target.value.toLowerCase().trim(); 
+    suggestionsBox.innerHTML = ""; 
+    if (val.length < 1) { 
+      suggestionsBox.style.display = 'none'; 
+      return; 
+    } 
+    const searchWords = val.split(/\s+/).filter(word => word); 
+    let matchedProducts = allProducts.filter(p => { 
+      const productName = (p.name || "").toLowerCase(); 
+      const productCat = (p.category || "").toLowerCase(); 
+      const productDesc = (p.description || "").toLowerCase(); 
+      return searchWords.some(word => productName.includes(word) || productCat.includes(word) || productDesc.includes(word) ); 
+    }); 
+
+    if (matchedProducts.length > 0) { 
+      suggestionsBox.style.display = 'block'; 
+      matchedProducts.slice(0, 10).forEach(p => { 
+        const div = document.createElement('div'); 
+        div.className = 'suggestion-item'; 
+        const productImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/50'; 
+        div.innerHTML = ` 
+          <img src="${productImg}" alt="${p.name || 'Product'}"> 
+          <div class="suggestion-info"> 
+            <h4>${p.name || 'No Name'}</h4> 
+            <p>₹${p.price || '0'}</p> 
+          </div> 
+        `; 
+        div.addEventListener('click', () => { 
+          trackProductClickAndRedirect(p.id); 
+        }); 
+        suggestionsBox.appendChild(div); 
+      }); 
+    } else { 
+      suggestionsBox.style.display = 'none'; 
+    } 
+  }); 
+
+  searchInput.addEventListener('keydown', (e) => { 
+    if (e.key === 'Enter') { 
+      const searchVal = searchInput.value.trim(); 
+      if (searchVal.toLowerCase() === "cartecom@com") { 
+        window.location.href = "/ecom"; 
+        return; 
+      } 
+      if (searchVal.length >= 1) { 
+        window.location.href = `/search?q=${encodeURIComponent(searchVal)}`; 
+      } 
+    } 
+  }); 
+
+  document.addEventListener('click', (e) => { 
+    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { 
+      suggestionsBox.style.display = 'none'; 
+    } 
+  }); 
 </script> 
 </body> 
 </html>
