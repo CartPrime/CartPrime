@@ -1740,7 +1740,8 @@ nav {
   const closeNotifModal = document.getElementById('closeNotifModal');
   const notifListContainer = document.getElementById('notifListContainer');
 
-  let notificationsData = {};
+  let notificationsData = {}; // notifications synced from Firebase (earn_partners)
+  let localNotifications = {}; // client-only notifications (e.g. OTP alerts) not stored in Firebase
 
   function isNotificationUnread(item) {
     if (!item) return false;
@@ -1748,54 +1749,71 @@ nav {
     return true;
   }
 
+  function getCombinedNotifications() {
+    return { ...notificationsData, ...localNotifications };
+  }
+
+  function refreshNotifUI() {
+    const combined = getCombinedNotifications();
+    let unreadCount = 0;
+    Object.keys(combined).forEach((key) => {
+      if (isNotificationUnread(combined[key])) unreadCount++;
+    });
+
+    if (unreadCount > 0) {
+      if (notifBadge) {
+        notifBadge.textContent = unreadCount;
+        notifBadge.style.display = 'flex';
+      }
+    } else {
+      if (notifBadge) notifBadge.style.display = 'none';
+    }
+    renderNotifications();
+  }
+
+  // Adds a client-side only notification (e.g. OTP sent) that shows up under
+  // the bell icon immediately, without needing a logged-in phone/Firebase.
+  function addLocalNotification(title, message, iconClass = 'fa-bell') {
+    const id = `local_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    localNotifications[id] = {
+      title: title,
+      message: message,
+      icon: iconClass,
+      timestamp: Date.now(),
+      read: false
+    };
+    refreshNotifUI();
+  }
+
   function listenNotifications() {
     const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
     if (!phone) {
-      if (notifBadge) notifBadge.style.display = 'none';
+      notificationsData = {};
+      refreshNotifUI();
       return;
     }
 
     const notifRef = ref(db, `earn_partners/${phone}/notifications`);
     onValue(notifRef, (snapshot) => {
-      if (snapshot.exists()) {
-        notificationsData = snapshot.val();
-        let unreadCount = 0;
-        
-        Object.keys(notificationsData).forEach((key) => {
-          if (isNotificationUnread(notificationsData[key])) {
-            unreadCount++;
-          }
-        });
-
-        if (unreadCount > 0) {
-          if (notifBadge) {
-            notifBadge.textContent = unreadCount;
-            notifBadge.style.display = 'flex';
-          }
-        } else {
-          if (notifBadge) notifBadge.style.display = 'none';
-        }
-      } else {
-        notificationsData = {};
-        if (notifBadge) notifBadge.style.display = 'none';
-      }
-      renderNotifications();
+      notificationsData = snapshot.exists() ? snapshot.val() : {};
+      refreshNotifUI();
     });
   }
 
   function renderNotifications() {
     if (!notifListContainer) return;
-    const keys = Object.keys(notificationsData);
+    const combined = getCombinedNotifications();
+    const keys = Object.keys(combined);
     if (keys.length === 0) {
       notifListContainer.innerHTML = '<div class="no-notif"><i class="fa-regular fa-bell-slash" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>No notifications yet.</div>';
       return;
     }
 
-    keys.sort((a, b) => (notificationsData[b].timestamp || 0) - (notificationsData[a].timestamp || 0));
+    keys.sort((a, b) => (combined[b].timestamp || 0) - (combined[a].timestamp || 0));
 
     let html = '';
     keys.forEach((id) => {
-      const item = notificationsData[id];
+      const item = combined[id];
       const isUnread = isNotificationUnread(item);
       const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }) : '';
       const iconClass = item.icon || 'fa-bell';
@@ -1820,8 +1838,16 @@ nav {
     notifListContainer.querySelectorAll('.mark-read-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const notifId = e.currentTarget.getAttribute('data-id');
+        if (!notifId) return;
+
+        if (notifId.startsWith('local_')) {
+          delete localNotifications[notifId];
+          refreshNotifUI();
+          return;
+        }
+
         const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-        if (phone && notifId) {
+        if (phone) {
           delete notificationsData[notifId];
           renderNotifications();
 
@@ -1845,6 +1871,7 @@ nav {
   }
 
   listenNotifications();
+
 
   let registrationStep = 1; // 1: Enter Phone, 2: Enter OTP, 3: Enter Name (if new user)
   let pendingPhone = "";
@@ -1877,6 +1904,9 @@ nav {
 
     // Show the OTP as a notification-style popup instead of embedding it in the form text
     showOtpNotificationPopup(phoneNumber, generatedOtpCode);
+
+    // Also add it to the bell icon notification list so the user can see it there
+    addLocalNotification("OTP Verification Code", `Your OTP for ${phoneNumber} is ${generatedOtpCode}. Do not share this code with anyone.`, 'fa-key');
     
     // സൗജന്യമായി Fast2SMS / Twilio API വഴി OTP അയക്കുന്നതിന്:
     /*
