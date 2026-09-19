@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
 <style> 
-/* --- Light Theme Variables --- */ 
 :root { 
   --primary: #000000; 
   --accent: #2563eb; 
@@ -22,7 +21,6 @@
   --skeleton-start: #f1f5f9; 
   --skeleton-mid: #e2e8f0; 
 } 
-/* --- Dark Theme Variables --- */ 
 [data-theme="dark"] { 
   --primary: #ffffff; 
   --accent: #60a5fa; 
@@ -274,7 +272,6 @@ nav {
   100% { transform: rotate(360deg); }
 }
 
-/* --- Redesigned Trust Welcome Modal Styles with Animation --- */
 .modal-overlay { 
   display: none; 
   position: fixed; 
@@ -352,7 +349,6 @@ nav {
   font-size: 0.9rem;
 }
 
-/* --- Notification Panel Modal Styles --- */
 .notif-modal-card {
   max-width: 480px;
   max-height: 85vh;
@@ -450,7 +446,6 @@ nav {
   font-weight: 600;
 }
 
-/* --- Redesigned Earn Modal Styles --- */
 .earn-modal-header {
   display: flex;
   align-items: center;
@@ -879,7 +874,6 @@ nav {
   100% { opacity: 1; transform: translateY(0); } 
 } 
 
-/* --- Modern Improved Product Card Styling --- */
 .card { 
   background: var(--card-bg); 
   border-radius: 22px; 
@@ -1349,7 +1343,6 @@ nav {
     <div id="searchSuggestions" class="search-suggestions-box"></div> 
   </div> 
   <div class="nav-right"> 
-    <!-- Notification Bell Button -->
     <div class="notification-icon-btn" id="notifBtn" title="Notifications">
       <i class="fa-regular fa-bell"></i>
       <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
@@ -1365,7 +1358,6 @@ nav {
   </div> 
 </nav> 
 
-<!-- Notifications Modal Panel -->
 <div id="notifModal" class="modal-overlay">
   <div class="modal-card notif-modal-card">
     <div class="notif-modal-header">
@@ -1378,7 +1370,6 @@ nav {
   </div>
 </div>
 
-<!-- Redesigned Trustworthy User Registration/Welcome/Edit Modal with OTP Verification -->
 <div id="userWelcomeModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <div class="welcome-modal-header">
@@ -1408,7 +1399,6 @@ nav {
       </div> 
     </form> 
 
-    <!-- Logout Option inside Edit Profile Modal -->
     <div id="logoutSection" style="display: none; margin-top: 12px;">
       <button type="button" id="logoutBtn" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ef4444; background: rgba(239, 68, 68, 0.1); color: #ef4444; font-weight: 700; cursor: pointer;">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -1422,7 +1412,6 @@ nav {
   </div> 
 </div>
 
-<!-- Earn Partner Request Modal -->
 <div id="earnModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <div class="earn-modal-header">
@@ -1456,7 +1445,6 @@ nav {
   </div> 
 </div> 
 
-<!-- Contact Us Modal -->
 <div id="contactModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Contact Customer Support</h3> 
@@ -1564,7 +1552,6 @@ nav {
   </div> 
 </div> 
 
-<!-- Bottom Navigation Bar with Contact Icon and Earn Badge -->
 <div class="bottom-nav">
   <a href="/" class="bottom-nav-item active">
     <i class="fa-solid fa-house"></i>
@@ -1591,7 +1578,6 @@ nav {
   </div>
 </div>
 
-<!-- Premium Custom Toast Notification Modal -->
 <div id="customToast" class="custom-toast-overlay">
   <div class="custom-toast-card">
     <div id="toastIcon" class="toast-icon-wrap success">
@@ -1603,7 +1589,6 @@ nav {
   </div>
 </div>
 
-<!-- Notification Permission Script -->
 <script>
   window.addEventListener('load', () => {
     if ("Notification" in window) {
@@ -1639,12 +1624,10 @@ nav {
   const auth = getAuth(app); 
   const db = getDatabase(app); 
 
-  // Generates a unique token to enforce single-device active session per phone number
   function generateSessionToken() {
     return 'ST_' + Math.random().toString(36).substring(2) + Date.now();
   }
 
-  // Monitor single device login state real-time
   function monitorSingleDeviceSession() {
     const userPhone = localStorage.getItem('userPhone');
     const localToken = localStorage.getItem('sessionToken');
@@ -1654,7 +1637,6 @@ nav {
         if (snapshot.exists()) {
           const activeToken = snapshot.val();
           if (activeToken !== localToken) {
-            // Session invalidated due to login on another device
             localStorage.removeItem('userName');
             localStorage.removeItem('userPhone');
             localStorage.removeItem('sessionToken');
@@ -1671,7 +1653,6 @@ nav {
     }
   }
 
-  // Call single session monitor on load
   monitorSingleDeviceSession();
 
   function generateUniquePartnerId() {
@@ -1679,7 +1660,6 @@ nav {
     return `CP-REF-${randomDigits}`;
   }
 
-  // Helper functions for animated modals
   function openModal(modalElement) {
     modalElement.style.display = 'flex';
     setTimeout(() => {
@@ -1714,7 +1694,6 @@ nav {
   const logoutSection = document.getElementById('logoutSection');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  /* --- Notification Panel Modal Logic --- */
   const notifBtn = document.getElementById('notifBtn');
   const notifBadge = document.getElementById('notifBadge');
   const notifModal = document.getElementById('notifModal');
@@ -1805,7 +1784,6 @@ nav {
         if (phone && notifId) {
           delete notificationsData[notifId];
           renderNotifications();
-
           remove(ref(db, `earn_partners/${phone}/notifications/${notifId}`));
         }
       });
@@ -1827,13 +1805,12 @@ nav {
 
   listenNotifications();
 
-  let registrationStep = 1; // 1: Enter Phone, 2: Enter OTP, 3: Enter Name (if new user)
+  let registrationStep = 1; 
   let pendingPhone = "";
   let pendingExistingName = "";
   let isNewUserSession = false;
   let generatedOtpCode = "123456";
 
-  // Function to send free OTP to user
   async function sendFreeOtpToUser(phoneNumber) {
     generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
     console.log(`[CartPrime Security] Generated OTP for ${phoneNumber}: ${generatedOtpCode}`);
@@ -1857,7 +1834,7 @@ nav {
       userWelcomePhone.style.display = 'block';
       userWelcomeOtp.style.display = 'none';
       userWelcomeName.style.display = 'block';
-      registrationStep = 3; // Edit mode
+      registrationStep = 3; 
       welcomeModalTitle.textContent = "Edit Your Profile";
       welcomeModalSub.textContent = "Update your details below.";
       if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
@@ -1879,7 +1856,6 @@ nav {
     logoutBtn.addEventListener('click', () => {
       const currentPhone = localStorage.getItem('userPhone');
       if (currentPhone) {
-        // Clear session token in database on explicit logout
         update(ref(db, `users/${currentPhone}`), { sessionToken: null });
       }
       localStorage.removeItem('userName');
@@ -1924,12 +1900,10 @@ nav {
     welcomeForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      // STEP 1: Phone submission -> Request OTP
       if (registrationStep === 1) {
         const phone = userWelcomePhone.value.trim();
         if (!phone) return;
 
-        // SINGLE SESSION CHECK: Already logged in with a different phone number locally
         const existingActivePhone = localStorage.getItem('userPhone');
         if (existingActivePhone && existingActivePhone !== phone) {
           showCustomAlert("Already Logged In", "You are already logged in with another number. Please log out first before logging in with a different phone number.", false);
@@ -1941,7 +1915,6 @@ nav {
         loadingText.textContent = "Checking Mobile Number & Sending OTP...";
         verifyLoadingBox.style.display = 'flex';
 
-        // Send OTP
         await sendFreeOtpToUser(phone);
 
         const userRef = ref(db, `users/${phone}`);
@@ -1957,7 +1930,6 @@ nav {
             isNewUserSession = true;
           }
 
-          // Transition to OTP Step
           registrationStep = 2;
           userWelcomePhone.style.display = 'none';
           userWelcomeOtp.style.display = 'block';
@@ -1976,7 +1948,6 @@ nav {
         });
 
       } 
-      // STEP 2: OTP Verification
       else if (registrationStep === 2) {
         const otpVal = userWelcomeOtp.value.trim();
         if (otpVal !== "123456" && otpVal !== generatedOtpCode) {
@@ -1985,7 +1956,6 @@ nav {
         }
 
         if (isNewUserSession) {
-          // Proceed to Name entry step
           registrationStep = 3;
           userWelcomeOtp.style.display = 'none';
           userWelcomeName.style.display = 'block';
@@ -1995,7 +1965,6 @@ nav {
           welcomeModalSub.textContent = "OTP Verified! Please enter your full name.";
           welcomeSubmitBtn.textContent = "Save Profile";
         } else {
-          // Existing user login complete -> Generate and store new Single-Device Session Token
           welcomeForm.style.display = 'none';
           verifyLoadingBox.style.display = 'flex';
           loadingText.textContent = "Logging you in...";
@@ -2005,7 +1974,6 @@ nav {
           localStorage.setItem('userPhone', pendingPhone);
           localStorage.setItem('sessionToken', newSessionToken);
 
-          // Update active single-device session token in Database (Logouts any other phone)
           update(ref(db, `users/${pendingPhone}`), {
             sessionToken: newSessionToken,
             lastLogin: Date.now()
@@ -2031,7 +1999,6 @@ nav {
           });
         }
       } 
-      // STEP 3: Save Name (New User Signup or Profile Edit)
       else if (registrationStep === 3) {
         const name = userWelcomeName.value.trim();
         const phone = pendingPhone || localStorage.getItem('userPhone');
@@ -2143,7 +2110,6 @@ nav {
     });
   }
 
-  /* --- EARN PARTNER LOGIC --- */ 
   const earnModal = document.getElementById('earnModal'); 
   const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
@@ -2293,6 +2259,7 @@ nav {
 
   function showSkeletons() { 
     const grid = document.getElementById('productGrid'); 
+    if(!grid) return;
     grid.innerHTML = ""; 
     for (let i = 0; i < 8; i++) { 
       grid.innerHTML += ` 
@@ -2483,6 +2450,91 @@ nav {
     } 
   } 
 
+  function renderCategoryBar() {
+    const categoryBar = document.getElementById('categoryBar');
+    if (!categoryBar) return;
+    const categories = ["All", ...new Set(allProducts.map(p => p.category).filter(Boolean))];
+    categoryBar.innerHTML = categories.map(cat => 
+      `<button class="category-btn ${cat.toLowerCase() === activeCategory.toLowerCase() ? 'active' : ''}" data-cat="${cat}">${cat}</button>`
+    ).join('');
+
+    categoryBar.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        activeCategory = e.currentTarget.getAttribute('data-cat');
+        categoryBar.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        const filtered = activeCategory === "All" ? allProducts : allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase());
+        renderProducts(filtered);
+      });
+    });
+  }
+
+  function renderProducts(products) {
+    const grid = document.getElementById('productGrid');
+    if (!grid) return;
+    grid.innerHTML = "";
+
+    if (products.length === 0) {
+      grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">No products found.</p>`;
+      return;
+    }
+
+    products.forEach(prod => {
+      const isWishlisted = !!userWishlistIds[prod.id];
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="image-box">
+          <img src="${prod.image || prod.imageUrl || ''}" alt="${prod.name || 'Product'}">
+          ${prod.discount ? `<span class="discount-badge with-wishlist">-${prod.discount}%</span>` : ''}
+          <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" data-id="${prod.id}">
+            <i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart"></i>
+          </button>
+        </div>
+        <div class="card-info">
+          <h3>${prod.name || 'Untitled Product'}</h3>
+          <div class="price-container">
+            <span class="price">₹${prod.price || 0}</span>
+            ${prod.mrp ? `<span class="mrp">₹${prod.mrp}</span>` : ''}
+          </div>
+          <button class="buy-btn">View Details</button>
+        </div>
+      `;
+
+      card.querySelector('.card-wishlist-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleWishlist(prod.id);
+      });
+
+      card.addEventListener('click', () => {
+        trackProductClickAndRedirect(prod.id);
+      });
+
+      grid.appendChild(card);
+    });
+  }
+
+  function toggleWishlist(productId) {
+    if (currentUser) {
+      const wishRef = ref(db, `wishlist/${currentUser.uid}/${productId}`);
+      if (userWishlistIds[productId]) {
+        remove(wishRef);
+      } else {
+        set(wishRef, true);
+      }
+    } else {
+      let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}");
+      if (localWishlist[productId]) {
+        delete localWishlist[productId];
+      } else {
+        localWishlist[productId] = true;
+      }
+      localStorage.setItem('guestWishlist', JSON.stringify(localWishlist));
+      userWishlistIds = localWishlist;
+      updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge'));
+    }
+  }
+
   onAuthStateChanged(auth, (user) => { 
     currentUser = user; 
     updateBadges(user); 
@@ -2561,7 +2613,7 @@ nav {
     const slider = document.getElementById('bannerSlider'); 
     const dots = document.querySelectorAll('.dot'); 
     const totalBanners = dots.length; 
-    if (totalBanners === 0) return; 
+    if (totalBanners === 0 || !slider) return; 
     if (autoScrollInterval) clearInterval(autoScrollInterval); 
 
     const startAutoScroll = () => { 
@@ -2591,184 +2643,54 @@ nav {
       dot.addEventListener('click', (e) => { 
         clearInterval(autoScrollInterval); 
         const idx = parseInt(e.target.getAttribute('data-index')); 
-        const width = slider.clientWidth; 
-        slider.scrollTo({ left: idx * width, behavior: 'smooth' }); 
-        startAutoScroll(); 
+        const width = slider.clientWidth;
+        slider.scrollTo({ left: idx * width, behavior: 'smooth' });
+        startAutoScroll();
       }); 
     }); 
-  } 
+  }
 
-  function renderCategoryBar() { 
-    const bar = document.getElementById('categoryBar'); 
-    const categories = ["All", ...new Set(allProducts.map(p => p.category).filter(Boolean))]; 
-    bar.innerHTML = categories.map(cat => ` 
-      <button class="category-btn ${cat.toLowerCase() === activeCategory.toLowerCase() ? 'active' : ''}" data-cat="${cat}">${cat}</button> 
-    `).join(''); 
+  const searchInput = document.getElementById('searchInput');
+  const searchSuggestions = document.getElementById('searchSuggestions');
 
-    bar.querySelectorAll('.category-btn').forEach(btn => { 
-      btn.addEventListener('click', (e) => { 
-        activeCategory = e.target.getAttribute('data-cat'); 
-        bar.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
-        e.target.classList.add('active'); 
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      if (!query) {
+        searchSuggestions.style.display = 'none';
+        return;
+      }
 
-        const filtered = activeCategory === "All" ? allProducts : allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase()); 
-        renderProducts(filtered); 
-      }); 
-    }); 
-  } 
+      const matches = allProducts.filter(p => p.name && p.name.toLowerCase().includes(query)).slice(0, 5);
+      if (matches.length > 0) {
+        searchSuggestions.innerHTML = matches.map(p => `
+          <div class="suggestion-item" data-id="${p.id}">
+            <img src="${p.image || p.imageUrl || ''}" alt="${p.name}">
+            <div class="suggestion-info">
+              <h4>${p.name}</h4>
+              <p>₹${p.price || 0}</p>
+            </div>
+          </div>
+        `).join('');
 
-  function toggleWishlist(product, btnElement) { 
-    const isWishlisted = !!userWishlistIds[product.id]; 
+        searchSuggestions.querySelectorAll('.suggestion-item').forEach(item => {
+          item.addEventListener('click', () => {
+            trackProductClickAndRedirect(item.getAttribute('data-id'));
+          });
+        });
 
-    if (currentUser) { 
-      const wishlistRef = ref(db, `wishlist/${currentUser.uid}/${product.id}`); 
-      if (isWishlisted) { 
-        remove(wishlistRef); 
-      } else { 
-        set(wishlistRef, { 
-          id: product.id, 
-          title: product.title || product.name, 
-          price: product.price, 
-          mrp: product.mrp || product.originalPrice || product.price, 
-          imageUrl: product.imageUrl || product.image || (product.images ? product.images[0] : ''), 
-          addedAt: Date.now() 
-        }); 
-      } 
-    } else { 
-      let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
-      if (isWishlisted) { 
-        delete localWishlist[product.id]; 
-      } else { 
-        localWishlist[product.id] = { 
-          id: product.id, 
-          title: product.title || product.name, 
-          price: product.price, 
-          mrp: product.mrp || product.originalPrice || product.price, 
-          imageUrl: product.imageUrl || product.image || (product.images ? product.images[0] : ''), 
-          addedAt: Date.now() 
-        }; 
-      } 
-      localStorage.setItem('guestWishlist', JSON.stringify(localWishlist)); 
-      userWishlistIds = localWishlist; 
-      updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
-    } 
-  } 
+        searchSuggestions.style.display = 'block';
+      } else {
+        searchSuggestions.style.display = 'none';
+      }
+    });
 
-  function renderProducts(products) { 
-    const grid = document.getElementById('productGrid'); 
-    grid.innerHTML = ""; 
-
-    if (products.length === 0) { 
-      grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">No products found in this category.</div>`; 
-      return; 
-    } 
-
-    products.forEach((product, idx) => { 
-      const isOutOfStock = product.stock !== undefined && (product.stock === 0 || product.stock === "0" || product.stock === false); 
-      const mrpVal = parseFloat(product.mrp || product.originalPrice || product.price); 
-      const priceVal = parseFloat(product.price); 
-      let discountPercent = 0; 
-
-      if (mrpVal > priceVal) { 
-        discountPercent = Math.round(((mrpVal - priceVal) / mrpVal) * 100); 
-      } 
-
-      const isWishlisted = !!userWishlistIds[product.id]; 
-      const imgUrl = product.imageUrl || product.image || (product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/300'); 
-      const title = product.title || product.name || 'Product Title'; 
-
-      const card = document.createElement('div'); 
-      card.className = 'card'; 
-      card.style.animationDelay = `${idx * 0.05}s`; 
-
-      card.innerHTML = ` 
-        <div class="image-box"> 
-          ${isOutOfStock ? `<span class="stock-badge">Out of Stock</span>` : ''} 
-          <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" data-id="${product.id}" title="Add to Wishlist"> 
-            <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
-          </button> 
-          ${discountPercent > 0 ? `<span class="discount-badge with-wishlist">${discountPercent}% OFF</span>` : ''} 
-          <img src="${imgUrl}" alt="${title}" loading="lazy"> 
-          <div class="verified-tag"><i class="fa-solid fa-circle-check"></i> Verified</div> 
-        </div> 
-        <div class="card-info"> 
-          <h3>${title}</h3> 
-          <div class="price-container"> 
-            <span class="price">₹${priceVal}</span> 
-            ${mrpVal > priceVal ? `<span class="mrp">₹${mrpVal}</span>` : ''} 
-          </div> 
-          <button class="buy-btn" ${isOutOfStock ? 'disabled' : ''}> 
-            ${isOutOfStock ? 'Out of Stock' : 'Buy Now'} 
-          </button> 
-        </div> 
-      `; 
-
-      const wishlistBtn = card.querySelector('.card-wishlist-btn'); 
-      wishlistBtn.addEventListener('click', (e) => { 
-        e.stopPropagation(); 
-        toggleWishlist(product, wishlistBtn); 
-      }); 
-
-      card.addEventListener('click', () => { 
-        trackProductClickAndRedirect(product.id); 
-      }); 
-
-      grid.appendChild(card); 
-    }); 
-  } 
-
-  const searchInput = document.getElementById('searchInput'); 
-  const searchSuggestions = document.getElementById('searchSuggestions'); 
-
-  searchInput.addEventListener('input', (e) => { 
-    const query = e.target.value.trim().toLowerCase(); 
-    if (query.length < 1) { 
-      searchSuggestions.style.display = 'none'; 
-      renderProducts(activeCategory === "All" ? allProducts : allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase())); 
-      return; 
-    } 
-
-    const matched = allProducts.filter(p => { 
-      const title = (p.title || p.name || '').toLowerCase(); 
-      const category = (p.category || '').toLowerCase(); 
-      return title.includes(query) || category.includes(query); 
-    }); 
-
-    renderProducts(matched); 
-
-    if (matched.length > 0) { 
-      searchSuggestions.innerHTML = matched.slice(0, 5).map(product => { 
-        const imgUrl = product.imageUrl || product.image || (product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/100'); 
-        const title = product.title || product.name || 'Product'; 
-        return ` 
-          <div class="suggestion-item" data-id="${product.id}"> 
-            <img src="${imgUrl}" alt="${title}"> 
-            <div class="suggestion-info"> 
-              <h4>${title}</h4> 
-              <p>₹${product.price}</p> 
-            </div> 
-          </div> 
-        `; 
-      }).join(''); 
-
-      searchSuggestions.style.display = 'block'; 
-
-      searchSuggestions.querySelectorAll('.suggestion-item').forEach(item => { 
-        item.addEventListener('click', () => { 
-          const id = item.getAttribute('data-id'); 
-          trackProductClickAndRedirect(id); 
-        }); 
-      }); 
-    } else { 
-      searchSuggestions.style.display = 'none'; 
-    } 
-  }); 
-
-  document.addEventListener('click', (e) => { 
-    if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) { 
-      searchSuggestions.style.display = 'none'; 
-    } 
-  }); 
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+        searchSuggestions.style.display = 'none';
+      }
+    });
+  }
 </script> 
 </body> 
 </html>
