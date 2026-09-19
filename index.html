@@ -853,6 +853,24 @@ nav {
   margin: 0;
   line-height: 1.5;
 }
+.otp-highlight-box {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1.5px dashed var(--accent);
+  border-radius: 14px;
+  padding: 12px 20px;
+  margin: 2px 0 4px 0;
+}
+.otp-highlight-box span {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: 8px;
+  color: var(--accent);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
 .toast-close-btn {
   width: 100%;
   padding: 12px;
@@ -1599,6 +1617,7 @@ nav {
     </div>
     <h4 id="toastTitle">Success</h4>
     <p id="toastMessage">Your request has been submitted.</p>
+    <div id="toastOtpBox" class="otp-highlight-box"><span id="toastOtpText"></span></div>
     <button id="toastCloseBtn" class="toast-close-btn">Continue</button>
   </div>
 </div>
@@ -1848,7 +1867,7 @@ nav {
         // fall through to in-app toast below
       }
     }
-    showCustomAlert("OTP Sent", `Your OTP for ${phone} is ${otp}. Do not share this code with anyone.`, true);
+    showCustomAlert("OTP Sent", `Sent to ${phone}. Do not share this code with anyone.`, true, otp);
   }
 
   // Function to send free OTP to user
@@ -2107,15 +2126,25 @@ nav {
     });
   }
 
-  function showCustomAlert(title, message, isSuccess = true) {
+  function showCustomAlert(title, message, isSuccess = true, highlightCode = "") {
     const toastModal = document.getElementById('customToast');
     const toastTitle = document.getElementById('toastTitle');
     const toastMessage = document.getElementById('toastMessage');
     const toastIcon = document.getElementById('toastIcon');
     const toastCloseBtn = document.getElementById('toastCloseBtn');
+    const toastOtpBox = document.getElementById('toastOtpBox');
+    const toastOtpText = document.getElementById('toastOtpText');
 
     toastTitle.textContent = title;
     toastMessage.textContent = message;
+
+    if (highlightCode) {
+      toastOtpText.textContent = highlightCode;
+      toastOtpBox.style.display = 'flex';
+    } else {
+      toastOtpText.textContent = '';
+      toastOtpBox.style.display = 'none';
+    }
 
     if (isSuccess) {
       toastIcon.className = 'toast-icon-wrap success';
