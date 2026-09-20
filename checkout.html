@@ -333,7 +333,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getDatabase, ref, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, set, update, remove, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const EMAILJS_PUBLIC_KEY = "v9Kubn2pDJOSM8iL8";
 
@@ -487,10 +487,63 @@
             );
         };
 
+        // --- AUTO FILL LOGGED-IN USER NAME & PHONE ---
+        const cleanPhone = (val) => {
+            if (!val) return "";
+            const digits = val.toString().replace(/\D/g, '');
+            return digits.length > 10 ? digits.slice(-10) : digits;
+        };
+
+        const autoFillUserDetails = async (user) => {
+            const nameInput = document.getElementById('custName');
+            const phoneInput = document.getElementById('custPhone');
+            if (!nameInput || !phoneInput) return;
+
+            // 1. From Firebase Auth profile
+            if (!nameInput.value.trim() && user.displayName) {
+                nameInput.value = user.displayName;
+            }
+            if (!phoneInput.value.trim() && user.phoneNumber) {
+                phoneInput.value = cleanPhone(user.phoneNumber);
+            }
+
+            // 2. From Realtime Database user profile node
+            try {
+                const snap = await get(ref(db, `users/${user.uid}`));
+                if (snap.exists()) {
+                    const d = snap.val() || {};
+
+                    const dbName = d.name || d.fullName || d.username || d.displayName || d.customerName || "";
+                    const dbPhone = d.phone || d.phoneNumber || d.mobile || d.mobileNumber || d.customerPhone || d.contact || "";
+
+                    if (dbName && !nameInput.value.trim()) {
+                        nameInput.value = dbName;
+                    }
+                    if (dbPhone && !phoneInput.value.trim()) {
+                        phoneInput.value = cleanPhone(dbPhone);
+                    }
+                }
+            } catch (e) {
+                console.log("Auto-fill profile fetch failed:", e);
+            }
+
+            // 3. Fallback: previous order details saved locally
+            try {
+                const lastDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
+                if (!nameInput.value.trim() && (lastDetails.name || lastDetails.customerName)) {
+                    nameInput.value = lastDetails.name || lastDetails.customerName;
+                }
+                if (!phoneInput.value.trim() && (lastDetails.phone || lastDetails.customerPhone)) {
+                    phoneInput.value = cleanPhone(lastDetails.phone || lastDetails.customerPhone);
+                }
+            } catch (e) { }
+        };
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserId = user.uid;
                 currentUserEmail = user.email; 
+                autoFillUserDetails(user);
             }
         });
 
