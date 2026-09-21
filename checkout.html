@@ -99,6 +99,30 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
+        /* Money-safety reassurance strip right above the Place Order button */
+        .money-safe-strip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 14px;
+            padding: 10px 14px;
+            margin-top: 4px;
+        }
+        .money-safe-strip i.main-icon {
+            color: #16a34a;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+        .money-safe-strip p {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #166534;
+            line-height: 1.4;
+        }
+        .money-safe-strip p b { font-weight: 800; }
+
         /* Flipkart-style Order Processing & Success Animation Overlay */
         #successAnimationOverlay {
             backdrop-filter: blur(6px);
@@ -319,6 +343,12 @@
                     <p class="text-[9px] text-slate-500">Dedicated assistance</p>
                 </div>
             </div>
+        </div>
+
+        <!-- Money Safety Reassurance (COD = no advance payment risk) -->
+        <div class="money-safe-strip">
+            <i class="fa-solid fa-hand-holding-dollar main-icon"></i>
+            <p>No advance payment needed — <b>your money stays with you.</b> Check the product at your doorstep, then pay cash only if you're satisfied.</p>
         </div>
 
         <!-- Place Order Button -->
