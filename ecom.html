@@ -659,6 +659,9 @@ OneSignalDeferred.push(async function (OneSignal) {
         if (promptBox) {
             promptBox.style.display = isSubscribed ? 'none' : 'flex';
         }
+        if (isSubscribed) {
+            await OneSignal.User.addTag("role", "admin");
+        }
 
         OneSignal.User.PushSubscription.addEventListener('change', (event) => {
             const box = document.getElementById('oneSignalPrompt');
@@ -676,10 +679,16 @@ window.enableOneSignalPush = () => {
     }
     OneSignalDeferred.push(async function (OneSignal) {
         await OneSignal.Notifications.requestPermission();
+        if (OneSignal.User.PushSubscription.optedIn) {
+            // Tag this device as an admin device — the Cloud Function only
+            // sends order pushes to devices carrying this tag, so a customer
+            // who happens to load this page never gets order alerts.
+            await OneSignal.User.addTag("role", "admin");
+        }
         const promptBox = document.getElementById('oneSignalPrompt');
         if (promptBox && OneSignal.User.PushSubscription.optedIn) {
             promptBox.style.display = 'none';
-            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Order alerts enabled!', showConfirmButton: false, timer: 2000 });
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Order alerts enabled on this phone!', showConfirmButton: false, timer: 2000 });
         }
     });
 };
