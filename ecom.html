@@ -11,6 +11,9 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- OneSignal Web Push SDK -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <style>
         :root { 
             --sidebar-bg: #0f172a; 
@@ -186,6 +189,29 @@
         #newOrderToast .toast-title { font-weight: 800; font-size: 14px; }
         #newOrderToast .toast-sub { font-size: 12px; color: #94a3b8; margin-top: 2px; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Shopify-style unread badge on the Orders nav icon */
+        .nav-badge-wrap { position: relative; }
+        .nav-badge {
+            position: absolute;
+            top: 2px;
+            right: 6px;
+            min-width: 16px;
+            height: 16px;
+            padding: 0 4px;
+            border-radius: 999px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            box-shadow: 0 0 0 2px var(--sidebar-bg);
+            animation: badgePop 0.3s ease;
+        }
+        @keyframes badgePop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -202,6 +228,19 @@
     
     <div id="dashboard" class="tab-content active-tab">
         <h2 class="tab-title">Overview Dashboard</h2>
+
+        <div id="oneSignalPrompt" class="admin-card" style="display:none; background:#eff6ff; border-color:#bfdbfe; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <i class="fa-solid fa-bell" style="font-size:20px; color:#2563eb;"></i>
+                <div>
+                    <p style="font-weight:800; font-size:14px; color:var(--primary);">Get order alerts on this device</p>
+                    <p style="font-size:12px; color:var(--text-muted);">Enable push notifications so you never miss a new order, even with the tab closed.</p>
+                </div>
+            </div>
+            <button onclick="enableOneSignalPush()" style="background:#2563eb; color:#fff; border:none; padding:10px 18px; border-radius:10px; font-weight:700; cursor:pointer; font-size:13px; white-space:nowrap;">
+                <i class="fa fa-bell"></i> Enable Notifications
+            </button>
+        </div>
         
         <div class="stats-grid">
             <div class="stat-card">
@@ -511,7 +550,7 @@
 
 <div class="bottom-nav">
     <button onclick="openTab('dashboard', this)" class="tablinks active" id="btn-dashboard" title="Dashboard"><i class="fa fa-chart-pie"></i> <span>Dashboard</span></button>
-    <button onclick="openTab('orders', this)" class="tablinks" id="btn-orders" title="Orders"><i class="fa fa-shopping-bag"></i> <span>Orders</span></button>
+    <button onclick="openTab('orders', this)" class="tablinks nav-badge-wrap" id="btn-orders" title="Orders"><i class="fa fa-shopping-bag"></i> <span>Orders</span><span class="nav-badge" id="ordersNavBadge">0</span></button>
     <button onclick="openTab('addProduct', this)" class="tablinks" id="btn-addProduct" title="Add Product"><i class="fa fa-plus"></i> <span>Add</span></button>
     <button onclick="openTab('manageProducts', this)" class="tablinks" id="btn-manageProducts" title="Inventory"><i class="fa fa-layer-group"></i> <span>Inventory</span></button>
     <button onclick="openTab('banners', this)" class="tablinks" id="btn-banners" title="Banners"><i class="fa fa-images"></i> <span>Banners</span></button>
@@ -595,6 +634,84 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
+/* ================= ONESIGNAL CONFIG =================
+   1. Create a free app at https://onesignal.com (Web Push).
+   2. Replace ONESIGNAL_APP_ID below with your OneSignal App ID (Settings > Keys & IDs).
+   3. Replace ONESIGNAL_REST_API_KEY with your REST API Key (same page).
+   ⚠️ SECURITY NOTE: The REST API Key is meant for a trusted server, not a public
+   webpage — anyone who views this page's source can read it and use it to send
+   push notifications to ALL your subscribers. This client-side setup is fine to
+   get order alerts working quickly, but for a production store, move the
+   sendOneSignalPush() call into a Firebase Cloud Function (triggered on a new
+   order) so the REST key never reaches the browser. Ask me if you'd like that
+   Cloud Function written.
+======================================================= */
+const ONESIGNAL_APP_ID = "2a461e57-51ca-4cdf-abb6-273fda96a4d0";
+const ONESIGNAL_REST_API_KEY = "2jjquvw57uw4v6uqlpv3wnfmn";
+
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function (OneSignal) {
+    try {
+        await OneSignal.init({
+            appId: ONESIGNAL_APP_ID,
+            serviceWorkerParam: { scope: "/" },
+            notifyButton: { enable: false }
+        });
+
+        const isSubscribed = OneSignal.User.PushSubscription.optedIn;
+        const promptBox = document.getElementById('oneSignalPrompt');
+        if (promptBox) {
+            promptBox.style.display = isSubscribed ? 'none' : 'flex';
+        }
+
+        OneSignal.User.PushSubscription.addEventListener('change', (event) => {
+            const box = document.getElementById('oneSignalPrompt');
+            if (box) box.style.display = event.current.optedIn ? 'none' : 'flex';
+        });
+    } catch (err) {
+        console.error("OneSignal init error:", err);
+    }
+});
+
+window.enableOneSignalPush = () => {
+    if (!window.OneSignal) {
+        Swal.fire('Not Ready', 'Notifications SDK is still loading, try again in a moment.', 'info');
+        return;
+    }
+    OneSignalDeferred.push(async function (OneSignal) {
+        await OneSignal.Notifications.requestPermission();
+        const promptBox = document.getElementById('oneSignalPrompt');
+        if (promptBox && OneSignal.User.PushSubscription.optedIn) {
+            promptBox.style.display = 'none';
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Order alerts enabled!', showConfirmButton: false, timer: 2000 });
+        }
+    });
+};
+
+/* Sends a OneSignal push to every subscribed admin device.
+   Runs client-side — see the security note above. */
+async function sendOneSignalPush(title, body) {
+    if (!ONESIGNAL_APP_ID || ONESIGNAL_APP_ID === "YOUR_ONESIGNAL_APP_ID") return;
+    try {
+        await fetch('https://onesignal.com/api/v1/notifications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Basic ${ONESIGNAL_REST_API_KEY}`
+            },
+            body: JSON.stringify({
+                app_id: ONESIGNAL_APP_ID,
+                included_segments: ["Subscribed Users"],
+                headings: { en: title },
+                contents: { en: body },
+                url: window.location.origin + window.location.pathname + "#orders"
+            })
+        });
+    } catch (err) {
+        console.error("OneSignal push send error:", err);
+    }
+}
 
 let ordersChartInstance = null;
 let earningsChartInstance = null;
@@ -829,6 +946,10 @@ window.openTab = (tabId, element) => {
         const fallbackBtn = document.getElementById('btn-' + tabId);
         if (fallbackBtn) fallbackBtn.classList.add('active');
     }
+
+    if (tabId === 'orders' && window.clearOrdersNavBadge) {
+        window.clearOrdersNavBadge();
+    }
 };
 
 window.saveProduct = () => {
@@ -977,13 +1098,53 @@ function updateEarningsChart(dailyEarningsMap) {
     });
 }
 
-/* --- New order detection & notification --- */
+/* --- New order detection & notification (Shopify-style) --- */
 let ordersFirstLoadDone = false;
 let lastKnownOrderCount = 0;
+let unreadOrdersCount = 0;
 let notifSound = null;
 try {
-    notifSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+    // Two-tone "cha-ching" style chime, same idea Shopify uses for new-order alerts
+    notifSound = new Audio('https://cdn.freesound.org/previews/536/536108_11937282-lq.mp3');
+    notifSound.volume = 0.6;
 } catch(e) { notifSound = null; }
+
+const originalPageTitle = document.title;
+let titleFlashInterval = null;
+
+function startTitleFlash() {
+    if (titleFlashInterval) return;
+    let toggle = false;
+    titleFlashInterval = setInterval(() => {
+        document.title = toggle ? originalPageTitle : `🛎️ New Order! (${unreadOrdersCount})`;
+        toggle = !toggle;
+    }, 1500);
+}
+
+function stopTitleFlash() {
+    if (titleFlashInterval) {
+        clearInterval(titleFlashInterval);
+        titleFlashInterval = null;
+    }
+    document.title = originalPageTitle;
+}
+
+window.clearOrdersNavBadge = () => {
+    unreadOrdersCount = 0;
+    const badge = document.getElementById('ordersNavBadge');
+    if (badge) badge.style.display = 'none';
+    stopTitleFlash();
+};
+
+function bumpOrdersNavBadge(count) {
+    unreadOrdersCount += count;
+    const badge = document.getElementById('ordersNavBadge');
+    if (badge) {
+        badge.innerText = unreadOrdersCount > 99 ? '99+' : unreadOrdersCount;
+        badge.style.display = 'flex';
+    }
+    startTitleFlash();
+}
 
 window.handleNewOrderToastClick = () => {
     document.getElementById('newOrderToast').style.display = 'none';
@@ -1004,6 +1165,8 @@ function showNewOrderToast(count, latestOrder) {
     toast.style.display = 'flex';
     setTimeout(() => { toast.style.display = 'none'; }, 8000);
 
+    bumpOrdersNavBadge(count);
+
     if (notifSound) {
         notifSound.currentTime = 0;
         notifSound.play().catch(() => {});
@@ -1011,12 +1174,18 @@ function showNewOrderToast(count, latestOrder) {
 
     if ("Notification" in window && Notification.permission === "granted") {
         try {
-            new Notification("New Order Received!", {
+            const n = new Notification("🛎️ New Order Received!", {
                 body: count > 1 ? `${count} new orders just came in.` : `From ${customerName}${amount ? ' — ' + amount : ''}`,
                 icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
             });
+            n.onclick = () => { window.focus(); openTab('orders'); };
         } catch(e) {}
     }
+
+    sendOneSignalPush(
+        "🛎️ New Order Received!",
+        count > 1 ? `${count} new orders just came in.` : `From ${customerName}${amount ? ' — ' + amount : ''}`
+    );
 }
 
 onValue(ref(db, 'orders'), snap => {
