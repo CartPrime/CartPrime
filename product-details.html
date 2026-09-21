@@ -348,6 +348,30 @@
             border-radius: 6px;
         }
 
+        .mini-trust-strip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 9px 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .mini-trust-strip span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #166534;
+            white-space: nowrap;
+        }
+
+        .mini-trust-strip i { font-size: 0.78rem; }
+
         .earn-banner {
             background: #e0f2fe;
             border: 1px solid #bae6fd;
@@ -608,13 +632,41 @@
             right: 0;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 12px 16px;
+            padding: 10px 16px 12px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
             border-top: 1px solid var(--border-color);
             z-index: 99;
+        }
+
+        .sticky-trust-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .sticky-trust-row span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.66rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .sticky-trust-row i { color: var(--green); font-size: 0.72rem; }
+
+        .sticky-bottom-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .btn-group {
@@ -1022,6 +1074,15 @@
 
             const estimatedDeliveryText = getEstimatedDeliveryDate();
 
+            // Mini trust strip - shown right under the price so shoppers feel reassured before they scroll further
+            const miniTrustStripHTML = `
+                <div class="mini-trust-strip">
+                    <span><i class="fa-solid fa-shield-check"></i> 100% Genuine</span>
+                    <span><i class="fa-solid fa-lock"></i> Secure Payment</span>
+                    <span><i class="fa-solid ${returnStatus ? 'fa-rotate-left' : 'fa-magnifying-glass'}"></i> ${returnStatus ? 'Easy 7-Day Return' : 'Quality Checked'}</span>
+                </div>
+            `;
+
             // Earn Commission Banner - Shown when user is an approved partner
             const earnBannerHTML = isApprovedEarner ? `
                 <div class="earn-banner">
@@ -1060,6 +1121,8 @@
                         <span class="price">₹${displayPrice.toLocaleString('en-IN')}</span>
                         ${discountPct > 0 ? `<span class="discount">${discountPct}% off</span>` : ''}
                     </div>
+
+                    ${miniTrustStripHTML}
 
                     ${earnBannerHTML}
 
@@ -1109,15 +1172,23 @@
                 </div>`;
                 
             document.getElementById('stickyAction').innerHTML = `
-                <div style="display: flex; flex-direction: column; line-height: 1.2;">
-                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;">Total Price</span>
-                    <span style="font-size: 1.2rem; font-weight: 800;">₹${displayPrice.toLocaleString('en-IN')}</span>
+                <div class="sticky-trust-row">
+                    <span><i class="fa-solid fa-lock"></i> Secure Checkout</span>
+                    <span><i class="fa-solid fa-truck-fast"></i> ${estimatedDeliveryText}</span>
+                    ${codStatus ? '<span><i class="fa-solid fa-wallet"></i> COD Available</span>' : ''}
+                    ${returnStatus ? '<span><i class="fa-solid fa-rotate-left"></i> Easy Return</span>' : ''}
                 </div>
-                <div class="btn-group">
-                    <button class="buy-now ${isOut ? 'out-btn' : ''}" ${isOut ? 'disabled' : ''} 
-                        onclick="window.proceedToCheckout('${productId}', \`${fullTitle.replace(/'/g, "\\'")}\`, ${displayPrice}, ${baseMrp}, ${discountPct}, '${p.images[0]}', ${returnStatus}, ${codStatus}, ${availableSizes.length > 0}, ${commissionAmount})">
-                        ${isOut ? 'OUT OF STOCK' : 'BUY NOW'}
-                    </button>
+                <div class="sticky-bottom-row">
+                    <div style="display: flex; flex-direction: column; line-height: 1.2;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;">Total Price</span>
+                        <span style="font-size: 1.2rem; font-weight: 800;">₹${displayPrice.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="btn-group">
+                        <button class="buy-now ${isOut ? 'out-btn' : ''}" ${isOut ? 'disabled' : ''} 
+                            onclick="window.proceedToCheckout('${productId}', \`${fullTitle.replace(/'/g, "\\'")}\`, ${displayPrice}, ${baseMrp}, ${discountPct}, '${p.images[0]}', ${returnStatus}, ${codStatus}, ${availableSizes.length > 0}, ${commissionAmount})">
+                            ${isOut ? 'OUT OF STOCK' : 'BUY NOW'}
+                        </button>
+                    </div>
                 </div>`;
             
             document.getElementById('productShareBtn').addEventListener('click', () => {
