@@ -638,17 +638,12 @@ const db = getDatabase(app);
 /* ================= ONESIGNAL CONFIG =================
    1. Create a free app at https://onesignal.com (Web Push).
    2. Replace ONESIGNAL_APP_ID below with your OneSignal App ID (Settings > Keys & IDs).
-   3. Replace ONESIGNAL_REST_API_KEY with your REST API Key (same page).
-   ⚠️ SECURITY NOTE: The REST API Key is meant for a trusted server, not a public
-   webpage — anyone who views this page's source can read it and use it to send
-   push notifications to ALL your subscribers. This client-side setup is fine to
-   get order alerts working quickly, but for a production store, move the
-   sendOneSignalPush() call into a Firebase Cloud Function (triggered on a new
-   order) so the REST key never reaches the browser. Ask me if you'd like that
-   Cloud Function written.
+   This App ID is public and safe to keep in the page — it only identifies
+   which OneSignal app to subscribe this browser to. The REST API Key (used to
+   actually SEND pushes) now lives only in the "functions" Cloud Function,
+   never in this file, so it can't be read from page source.
 ======================================================= */
 const ONESIGNAL_APP_ID = "2a461e57-51ca-4cdf-abb6-273fda96a4d0";
-const ONESIGNAL_REST_API_KEY = "2jjquvw57uw4v6uqlpv3wnfmn";
 
 window.OneSignalDeferred = window.OneSignalDeferred || [];
 OneSignalDeferred.push(async function (OneSignal) {
@@ -688,30 +683,6 @@ window.enableOneSignalPush = () => {
         }
     });
 };
-
-/* Sends a OneSignal push to every subscribed admin device.
-   Runs client-side — see the security note above. */
-async function sendOneSignalPush(title, body) {
-    if (!ONESIGNAL_APP_ID || ONESIGNAL_APP_ID === "YOUR_ONESIGNAL_APP_ID") return;
-    try {
-        await fetch('https://onesignal.com/api/v1/notifications', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': `Basic ${ONESIGNAL_REST_API_KEY}`
-            },
-            body: JSON.stringify({
-                app_id: ONESIGNAL_APP_ID,
-                included_segments: ["Subscribed Users"],
-                headings: { en: title },
-                contents: { en: body },
-                url: window.location.origin + window.location.pathname + "#orders"
-            })
-        });
-    } catch (err) {
-        console.error("OneSignal push send error:", err);
-    }
-}
 
 let ordersChartInstance = null;
 let earningsChartInstance = null;
@@ -1181,11 +1152,9 @@ function showNewOrderToast(count, latestOrder) {
             n.onclick = () => { window.focus(); openTab('orders'); };
         } catch(e) {}
     }
-
-    sendOneSignalPush(
-        "🛎️ New Order Received!",
-        count > 1 ? `${count} new orders just came in.` : `From ${customerName}${amount ? ' — ' + amount : ''}`
-    );
+    // Note: the actual OneSignal push is now sent server-side by the
+    // Cloud Function in /functions, the moment the order is written to
+    // the database — so it arrives even if this dashboard isn't open.
 }
 
 onValue(ref(db, 'orders'), snap => {
