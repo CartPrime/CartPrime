@@ -898,6 +898,120 @@ nav {
   100% { opacity: 1; transform: translateY(0); } 
 } 
 
+/* --- Scroll-reveal animation (applied via IntersectionObserver) --- */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-stagger.in-view .trust-card:nth-child(1) { transition-delay: 0.05s; }
+.reveal-stagger.in-view .trust-card:nth-child(2) { transition-delay: 0.12s; }
+.reveal-stagger.in-view .trust-card:nth-child(3) { transition-delay: 0.19s; }
+.reveal-stagger.in-view .trust-card:nth-child(4) { transition-delay: 0.26s; }
+.reveal-stagger .trust-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-stagger.in-view .trust-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Trust badge pulse / shine --- */
+@keyframes trustPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.35); }
+  50% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+}
+.trust-stats .stat-item:first-child i {
+  animation: trustPulse 2.4s ease-in-out infinite;
+  border-radius: 50%;
+}
+@keyframes shieldGlow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(37, 99, 235, 0)); }
+  50% { filter: drop-shadow(0 0 6px rgba(37, 99, 235, 0.55)); }
+}
+.welcome-modal-icon i, .safe-checkout-box h3 i {
+  animation: shieldGlow 2.6s ease-in-out infinite;
+}
+.trust-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  border-radius: 12px;
+  padding: 4px;
+}
+.trust-card:hover {
+  transform: translateY(-4px);
+}
+.trust-card:hover .trust-icon {
+  transform: scale(1.08) rotate(-4deg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.trust-icon {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, color 0.3s ease;
+}
+.verified-tag {
+  transition: transform 0.3s ease;
+}
+.card:hover .verified-tag {
+  transform: translateY(-2px);
+}
+/* Marquee-style trust strip under the hero */
+.trust-marquee-wrap {
+  overflow: hidden;
+  margin: 4px 6% 0;
+  border-top: 1px dashed var(--border);
+  border-bottom: 1px dashed var(--border);
+  padding: 8px 0;
+}
+.trust-marquee-track {
+  display: flex;
+  gap: 40px;
+  width: max-content;
+  animation: marqueeScroll 22s linear infinite;
+}
+.trust-marquee-track span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.trust-marquee-track span i {
+  color: #22c55e;
+}
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trust-marquee-track { animation: none; }
+  .trust-stats .stat-item:first-child i,
+  .welcome-modal-icon i, .safe-checkout-box h3 i { animation: none; }
+  .reveal-up, .reveal-stagger .trust-card { opacity: 1; transform: none; transition: none; }
+}
+@media (max-width: 420px) {
+  .grid {
+    gap: 12px;
+  }
+  .hero-text h1 {
+    font-size: 1.45rem;
+  }
+  .trust-stats {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .trust-marquee-track span {
+    font-size: 0.7rem;
+  }
+} 
+
 /* --- Modern Improved Product Card Styling --- */
 .card { 
   background: var(--card-bg); 
@@ -1553,8 +1667,8 @@ nav {
     </div> 
   </div> 
 </header> 
-<div class="trust-bar-section"> 
-  <div class="trust-bar-grid"> 
+<div class="trust-bar-section reveal-up"> 
+  <div class="trust-bar-grid reveal-stagger"> 
     <div class="trust-card"> 
       <div class="trust-icon"><i class="fa-solid fa-truck-fast"></i></div> 
       <div class="trust-details"> 
@@ -1585,9 +1699,27 @@ nav {
     </div> 
   </div> 
 </div> 
+
+<div class="trust-marquee-wrap">
+  <div class="trust-marquee-track">
+    <span><i class="fa-solid fa-circle-check"></i> 100% Verified Sellers</span>
+    <span><i class="fa-solid fa-circle-check"></i> Secure Checkout</span>
+    <span><i class="fa-solid fa-circle-check"></i> 7-Day Easy Returns</span>
+    <span><i class="fa-solid fa-circle-check"></i> Cash on Delivery</span>
+    <span><i class="fa-solid fa-circle-check"></i> Genuine Products Only</span>
+    <span><i class="fa-solid fa-circle-check"></i> 24/7 Support</span>
+    <span><i class="fa-solid fa-circle-check"></i> 100% Verified Sellers</span>
+    <span><i class="fa-solid fa-circle-check"></i> Secure Checkout</span>
+    <span><i class="fa-solid fa-circle-check"></i> 7-Day Easy Returns</span>
+    <span><i class="fa-solid fa-circle-check"></i> Cash on Delivery</span>
+    <span><i class="fa-solid fa-circle-check"></i> Genuine Products Only</span>
+    <span><i class="fa-solid fa-circle-check"></i> 24/7 Support</span>
+  </div>
+</div>
+
 <div class="category-bar" id="categoryBar"></div> 
 
-<div class="banner-section" id="bannerSection" style="display: none;"> 
+<div class="banner-section reveal-up" id="bannerSection" style="display: none;"> 
   <div class="banner-wrapper"> 
     <div class="banner-slider" id="bannerSlider"></div> 
   </div> 
@@ -1597,7 +1729,7 @@ nav {
 <div class="container"> 
   <div class="grid" id="productGrid"></div> 
 </div> 
-<div class="safe-checkout-box"> 
+<div class="safe-checkout-box reveal-up"> 
   <h3><i class="fa-solid fa-lock"></i> 100% Safe & Secure Shopping Guarantee</h3> 
   <div class="payment-badges"> 
     <span><i class="fa-solid fa-check"></i> Verified Merchant</span> 
@@ -1651,6 +1783,27 @@ nav {
     <button id="toastCloseBtn" class="toast-close-btn">Continue</button>
   </div>
 </div>
+
+<!-- Scroll-reveal animation trigger -->
+<script>
+  (function () {
+    const revealEls = document.querySelectorAll('.reveal-up');
+    if (!revealEls.length) return;
+    if (!('IntersectionObserver' in window)) {
+      revealEls.forEach((el) => el.classList.add('in-view'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach((el) => io.observe(el));
+  })();
+</script>
 
 <!-- Notification Permission Script -->
 <script>
