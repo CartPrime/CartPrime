@@ -531,11 +531,44 @@
         .spec-key { color: var(--text-muted); font-weight: 600; }
         .spec-val { font-weight: 700; }
 
+        .desc-box {
+            margin-bottom: 20px;
+        }
+
+        .desc-box h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
         .desc-text {
             font-size: 0.88rem;
             color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 20px;
+            line-height: 1.7;
+            text-align: left;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .desc-text p {
+            margin: 0 0 10px 0;
+        }
+
+        .desc-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .desc-text ul {
+            margin: 0 0 10px 20px;
+            padding: 0;
+        }
+
+        .desc-text li {
+            margin-bottom: 4px;
         }
 
         .reviews-box {
@@ -917,6 +950,35 @@
             return '#16a34a';
         }
 
+        function formatDescriptionHTML(rawText) {
+            if (!rawText) return '<p>No description available.</p>';
+            const lines = rawText.toString().split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+            if (lines.length === 0) return '<p>No description available.</p>';
+
+            let html = '';
+            let bulletBuffer = [];
+
+            const flushBullets = () => {
+                if (bulletBuffer.length > 0) {
+                    html += `<ul>${bulletBuffer.map(b => `<li>${b}</li>`).join('')}</ul>`;
+                    bulletBuffer = [];
+                }
+            };
+
+            lines.forEach(line => {
+                const isBullet = /^[-•*]\s+/.test(line);
+                if (isBullet) {
+                    bulletBuffer.push(line.replace(/^[-•*]\s+/, ''));
+                } else {
+                    flushBullets();
+                    html += `<p>${line}</p>`;
+                }
+            });
+            flushBullets();
+
+            return html;
+        }
+
         function renderColorStars(rating) {
             let stars = '';
             const colorClass = getStarClass(rating);
@@ -1166,7 +1228,10 @@
                         ${specsHTML || '<p style="color: var(--text-muted); font-size: 0.9rem;">No specifications available.</p>'}
                     </div>
 
-                    <div class="desc-text">${p.desc || ''}</div>
+                    <div class="desc-box">
+                        <h4>Description</h4>
+                        <div class="desc-text">${formatDescriptionHTML(p.desc)}</div>
+                    </div>
 
                     ${reviewsBoxHTML}
                 </div>`;
