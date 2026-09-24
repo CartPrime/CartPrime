@@ -1,7055 +1,2847 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>CartPrime | Home</title>
-
-<link rel="icon" type="image/x-icon"
-      href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
-
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap"
-      rel="stylesheet">
-
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<link rel="icon"
-      type="image/png"
-      href="https://cdn.phototourl.com/free/2026-09-20-b4b944f2-2047-4c3b-ace2-348521478b38.png"
-      sizes="96x96" />
-
-<style>
-
-/* =========================================================
-   CARTPRIME GREEN + BLACK PREMIUM THEME
-   ========================================================= */
-
-:root {
-  --primary: #111111;
-  --accent: #419b41;
-
-  --bg: #ffffff;
-  --surface: #f5faf5;
-  --card-bg: #ffffff;
-
-  --text-main: #111827;
-  --text-muted: #667085;
-
-  --border: #dbe7db;
-
-  --nav-bg: rgba(255, 255, 255, 0.88);
-
-  --skeleton-start: #edf4ed;
-  --skeleton-mid: #dce9dc;
-
-  --accent-soft: rgba(65, 155, 65, 0.10);
-  --accent-border: rgba(65, 155, 65, 0.25);
-}
-
-/* =========================================================
-   DARK THEME
-   ========================================================= */
-
-[data-theme="dark"] {
-  --primary: #ffffff;
-  --accent: #65c465;
-
-  --bg: #0b110b;
-  --surface: #111b11;
-  --card-bg: #131d13;
-
-  --text-main: #f5fff5;
-  --text-muted: #9bb09b;
-
-  --border: #294029;
-
-  --nav-bg: rgba(11, 17, 11, 0.90);
-
-  --skeleton-start: #111b11;
-  --skeleton-mid: #203320;
-
-  --accent-soft: rgba(101, 196, 101, 0.10);
-  --accent-border: rgba(101, 196, 101, 0.25);
-}
-
-/* =========================================================
-   GLOBAL
-   ========================================================= */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  outline: none !important;
-}
-
-*:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-body {
-  background-color: var(--bg);
-  color: var(--text-main);
-  overflow-x: hidden;
-  min-height: 100vh;
-
-  display: flex;
-  flex-direction: column;
-
-  padding-bottom: 75px;
-
-  -webkit-tap-highlight-color: transparent;
-
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
-}
-
-button,
-.category-btn,
-.icon-btn,
-.cookie-btn,
-.earn-btn,
-.bottom-nav-item,
-.profile-chip,
-.notification-icon-btn {
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:active,
-.category-btn:active,
-.icon-btn:active,
-.bottom-nav-item:active,
-.profile-chip:active,
-.notification-icon-btn:active {
-  transform: scale(0.96) !important;
-}
-
-/* =========================================================
-   NAVBAR
-   ========================================================= */
-
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 12px 6%;
-
-  position: sticky;
-  top: 0;
-
-  background: var(--nav-bg);
-  backdrop-filter: blur(12px);
-
-  z-index: 1000;
-
-  border-bottom: 1px solid var(--border);
-
-  gap: 15px;
-
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.logo {
-  font-weight: 800;
-  font-size: 1.4rem;
-
-  letter-spacing: -1px;
-  text-transform: uppercase;
-
-  cursor: pointer;
-  flex-shrink: 0;
-  user-select: none;
-
-  color: var(--text-main);
-}
-
-.logo span {
-  color: var(--accent);
-  font-weight: 300;
-}
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
-
-.search-container {
-  flex: 1;
-  max-width: 500px;
-  position: relative;
-}
-
-.search-container input {
-  width: 100%;
-
-  padding: 10px 15px 10px 40px;
-
-  border-radius: 12px;
-
-  border: 1px solid var(--border);
-
-  background: var(--surface);
-
-  color: var(--text-main);
-
-  outline: none;
-
-  transition: 0.3s;
-
-  font-size: 0.9rem;
-}
-
-.search-container input:focus {
-  border-color: var(--accent);
-  background: var(--card-bg);
-
-  box-shadow: 0 4px 12px rgba(65, 155, 65, 0.08);
-}
-
-.search-container i {
-  position: absolute;
-
-  left: 14px;
-  top: 50%;
-
-  transform: translateY(-50%);
-
-  color: var(--text-muted);
-
-  font-size: 0.85rem;
-}
-
-/* =========================================================
-   NAV RIGHT
-   ========================================================= */
-
-.nav-right {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  position: relative;
-  flex-shrink: 0;
-}
-
-/* =========================================================
-   NOTIFICATION BUTTON
-   ========================================================= */
-
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>CartPrime | Home </title> 
+<link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"> 
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+<link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-09-20-b4b944f2-2047-4c3b-ace2-348521478b38.png" sizes="96x96" />
+<style> 
+/* --- Light Theme Variables --- */ 
+:root { 
+  --primary: #000000; 
+  --accent: #2563eb; 
+  --bg: #ffffff; 
+  --surface: #f8fafc; 
+  --card-bg: #ffffff; 
+  --text-main: #0f172a; 
+  --text-muted: #64748b; 
+  --border: #e2e8f0; 
+  --nav-bg: rgba(255, 255, 255, 0.85); 
+  --skeleton-start: #f1f5f9; 
+  --skeleton-mid: #e2e8f0; 
+} 
+/* --- Dark Theme Variables --- */ 
+[data-theme="dark"] { 
+  --primary: #ffffff; 
+  --accent: #60a5fa; 
+  --bg: #0f172a; 
+  --surface: #1e293b; 
+  --card-bg: #1e293b; 
+  --text-main: #f8fafc; 
+  --text-muted: #94a3b8; 
+  --border: #334155; 
+  --nav-bg: rgba(15, 23, 42, 0.85); 
+  --skeleton-start: #1e293b; 
+  --skeleton-mid: #334155; 
+} 
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+  font-family: 'Plus Jakarta Sans', sans-serif; 
+  outline: none !important; 
+} 
+*:focus { 
+  outline: none !important; 
+  box-shadow: none !important; 
+} 
+body { 
+  background-color: var(--bg); 
+  color: var(--text-main); 
+  overflow-x: hidden; 
+  min-height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  padding-bottom: 75px; 
+  -webkit-tap-highlight-color: transparent; 
+  transition: background-color 0.3s ease, color 0.3s ease; 
+} 
+button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notification-icon-btn { 
+  touch-action: manipulation; 
+  user-select: none; 
+  -webkit-tap-highlight-color: transparent; 
+} 
+button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notification-icon-btn:active { 
+  transform: scale(0.96) !important; 
+} 
+nav { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  padding: 12px 6%; 
+  position: sticky; 
+  top: 0; 
+  background: var(--nav-bg); 
+  backdrop-filter: blur(12px); 
+  z-index: 1000; 
+  border-bottom: 1px solid var(--border); 
+  gap: 15px; 
+  transition: background 0.3s ease, border-color 0.3s ease; 
+} 
+.logo { 
+  font-weight: 800; 
+  font-size: 1.4rem; 
+  letter-spacing: -1px; 
+  text-transform: uppercase; 
+  cursor: pointer; 
+  flex-shrink: 0; 
+  user-select: none; 
+  color: var(--text-main); 
+} 
+.logo span { 
+  color: var(--text-muted); 
+  font-weight: 300; 
+} 
+.search-container { 
+  flex: 1; 
+  max-width: 500px; 
+  position: relative; 
+} 
+.search-container input { 
+  width: 100%; 
+  padding: 10px 15px 10px 40px; 
+  border-radius: 12px; 
+  border: 1px solid var(--border); 
+  background: var(--surface); 
+  color: var(--text-main); 
+  outline: none; 
+  transition: 0.3s; 
+  font-size: 0.9rem; 
+} 
+.search-container input:focus { 
+  border-color: var(--primary); 
+  background: var(--card-bg); 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+} 
+.search-container i { 
+  position: absolute; 
+  left: 14px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  color: var(--text-muted); 
+  font-size: 0.85rem; 
+} 
+.nav-right { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+  position: relative; 
+  flex-shrink: 0; 
+} 
 .notification-icon-btn {
   width: 40px;
   height: 40px;
-
   border-radius: 50%;
-
   background: var(--surface);
-
   border: 1px solid var(--border);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   position: relative;
-
   cursor: pointer;
-
   color: var(--text-main);
-
   font-size: 1.1rem;
-
   transition: all 0.2s ease;
 }
-
 .notification-icon-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
-
 .notif-badge {
   position: absolute;
-
   top: -2px;
   right: -2px;
-
   background: #ef4444;
   color: #ffffff;
-
   font-size: 0.65rem;
   font-weight: 800;
-
   border-radius: 50%;
-
   min-width: 18px;
   height: 18px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 2px;
-
   border: 2px solid var(--card-bg);
 }
-
-/* =========================================================
-   PROFILE
-   ========================================================= */
-
 .profile-chip {
   display: flex;
   align-items: center;
-
   gap: 10px;
-
   background: var(--surface);
-
   border: 1px solid var(--border);
-
   padding: 5px 12px 5px 6px;
-
   border-radius: 30px;
-
   cursor: pointer;
-
   transition: all 0.2s ease;
 }
-
 .profile-chip:hover {
   border-color: var(--accent);
 }
-
 .profile-avatar {
   width: 32px;
   height: 32px;
-
   border-radius: 50%;
-
-  background: var(--accent);
+  background: #2563eb;
   color: #ffffff;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-weight: 800;
   font-size: 0.9rem;
-
   text-transform: uppercase;
 }
-
 .profile-info {
   display: flex;
   flex-direction: column;
 }
-
 .profile-name {
   font-size: 0.78rem;
   font-weight: 700;
-
   color: var(--text-main);
-
   line-height: 1.1;
 }
-
 .profile-phone {
   font-size: 0.68rem;
-
   color: var(--text-muted);
-
   font-weight: 600;
 }
-
 .edit-profile-btn {
   color: var(--accent);
-
   font-size: 0.78rem;
-
   margin-left: 4px;
 }
-
-/* =========================================================
-   BOTTOM NAV
-   ========================================================= */
-
 .bottom-nav {
   position: fixed;
-
   bottom: 0;
   left: 0;
   right: 0;
-
   height: 65px;
-
   background: var(--nav-bg);
-
   backdrop-filter: blur(16px);
-
   border-top: 1px solid var(--border);
-
   display: flex;
   justify-content: space-around;
   align-items: center;
-
   z-index: 9999;
-
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
 }
-
 .bottom-nav-item {
   display: flex;
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
-
   gap: 4px;
-
   color: var(--text-muted);
-
   text-decoration: none;
-
   font-size: 0.72rem;
   font-weight: 600;
-
   position: relative;
-
   width: 20%;
-
   transition: color 0.2s ease;
-
   cursor: pointer;
 }
-
 .bottom-nav-item i {
   font-size: 1.2rem;
 }
-
-.bottom-nav-item.active,
-.bottom-nav-item:hover {
+.bottom-nav-item.active, .bottom-nav-item:hover {
   color: var(--accent);
 }
-
 .bottom-nav-item .badge {
   top: -2px;
   right: 14px;
 }
-
-/* =========================================================
-   LOADING
-   ========================================================= */
-
 .verify-loading-box {
   display: none;
-
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
-
   gap: 12px;
-
   padding: 15px 0;
 }
-
 .spinner {
   width: 36px;
   height: 36px;
-
   border: 4px solid var(--border);
-  border-top: 4px solid var(--accent);
-
+  border-top: 4px solid #2563eb;
   border-radius: 50%;
-
   animation: spin 0.8s linear infinite;
 }
-
 @keyframes spin {
-
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* =========================================================
-   MODAL OVERLAY
-   ========================================================= */
-
-.modal-overlay {
-  display: none;
-
-  position: fixed;
-
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-
-  background: rgba(0, 0, 0, 0.60);
-
+/* --- Redesigned Trust Welcome Modal Styles with Animation --- */
+.modal-overlay { 
+  display: none; 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  background: rgba(0,0,0,0.6); 
   backdrop-filter: blur(4px);
-
-  z-index: 10000;
-
-  align-items: center;
-  justify-content: center;
-
-  padding: 15px;
-
+  z-index: 10000; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 15px; 
   opacity: 0;
-
   transition: opacity 0.3s ease;
-}
-
+} 
 .modal-overlay.active {
   opacity: 1;
 }
-
-.modal-card {
-  background: var(--card-bg);
-
-  color: var(--text-main);
-
-  padding: 25px;
-
-  border-radius: 20px;
-
-  width: 100%;
-  max-width: 400px;
-
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20);
-
-  border: 1px solid var(--border);
-
+.modal-card { 
+  background: var(--card-bg); 
+  color: var(--text-main); 
+  padding: 25px; 
+  border-radius: 20px; 
+  width: 100%; 
+  max-width: 400px; 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+  border: 1px solid var(--border); 
   transform: translateY(20px) scale(0.95);
-
-  transition:
-    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+} 
 .modal-overlay.active .modal-card {
   transform: translateY(0) scale(1);
 }
 
-/* =========================================================
-   WELCOME MODAL
-   ========================================================= */
-
 .welcome-modal-header {
   display: flex;
   align-items: center;
-
   gap: 14px;
-
   margin-bottom: 16px;
 }
-
 .welcome-modal-icon {
   width: 50px;
   height: 50px;
-
-  background: var(--accent-soft);
-
+  background: rgba(37, 99, 235, 0.1);
   color: var(--accent);
-
   border-radius: 14px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 1.4rem;
-
   flex-shrink: 0;
-
-  border: 1px solid var(--accent-border);
+  border: 1px solid rgba(37, 99, 235, 0.2);
 }
-
 .welcome-benefits {
   display: flex;
   flex-direction: column;
-
   gap: 8px;
-
   margin: 16px 0;
-
   background: var(--surface);
-
   padding: 12px 14px;
-
   border-radius: 12px;
-
   border: 1px solid var(--border);
 }
-
 .welcome-benefit-item {
   display: flex;
   align-items: center;
-
   gap: 10px;
-
   font-size: 0.8rem;
   font-weight: 600;
-
   color: var(--text-main);
 }
-
 .welcome-benefit-item i {
   color: #22c55e;
-
   font-size: 0.9rem;
 }
 
-/* =========================================================
-   NOTIFICATION PANEL
-   ========================================================= */
-
+/* --- Notification Panel Modal Styles --- */
 .notif-modal-card {
   max-width: 480px;
-
   max-height: 85vh;
-
   display: flex;
   flex-direction: column;
-
   padding: 20px;
 }
-
 .notif-modal-header {
   display: flex;
-
   justify-content: space-between;
   align-items: center;
-
   padding-bottom: 12px;
-
   border-bottom: 1px solid var(--border);
-
   margin-bottom: 15px;
 }
-
 .notif-modal-header h3 {
   font-size: 1.15rem;
-
   font-weight: 800;
-
   display: flex;
   align-items: center;
-
   gap: 8px;
 }
-
-.notif-modal-header h3 i {
-  color: var(--accent) !important;
-}
-
 .notif-list {
   display: flex;
   flex-direction: column;
-
   gap: 12px;
-
   overflow-y: auto;
-
   max-height: 55vh;
-
   padding-right: 4px;
 }
-
 .notif-item {
   display: flex;
-
   align-items: flex-start;
-
   gap: 12px;
-
   background: var(--surface);
-
   border: 1px solid var(--border);
-
   padding: 14px;
-
   border-radius: 14px;
-
   transition: all 0.2s ease;
-
   position: relative;
 }
-
 .notif-item.unread {
-  background: var(--accent-soft);
-
-  border-color: var(--accent-border);
+  background: rgba(37, 99, 235, 0.04);
+  border-color: rgba(37, 99, 235, 0.3);
 }
-
 .notif-icon {
   width: 38px;
   height: 38px;
-
   border-radius: 10px;
-
-  background: var(--accent-soft);
-
+  background: rgba(37, 99, 235, 0.1);
   color: var(--accent);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 1.1rem;
-
   flex-shrink: 0;
 }
-
 .notif-content {
   flex: 1;
 }
-
 .notif-title {
   font-size: 0.88rem;
-
   font-weight: 700;
-
   color: var(--text-main);
-
   margin-bottom: 3px;
 }
-
 .notif-message {
   font-size: 0.78rem;
-
   color: var(--text-muted);
-
   line-height: 1.35;
-
   margin-bottom: 6px;
 }
-
 .notif-time {
   font-size: 0.68rem;
-
   color: var(--text-muted);
-
   font-weight: 600;
 }
-
 .mark-read-btn {
   background: transparent;
-
   border: none;
-
   color: var(--accent);
-
   font-size: 0.72rem;
-
   font-weight: 700;
-
   cursor: pointer;
-
   padding: 4px 8px;
-
   border-radius: 6px;
-
-  background: var(--accent-soft);
-
+  background: rgba(37, 99, 235, 0.1);
   margin-top: 4px;
 }
-
 .no-notif {
   text-align: center;
-
   padding: 30px 10px;
-
   color: var(--text-muted);
-
   font-size: 0.85rem;
-
   font-weight: 600;
 }
 
-/* =========================================================
-   EARN MODAL
-   ========================================================= */
-
+/* --- Redesigned Earn Modal Styles --- */
 .earn-modal-header {
   display: flex;
-
   align-items: center;
-
   gap: 12px;
-
   margin-bottom: 12px;
 }
-
 .earn-modal-icon {
   width: 44px;
   height: 44px;
-
-  background: var(--accent-soft);
-
+  background: rgba(37, 99, 235, 0.1);
   color: var(--accent);
-
   border-radius: 12px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 1.2rem;
-
   flex-shrink: 0;
 }
-
 .earn-benefits {
   display: flex;
   flex-direction: column;
-
   gap: 8px;
-
   margin: 16px 0;
-
   background: var(--surface);
-
   padding: 12px;
-
   border-radius: 12px;
-
   border: 1px solid var(--border);
 }
-
 .earn-benefit-item {
   display: flex;
   align-items: center;
-
   gap: 8px;
-
   font-size: 0.8rem;
   font-weight: 600;
-
   color: var(--text-main);
 }
-
 .earn-benefit-item i {
   color: #22c55e;
-
   font-size: 0.85rem;
 }
 
-/* =========================================================
-   SEARCH SUGGESTIONS
-   ========================================================= */
+.search-suggestions-box { 
+  position: absolute; 
+  top: calc(100% + 8px); 
+  left: 0; 
+  right: 0; 
+  background: var(--card-bg); 
+  border-radius: 16px; 
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2); 
+  max-height: 350px; 
+  overflow-y: auto; 
+  z-index: 2000; 
+  display: none; 
+  border: 1px solid var(--border); 
+} 
+.suggestion-item { 
+  display: flex; 
+  align-items: center; 
+  padding: 12px; 
+  gap: 15px; 
+  cursor: pointer; 
+  border-bottom: 1px solid var(--border); 
+  transition: 0.2s; 
+} 
+.suggestion-item:hover { 
+  background: var(--surface); 
+} 
+.suggestion-item img { 
+  width: 40px; 
+  height: 40px; 
+  border-radius: 8px; 
+  object-fit: cover; 
+  flex-shrink: 0; 
+} 
+.suggestion-info { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1px; 
+  overflow: hidden; 
+} 
+.suggestion-item h4 { 
+  font-size: 0.85rem; 
+  font-weight: 600; 
+  margin: 0; 
+  color: var(--text-main); 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+} 
+.suggestion-item p { 
+  font-size: 0.75rem; 
+  color: var(--accent); 
+  font-weight: 700; 
+  margin: 0; 
+} 
+.hero { 
+  padding: 30px 6% 10px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: flex-end; 
+  flex-wrap: wrap; 
+  gap: 20px; 
+} 
+.hero-text h1 { 
+  font-size: 2.5rem; 
+  font-weight: 800; 
+  letter-spacing: -1.5px; 
+  line-height: 1.1; 
+  color: var(--text-main); 
+} 
+.hero-text p { 
+  color: var(--text-muted); 
+  margin-top: 8px; 
+  font-size: 0.95rem; 
+} 
+.trust-stats { 
+  display: flex; 
+  align-items: center; 
+  gap: 20px; 
+  background: var(--surface); 
+  padding: 12px 20px; 
+  border-radius: 16px; 
+  border: 1px solid var(--border); 
+} 
+.stat-item { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+} 
+.stat-item i { 
+  font-size: 1.3rem; 
+  color: #2563eb; 
+} 
+.stat-info { 
+  display: flex; 
+  flex-direction: column; 
+} 
+.stat-info strong { 
+  font-size: 0.88rem; 
+  font-weight: 800; 
+  color: var(--text-main); 
+} 
+.stat-info span { 
+  font-size: 0.72rem; 
+  color: var(--text-muted); 
+  font-weight: 600; 
+} 
+.stat-divider { 
+  width: 1px; 
+  height: 25px; 
+  background: var(--border); 
+} 
+.trust-bar-section { 
+  padding: 10px 6% 15px 6%; 
+} 
+.trust-bar-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+  gap: 12px; 
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  padding: 16px; 
+  border-radius: 18px; 
+} 
+.trust-card { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+} 
+.trust-icon { 
+  width: 40px; 
+  height: 40px; 
+  border-radius: 12px; 
+  background: var(--card-bg); 
+  border: 1px solid var(--border); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-size: 1.1rem; 
+  color: var(--primary); 
+  flex-shrink: 0; 
+} 
+.trust-details h4 { 
+  font-size: 0.82rem; 
+  font-weight: 700; 
+  color: var(--text-main); 
+  margin-bottom: 2px; 
+} 
+.trust-details p { 
+  font-size: 0.72rem; 
+  color: var(--text-muted); 
+} 
+.category-bar { 
+  padding: 10px 6% 5px 6%; 
+  display: flex; 
+  gap: 10px; 
+  overflow-x: auto; 
+  white-space: nowrap; 
+  scrollbar-width: none; 
+  -webkit-overflow-scrolling: touch; 
+} 
+.category-bar::-webkit-scrollbar { 
+  display: none; 
+} 
+.category-btn { 
+  background: var(--surface); 
+  color: var(--text-main); 
+  padding: 10px 22px; 
+  border-radius: 50px; 
+  font-size: 0.85rem; 
+  font-weight: 600; 
+  cursor: pointer; 
+  border: 1px solid var(--border); 
+  transition: all 0.25s ease; 
+  text-transform: capitalize; 
+  user-select: none; 
+  flex-shrink: 0; 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+  min-height: 40px; 
+} 
+.category-btn:hover, .category-btn.active { 
+  background: var(--primary); 
+  color: var(--bg); 
+  border-color: var(--primary); 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+} 
 
-.search-suggestions-box {
-  position: absolute;
-
-  top: calc(100% + 8px);
-
-  left: 0;
-  right: 0;
-
-  background: var(--card-bg);
-
-  border-radius: 16px;
-
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.20);
-
-  max-height: 350px;
-
-  overflow-y: auto;
-
-  z-index: 2000;
-
-  display: none;
-
+.banner-section { 
+  padding: 15px 6% 10px 6%; 
+  position: relative; 
+  width: 100%; 
+} 
+.banner-wrapper { 
+  position: relative; 
+  display: flex; 
+  align-items: center; 
+} 
+.banner-slider { 
+  display: flex; 
+  gap: 16px; 
+  overflow-x: auto; 
+  scroll-snap-type: x mandatory; 
+  scrollbar-width: none; 
+  scroll-behavior: smooth; 
+  align-items: center; 
+  width: 100%; 
+} 
+.banner-slider::-webkit-scrollbar { 
+  display: none; 
+} 
+.banner-item { 
+  flex: 0 0 calc(50% - 8px); 
+  scroll-snap-align: start; 
+  border-radius: 20px; 
+  overflow: hidden; 
+  height: 200px; 
+  background: var(--surface); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06); 
+  transition: transform 0.3s ease; 
   border: 1px solid var(--border);
-}
-
-.suggestion-item {
-  display: flex;
-
-  align-items: center;
-
-  padding: 12px;
-
-  gap: 15px;
-
-  cursor: pointer;
-
-  border-bottom: 1px solid var(--border);
-
-  transition: 0.2s;
-}
-
-.suggestion-item:hover {
-  background: var(--surface);
-}
-
-.suggestion-item img {
-  width: 40px;
-  height: 40px;
-
-  border-radius: 8px;
-
-  object-fit: cover;
-
-  flex-shrink: 0;
-}
-
-.suggestion-info {
-  display: flex;
-  flex-direction: column;
-
-  gap: 1px;
-
-  overflow: hidden;
-}
-
-.suggestion-item h4 {
-  font-size: 0.85rem;
-
-  font-weight: 600;
-
-  margin: 0;
-
-  color: var(--text-main);
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-}
-
-.suggestion-item p {
-  font-size: 0.75rem;
-
-  color: var(--accent);
-
-  font-weight: 700;
-
-  margin: 0;
-}
-
-/* =========================================================
-   HERO
-   ========================================================= */
-
-.hero {
-  padding: 30px 6% 10px;
-
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: flex-end;
-
-  flex-wrap: wrap;
-
-  gap: 20px;
-}
-
-.hero-text h1 {
-  font-size: 2.5rem;
-
-  font-weight: 800;
-
-  letter-spacing: -1.5px;
-
-  line-height: 1.1;
-
-  color: var(--text-main);
-}
-
-.hero-text p {
-  color: var(--text-muted);
-
-  margin-top: 8px;
-
-  font-size: 0.95rem;
-}
-
-.trust-stats {
-  display: flex;
-
-  align-items: center;
-
-  gap: 20px;
-
-  background: var(--surface);
-
-  padding: 12px 20px;
-
-  border-radius: 16px;
-
-  border: 1px solid var(--border);
-}
-
-.stat-item {
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-}
-
-.stat-item i {
-  font-size: 1.3rem;
-
-  color: var(--accent);
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-info strong {
-  font-size: 0.88rem;
-
-  font-weight: 800;
-
-  color: var(--text-main);
-}
-
-.stat-info span {
-  font-size: 0.72rem;
-
-  color: var(--text-muted);
-
-  font-weight: 600;
-}
-
-.stat-divider {
-  width: 1px;
-
-  height: 25px;
-
-  background: var(--border);
-}
-
-/* =========================================================
-   TRUST BAR
-   ========================================================= */
-
-.trust-bar-section {
-  padding: 10px 6% 15px 6%;
-}
-
-.trust-bar-grid {
-  display: grid;
-
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-
-  gap: 12px;
-
-  background: var(--surface);
-
-  border: 1px solid var(--border);
-
-  padding: 16px;
-
-  border-radius: 18px;
-}
-
-.trust-card {
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-}
-
-.trust-icon {
-  width: 40px;
-  height: 40px;
-
-  border-radius: 12px;
-
-  background: var(--card-bg);
-
-  border: 1px solid var(--border);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 1.1rem;
-
-  color: var(--accent);
-
-  flex-shrink: 0;
-}
-
-.trust-details h4 {
-  font-size: 0.82rem;
-
-  font-weight: 700;
-
-  color: var(--text-main);
-
-  margin-bottom: 2px;
-}
-
-.trust-details p {
-  font-size: 0.72rem;
-
-  color: var(--text-muted);
-}
-
-/* =========================================================
-   CATEGORY BAR
-   ========================================================= */
-
-.category-bar {
-  padding: 10px 6% 5px 6%;
-
-  display: flex;
-
-  gap: 10px;
-
-  overflow-x: auto;
-
-  white-space: nowrap;
-
-  scrollbar-width: none;
-
-  -webkit-overflow-scrolling: touch;
-}
-
-.category-bar::-webkit-scrollbar {
-  display: none;
-}
-
-.category-btn {
-  background: var(--surface);
-
-  color: var(--text-main);
-
-  padding: 10px 22px;
-
-  border-radius: 50px;
-
-  font-size: 0.85rem;
-
-  font-weight: 600;
-
-  cursor: pointer;
-
-  border: 1px solid var(--border);
-
-  transition: all 0.25s ease;
-
-  text-transform: capitalize;
-
-  user-select: none;
-
-  flex-shrink: 0;
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  min-height: 40px;
-}
-
-.category-btn:hover,
-.category-btn.active {
-  background: var(--primary);
-
-  color: var(--bg);
-
-  border-color: var(--primary);
-
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
-}
-
-/* =========================================================
-   BANNER
-   ========================================================= */
-
-.banner-section {
-  padding: 15px 6% 10px 6%;
-
-  position: relative;
-
-  width: 100%;
-}
-
-.banner-wrapper {
-  position: relative;
-
-  display: flex;
-
-  align-items: center;
-}
-
-.banner-slider {
-  display: flex;
-
-  gap: 16px;
-
-  overflow-x: auto;
-
-  scroll-snap-type: x mandatory;
-
-  scrollbar-width: none;
-
-  scroll-behavior: smooth;
-
-  align-items: center;
-
-  width: 100%;
-}
-
-.banner-slider::-webkit-scrollbar {
-  display: none;
-}
-
-.banner-item {
-  flex: 0 0 calc(50% - 8px);
-
-  scroll-snap-align: start;
-
-  border-radius: 20px;
-
-  overflow: hidden;
-
-  height: 200px;
-
-  background: var(--surface);
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-
-  transition: transform 0.3s ease;
-
-  border: 1px solid var(--border);
-}
-
-.banner-item:hover {
-  transform: scale(1.005);
-}
-
-.banner-item img {
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  border-radius: 20px;
-
+} 
+.banner-item:hover { 
+  transform: scale(1.005); 
+} 
+.banner-item img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  border-radius: 20px; 
   image-rendering: -webkit-optimize-contrast;
-}
+} 
+.banner-dots { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 6px; 
+  margin-top: 12px; 
+} 
+.dot { 
+  width: 8px; 
+  height: 8px; 
+  background: var(--border); 
+  border-radius: 50%; 
+  transition: all 0.3s ease; 
+  cursor: pointer; 
+} 
+.dot.active { 
+  background: var(--primary); 
+  width: 20px; 
+  border-radius: 4px; 
+} 
 
-.banner-dots {
-  display: flex;
-
-  justify-content: center;
-
-  align-items: center;
-
-  gap: 6px;
-
-  margin-top: 12px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-
-  background: var(--border);
-
-  border-radius: 50%;
-
-  transition: all 0.3s ease;
-
-  cursor: pointer;
-}
-
-.dot.active {
-  background: var(--accent);
-
-  width: 20px;
-
-  border-radius: 4px;
-}
-
-/* =========================================================
-   CONTAINER
-   ========================================================= */
-
-.container {
-  padding: 10px 6% 40px;
-
-  flex: 1;
-}
-
-.grid {
-  display: grid;
-
-  grid-template-columns: repeat(2, 1fr);
-
-  gap: 15px;
-}
-
-/* =========================================================
-   MODAL FORM
-   ========================================================= */
-
-.modal-form {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 12px;
-
-  margin-top: 15px;
-}
-
-.modal-input {
-  padding: 12px;
-
-  border-radius: 10px;
-
-  border: 1px solid var(--border);
-
-  background: var(--surface);
-
-  color: var(--text-main);
-
-  font-size: 0.9rem;
-
-  width: 100%;
-}
-
-.modal-input:focus {
-  border-color: var(--accent);
-}
-
-.modal-btn-group {
-  display: flex;
-
-  gap: 10px;
-
-  margin-top: 10px;
-}
-
-.modal-btn-submit {
-  flex: 1;
-
-  padding: 12px;
-
-  border-radius: 10px;
-
-  border: none;
-
-  background: var(--accent);
-
-  color: #ffffff;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  min-height: 44px;
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  transition: all 0.2s ease;
-}
-
-.modal-btn-submit:hover {
-  filter: brightness(0.92);
-}
-
-/* =========================================================
-   CUSTOM TOAST
-   ========================================================= */
-
+.container { 
+  padding: 10px 6% 40px; 
+  flex: 1; 
+} 
+.grid { 
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 15px; 
+} 
+.modal-form { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+  margin-top: 15px; 
+} 
+.modal-input { 
+  padding: 12px; 
+  border-radius: 10px; 
+  border: 1px solid var(--border); 
+  background: var(--surface); 
+  color: var(--text-main); 
+  font-size: 0.9rem; 
+  width: 100%; 
+} 
+.modal-btn-group { 
+  display: flex; 
+  gap: 10px; 
+  margin-top: 10px; 
+} 
+.modal-btn-submit { 
+  flex: 1; 
+  padding: 12px; 
+  border-radius: 10px; 
+  border: none; 
+  background: #2563eb; 
+  color: #fff; 
+  font-weight: 700; 
+  cursor: pointer; 
+  min-height: 44px; 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+} 
 .custom-toast-overlay {
   display: none;
-
   position: fixed;
-
   top: 0;
   left: 0;
-
   width: 100%;
   height: 100%;
-
-  background: rgba(15, 23, 42, 0.60);
-
+  background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(8px);
-
   z-index: 20000;
-
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
   animation: fadeIn 0.3s ease;
 }
-
 .custom-toast-card {
   background: var(--card-bg);
-
   border: 1px solid var(--border);
-
   border-radius: 24px;
-
   padding: 30px 24px;
-
   width: 100%;
   max-width: 380px;
-
   text-align: center;
-
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.20);
-
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   gap: 16px;
-
-  animation:
-    slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .toast-icon-wrap {
   width: 60px;
   height: 60px;
-
   border-radius: 50%;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   font-size: 1.8rem;
 }
-
 .toast-icon-wrap.success {
   background: rgba(34, 197, 94, 0.12);
-
   color: #22c55e;
-
-  border: 1px solid rgba(34, 197, 94, 0.20);
+  border: 1px solid rgba(34, 197, 94, 0.2);
 }
-
 .toast-icon-wrap.error {
   background: rgba(239, 68, 68, 0.12);
-
   color: #ef4444;
-
-  border: 1px solid rgba(239, 68, 68, 0.20);
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
-
 .custom-toast-card h4 {
   font-size: 1.15rem;
-
   font-weight: 800;
-
   color: var(--text-main);
-
   margin: 0;
 }
-
 .custom-toast-card p {
   font-size: 0.88rem;
-
   color: var(--text-muted);
-
   margin: 0;
-
   line-height: 1.5;
 }
-
 .otp-highlight-box {
   display: none;
-
   align-items: center;
   justify-content: center;
-
   gap: 10px;
-
-  background: var(--accent-soft);
-
+  background: rgba(37, 99, 235, 0.08);
   border: 1.5px dashed var(--accent);
-
   border-radius: 14px;
-
   padding: 12px 20px;
-
   margin: 2px 0 4px 0;
 }
-
 .otp-highlight-box span {
   font-size: 1.9rem;
-
   font-weight: 800;
-
   letter-spacing: 8px;
-
   color: var(--accent);
-
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
-
 .toast-close-btn {
   width: 100%;
-
   padding: 12px;
-
   background: var(--primary);
-
   color: var(--bg);
-
   border: none;
-
   border-radius: 12px;
-
   font-weight: 700;
-
   font-size: 0.9rem;
-
   cursor: pointer;
-
   margin-top: 8px;
-
   transition: all 0.2s ease;
 }
-
-.toast-close-btn:hover {
-  background: var(--accent);
-
-  color: #ffffff;
-}
-
-/* =========================================================
-   ANIMATIONS
-   ========================================================= */
-
 @keyframes fadeIn {
-
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-
 @keyframes slideUp {
-
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
+@keyframes slideUpFade { 
+  0% { opacity: 0; transform: translateY(30px); } 
+  100% { opacity: 1; transform: translateY(0); } 
+} 
 
-@keyframes slideUpFade {
-
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-}
-
-/* =========================================================
-   PRODUCT CARD
-   ========================================================= */
-
-.card {
-  background: var(--card-bg);
-
-  border-radius: 22px;
-
-  padding: 12px;
-
-  position: relative;
-
-  border: 1px solid var(--border);
-
-  box-shadow:
-    0 10px 25px -5px rgba(0, 0, 0, 0.05);
-
-  display: flex;
-
-  flex-direction: column;
-
-  height: 100%;
-
-  cursor: pointer;
-
-  animation:
-    slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1)
-    forwards;
-
-  opacity: 0;
-
-  transition:
-    all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card:hover {
-  transform: translateY(-6px);
-
-  box-shadow:
-    0 20px 35px -10px rgba(0, 0, 0, 0.12);
-
+/* --- Modern Improved Product Card Styling --- */
+.card { 
+  background: var(--card-bg); 
+  border-radius: 22px; 
+  padding: 12px; 
+  position: relative; 
+  border: 1px solid var(--border); 
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); 
+  display: flex; 
+  flex-direction: column; 
+  height: 100%; 
+  cursor: pointer; 
+  animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+  opacity: 0; 
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+} 
+.card:hover { 
+  transform: translateY(-6px); 
+  box-shadow: 0 20px 35px -10px rgba(0,0,0,0.12); 
   border-color: var(--accent);
-}
-
-.image-box {
-  width: 100%;
-
-  height: 180px;
-
-  border-radius: 16px;
-
-  overflow: hidden;
-
-  background: var(--surface);
-
-  margin-bottom: 12px;
-
-  position: relative;
-}
-
-.card img {
-  width: 100%;
-  height: 100%;
-
-  object-fit: contain;
-
-  transition: transform 0.5s ease;
-}
-
+} 
+.image-box { 
+  width: 100%; 
+  height: 180px; 
+  border-radius: 16px; 
+  overflow: hidden; 
+  background: var(--surface); 
+  margin-bottom: 12px; 
+  position: relative; 
+} 
+.card img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: contain; 
+  transition: transform 0.5s ease; 
+} 
 .card:hover img {
   transform: scale(1.05);
 }
-
-/* =========================================================
-   PRODUCT BADGES
-   ========================================================= */
-
-.stock-badge {
-  position: absolute;
-
-  top: 10px;
-  left: 10px;
-
-  background: #111111;
-
-  color: white;
-
-  padding: 4px 10px;
-
-  border-radius: 8px;
-
-  font-size: 0.65rem;
-
-  font-weight: 700;
-
-  z-index: 10;
-}
-
-.discount-badge {
-  position: absolute;
-
-  top: 10px;
-  right: 10px;
-
-  background: var(--accent);
-
-  color: white;
-
-  padding: 4px 10px;
-
-  border-radius: 8px;
-
-  font-size: 0.65rem;
-
-  font-weight: 800;
-
-  z-index: 10;
-}
-
-.verified-tag {
-  position: absolute;
-
-  bottom: 8px;
-  left: 8px;
-
-  background: rgba(255, 255, 255, 0.92);
-
-  color: #0f172a;
-
-  padding: 4px 10px;
-
-  border-radius: 8px;
-
-  font-size: 0.65rem;
-
-  font-weight: 800;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 4px;
-
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.08);
-
+.stock-badge { 
+  position: absolute; 
+  top: 10px; 
+  left: 10px; 
+  background: #000; 
+  color: white; 
+  padding: 4px 10px; 
+  border-radius: 8px; 
+  font-size: 0.65rem; 
+  font-weight: 700; 
+  z-index: 10; 
+} 
+.discount-badge { 
+  position: absolute; 
+  top: 10px; 
+  right: 10px; 
+  background: #22c55e; 
+  color: white; 
+  padding: 4px 10px; 
+  border-radius: 8px; 
+  font-size: 0.65rem; 
+  font-weight: 800; 
+  z-index: 10; 
+} 
+.verified-tag { 
+  position: absolute; 
+  bottom: 8px; 
+  left: 8px; 
+  background: rgba(255, 255, 255, 0.92); 
+  color: #0f172a; 
+  padding: 4px 10px; 
+  border-radius: 8px; 
+  font-size: 0.65rem; 
+  font-weight: 800; 
+  display: flex; 
+  align-items: center; 
+  gap: 4px; 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
   backdrop-filter: blur(4px);
-}
-
-.verified-tag i {
-  color: var(--accent);
-}
-
-/* =========================================================
-   WISHLIST
-   ========================================================= */
-
-.card-wishlist-btn {
-  position: absolute;
-
-  top: 10px;
-  right: 10px;
-
-  width: 34px;
-  height: 34px;
-
-  background: rgba(255, 255, 255, 0.92);
-
-  border: 1px solid var(--border);
-
-  border-radius: 50%;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-
-  z-index: 12;
-
-  color: #64748b;
-
-  font-size: 0.88rem;
-
-  transition: all 0.2s ease;
-
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.10);
-}
-
-.card-wishlist-btn:hover {
-  transform: scale(1.12);
-
-  color: #ef4444;
-}
-
-.card-wishlist-btn.active {
-  color: #ef4444;
-
-  background: #fff;
-}
-
-.discount-badge.with-wishlist {
-  right: 50px;
-}
-
-/* =========================================================
-   PRODUCT CONTENT
-   ========================================================= */
-
-.card-info {
-  flex-grow: 1;
-
-  display: flex;
-
-  flex-direction: column;
-}
-
-.card h3 {
-  font-size: 0.92rem;
-
-  font-weight: 700;
-
-  margin-bottom: 6px;
-
-  color: var(--text-main);
-
-  display: -webkit-box;
-
-  -webkit-line-clamp: 1;
-
-  -webkit-box-orient: vertical;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-}
-
-.price-container {
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  margin-bottom: 12px;
-
-  flex-wrap: wrap;
-}
-
-.price {
-  font-weight: 800;
-
-  font-size: 1.05rem;
-
-  color: var(--text-main);
-}
-
-.mrp {
-  text-decoration: line-through;
-
-  color: var(--text-muted);
-
-  font-size: 0.8rem;
-}
-
-.buy-btn {
-  width: 100%;
-
-  padding: 10px 12px;
-
-  background: var(--primary);
-
-  color: var(--bg);
-
-  border: none;
-
-  border-radius: 12px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: 0.25s ease;
-
-  font-size: 0.85rem;
-
-  margin-top: auto;
-
-  min-height: 42px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-}
-
+} 
+.verified-tag i { 
+  color: #2563eb; 
+} 
+.card-wishlist-btn { 
+  position: absolute; 
+  top: 10px; 
+  right: 10px; 
+  width: 34px; 
+  height: 34px; 
+  background: rgba(255, 255, 255, 0.92); 
+  border: 1px solid var(--border); 
+  border-radius: 50%; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  z-index: 12; 
+  color: #64748b; 
+  font-size: 0.88rem; 
+  transition: all 0.2s ease; 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+} 
+.card-wishlist-btn:hover { 
+  transform: scale(1.12); 
+  color: #ef4444; 
+} 
+.card-wishlist-btn.active { 
+  color: #ef4444; 
+  background: #fff; 
+} 
+.discount-badge.with-wishlist { 
+  right: 50px; 
+} 
+.card-info { 
+  flex-grow: 1; 
+  display: flex; 
+  flex-direction: column; 
+} 
+.card h3 { 
+  font-size: 0.92rem; 
+  font-weight: 700; 
+  margin-bottom: 6px; 
+  color: var(--text-main); 
+  display: -webkit-box; 
+  -webkit-line-clamp: 1; 
+  -webkit-box-orient: vertical; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+} 
+.price-container { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  margin-bottom: 12px; 
+  flex-wrap: wrap; 
+} 
+.price { 
+  font-weight: 800; 
+  font-size: 1.05rem; 
+  color: var(--text-main); 
+} 
+.mrp { 
+  text-decoration: line-through; 
+  color: var(--text-muted); 
+  font-size: 0.8rem; 
+} 
+.buy-btn { 
+  width: 100%; 
+  padding: 10px 12px; 
+  background: var(--primary); 
+  color: var(--bg); 
+  border: none; 
+  border-radius: 12px; 
+  font-weight: 700; 
+  cursor: pointer; 
+  transition: 0.25s ease; 
+  font-size: 0.85rem; 
+  margin-top: auto; 
+  min-height: 42px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+} 
 .buy-btn:hover {
   background: var(--accent);
-
   color: #ffffff;
 }
-
-.buy-btn:disabled {
-  background: var(--border);
-
-  color: var(--text-muted);
-
-  cursor: not-allowed;
-}
-
-/* =========================================================
-   GENERIC BADGES
-   ========================================================= */
-
-.badge {
-  position: absolute;
-
-  top: -4px;
-  right: -4px;
-
-  background: #ef4444;
-
-  color: white;
-
-  font-size: 0.6rem;
-
-  font-weight: 800;
-
-  border-radius: 50%;
-
-  min-width: 18px;
-  height: 18px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  padding: 2px;
-
-  border: 2px solid var(--card-bg);
-}
-
-/* =========================================================
-   SKELETON
-   ========================================================= */
-
-.skeleton-card {
-  background: var(--card-bg);
-
-  border-radius: 20px;
-
-  padding: 10px;
-
-  border: 1px solid var(--border);
-
-  display: flex;
-
-  flex-direction: column;
-
-  height: 300px;
-}
-
-.skeleton-img {
-  width: 100%;
-
-  height: 180px;
-
-  border-radius: 14px;
-
-  background:
-    linear-gradient(
-      90deg,
-      var(--skeleton-start) 25%,
-      var(--skeleton-mid) 50%,
-      var(--skeleton-start) 75%
-    );
-
-  background-size: 200% 100%;
-
-  animation: skeletonLoading 1.5s infinite;
-
-  margin-bottom: 10px;
-}
-
-.skeleton-line {
-  height: 12px;
-
-  background:
-    linear-gradient(
-      90deg,
-      var(--skeleton-start) 25%,
-      var(--skeleton-mid) 50%,
-      var(--skeleton-start) 75%
-    );
-
-  background-size: 200% 100%;
-
-  animation: skeletonLoading 1.5s infinite;
-
-  border-radius: 6px;
-}
-
-@keyframes skeletonLoading {
-
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
-
-}
-
-/* =========================================================
-   SAFE CHECKOUT
-   ========================================================= */
-
-.safe-checkout-box {
-  margin: 20px 6% 40px;
-
-  background: var(--surface);
-
-  border: 1px solid var(--border);
-
-  border-radius: 20px;
-
-  padding: 20px;
-
-  text-align: center;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 12px;
-}
-
-.safe-checkout-box h3 {
-  font-size: 0.95rem;
-
-  font-weight: 800;
-
-  color: var(--text-main);
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-}
-
-.safe-checkout-box h3 i {
-  color: #22c55e;
-}
-
-.payment-badges {
-  display: flex;
-
-  gap: 15px;
-
-  flex-wrap: wrap;
-
-  justify-content: center;
-
-  font-size: 0.8rem;
-
-  font-weight: 700;
-
-  color: var(--text-muted);
-}
-
-.payment-badges span {
-  display: flex;
-
-  align-items: center;
-
-  gap: 6px;
-
-  background: var(--card-bg);
-
-  padding: 6px 14px;
-
-  border-radius: 8px;
-
-  border: 1px solid var(--border);
-}
-
-.payment-badges span i {
-  color: var(--accent);
-}
-
-/* =========================================================
-   COOKIE
-   ========================================================= */
-
-.cookie-banner {
-  position: fixed;
-
-  bottom: 80px;
-
-  left: 20px;
-  right: 20px;
-
-  max-width: 450px;
-
-  background: var(--card-bg);
-
-  border: 1px solid var(--border);
-
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.15);
-
-  border-radius: 18px;
-
-  padding: 18px 20px;
-
-  z-index: 9999;
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 12px;
-
-  transition: all 0.3s ease;
-}
-
-.cookie-banner p {
-  font-size: 0.85rem;
-
-  color: var(--text-muted);
-
-  line-height: 1.4;
-}
-
-.cookie-banner p strong {
-  color: var(--text-main);
-}
-
-.cookie-actions {
-  display: flex;
-
-  gap: 10px;
-
-  justify-content: flex-end;
-}
-
-.cookie-btn {
-  padding: 10px 20px;
-
-  border-radius: 10px;
-
-  font-size: 0.8rem;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  border: none;
-
-  transition: 0.2s;
-
-  min-height: 38px;
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-}
-
-.cookie-accept {
-  background: var(--primary);
-
-  color: var(--bg);
-}
-
-.cookie-accept:hover {
-  background: var(--accent);
-
-  color: #ffffff;
-}
-
-/* =========================================================
-   CONTACT
-   ========================================================= */
-
+.buy-btn:disabled { 
+  background: var(--border); 
+  color: var(--text-muted); 
+  cursor: not-allowed; 
+} 
+.badge { 
+  position: absolute; 
+  top: -4px; 
+  right: -4px; 
+  background: #ef4444; 
+  color: white; 
+  font-size: 0.6rem; 
+  font-weight: 800; 
+  border-radius: 50%; 
+  min-width: 18px; 
+  height: 18px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 2px; 
+  border: 2px solid var(--card-bg); 
+} 
+.skeleton-card { 
+  background: var(--card-bg); 
+  border-radius: 20px; 
+  padding: 10px; 
+  border: 1px solid var(--border); 
+  display: flex; 
+  flex-direction: column; 
+  height: 300px; 
+} 
+.skeleton-img { 
+  width: 100%; 
+  height: 180px; 
+  border-radius: 14px; 
+  background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%); 
+  background-size: 200% 100%; 
+  animation: skeletonLoading 1.5s infinite; 
+  margin-bottom: 10px; 
+} 
+.skeleton-line { 
+  height: 12px; 
+  background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%); 
+  background-size: 200% 100%; 
+  animation: skeletonLoading 1.5s infinite; 
+  border-radius: 6px; 
+} 
+@keyframes skeletonLoading { 
+  0% { background-position: 200% 0; } 
+  100% { background-position: -200% 0; } 
+} 
+.safe-checkout-box { 
+  margin: 20px 6% 40px; 
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  border-radius: 20px; 
+  padding: 20px; 
+  text-align: center; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 12px; 
+} 
+.safe-checkout-box h3 { 
+  font-size: 0.95rem; 
+  font-weight: 800; 
+  color: var(--text-main); 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+} 
+.safe-checkout-box h3 i { 
+  color: #22c55e; 
+} 
+.payment-badges { 
+  display: flex; 
+  gap: 15px; 
+  flex-wrap: wrap; 
+  justify-content: center; 
+  font-size: 0.8rem; 
+  font-weight: 700; 
+  color: var(--text-muted); 
+} 
+.payment-badges span { 
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+  background: var(--card-bg); 
+  padding: 6px 14px; 
+  border-radius: 8px; 
+  border: 1px solid var(--border); 
+} 
+.cookie-banner { 
+  position: fixed; 
+  bottom: 80px; 
+  left: 20px; 
+  right: 20px; 
+  max-width: 450px; 
+  background: var(--card-bg); 
+  border: 1px solid var(--border); 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+  border-radius: 18px; 
+  padding: 18px 20px; 
+  z-index: 9999; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+  transition: all 0.3s ease; 
+} 
+.cookie-banner p { 
+  font-size: 0.85rem; 
+  color: var(--text-muted); 
+  line-height: 1.4; 
+} 
+.cookie-banner p strong { 
+  color: var(--text-main); 
+} 
+.cookie-actions { 
+  display: flex; 
+  gap: 10px; 
+  justify-content: flex-end; 
+} 
+.cookie-btn { 
+  padding: 10px 20px; 
+  border-radius: 10px; 
+  font-size: 0.8rem; 
+  font-weight: 700; 
+  cursor: pointer; 
+  border: none; 
+  transition: 0.2s; 
+  min-height: 38px; 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+} 
+.cookie-accept { 
+  background: var(--primary); 
+  color: var(--bg); 
+} 
+.cookie-accept:hover { 
+  opacity: 0.9; 
+} 
 .contact-option {
   display: flex;
-
   align-items: center;
-
   gap: 15px;
-
   padding: 14px;
-
   border: 1px solid var(--border);
-
   border-radius: 14px;
-
   background: var(--surface);
-
   text-decoration: none;
-
   color: var(--text-main);
-
   font-weight: 700;
-
   font-size: 0.9rem;
-
   transition: all 0.2s ease;
-
   cursor: pointer;
 }
-
 .contact-option:hover {
   border-color: var(--accent);
-
   transform: translateY(-2px);
 }
-
 .contact-option i {
   font-size: 1.4rem;
 }
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-  nav {
-    padding: 10px 4%;
-
-    flex-wrap: wrap;
-
-    justify-content: space-between;
-
-    gap: 10px;
-  }
-
-  .logo {
-    font-size: 1.2rem;
-
-    order: 1;
-  }
-
-  .nav-right {
-    order: 2;
-
-    gap: 8px;
-
-    flex-shrink: 0;
-  }
-
-  .search-container {
-    order: 3;
-
-    flex-basis: 100%;
-
-    max-width: 100%;
-
-    margin: 4px 0 2px 0;
-  }
-
-  .search-container input {
-    padding: 8px 12px 8px 36px;
-
-    font-size: 0.85rem;
-
-    border-radius: 10px;
-  }
-
-  .search-container i {
-    left: 12px;
-  }
-
-  .hero {
-    padding: 16px 4% 5px;
-
-    flex-direction: column;
-
-    align-items: flex-start;
-
-    gap: 12px;
-  }
-
-  .hero-text h1 {
-    font-size: 1.7rem;
-  }
-
-  .hero-text p {
-    font-size: 0.82rem;
-  }
-
-  .trust-stats {
-    width: 100%;
-
-    justify-content: space-around;
-
-    padding: 10px;
-  }
-
-  .trust-bar-section {
-    padding: 8px 4%;
-  }
-
-  .trust-bar-grid {
-    grid-template-columns: repeat(2, 1fr);
-
-    gap: 10px;
-
-    padding: 10px;
-  }
-
-  .category-bar {
-    padding: 8px 4%;
-
-    gap: 6px;
-  }
-
-  .category-btn {
-    padding: 8px 16px;
-
-    font-size: 0.8rem;
-
-    min-height: 36px;
-  }
-
-  .banner-section {
-    padding: 8px 4%;
-  }
-
-  .banner-item {
-    flex: 0 0 100%;
-
-    height: 160px;
-
-    border-radius: 14px;
-  }
-
-  .banner-item img {
-    border-radius: 14px;
-  }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-  }
-
-  .dot.active {
-    width: 14px;
-  }
-
-  .container {
-    padding: 8px 4% 20px;
-  }
-
-  .image-box {
-    height: 140px;
-  }
-
-  .stock-badge,
-  .discount-badge {
-    padding: 3px 6px;
-
-    font-size: 0.58rem;
-
-    top: 6px;
-  }
-
-  .stock-badge {
-    left: 6px;
-  }
-
-  .discount-badge {
-    right: 6px;
-  }
-
-  .discount-badge.with-wishlist {
-    right: 38px;
-  }
-
-  .card-wishlist-btn {
-    width: 28px;
-    height: 28px;
-
-    font-size: 0.75rem;
-
-    top: 6px;
-    right: 6px;
-  }
-
-  .safe-checkout-box {
-    margin: 10px 4% 25px;
-
-    padding: 15px;
-  }
-
-  .cookie-banner {
-    left: 10px;
-    right: 10px;
-
-    bottom: 75px;
-
-    padding: 14px;
-
-    width: auto;
-
-    max-width: 100%;
-  }
-
-  .cookie-actions {
-    width: 100%;
-  }
-
-  .cookie-btn {
-    width: 100%;
-
-    min-height: 40px;
-  }
-
-}
-
-</style>
+@media (max-width: 768px) { 
+  nav { 
+    padding: 10px 4%; 
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+    gap: 10px; 
+  } 
+  .logo { 
+    font-size: 1.2rem; 
+    order: 1; 
+  } 
+  .nav-right { 
+    order: 2; 
+    gap: 8px; 
+    flex-shrink: 0; 
+  } 
+  .search-container { 
+    order: 3; 
+    flex-basis: 100%; 
+    max-width: 100%; 
+    margin: 4px 0 2px 0; 
+  } 
+  .search-container input { 
+    padding: 8px 12px 8px 36px; 
+    font-size: 0.85rem; 
+    border-radius: 10px; 
+  } 
+  .search-container i { 
+    left: 12px; 
+  } 
+  .hero { 
+    padding: 16px 4% 5px; 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 12px; 
+  } 
+  .hero-text h1 { 
+    font-size: 1.7rem; 
+  } 
+  .hero-text p { 
+    font-size: 0.82rem; 
+  } 
+  .trust-stats { 
+    width: 100%; 
+    justify-content: space-around; 
+    padding: 10px; 
+  } 
+  .trust-bar-section { 
+    padding: 8px 4%; 
+  } 
+  .trust-bar-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 10px; 
+    padding: 10px; 
+  } 
+  .category-bar { 
+    padding: 8px 4%; 
+    gap: 6px; 
+  } 
+  .category-btn { 
+    padding: 8px 16px; 
+    font-size: 0.8rem; 
+    min-height: 36px; 
+  } 
+  .banner-section { 
+    padding: 8px 4%; 
+  } 
+  .banner-item { 
+    flex: 0 0 100%; 
+    height: 160px; 
+    border-radius: 14px; 
+  } 
+  .banner-item img { 
+    border-radius: 14px; 
+  } 
+  .dot { 
+    width: 6px; 
+    height: 6px; 
+  } 
+  .dot.active { 
+    width: 14px; 
+  } 
+  .container { 
+    padding: 8px 4% 20px; 
+  } 
+  .image-box { 
+    height: 140px; 
+  } 
+  .stock-badge, .discount-badge { 
+    padding: 3px 6px; 
+    font-size: 0.58rem; 
+    top: 6px; 
+  } 
+  .stock-badge { 
+    left: 6px; 
+  } 
+  .discount-badge { 
+    right: 6px; 
+  } 
+  .discount-badge.with-wishlist { 
+    right: 38px; 
+  } 
+  .card-wishlist-btn { 
+    width: 28px; 
+    height: 28px; 
+    font-size: 0.75rem; 
+    top: 6px; 
+    right: 6px; 
+  } 
+  .safe-checkout-box { 
+    margin: 10px 4% 25px; 
+    padding: 15px; 
+  } 
+  .cookie-banner { 
+    left: 10px; 
+    right: 10px; 
+    bottom: 75px; 
+    padding: 14px; 
+    width: auto; 
+    max-width: 100%; 
+  } 
+  .cookie-actions { 
+    width: 100%; 
+  } 
+  .cookie-btn { 
+    width: 100%; 
+    min-height: 40px; 
+  } 
+} 
+</style> 
 
 <script>
+  // Meta Ads: when the homepage receives ?product=PRODUCT_ID,
+  // open that product directly in the existing product-details page.
+  (function () {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const productId = params.get("product");
 
-/* =========================================================
-   META PRODUCT REDIRECT
-   ========================================================= */
+      if (productId) {
+        const productUrl = new URL("/product-details", window.location.origin);
+        productUrl.searchParams.set("id", productId);
 
-(function () {
+        // Keep common tracking/affiliate parameters if Meta or another
+        // source adds them to the ad URL.
+        ["ref", "aff", "name", "phone", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]
+          .forEach((key) => {
+            const value = params.get(key);
+            if (value) productUrl.searchParams.set(key, value);
+          });
 
-  try {
-
-    const params =
-      new URLSearchParams(window.location.search);
-
-    const productId =
-      params.get("product");
-
-    if (productId) {
-
-      const productUrl =
-        new URL("/product-details", window.location.origin);
-
-      productUrl.searchParams.set("id", productId);
-
-      [
-        "ref",
-        "aff",
-        "name",
-        "phone",
-        "utm_source",
-        "utm_medium",
-        "utm_campaign",
-        "utm_content",
-        "utm_term"
-      ].forEach((key) => {
-
-        const value =
-          params.get(key);
-
-        if (value) {
-
-          productUrl.searchParams.set(
-            key,
-            value
-          );
-
-        }
-
-      });
-
-      window.location.replace(
-        productUrl.toString()
-      );
-
+        window.location.replace(productUrl.toString());
+      }
+    } catch (e) {
+      console.warn("Product redirect skipped:", e);
     }
-
-  } catch (e) {
-
-    console.warn(
-      "Product redirect skipped:",
-      e
-    );
-
-  }
-
-})();
-
+  })();
 </script>
 
-</head>
-
-<body>
-
-<!-- =========================================================
-     NAVBAR
-     ========================================================= -->
-
-<nav>
-
-  <div id="navLogo" class="logo">
-    CART<span>PRIME</span>
-  </div>
-
-  <div class="search-container">
-
-    <i class="fa fa-search"></i>
-
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Search verified products..."
-      autocomplete="off"
-    >
-
-    <div
-      id="searchSuggestions"
-      class="search-suggestions-box">
-    </div>
-
-  </div>
-
-  <div class="nav-right">
-
-    <!-- Notification Bell -->
-
-    <div
-      class="notification-icon-btn"
-      id="notifBtn"
-      title="Notifications"
-    >
-
+</head> 
+<body> 
+<nav> 
+  <div id="navLogo" class="logo">CART<span>PRIME</span></div> 
+  <div class="search-container"> 
+    <i class="fa fa-search"></i> 
+    <input type="text" id="searchInput" placeholder="Search verified products..." autocomplete="off"> 
+    <div id="searchSuggestions" class="search-suggestions-box"></div> 
+  </div> 
+  <div class="nav-right"> 
+    <!-- Notification Bell Button -->
+    <div class="notification-icon-btn" id="notifBtn" title="Notifications">
       <i class="fa-regular fa-bell"></i>
-
-      <span
-        class="notif-badge"
-        id="notifBadge"
-        style="display:none;">
-        0
-      </span>
-
+      <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
     </div>
-
-    <!-- Profile -->
-
-    <div
-      class="profile-chip"
-      id="profileChip"
-      title="Click to edit profile"
-    >
-
-      <div
-        class="profile-avatar"
-        id="navProfileAvatar">
-        U
-      </div>
-
+    
+    <div class="profile-chip" id="profileChip" title="Click to edit profile">
+      <div class="profile-avatar" id="navProfileAvatar">U</div>
       <div class="profile-info">
-
-        <span
-          class="profile-name"
-          id="navProfileName">
-          User
-          <i class="fa-solid fa-pen edit-profile-btn"></i>
-        </span>
-
-        <span
-          class="profile-phone"
-          id="navProfilePhone">
-          Not set
-        </span>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</nav>
-
-<!-- =========================================================
-     NOTIFICATION MODAL
-     ========================================================= -->
-
-<div
-  id="notifModal"
-  class="modal-overlay"
->
-
-  <div
-    class="modal-card notif-modal-card"
-  >
-
-    <div
-      class="notif-modal-header"
-    >
-
-      <h3>
-        <i class="fa-solid fa-bell"></i>
-        Notifications
-      </h3>
-
-      <button
-        type="button"
-        id="closeNotifModal"
-        style="
-          background:transparent;
-          border:none;
-          font-size:1.2rem;
-          cursor:pointer;
-          color:var(--text-muted);
-        "
-      >
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-
-    </div>
-
-    <div
-      class="notif-list"
-      id="notifListContainer"
-    >
-      <div class="no-notif">
-        Loading notifications...
+        <span class="profile-name" id="navProfileName">User <i class="fa-solid fa-pen edit-profile-btn"></i></span>
+        <span class="profile-phone" id="navProfilePhone">Not set</span>
       </div>
     </div>
+  </div> 
+</nav> 
 
+<!-- Notifications Modal Panel -->
+<div id="notifModal" class="modal-overlay">
+  <div class="modal-card notif-modal-card">
+    <div class="notif-modal-header">
+      <h3><i class="fa-solid fa-bell" style="color: var(--accent);"></i> Notifications</h3>
+      <button type="button" id="closeNotifModal" style="background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="notif-list" id="notifListContainer">
+      <div class="no-notif">Loading notifications...</div>
+    </div>
   </div>
-
 </div>
 
-<!-- =========================================================
-     USER WELCOME / LOGIN MODAL
-     ========================================================= -->
-
-<div
-  id="userWelcomeModal"
-  class="modal-overlay"
->
-
-  <div class="modal-card">
-
-    <div
-      class="welcome-modal-header"
-    >
-
+<!-- Redesigned Trustworthy User Registration/Welcome/Edit Modal with OTP Verification -->
+<div id="userWelcomeModal" class="modal-overlay"> 
+  <div class="modal-card"> 
+    <div class="welcome-modal-header">
       <div class="welcome-modal-icon">
-
         <i class="fa-solid fa-shield-halved"></i>
-
       </div>
-
       <div>
-
-        <h3
-          style="
-            margin:0 0 2px 0;
-            font-size:1.15rem;
-          "
-          id="welcomeModalTitle"
-        >
-          Welcome to CartPrime
-        </h3>
-
-        <p
-          style="
-            font-size:0.78rem;
-            color:var(--text-muted);
-            margin:0;
-          "
-          id="welcomeModalSub"
-        >
-          100% Secure & Verified Shopping Platform
-        </p>
-
+        <h3 style="margin: 0 0 2px 0; font-size: 1.15rem;" id="welcomeModalTitle">Welcome to CartPrime</h3> 
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">100% Secure & Verified Shopping Platform</p>
       </div>
-
     </div>
 
-    <div
-      class="welcome-benefits"
-      id="welcomeBenefitsBox"
-    >
-
-      <div class="welcome-benefit-item">
-        <i class="fa-solid fa-circle-check"></i>
-        Fast & Free Shipping Across India
-      </div>
-
-      <div class="welcome-benefit-item">
-        <i class="fa-solid fa-circle-check"></i>
-        7 Days Easy Returns & Buyer Protection
-      </div>
-
-      <div class="welcome-benefit-item">
-        <i class="fa-solid fa-circle-check"></i>
-        Cash on Delivery (COD) Available
-      </div>
-
+    <div class="welcome-benefits" id="welcomeBenefitsBox">
+      <div class="welcome-benefit-item"><i class="fa-solid fa-circle-check"></i> Fast & Free Shipping Across India</div>
+      <div class="welcome-benefit-item"><i class="fa-solid fa-circle-check"></i> 7 Days Easy Returns & Buyer Protection</div>
+      <div class="welcome-benefit-item"><i class="fa-solid fa-circle-check"></i> Cash on Delivery (COD) Available</div>
     </div>
+    
+    <form id="userWelcomeForm" class="modal-form" style="margin-top: 0;"> 
+      <input type="tel" id="userWelcomePhone" class="modal-input" placeholder="Enter Mobile / WhatsApp Number" required> 
+      <input type="text" id="userWelcomeOtp" class="modal-input" placeholder="Enter 6-digit OTP (e.g. 123456)" style="display: none;" maxlength="6">
+      <input type="text" id="userWelcomeName" class="modal-input" placeholder="Full Name" style="display: none;"> 
+      
+      <div class="modal-btn-group"> 
+        <button type="button" id="closeWelcomeModal" style="display:none; flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button>
+        <button type="submit" class="modal-btn-submit" id="welcomeSubmitBtn">Continue Securely</button> 
+      </div> 
+    </form> 
 
-    <form
-      id="userWelcomeForm"
-      class="modal-form"
-      style="margin-top:0;"
-    >
-
-      <input
-        type="tel"
-        id="userWelcomePhone"
-        class="modal-input"
-        placeholder="Enter Mobile / WhatsApp Number"
-        required
-      >
-
-      <input
-        type="text"
-        id="userWelcomeOtp"
-        class="modal-input"
-        placeholder="Enter 6-digit OTP (e.g. 123456)"
-        style="display:none;"
-        maxlength="6"
-      >
-
-      <input
-        type="text"
-        id="userWelcomeName"
-        class="modal-input"
-        placeholder="Full Name"
-        style="display:none;"
-      >
-
-      <div class="modal-btn-group">
-
-        <button
-          type="button"
-          id="closeWelcomeModal"
-          style="
-            display:none;
-            flex:1;
-            padding:12px;
-            border-radius:10px;
-            border:1px solid var(--border);
-            background:transparent;
-            color:var(--text-main);
-            font-weight:600;
-            cursor:pointer;
-          "
-        >
-          Cancel
-        </button>
-
-        <button
-          type="submit"
-          class="modal-btn-submit"
-          id="welcomeSubmitBtn"
-        >
-          Continue Securely
-        </button>
-
-      </div>
-
-    </form>
-
-    <!-- Logout -->
-
-    <div
-      id="logoutSection"
-      style="
-        display:none;
-        margin-top:12px;
-      "
-    >
-
-      <button
-        type="button"
-        id="logoutBtn"
-        style="
-          width:100%;
-          padding:12px;
-          border-radius:10px;
-          border:1px solid #ef4444;
-          background:rgba(239,68,68,0.1);
-          color:#ef4444;
-          font-weight:700;
-          cursor:pointer;
-        "
-      >
-
-        <i class="fa-solid fa-right-from-bracket"></i>
-        Logout
-
+    <!-- Logout Option inside Edit Profile Modal -->
+    <div id="logoutSection" style="display: none; margin-top: 12px;">
+      <button type="button" id="logoutBtn" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ef4444; background: rgba(239, 68, 68, 0.1); color: #ef4444; font-weight: 700; cursor: pointer;">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
       </button>
-
     </div>
 
-    <div
-      id="verifyLoadingBox"
-      class="verify-loading-box"
-    >
-
+    <div id="verifyLoadingBox" class="verify-loading-box">
       <div class="spinner"></div>
-
-      <p
-        style="
-          font-size:0.85rem;
-          font-weight:700;
-          color:var(--text-main);
-          margin:0;
-        "
-        id="loadingText"
-      >
-        Checking Mobile Number...
-      </p>
-
+      <p style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin: 0;" id="loadingText">Checking Mobile Number...</p>
     </div>
-
-  </div>
-
+  </div> 
 </div>
 
-<!-- =========================================================
-     EARN PARTNER MODAL
-     ========================================================= -->
-
-<div
-  id="earnModal"
-  class="modal-overlay"
->
-
-  <div class="modal-card">
-
+<!-- Earn Partner Request Modal -->
+<div id="earnModal" class="modal-overlay"> 
+  <div class="modal-card"> 
     <div class="earn-modal-header">
-
       <div class="earn-modal-icon">
-
         <i class="fa-solid fa-hand-holding-dollar"></i>
-
       </div>
-
       <div>
-
-        <h3
-          style="
-            margin:0 0 2px 0;
-            font-size:1.15rem;
-          "
-        >
-          CartPrime Partner Program
-        </h3>
-
-        <p
-          style="
-            font-size:0.78rem;
-            color:var(--text-muted);
-            margin:0;
-          "
-        >
-          Earn commissions on every referral
-        </p>
-
+        <h3 style="margin: 0 0 2px 0; font-size: 1.15rem;">CartPrime Partner Program</h3>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;">Earn commissions on every referral</p>
       </div>
-
     </div>
 
     <div class="earn-benefits">
-
-      <div class="earn-benefit-item">
-        <i class="fa-solid fa-circle-check"></i>
-        Instant Admin Verification
-      </div>
-
-      <div class="earn-benefit-item">
-        <i class="fa-solid fa-circle-check"></i>
-        Direct UPI Payouts to your Account
-      </div>
-
-      <div class="earn-benefit-item">
-        <i class="fa-solid fa-circle-check"></i>
-        Real-time Earnings Dashboard
-      </div>
-
+      <div class="earn-benefit-item"><i class="fa-solid fa-circle-check"></i> Instant Admin Verification</div>
+      <div class="earn-benefit-item"><i class="fa-solid fa-circle-check"></i> Direct UPI Payouts to your Account</div>
+      <div class="earn-benefit-item"><i class="fa-solid fa-circle-check"></i> Real-time Earnings Dashboard</div>
     </div>
 
-    <p
-      style="
-        font-size:0.82rem;
-        color:var(--text-muted);
-        margin-bottom:12px;
-      "
-      id="earnSubText"
-    >
-      Enter your WhatsApp or mobile number to check your partnership eligibility status.
-    </p>
+    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;" id="earnSubText">Enter your WhatsApp or mobile number to check your partnership eligibility status.</p> 
 
-    <form
-      id="earnForm"
-      class="modal-form"
-      style="margin-top:0;"
-    >
+    <form id="earnForm" class="modal-form" style="margin-top: 0;"> 
+      <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
+      <input type="text" id="partnerName" class="modal-input" placeholder="Full Name" style="display: none;"> 
+      <input type="text" id="partnerUpi" class="modal-input" placeholder="UPI ID / GPay Number for Payouts" style="display: none;"> 
+      
+      <div class="modal-btn-group"> 
+        <button type="button" id="closeEarnModal" style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button> 
+        <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Check Eligibility</button> 
+      </div> 
+    </form> 
+  </div> 
+</div> 
 
-      <input
-        type="tel"
-        id="partnerPhone"
-        class="modal-input"
-        placeholder="Mobile / WhatsApp Number"
-        required
-      >
-
-      <input
-        type="text"
-        id="partnerName"
-        class="modal-input"
-        placeholder="Full Name"
-        style="display:none;"
-      >
-
-      <input
-        type="text"
-        id="partnerUpi"
-        class="modal-input"
-        placeholder="UPI ID / GPay Number for Payouts"
-        style="display:none;"
-      >
-
-      <div class="modal-btn-group">
-
-        <button
-          type="button"
-          id="closeEarnModal"
-          style="
-            flex:1;
-            padding:12px;
-            border-radius:10px;
-            border:1px solid var(--border);
-            background:transparent;
-            color:var(--text-main);
-            font-weight:600;
-            cursor:pointer;
-          "
-        >
-          Cancel
-        </button>
-
-        <button
-          type="submit"
-          class="modal-btn-submit"
-          id="earnSubmitBtn"
-        >
-          Check Eligibility
-        </button>
-
-      </div>
-
-    </form>
-
-  </div>
-
-</div>
-
-<!-- =========================================================
-     CONTACT MODAL
-     ========================================================= -->
-
-<div
-  id="contactModal"
-  class="modal-overlay"
->
-
-  <div class="modal-card">
-
-    <h3
-      style="
-        margin:0 0 8px 0;
-        font-size:1.2rem;
-      "
-    >
-      Contact Customer Support
-    </h3>
-
-    <p
-      style="
-        font-size:0.85rem;
-        color:var(--text-muted);
-        margin-bottom:16px;
-      "
-    >
-      We are here to help you 24/7. Reach out via any platform below:
-    </p>
-
-    <div
-      style="
-        display:flex;
-        flex-direction:column;
-        gap:12px;
-      "
-    >
-
-      <a
-        href="mailto:cartprimeshopping@gmail.com"
-        class="contact-option"
-      >
-
-        <i
-          class="fa-regular fa-envelope"
-          style="color:var(--accent);"
-        ></i>
-
-        <span>
-          Email: cartprimeshopping@gmail.com
-        </span>
-
+<!-- Contact Us Modal -->
+<div id="contactModal" class="modal-overlay"> 
+  <div class="modal-card"> 
+    <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">Contact Customer Support</h3> 
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">We are here to help you 24/7. Reach out via any platform below:</p> 
+    
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <a href="mailto:cartprimeshopping@gmail.com" class="contact-option">
+        <i class="fa-regular fa-envelope" style="color: #2563eb;"></i>
+        <span>Email: cartprimeshopping@gmail.com</span>
       </a>
-
-      <a
-        href="https://www.instagram.com/cartprimeonlinestore?igsh=MWFmYTkzdHhyOXoyYQ=="
-        target="_blank"
-        rel="noopener noreferrer"
-        class="contact-option"
-      >
-
-        <i
-          class="fa-brands fa-instagram"
-          style="color:#e1306c;"
-        ></i>
-
-        <span>
-          Instagram: @cartprimeonlinestore
-        </span>
-
+      <a href="https://www.instagram.com/cartprimeonlinestore?igsh=MWFmYTkzdHhyOXoyYQ==" target="_blank" rel="noopener noreferrer" class="contact-option">
+        <i class="fa-brands fa-instagram" style="color: #e1306c;"></i>
+        <span>Instagram: @cartprimeonlinestore</span>
       </a>
-
-      <div
-        id="customerCareBtn"
-        class="contact-option"
-      >
-
-        <i
-          class="fa-solid fa-headset"
-          style="color:#22c55e;"
-        ></i>
-
-        <span>
-          Customer care
-        </span>
-
+      <div id="customerCareBtn" class="contact-option">
+        <i class="fa-solid fa-headset" style="color: #22c55e;"></i>
+        <span>Customer care</span>
       </div>
-
     </div>
 
-    <button
-      type="button"
-      id="closeContactModal"
-      style="
-        width:100%;
-        margin-top:16px;
-        padding:12px;
-        border-radius:10px;
-        border:1px solid var(--border);
-        background:var(--surface);
-        color:var(--text-main);
-        font-weight:700;
-        cursor:pointer;
-      "
-    >
-      Close
-    </button>
-
-  </div>
-
+    <button type="button" id="closeContactModal" style="width:100%; margin-top:16px; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--text-main); font-weight:700; cursor:pointer;">Close</button> 
+  </div> 
 </div>
 
-<!-- =========================================================
-     HERO
-     ========================================================= -->
-
-<header class="hero">
-
-  <div class="hero-text">
-
-    <h1>
-      Welcome To
-      <br>
-      CartPrime
-    </h1>
-
-    <h1
-      style="
-        color:#419b41;
-      "
-    >
-      Online Shop
-    </h1>
-
-    <p>
-      100% Verified & Quality Shopping Store.
-    </p>
-
-  </div>
-
-  <div class="trust-stats">
-
-    <div class="stat-item">
-
-      <i class="fa-solid fa-shield-check"></i>
-
-      <div class="stat-info">
-
-        <strong>
-          100% Verified
-        </strong>
-
-        <span>
-          Trusted Store
-        </span>
-
-      </div>
-
-    </div>
-
-    <div class="stat-divider"></div>
-
-    <div class="stat-item">
-
-      <i class="fa-solid fa-truck-fast"></i>
-
-      <div class="stat-info">
-
-        <strong>
-          Fast Shipping
-        </strong>
-
-        <span>
-          Free Delivery
-        </span>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</header>
-
-<!-- =========================================================
-     TRUST CARDS
-     ========================================================= -->
-
-<div class="trust-bar-section">
-
-  <div class="trust-bar-grid">
-
-    <div class="trust-card">
-
-      <div class="trust-icon">
-        <i class="fa-solid fa-truck-fast"></i>
-      </div>
-
-      <div class="trust-details">
-
-        <h4>
-          Fast Shipping
-        </h4>
-
-        <p>
-          Free Delivery
-        </p>
-
-      </div>
-
-    </div>
-
-    <div class="trust-card">
-
-      <div class="trust-icon">
-        <i class="fa-solid fa-shield-halved"></i>
-      </div>
-
-      <div class="trust-details">
-
-        <h4>
-          Buyer Protection
-        </h4>
-
-        <p>
-          7 Days Easy Returns
-        </p>
-
-      </div>
-
-    </div>
-
-    <div class="trust-card">
-
-      <div class="trust-icon">
-        <i class="fa-solid fa-hand-holding-dollar"></i>
-      </div>
-
-      <div class="trust-details">
-
-        <h4>
-          COD Available
-        </h4>
-
-        <p>
-          Pay Upon Delivery
-        </p>
-
-      </div>
-
-    </div>
-
-    <div class="trust-card">
-
-      <div class="trust-icon">
-        <i class="fa-solid fa-headset"></i>
-      </div>
-
-      <div class="trust-details">
-
-        <h4>
-          Dedicated Support
-        </h4>
-
-        <p>
-          Quick Help Support
-        </p>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-<div
-  class="category-bar"
-  id="categoryBar"
-></div>
-
-<!-- =========================================================
-     BANNERS
-     ========================================================= -->
-
-<div
-  class="banner-section"
-  id="bannerSection"
-  style="display:none;"
->
-
-  <div class="banner-wrapper">
-
-    <div
-      class="banner-slider"
-      id="bannerSlider"
-    ></div>
-
-  </div>
-
-  <div
-    class="banner-dots"
-    id="bannerDots"
-  ></div>
-
-</div>
-
-<!-- =========================================================
-     PRODUCTS
-     ========================================================= -->
-
-<div class="container">
-
-  <div
-    class="grid"
-    id="productGrid"
-  ></div>
-
-</div>
-
-<!-- =========================================================
-     SAFE CHECKOUT
-     ========================================================= -->
-
-<div class="safe-checkout-box">
-
-  <h3>
-
-    <i class="fa-solid fa-lock"></i>
-
-    100% Safe & Secure Shopping Guarantee
-
-  </h3>
-
-  <div class="payment-badges">
-
-    <span>
-      <i class="fa-solid fa-check"></i>
-      Verified Merchant
-    </span>
-
-    <span>
-      <i class="fa-solid fa-box-check"></i>
-      100% Genuine Products
-    </span>
-
-    <span>
-      <i class="fa-solid fa-wallet"></i>
-      Cash on Delivery
-    </span>
-
-  </div>
-
-</div>
-
-<!-- =========================================================
-     COOKIE
-     ========================================================= -->
-
-<div
-  class="cookie-banner"
-  id="cookieBanner"
-  style="display:none;"
->
-
-  <p>
-
-    <strong>
-      We use cookies!
-    </strong>
-
-    We use cookies to enhance your shopping experience and analyze our website traffic.
-
-  </p>
-
-  <div class="cookie-actions">
-
-    <button
-      class="cookie-btn cookie-accept"
-      id="acceptCookiesBtn"
-    >
-      Accept Cookies
-    </button>
-
-  </div>
-
-</div>
-
-<!-- =========================================================
-     BOTTOM NAV
-     ========================================================= -->
-
+<header class="hero"> 
+  <div class="hero-text"> 
+    <h1>Welcome To <br> CartPrime </h1> 
+    <h1 style="color: rgb(65, 155, 65);">Online Shop</h1> 
+    <p>100% Verified & Quality Shopping Store.</p> 
+  </div> 
+  <div class="trust-stats"> 
+    <div class="stat-item"> 
+      <i class="fa-solid fa-shield-check"></i> 
+      <div class="stat-info"> 
+        <strong>100% Verified</strong> 
+        <span>Trusted Store</span> 
+      </div> 
+    </div> 
+    <div class="stat-divider"></div> 
+    <div class="stat-item"> 
+      <i class="fa-solid fa-truck-fast"></i> 
+      <div class="stat-info"> 
+        <strong>Fast Shipping</strong> 
+        <span>Free Delivery</span> 
+      </div> 
+    </div> 
+  </div> 
+</header> 
+<div class="trust-bar-section"> 
+  <div class="trust-bar-grid"> 
+    <div class="trust-card"> 
+      <div class="trust-icon"><i class="fa-solid fa-truck-fast"></i></div> 
+      <div class="trust-details"> 
+        <h4>Fast Shipping</h4> 
+        <p>Free Delivery</p> 
+      </div> 
+    </div> 
+    <div class="trust-card"> 
+      <div class="trust-icon"><i class="fa-solid fa-shield-halved"></i></div> 
+      <div class="trust-details"> 
+        <h4>Buyer Protection</h4> 
+        <p>7 Days Easy Returns</p> 
+      </div> 
+    </div> 
+    <div class="trust-card"> 
+      <div class="trust-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div> 
+      <div class="trust-details"> 
+        <h4>COD Available</h4> 
+        <p>Pay Upon Delivery</p> 
+      </div> 
+    </div> 
+    <div class="trust-card"> 
+      <div class="trust-icon"><i class="fa-solid fa-headset"></i></div> 
+      <div class="trust-details"> 
+        <h4>Dedicated Support</h4> 
+        <p>Quick Help Support</p> 
+      </div> 
+    </div> 
+  </div> 
+</div> 
+<div class="category-bar" id="categoryBar"></div> 
+
+<div class="banner-section" id="bannerSection" style="display: none;"> 
+  <div class="banner-wrapper"> 
+    <div class="banner-slider" id="bannerSlider"></div> 
+  </div> 
+  <div class="banner-dots" id="bannerDots"></div> 
+</div> 
+
+<div class="container"> 
+  <div class="grid" id="productGrid"></div> 
+</div> 
+<div class="safe-checkout-box"> 
+  <h3><i class="fa-solid fa-lock"></i> 100% Safe & Secure Shopping Guarantee</h3> 
+  <div class="payment-badges"> 
+    <span><i class="fa-solid fa-check"></i> Verified Merchant</span> 
+    <span><i class="fa-solid fa-box-check"></i> 100% Genuine Products</span> 
+    <span><i class="fa-solid fa-wallet"></i> Cash on Delivery</span> 
+  </div> 
+</div> 
+<div class="cookie-banner" id="cookieBanner" style="display: none;"> 
+  <p><strong>We use cookies!</strong> We use cookies to enhance your shopping experience and analyze our website traffic.</p> 
+  <div class="cookie-actions"> 
+    <button class="cookie-btn cookie-accept" id="acceptCookiesBtn">Accept Cookies</button> 
+  </div> 
+</div> 
+
+<!-- Bottom Navigation Bar with Contact Icon and Earn Badge -->
 <div class="bottom-nav">
-
-  <a
-    href="/"
-    class="bottom-nav-item active"
-  >
-
+  <a href="/" class="bottom-nav-item active">
     <i class="fa-solid fa-house"></i>
-
-    <span>
-      Home
-    </span>
-
+    <span>Home</span>
   </a>
-
-  <a
-    href="/wishlist"
-    class="bottom-nav-item"
-  >
-
+  <a href="/wishlist" class="bottom-nav-item">
     <i class="fa-regular fa-heart"></i>
-
-    <span>
-      Wishlist
-    </span>
-
-    <span
-      id="bottomWishlistBadge"
-      class="badge"
-      style="display:none;"
-    >
-      0
-    </span>
-
+    <span>Wishlist</span>
+    <span id="bottomWishlistBadge" class="badge" style="display:none;">0</span>
   </a>
-
-  <a
-    href="/orders"
-    class="bottom-nav-item"
-  >
-
+  <a href="/orders" class="bottom-nav-item">
     <i class="fa-solid fa-bag-shopping"></i>
-
-    <span>
-      Orders
-    </span>
-
-    <span
-      id="bottomOrdersBadge"
-      class="badge"
-      style="display:none;"
-    >
-      0
-    </span>
-
+    <span>Orders</span>
+    <span id="bottomOrdersBadge" class="badge" style="display:none;">0</span>
   </a>
-
-  <div
-    id="bottomEarnBtn"
-    class="bottom-nav-item"
-  >
-
+  <div id="bottomEarnBtn" class="bottom-nav-item">
     <i class="fa-solid fa-wallet"></i>
-
-    <span>
-      Earn
-    </span>
-
-    <span
-      id="bottomEarnBadge"
-      class="badge"
-      style="display:none;"
-    >
-      0
-    </span>
-
+    <span>Earn</span>
+    <span id="bottomEarnBadge" class="badge" style="display:none;">0</span>
   </div>
-
-  <div
-    id="bottomContactBtn"
-    class="bottom-nav-item"
-  >
-
+  <div id="bottomContactBtn" class="bottom-nav-item">
     <i class="fa-solid fa-headset"></i>
-
-    <span>
-      Contact
-    </span>
-
+    <span>Contact</span>
   </div>
-
 </div>
 
-<!-- =========================================================
-     CUSTOM TOAST
-     ========================================================= -->
-
-<div
-  id="customToast"
-  class="custom-toast-overlay"
->
-
+<!-- Premium Custom Toast Notification Modal -->
+<div id="customToast" class="custom-toast-overlay">
   <div class="custom-toast-card">
-
-    <div
-      id="toastIcon"
-      class="toast-icon-wrap success"
-    >
-
+    <div id="toastIcon" class="toast-icon-wrap success">
       <i class="fa-solid fa-circle-check"></i>
-
     </div>
-
-    <h4 id="toastTitle">
-      Success
-    </h4>
-
-    <p id="toastMessage">
-      Your request has been submitted.
-    </p>
-
-    <div
-      id="toastOtpBox"
-      class="otp-highlight-box"
-    >
-
-      <span id="toastOtpText"></span>
-
-    </div>
-
-    <button
-      id="toastCloseBtn"
-      class="toast-close-btn"
-    >
-      Continue
-    </button>
-
+    <h4 id="toastTitle">Success</h4>
+    <p id="toastMessage">Your request has been submitted.</p>
+    <div id="toastOtpBox" class="otp-highlight-box"><span id="toastOtpText"></span></div>
+    <button id="toastCloseBtn" class="toast-close-btn">Continue</button>
   </div>
-
 </div>
 
-<!-- =========================================================
-     NOTIFICATION PERMISSION
-     ========================================================= -->
-
+<!-- Notification Permission Script -->
 <script>
-
-window.addEventListener('load', () => {
-
-  if ("Notification" in window) {
-
-    if (Notification.permission === "default") {
-
-      Notification.requestPermission().then(
-        (permission) => {
-
+  window.addEventListener('load', () => {
+    if ("Notification" in window) {
+      if (Notification.permission === "default") {
+        Notification.requestPermission().then((permission) => {
           if (permission === "granted") {
-
-            new Notification(
-              "CartPrime",
-              {
-                body:
-                  "Welcome to CartPrime! You will now receive updates on offers and orders.",
-
-                icon:
-                  "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
-              }
-            );
-
+            new Notification("CartPrime", {
+              body: "Welcome to CartPrime! You will now receive updates on offers and orders.",
+              icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
+            });
           }
-
-        }
-      );
-
+        });
+      }
     }
-
-  }
-
-});
-
+  });
 </script>
 
-<!-- =========================================================
-     FIREBASE
-     ========================================================= -->
+<script type="module"> 
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"; 
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"; 
+  import { getDatabase, ref, onValue, get, set, remove, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js"; 
 
-<script type="module">
+  const firebaseConfig = { 
+    apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc", 
+    authDomain: "cartprime-shopping.firebaseapp.com", 
+    projectId: "cartprime-shopping", 
+    storageBucket: "cartprime-shopping.firebasestorage.app", 
+    messagingSenderId: "570068438689", 
+    appId: "1:570068438689:web:17b25f49f2b561fd29eae0", 
+    measurementId: "G-9GREWHMEYL" 
+  }; 
+  const app = initializeApp(firebaseConfig); 
+  const auth = getAuth(app); 
+  const db = getDatabase(app); 
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+  // Generates a unique token to enforce single-device active session per phone number
+  function generateSessionToken() {
+    return 'ST_' + Math.random().toString(36).substring(2) + Date.now();
+  }
 
-import {
-  getAuth,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
-import {
-  getDatabase,
-  ref,
-  onValue,
-  get,
-  set,
-  remove,
-  update
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-
-/* =========================================================
-   FIREBASE CONFIG
-   ========================================================= */
-
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
-
-  authDomain:
-    "cartprime-shopping.firebaseapp.com",
-
-  projectId:
-    "cartprime-shopping",
-
-  storageBucket:
-    "cartprime-shopping.firebasestorage.app",
-
-  messagingSenderId:
-    "570068438689",
-
-  appId:
-    "1:570068438689:web:17b25f49f2b561fd29eae0",
-
-  measurementId:
-    "G-9GREWHMEYL"
-
-};
-
-const app =
-  initializeApp(firebaseConfig);
-
-const auth =
-  getAuth(app);
-
-const db =
-  getDatabase(app);
-
-
-/* =========================================================
-   SESSION TOKEN
-   ========================================================= */
-
-function generateSessionToken() {
-
-  return (
-    'ST_' +
-    Math.random()
-      .toString(36)
-      .substring(2) +
-    Date.now()
-  );
-
-}
-
-
-/* =========================================================
-   SINGLE DEVICE SESSION
-   ========================================================= */
-
-function monitorSingleDeviceSession() {
-
-  const userPhone =
-    localStorage.getItem('userPhone');
-
-  const localToken =
-    localStorage.getItem('sessionToken');
-
-  if (userPhone && localToken) {
-
-    const userRef =
-      ref(
-        db,
-        `users/${userPhone}/sessionToken`
-      );
-
-    onValue(
-      userRef,
-      (snapshot) => {
-
+  // Monitor single device login state real-time
+  function monitorSingleDeviceSession() {
+    const userPhone = localStorage.getItem('userPhone');
+    const localToken = localStorage.getItem('sessionToken');
+    if (userPhone && localToken) {
+      const userRef = ref(db, `users/${userPhone}/sessionToken`);
+      onValue(userRef, (snapshot) => {
         if (snapshot.exists()) {
-
-          const activeToken =
-            snapshot.val();
-
+          const activeToken = snapshot.val();
           if (activeToken !== localToken) {
-
+            // Session invalidated due to login on another device
             localStorage.removeItem('userName');
             localStorage.removeItem('userPhone');
             localStorage.removeItem('sessionToken');
             localStorage.removeItem('partnerPhone');
             localStorage.removeItem('partnerName');
             localStorage.removeItem('partnerId');
-
-            showCustomAlert(
-              "Session Expired",
-              "You have been logged in from another device. Please log in again.",
-              false
-            );
-
+            showCustomAlert("Session Expired", "You have been logged in from another device. Please log in again.", false);
             setTimeout(() => {
-
               window.location.reload();
-
             }, 1800);
-
           }
-
         }
+      });
+    }
+  }
 
+  // Call single session monitor on load
+  monitorSingleDeviceSession();
+
+  function generateUniquePartnerId() {
+    const randomDigits = Math.floor(100000 + Math.random() * 900000);
+    return `CP-REF-${randomDigits}`;
+  }
+
+  // Helper functions for animated modals
+  function openModal(modalElement) {
+    modalElement.style.display = 'flex';
+    setTimeout(() => {
+      modalElement.classList.add('active');
+    }, 10);
+  }
+
+  function closeModal(modalElement) {
+    modalElement.classList.remove('active');
+    setTimeout(() => {
+      modalElement.style.display = 'none';
+    }, 300);
+  }
+
+  const profileChip = document.getElementById('profileChip');
+  const navProfileAvatar = document.getElementById('navProfileAvatar');
+  const navProfileName = document.getElementById('navProfileName');
+  const navProfilePhone = document.getElementById('navProfilePhone');
+
+  const welcomeModal = document.getElementById('userWelcomeModal');
+  const welcomeForm = document.getElementById('userWelcomeForm');
+  const userWelcomePhone = document.getElementById('userWelcomePhone');
+  const userWelcomeOtp = document.getElementById('userWelcomeOtp');
+  const userWelcomeName = document.getElementById('userWelcomeName');
+  const welcomeSubmitBtn = document.getElementById('welcomeSubmitBtn');
+  const verifyLoadingBox = document.getElementById('verifyLoadingBox');
+  const loadingText = document.getElementById('loadingText');
+  const closeWelcomeModal = document.getElementById('closeWelcomeModal');
+  const welcomeModalTitle = document.getElementById('welcomeModalTitle');
+  const welcomeModalSub = document.getElementById('welcomeModalSub');
+  const welcomeBenefitsBox = document.getElementById('welcomeBenefitsBox');
+  const logoutSection = document.getElementById('logoutSection');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  /* --- Notification Panel Modal Logic --- */
+  const notifBtn = document.getElementById('notifBtn');
+  const notifBadge = document.getElementById('notifBadge');
+  const notifModal = document.getElementById('notifModal');
+  const closeNotifModal = document.getElementById('closeNotifModal');
+  const notifListContainer = document.getElementById('notifListContainer');
+
+  let notificationsData = {}; // notifications synced from Firebase (earn_partners)
+  let localNotifications = {}; // client-only notifications (e.g. OTP alerts) not stored in Firebase
+
+  function isNotificationUnread(item) {
+    if (!item) return false;
+    if (item.read === true || item.unread === false) return false;
+    return true;
+  }
+
+  function getCombinedNotifications() {
+    return { ...notificationsData, ...localNotifications };
+  }
+
+  function refreshNotifUI() {
+    const combined = getCombinedNotifications();
+    let unreadCount = 0;
+    Object.keys(combined).forEach((key) => {
+      if (isNotificationUnread(combined[key])) unreadCount++;
+    });
+
+    if (unreadCount > 0) {
+      if (notifBadge) {
+        notifBadge.textContent = unreadCount;
+        notifBadge.style.display = 'flex';
       }
-    );
-
+    } else {
+      if (notifBadge) notifBadge.style.display = 'none';
+    }
+    renderNotifications();
   }
 
-}
-
-monitorSingleDeviceSession();
-
-
-/* =========================================================
-   PARTNER ID
-   ========================================================= */
-
-function generateUniquePartnerId() {
-
-  const randomDigits =
-    Math.floor(
-      100000 +
-      Math.random() * 900000
-    );
-
-  return `CP-REF-${randomDigits}`;
-
-}
-
-
-/* =========================================================
-   MODAL HELPERS
-   ========================================================= */
-
-function openModal(modalElement) {
-
-  modalElement.style.display = 'flex';
-
-  setTimeout(() => {
-
-    modalElement.classList.add('active');
-
-  }, 10);
-
-}
-
-function closeModal(modalElement) {
-
-  modalElement.classList.remove('active');
-
-  setTimeout(() => {
-
-    modalElement.style.display = 'none';
-
-  }, 300);
-
-}
-
-
-/* =========================================================
-   PROFILE ELEMENTS
-   ========================================================= */
-
-const profileChip =
-  document.getElementById('profileChip');
-
-const navProfileAvatar =
-  document.getElementById('navProfileAvatar');
-
-const navProfileName =
-  document.getElementById('navProfileName');
-
-const navProfilePhone =
-  document.getElementById('navProfilePhone');
-
-
-/* =========================================================
-   WELCOME ELEMENTS
-   ========================================================= */
-
-const welcomeModal =
-  document.getElementById('userWelcomeModal');
-
-const welcomeForm =
-  document.getElementById('userWelcomeForm');
-
-const userWelcomePhone =
-  document.getElementById('userWelcomePhone');
-
-const userWelcomeOtp =
-  document.getElementById('userWelcomeOtp');
-
-const userWelcomeName =
-  document.getElementById('userWelcomeName');
-
-const welcomeSubmitBtn =
-  document.getElementById('welcomeSubmitBtn');
-
-const verifyLoadingBox =
-  document.getElementById('verifyLoadingBox');
-
-const loadingText =
-  document.getElementById('loadingText');
-
-const closeWelcomeModal =
-  document.getElementById('closeWelcomeModal');
-
-const welcomeModalTitle =
-  document.getElementById('welcomeModalTitle');
-
-const welcomeModalSub =
-  document.getElementById('welcomeModalSub');
-
-const welcomeBenefitsBox =
-  document.getElementById('welcomeBenefitsBox');
-
-const logoutSection =
-  document.getElementById('logoutSection');
-
-const logoutBtn =
-  document.getElementById('logoutBtn');
-
-
-/* =========================================================
-   NOTIFICATIONS
-   ========================================================= */
-
-const notifBtn =
-  document.getElementById('notifBtn');
-
-const notifBadge =
-  document.getElementById('notifBadge');
-
-const notifModal =
-  document.getElementById('notifModal');
-
-const closeNotifModal =
-  document.getElementById('closeNotifModal');
-
-const notifListContainer =
-  document.getElementById(
-    'notifListContainer'
-  );
-
-
-let notificationsData = {};
-
-let localNotifications = {};
-
-
-function isNotificationUnread(item) {
-
-  if (!item) return false;
-
-  if (
-    item.read === true ||
-    item.unread === false
-  ) {
-    return false;
-  }
-
-  return true;
-
-}
-
-
-function getCombinedNotifications() {
-
-  return {
-    ...notificationsData,
-    ...localNotifications
-  };
-
-}
-
-
-function refreshNotifUI() {
-
-  const combined =
-    getCombinedNotifications();
-
-  let unreadCount = 0;
-
-  Object.keys(combined).forEach(
-    (key) => {
-
-      if (
-        isNotificationUnread(
-          combined[key]
-        )
-      ) {
-        unreadCount++;
-      }
-
-    }
-  );
-
-  if (unreadCount > 0) {
-
-    if (notifBadge) {
-
-      notifBadge.textContent =
-        unreadCount;
-
-      notifBadge.style.display =
-        'flex';
-
-    }
-
-  } else {
-
-    if (notifBadge) {
-
-      notifBadge.style.display =
-        'none';
-
-    }
-
-  }
-
-  renderNotifications();
-
-}
-
-
-function addLocalNotification(
-  title,
-  message,
-  iconClass = 'fa-bell'
-) {
-
-  const id =
-    `local_${Date.now()}_${Math.floor(
-      Math.random() * 1000
-    )}`;
-
-  localNotifications[id] = {
-
-    title: title,
-
-    message: message,
-
-    icon: iconClass,
-
-    timestamp: Date.now(),
-
-    read: false
-
-  };
-
-  refreshNotifUI();
-
-}
-
-
-function listenNotifications() {
-
-  const phone =
-    localStorage.getItem('partnerPhone') ||
-    localStorage.getItem('userPhone');
-
-  if (!phone) {
-
-    notificationsData = {};
-
+  function addLocalNotification(title, message, iconClass = 'fa-bell') {
+    const id = `local_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    localNotifications[id] = {
+      title: title,
+      message: message,
+      icon: iconClass,
+      timestamp: Date.now(),
+      read: false
+    };
     refreshNotifUI();
-
-    return;
-
   }
 
-  const notifRef =
-    ref(
-      db,
-      `earn_partners/${phone}/notifications`
-    );
-
-  onValue(
-    notifRef,
-    (snapshot) => {
-
-      notificationsData =
-        snapshot.exists()
-          ? snapshot.val()
-          : {};
-
+  function listenNotifications() {
+    const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    if (!phone) {
+      notificationsData = {};
       refreshNotifUI();
-
+      return;
     }
-  );
 
-}
-
-
-function renderNotifications() {
-
-  if (!notifListContainer) return;
-
-  const combined =
-    getCombinedNotifications();
-
-  const keys =
-    Object.keys(combined);
-
-  if (keys.length === 0) {
-
-    notifListContainer.innerHTML = `
-
-      <div class="no-notif">
-
-        <i
-          class="fa-regular fa-bell-slash"
-          style="
-            font-size:2rem;
-            margin-bottom:8px;
-            display:block;
-          "
-        ></i>
-
-        No notifications yet.
-
-      </div>
-
-    `;
-
-    return;
-
+    const notifRef = ref(db, `earn_partners/${phone}/notifications`);
+    onValue(notifRef, (snapshot) => {
+      notificationsData = snapshot.exists() ? snapshot.val() : {};
+      refreshNotifUI();
+    });
   }
 
-  keys.sort(
-    (a, b) =>
-      (combined[b].timestamp || 0) -
-      (combined[a].timestamp || 0)
-  );
+  function renderNotifications() {
+    if (!notifListContainer) return;
+    const combined = getCombinedNotifications();
+    const keys = Object.keys(combined);
+    if (keys.length === 0) {
+      notifListContainer.innerHTML = '<div class="no-notif"><i class="fa-regular fa-bell-slash" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>No notifications yet.</div>';
+      return;
+    }
 
+    keys.sort((a, b) => (combined[b].timestamp || 0) - (combined[a].timestamp || 0));
 
-  let html = '';
-
-
-  keys.forEach(
-    (id) => {
-
-      const item =
-        combined[id];
-
-      const isUnread =
-        isNotificationUnread(item);
-
-      const timeStr =
-        item.timestamp
-          ? new Date(
-              item.timestamp
-            ).toLocaleString(
-              'en-IN',
-              {
-                dateStyle: 'short',
-                timeStyle: 'short'
-              }
-            )
-          : '';
-
-      const iconClass =
-        item.icon || 'fa-bell';
-
+    let html = '';
+    keys.forEach((id) => {
+      const item = combined[id];
+      const isUnread = isNotificationUnread(item);
+      const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }) : '';
+      const iconClass = item.icon || 'fa-bell';
 
       html += `
-
-        <div class="notif-item ${
-          isUnread ? 'unread' : ''
-        }">
-
+        <div class="notif-item ${isUnread ? 'unread' : ''}">
           <div class="notif-icon">
-
             <i class="fa-solid ${iconClass}"></i>
-
           </div>
-
           <div class="notif-content">
-
-            <div class="notif-title">
-              ${item.title || 'Notification'}
-            </div>
-
-            <div class="notif-message">
-              ${item.message || ''}
-            </div>
-
-            <div class="notif-time">
-              ${timeStr}
-            </div>
-
-            <button
-              class="mark-read-btn"
-              data-id="${id}"
-            >
-              Mark as read
-            </button>
-
+            <div class="notif-title">${item.title || 'Notification'}</div>
+            <div class="notif-message">${item.message || ''}</div>
+            <div class="notif-time">${timeStr}</div>
+            <button class="mark-read-btn" data-id="${id}">Mark as read</button>
           </div>
-
         </div>
-
       `;
+    });
 
-    }
-  );
+    notifListContainer.innerHTML = html;
 
+    notifListContainer.querySelectorAll('.mark-read-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const notifId = e.currentTarget.getAttribute('data-id');
+        if (!notifId) return;
 
-  notifListContainer.innerHTML =
-    html;
-
-
-  notifListContainer
-    .querySelectorAll(
-      '.mark-read-btn'
-    )
-    .forEach(
-      (btn) => {
-
-        btn.addEventListener(
-          'click',
-          (e) => {
-
-            const notifId =
-              e.currentTarget
-                .getAttribute(
-                  'data-id'
-                );
-
-            if (!notifId) return;
-
-
-            if (
-              notifId.startsWith(
-                'local_'
-              )
-            ) {
-
-              delete localNotifications[
-                notifId
-              ];
-
-              refreshNotifUI();
-
-              return;
-
-            }
-
-
-            const phone =
-              localStorage.getItem(
-                'partnerPhone'
-              ) ||
-              localStorage.getItem(
-                'userPhone'
-              );
-
-
-            if (phone) {
-
-              delete notificationsData[
-                notifId
-              ];
-
-              renderNotifications();
-
-              remove(
-                ref(
-                  db,
-                  `earn_partners/${phone}/notifications/${notifId}`
-                )
-              );
-
-            }
-
-          }
-        );
-
-      }
-    );
-
-}
-
-
-if (notifBtn) {
-
-  notifBtn.addEventListener(
-    'click',
-    () => {
-
-      openModal(notifModal);
-
-      renderNotifications();
-
-    }
-  );
-
-}
-
-
-if (closeNotifModal) {
-
-  closeNotifModal.addEventListener(
-    'click',
-    () => {
-
-      closeModal(notifModal);
-
-    }
-  );
-
-}
-
-
-listenNotifications();
-
-
-/* =========================================================
-   REGISTRATION VARIABLES
-   ========================================================= */
-
-let registrationStep = 1;
-
-let pendingPhone = "";
-
-let pendingExistingName = "";
-
-let isNewUserSession = false;
-
-let generatedOtpCode = "";
-
-
-/* =========================================================
-   OTP NOTIFICATION
-   ========================================================= */
-
-function showOtpNotificationPopup(
-  phone,
-  otp
-) {
-
-  if (
-    "Notification" in window &&
-    Notification.permission === "granted"
-  ) {
-
-    try {
-
-      new Notification(
-        "CartPrime OTP Verification",
-        {
-
-          body:
-            `Your OTP is ${otp}. Do not share this code with anyone.`,
-
-          icon:
-            "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
-
+        if (notifId.startsWith('local_')) {
+          delete localNotifications[notifId];
+          refreshNotifUI();
+          return;
         }
-      );
 
-      return;
+        const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+        if (phone) {
+          delete notificationsData[notifId];
+          renderNotifications();
+          remove(ref(db, `earn_partners/${phone}/notifications/${notifId}`));
+        }
+      });
+    });
+  }
 
-    } catch (err) {
+  if (notifBtn) {
+    notifBtn.addEventListener('click', () => {
+      openModal(notifModal);
+      renderNotifications();
+    });
+  }
 
+  if (closeNotifModal) {
+    closeNotifModal.addEventListener('click', () => {
+      closeModal(notifModal);
+    });
+  }
+
+  listenNotifications();
+
+  let registrationStep = 1; 
+  let pendingPhone = "";
+  let pendingExistingName = "";
+  let isNewUserSession = false;
+  let generatedOtpCode = "";
+
+  function showOtpNotificationPopup(phone, otp) {
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        new Notification("CartPrime OTP Verification", {
+          body: `Your OTP is ${otp}. Do not share this code with anyone.`,
+          icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
+        });
+        return;
+      } catch (err) {}
     }
-
+    showCustomAlert("OTP Sent", `Sent to ${phone}. Do not share this code with anyone.`, true, otp);
   }
 
-
-  showCustomAlert(
-    "OTP Sent",
-    `Sent to ${phone}. Do not share this code with anyone.`,
-    true,
-    otp
-  );
-
-}
-
-
-/* =========================================================
-   FREE OTP
-   ========================================================= */
-
-async function sendFreeOtpToUser(
-  phoneNumber
-) {
-
-  generatedOtpCode =
-    Math.floor(
-      100000 +
-      Math.random() * 900000
-    ).toString();
-
-  console.log(
-    `[CartPrime Security] Generated OTP for ${phoneNumber}: ${generatedOtpCode}`
-  );
-
-
-  showOtpNotificationPopup(
-    phoneNumber,
-    generatedOtpCode
-  );
-
-
-  addLocalNotification(
-    "OTP Verification Code",
-    `Your OTP for ${phoneNumber} is ${generatedOtpCode}. Do not share this code with anyone.`,
-    'fa-key'
-  );
-
-}
-
-
-/* =========================================================
-   PROFILE UI
-   ========================================================= */
-
-function updateHeaderProfileUI() {
-
-  const name =
-    localStorage.getItem(
-      'userName'
-    ) || "User";
-
-  const phone =
-    localStorage.getItem(
-      'userPhone'
-    ) || "";
-
-
-  if (navProfileAvatar) {
-
-    navProfileAvatar.textContent =
-      name.charAt(0).toUpperCase();
-
+  async function sendFreeOtpToUser(phoneNumber) {
+    generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(`[CartPrime Security] Generated OTP for ${phoneNumber}: ${generatedOtpCode}`);
+    showOtpNotificationPopup(phoneNumber, generatedOtpCode);
+    addLocalNotification("OTP Verification Code", `Your OTP for ${phoneNumber} is ${generatedOtpCode}. Do not share this code with anyone.`, 'fa-key');
   }
 
-
-  if (navProfileName) {
-
-    navProfileName.innerHTML =
-      `${name}
-       <i class="fa-solid fa-pen edit-profile-btn"></i>`;
-
+  function updateHeaderProfileUI() {
+    const name = localStorage.getItem('userName') || "User";
+    const phone = localStorage.getItem('userPhone') || "";
+    
+    if (navProfileAvatar) navProfileAvatar.textContent = name.charAt(0).toUpperCase();
+    if (navProfileName) navProfileName.innerHTML = `${name} <i class="fa-solid fa-pen edit-profile-btn"></i>`;
+    if (navProfilePhone) navProfilePhone.textContent = phone ? phone : "Tap to set";
   }
 
+  updateHeaderProfileUI();
 
-  if (navProfilePhone) {
-
-    navProfilePhone.textContent =
-      phone
-        ? phone
-        : "Tap to set";
-
+  if (profileChip) {
+    profileChip.addEventListener('click', () => {
+      userWelcomePhone.value = localStorage.getItem('userPhone') || "";
+      userWelcomeName.value = localStorage.getItem('userName') || "";
+      userWelcomePhone.style.display = 'block';
+      userWelcomeOtp.style.display = 'none';
+      userWelcomeName.style.display = 'block';
+      registrationStep = 3; 
+      welcomeModalTitle.textContent = "Edit Your Profile";
+      welcomeModalSub.textContent = "Update your details below.";
+      if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
+      welcomeSubmitBtn.textContent = "Save Changes";
+      if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
+      if (logoutSection) logoutSection.style.display = "block";
+      openModal(welcomeModal);
+    });
   }
-
-}
-
-
-updateHeaderProfileUI();
-
-
-/* =========================================================
-   PROFILE EDIT
-   ========================================================= */
-
-if (profileChip) {
-
-  profileChip.addEventListener(
-    'click',
-    () => {
-
-      userWelcomePhone.value =
-        localStorage.getItem(
-          'userPhone'
-        ) || "";
-
-      userWelcomeName.value =
-        localStorage.getItem(
-          'userName'
-        ) || "";
-
-
-      userWelcomePhone.style.display =
-        'block';
-
-      userWelcomeOtp.style.display =
-        'none';
-
-      userWelcomeName.style.display =
-        'block';
-
-
-      registrationStep = 3;
-
-
-      welcomeModalTitle.textContent =
-        "Edit Your Profile";
-
-      welcomeModalSub.textContent =
-        "Update your details below.";
-
-
-      if (welcomeBenefitsBox) {
-
-        welcomeBenefitsBox.style.display =
-          'none';
-
-      }
-
-
-      welcomeSubmitBtn.textContent =
-        "Save Changes";
-
-
-      if (closeWelcomeModal) {
-
-        closeWelcomeModal.style.display =
-          "block";
-
-      }
-
-
-      if (logoutSection) {
-
-        logoutSection.style.display =
-          "block";
-
-      }
-
-
-      openModal(
-        welcomeModal
-      );
-
-    }
-  );
-
-}
-
-
-if (closeWelcomeModal) {
-
-  closeWelcomeModal.addEventListener(
-    'click',
-    () => {
-
-      closeModal(
-        welcomeModal
-      );
-
-      resetRegistrationForm();
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   LOGOUT
-   ========================================================= */
-
-if (logoutBtn) {
-
-  logoutBtn.addEventListener(
-    'click',
-    () => {
-
-      const currentPhone =
-        localStorage.getItem(
-          'userPhone'
-        );
-
-      if (currentPhone) {
-
-        update(
-          ref(
-            db,
-            `users/${currentPhone}`
-          ),
-          {
-            sessionToken: null
-          }
-        );
-
-      }
-
-
-      localStorage.removeItem(
-        'userName'
-      );
-
-      localStorage.removeItem(
-        'userPhone'
-      );
-
-      localStorage.removeItem(
-        'sessionToken'
-      );
-
-      localStorage.removeItem(
-        'partnerPhone'
-      );
-
-      localStorage.removeItem(
-        'partnerName'
-      );
-
-      localStorage.removeItem(
-        'partnerId'
-      );
-
-
-      closeModal(
-        welcomeModal
-      );
-
-
-      updateHeaderProfileUI();
-
-
-      showCustomAlert(
-        "Logged Out",
-        "You have been logged out successfully.",
-        true
-      );
-
-
-      setTimeout(
-        () => {
-          window.location.reload();
-        },
-        1000
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   RESET REGISTRATION
-   ========================================================= */
-
-function resetRegistrationForm() {
-
-  registrationStep = 1;
-
-  pendingPhone = "";
-
-  pendingExistingName = "";
-
-  isNewUserSession = false;
-
-
-  userWelcomePhone.style.display =
-    'block';
-
-  userWelcomeOtp.style.display =
-    'none';
-
-  userWelcomeName.style.display =
-    'none';
-
-
-  if (welcomeBenefitsBox) {
-
-    welcomeBenefitsBox.style.display =
-      'flex';
-
-  }
-
-
-  if (logoutSection) {
-
-    logoutSection.style.display =
-      'none';
-
-  }
-
-
-  welcomeSubmitBtn.textContent =
-    "Continue Securely";
-
-  welcomeModalTitle.textContent =
-    "Welcome to CartPrime";
-
-  welcomeModalSub.textContent =
-    "100% Secure & Verified Shopping Platform";
-
-}
-
-
-/* =========================================================
-   OPEN LOGIN IF NOT LOGGED IN
-   ========================================================= */
-
-const storedUserPhone =
-  localStorage.getItem(
-    'userPhone'
-  );
-
-if (!storedUserPhone) {
 
   if (closeWelcomeModal) {
-
-    closeWelcomeModal.style.display =
-      "none";
-
+    closeWelcomeModal.addEventListener('click', () => {
+      closeModal(welcomeModal);
+      resetRegistrationForm();
+    });
   }
 
-  if (logoutSection) {
-
-    logoutSection.style.display =
-      "none";
-
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      const currentPhone = localStorage.getItem('userPhone');
+      if (currentPhone) {
+        update(ref(db, `users/${currentPhone}`), { sessionToken: null });
+      }
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userPhone');
+      localStorage.removeItem('sessionToken');
+      localStorage.removeItem('partnerPhone');
+      localStorage.removeItem('partnerName');
+      localStorage.removeItem('partnerId');
+      closeModal(welcomeModal);
+      updateHeaderProfileUI();
+      showCustomAlert("Logged Out", "You have been logged out successfully.", true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    });
   }
 
-  resetRegistrationForm();
+  function resetRegistrationForm() {
+    registrationStep = 1;
+    pendingPhone = "";
+    pendingExistingName = "";
+    isNewUserSession = false;
+    userWelcomePhone.style.display = 'block';
+    userWelcomeOtp.style.display = 'none';
+    userWelcomeName.style.display = 'none';
+    if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'flex';
+    if (logoutSection) logoutSection.style.display = 'none';
+    welcomeSubmitBtn.textContent = "Continue Securely";
+    welcomeModalTitle.textContent = "Welcome to CartPrime";
+    welcomeModalSub.textContent = "100% Secure & Verified Shopping Platform";
+  }
 
-  openModal(
-    welcomeModal
-  );
+  const storedUserPhone = localStorage.getItem('userPhone');
+  if (!storedUserPhone) {
+    if (closeWelcomeModal) closeWelcomeModal.style.display = "none";
+    if (logoutSection) logoutSection.style.display = "none";
+    resetRegistrationForm();
+    openModal(welcomeModal);
+  }
 
-}
-
-
-/* =========================================================
-   WELCOME FORM
-   ========================================================= */
-
-if (welcomeForm) {
-
-  welcomeForm.addEventListener(
-    'submit',
-    async (e) => {
-
+  if (welcomeForm) {
+    welcomeForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-
-      /* =====================================================
-         STEP 1
-         ===================================================== */
-
+      
       if (registrationStep === 1) {
-
-        const phone =
-          userWelcomePhone.value.trim();
-
+        const phone = userWelcomePhone.value.trim();
         if (!phone) return;
 
-
-        const existingActivePhone =
-          localStorage.getItem(
-            'userPhone'
-          );
-
-
-        if (
-          existingActivePhone &&
-          existingActivePhone !== phone
-        ) {
-
-          showCustomAlert(
-            "Already Logged In",
-            "You are already logged in with another number. Please log out first before logging in with a different phone number.",
-            false
-          );
-
+        const existingActivePhone = localStorage.getItem('userPhone');
+        if (existingActivePhone && existingActivePhone !== phone) {
+          showCustomAlert("Already Logged In", "You are already logged in with another number. Please log out first before logging in with a different phone number.", false);
           return;
-
         }
-
 
         pendingPhone = phone;
+        welcomeForm.style.display = 'none';
+        loadingText.textContent = "Checking Mobile Number & Sending OTP...";
+        verifyLoadingBox.style.display = 'flex';
 
+        await sendFreeOtpToUser(phone);
 
-        welcomeForm.style.display =
-          'none';
+        const userRef = ref(db, `users/${phone}`);
+        get(userRef).then((snapshot) => {
+          verifyLoadingBox.style.display = 'none';
+          welcomeForm.style.display = 'flex';
 
-        loadingText.textContent =
-          "Checking Mobile Number & Sending OTP...";
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            pendingExistingName = userData.name || "User";
+            isNewUserSession = false;
+          } else {
+            isNewUserSession = true;
+          }
 
-        verifyLoadingBox.style.display =
-          'flex';
+          registrationStep = 2;
+          userWelcomePhone.style.display = 'none';
+          userWelcomeOtp.style.display = 'block';
+          userWelcomeOtp.value = "";
+          userWelcomeOtp.focus();
+          welcomeModalTitle.textContent = "Enter Verification OTP";
+          welcomeModalSub.textContent = `OTP sent to ${phone}`;
+          if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
+          welcomeSubmitBtn.textContent = "Verify OTP";
+          if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
 
+        }).catch(() => {
+          verifyLoadingBox.style.display = 'none';
+          welcomeForm.style.display = 'flex';
+          showCustomAlert("Error", "Could not verify details. Try again.", false);
+        });
 
-        await sendFreeOtpToUser(
-          phone
-        );
-
-
-        const userRef =
-          ref(
-            db,
-            `users/${phone}`
-          );
-
-
-        get(userRef)
-          .then(
-            (snapshot) => {
-
-              verifyLoadingBox.style.display =
-                'none';
-
-              welcomeForm.style.display =
-                'flex';
-
-
-              if (snapshot.exists()) {
-
-                const userData =
-                  snapshot.val();
-
-                pendingExistingName =
-                  userData.name || "User";
-
-                isNewUserSession =
-                  false;
-
-              } else {
-
-                isNewUserSession =
-                  true;
-
-              }
-
-
-              registrationStep = 2;
-
-
-              userWelcomePhone.style.display =
-                'none';
-
-              userWelcomeOtp.style.display =
-                'block';
-
-              userWelcomeOtp.value =
-                "";
-
-              userWelcomeOtp.focus();
-
-
-              welcomeModalTitle.textContent =
-                "Enter Verification OTP";
-
-              welcomeModalSub.textContent =
-                `OTP sent to ${phone}`;
-
-
-              if (welcomeBenefitsBox) {
-
-                welcomeBenefitsBox.style.display =
-                  'none';
-
-              }
-
-
-              welcomeSubmitBtn.textContent =
-                "Verify OTP";
-
-
-              if (closeWelcomeModal) {
-
-                closeWelcomeModal.style.display =
-                  "block";
-
-              }
-
-            }
-          )
-          .catch(
-            () => {
-
-              verifyLoadingBox.style.display =
-                'none';
-
-              welcomeForm.style.display =
-                'flex';
-
-              showCustomAlert(
-                "Error",
-                "Could not verify details. Try again.",
-                false
-              );
-
-            }
-          );
-
-      }
-
-
-      /* =====================================================
-         STEP 2
-         ===================================================== */
-
-      else if (
-        registrationStep === 2
-      ) {
-
-        const otpVal =
-          userWelcomeOtp.value.trim();
-
-
-        if (
-          otpVal !== "OTP" &&
-          otpVal !== generatedOtpCode
-        ) {
-
-          showCustomAlert(
-            "Invalid OTP",
-            "Please enter the correct OTP.",
-            false
-          );
-
+      } else if (registrationStep === 2) {
+        const otpVal = userWelcomeOtp.value.trim();
+        if (otpVal !== "OTP" && otpVal !== generatedOtpCode) {
+          showCustomAlert("Invalid OTP", "Please enter the correct OTP.", false);
           return;
-
         }
-
 
         if (isNewUserSession) {
-
           registrationStep = 3;
-
-          userWelcomeOtp.style.display =
-            'none';
-
-          userWelcomeName.style.display =
-            'block';
-
-          userWelcomeName.value =
-            "";
-
+          userWelcomeOtp.style.display = 'none';
+          userWelcomeName.style.display = 'block';
+          userWelcomeName.value = "";
           userWelcomeName.focus();
-
-
-          welcomeModalTitle.textContent =
-            "Create Your Profile";
-
-          welcomeModalSub.textContent =
-            "OTP Verified! Please enter your full name.";
-
-          welcomeSubmitBtn.textContent =
-            "Save Profile";
-
+          welcomeModalTitle.textContent = "Create Your Profile";
+          welcomeModalSub.textContent = "OTP Verified! Please enter your full name.";
+          welcomeSubmitBtn.textContent = "Save Profile";
         } else {
+          welcomeForm.style.display = 'none';
+          verifyLoadingBox.style.display = 'flex';
+          loadingText.textContent = "Logging you in...";
 
-          welcomeForm.style.display =
-            'none';
+          const newSessionToken = generateSessionToken();
+          localStorage.setItem('userName', pendingExistingName);
+          localStorage.setItem('userPhone', pendingPhone);
+          localStorage.setItem('sessionToken', newSessionToken);
 
-          verifyLoadingBox.style.display =
-            'flex';
-
-          loadingText.textContent =
-            "Logging you in...";
-
-
-          const newSessionToken =
-            generateSessionToken();
-
-
-          localStorage.setItem(
-            'userName',
-            pendingExistingName
-          );
-
-          localStorage.setItem(
-            'userPhone',
-            pendingPhone
-          );
-
-          localStorage.setItem(
-            'sessionToken',
-            newSessionToken
-          );
-
-
-          update(
-            ref(
-              db,
-              `users/${pendingPhone}`
-            ),
-            {
-              sessionToken:
-                newSessionToken,
-
-              lastLogin:
-                Date.now()
-            }
-          )
-          .then(
-            () => {
-
-              closeModal(
-                welcomeModal
-              );
-
-              verifyLoadingBox.style.display =
-                'none';
-
-              welcomeForm.style.display =
-                'flex';
-
-              updateHeaderProfileUI();
-
-              listenNotifications();
-
-              monitorSingleDeviceSession();
-
-
-              showCustomAlert(
-                "Welcome Back!",
-                `Successfully logged in as ${pendingExistingName}`,
-                true
-              );
-
-
-              updateBadges(
-                currentUser
-              );
-
-              resetRegistrationForm();
-
-            }
-          )
-          .catch(
-            () => {
-
-              closeModal(
-                welcomeModal
-              );
-
-              verifyLoadingBox.style.display =
-                'none';
-
-              welcomeForm.style.display =
-                'flex';
-
-              updateHeaderProfileUI();
-
-              listenNotifications();
-
-
-              showCustomAlert(
-                "Welcome Back!",
-                `Successfully logged in as ${pendingExistingName}`,
-                true
-              );
-
-
-              updateBadges(
-                currentUser
-              );
-
-              resetRegistrationForm();
-
-            }
-          );
-
+          update(ref(db, `users/${pendingPhone}`), {
+            sessionToken: newSessionToken,
+            lastLogin: Date.now()
+          }).then(() => {
+            closeModal(welcomeModal);
+            verifyLoadingBox.style.display = 'none';
+            welcomeForm.style.display = 'flex';
+            updateHeaderProfileUI();
+            listenNotifications();
+            monitorSingleDeviceSession();
+            showCustomAlert("Welcome Back!", `Successfully logged in as ${pendingExistingName}`, true);
+            updateBadges(currentUser);
+            resetRegistrationForm();
+          }).catch(() => {
+            closeModal(welcomeModal);
+            verifyLoadingBox.style.display = 'none';
+            welcomeForm.style.display = 'flex';
+            updateHeaderProfileUI();
+            listenNotifications();
+            showCustomAlert("Welcome Back!", `Successfully logged in as ${pendingExistingName}`, true);
+            updateBadges(currentUser);
+            resetRegistrationForm();
+          });
         }
-
-      }
-
-
-      /* =====================================================
-         STEP 3
-         ===================================================== */
-
-      else if (
-        registrationStep === 3
-      ) {
-
-        const name =
-          userWelcomeName.value.trim();
-
-        const phone =
-          pendingPhone ||
-          localStorage.getItem(
-            'userPhone'
-          );
-
+      } else if (registrationStep === 3) {
+        const name = userWelcomeName.value.trim();
+        const phone = pendingPhone || localStorage.getItem('userPhone');
 
         if (name && phone) {
+          welcomeForm.style.display = 'none';
+          verifyLoadingBox.style.display = 'flex';
+          loadingText.textContent = "Saving Profile...";
 
-          welcomeForm.style.display =
-            'none';
+          const newSessionToken = generateSessionToken();
+          localStorage.setItem('userName', name);
+          localStorage.setItem('userPhone', phone);
+          localStorage.setItem('sessionToken', newSessionToken);
 
-          verifyLoadingBox.style.display =
-            'flex';
-
-          loadingText.textContent =
-            "Saving Profile...";
-
-
-          const newSessionToken =
-            generateSessionToken();
-
-
-          localStorage.setItem(
-            'userName',
-            name
-          );
-
-          localStorage.setItem(
-            'userPhone',
-            phone
-          );
-
-          localStorage.setItem(
-            'sessionToken',
-            newSessionToken
-          );
-
-
-          const userRef =
-            ref(
-              db,
-              `users/${phone}`
-            );
-
-
-          update(
-            userRef,
-            {
-              name: name,
-
-              phone: phone,
-
-              sessionToken:
-                newSessionToken,
-
-              joinedAt:
-                Date.now()
-            }
-          )
-          .then(
-            () => {
-
-              closeModal(
-                welcomeModal
-              );
-
-              verifyLoadingBox.style.display =
-                'none';
-
-              welcomeForm.style.display =
-                'flex';
-
-              updateHeaderProfileUI();
-
-              listenNotifications();
-
-              monitorSingleDeviceSession();
-
-
-              showCustomAlert(
-                "Profile Saved!",
-                "Welcome to CartPrime!",
-                true
-              );
-
-
-              updateBadges(
-                currentUser
-              );
-
-              resetRegistrationForm();
-
-            }
-          )
-          .catch(
-            () => {
-
-              closeModal(
-                welcomeModal
-              );
-
-              verifyLoadingBox.style.display =
-                'none';
-
-              welcomeForm.style.display =
-                'flex';
-
-              updateHeaderProfileUI();
-
-              listenNotifications();
-
-
-              showCustomAlert(
-                "Profile Saved!",
-                "Welcome to CartPrime!",
-                true
-              );
-
-
-              updateBadges(
-                currentUser
-              );
-
-              resetRegistrationForm();
-
-            }
-          );
-
+          const userRef = ref(db, `users/${phone}`);
+          update(userRef, {
+            name: name,
+            phone: phone,
+            sessionToken: newSessionToken,
+            joinedAt: Date.now()
+          }).then(() => {
+            closeModal(welcomeModal);
+            verifyLoadingBox.style.display = 'none';
+            welcomeForm.style.display = 'flex';
+            updateHeaderProfileUI();
+            listenNotifications();
+            monitorSingleDeviceSession();
+            showCustomAlert("Profile Saved!", "Welcome to CartPrime!", true);
+            updateBadges(currentUser);
+            resetRegistrationForm();
+          }).catch(() => {
+            closeModal(welcomeModal);
+            verifyLoadingBox.style.display = 'none';
+            welcomeForm.style.display = 'flex';
+            updateHeaderProfileUI();
+            listenNotifications();
+            showCustomAlert("Profile Saved!", "Welcome to CartPrime!", true);
+            updateBadges(currentUser);
+            resetRegistrationForm();
+          });
         }
-
       }
+    });
+  }
 
+  function showCustomAlert(title, message, isSuccess = true, highlightCode = "") {
+    const toastModal = document.getElementById('customToast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+    const toastCloseBtn = document.getElementById('toastCloseBtn');
+    const toastOtpBox = document.getElementById('toastOtpBox');
+    const toastOtpText = document.getElementById('toastOtpText');
+
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+
+    if (highlightCode) {
+      toastOtpText.textContent = highlightCode;
+      toastOtpBox.style.display = 'flex';
+    } else {
+      toastOtpText.textContent = '';
+      toastOtpBox.style.display = 'none';
     }
-  );
 
-}
+    if (isSuccess) {
+      toastIcon.className = 'toast-icon-wrap success';
+      toastIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    } else {
+      toastIcon.className = 'toast-icon-wrap error';
+      toastIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+    }
 
+    toastModal.style.display = 'flex';
 
-/* =========================================================
-   CUSTOM ALERT
-   ========================================================= */
-
-function showCustomAlert(
-  title,
-  message,
-  isSuccess = true,
-  highlightCode = ""
-) {
-
-  const toastModal =
-    document.getElementById(
-      'customToast'
-    );
-
-  const toastTitle =
-    document.getElementById(
-      'toastTitle'
-    );
-
-  const toastMessage =
-    document.getElementById(
-      'toastMessage'
-    );
-
-  const toastIcon =
-    document.getElementById(
-      'toastIcon'
-    );
-
-  const toastCloseBtn =
-    document.getElementById(
-      'toastCloseBtn'
-    );
-
-  const toastOtpBox =
-    document.getElementById(
-      'toastOtpBox'
-    );
-
-  const toastOtpText =
-    document.getElementById(
-      'toastOtpText'
-    );
-
-
-  toastTitle.textContent =
-    title;
-
-  toastMessage.textContent =
-    message;
-
-
-  if (highlightCode) {
-
-    toastOtpText.textContent =
-      highlightCode;
-
-    toastOtpBox.style.display =
-      'flex';
-
-  } else {
-
-    toastOtpText.textContent =
-      '';
-
-    toastOtpBox.style.display =
-      'none';
-
-  }
-
-
-  if (isSuccess) {
-
-    toastIcon.className =
-      'toast-icon-wrap success';
-
-    toastIcon.innerHTML =
-      '<i class="fa-solid fa-circle-check"></i>';
-
-  } else {
-
-    toastIcon.className =
-      'toast-icon-wrap error';
-
-    toastIcon.innerHTML =
-      '<i class="fa-solid fa-circle-exclamation"></i>';
-
-  }
-
-
-  toastModal.style.display =
-    'flex';
-
-
-  toastCloseBtn.onclick =
-    () => {
-
-      toastModal.style.display =
-        'none';
-
+    toastCloseBtn.onclick = () => {
+      toastModal.style.display = 'none';
     };
-
-}
-
-
-/* =========================================================
-   AFFILIATE TRACKING
-   ========================================================= */
-
-(function handleAffiliateTracking() {
-
-  const urlParams =
-    new URLSearchParams(
-      window.location.search
-    );
-
-  const affId =
-    urlParams.get('ref') ||
-    urlParams.get('aff');
-
-
-  if (affId) {
-
-    localStorage.setItem(
-      'cartPrime_affiliateId',
-      affId
-    );
-
   }
 
-})();
+  (function handleAffiliateTracking() { 
+    const urlParams = new URLSearchParams(window.location.search); 
+    const affId = urlParams.get('ref') || urlParams.get('aff'); 
+    if (affId) { 
+      localStorage.setItem('cartPrime_affiliateId', affId); 
+    } 
+  })(); 
 
+  const cookieBanner = document.getElementById('cookieBanner'); 
+  const acceptCookiesBtn = document.getElementById('acceptCookiesBtn'); 
+  if (!localStorage.getItem('cookiesAccepted')) { 
+    cookieBanner.style.display = 'flex'; 
+  } 
+  acceptCookiesBtn.addEventListener('click', () => { 
+    localStorage.setItem('cookiesAccepted', 'true'); 
+    cookieBanner.style.display = 'none'; 
+  }); 
 
-/* =========================================================
-   COOKIE
-   ========================================================= */
+  const contactModal = document.getElementById('contactModal');
+  const bottomContactBtn = document.getElementById('bottomContactBtn');
+  const closeContactModal = document.getElementById('closeContactModal');
+  const customerCareBtn = document.getElementById('customerCareBtn');
 
-const cookieBanner =
-  document.getElementById(
-    'cookieBanner'
-  );
-
-const acceptCookiesBtn =
-  document.getElementById(
-    'acceptCookiesBtn'
-  );
-
-
-if (
-  !localStorage.getItem(
-    'cookiesAccepted'
-  )
-) {
-
-  cookieBanner.style.display =
-    'flex';
-
-}
-
-
-acceptCookiesBtn.addEventListener(
-  'click',
-  () => {
-
-    localStorage.setItem(
-      'cookiesAccepted',
-      'true'
-    );
-
-    cookieBanner.style.display =
-      'none';
-
-  }
-);
-
-
-/* =========================================================
-   CONTACT
-   ========================================================= */
-
-const contactModal =
-  document.getElementById(
-    'contactModal'
-  );
-
-const bottomContactBtn =
-  document.getElementById(
-    'bottomContactBtn'
-  );
-
-const closeContactModal =
-  document.getElementById(
-    'closeContactModal'
-  );
-
-const customerCareBtn =
-  document.getElementById(
-    'customerCareBtn'
-  );
-
-
-if (bottomContactBtn) {
-
-  bottomContactBtn.addEventListener(
-    'click',
-    () => {
-
-      openModal(
-        contactModal
-      );
-
-    }
-  );
-
-}
-
-
-if (closeContactModal) {
-
-  closeContactModal.addEventListener(
-    'click',
-    () => {
-
-      closeModal(
-        contactModal
-      );
-
-    }
-  );
-
-}
-
-
-if (customerCareBtn) {
-
-  customerCareBtn.addEventListener(
-    'click',
-    () => {
-
-      window.location.href =
-        '/Complaint.html';
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   EARN
-   ========================================================= */
-
-const earnModal =
-  document.getElementById(
-    'earnModal'
-  );
-
-const bottomEarnBtn =
-  document.getElementById(
-    'bottomEarnBtn'
-  );
-
-const closeEarnModal =
-  document.getElementById(
-    'closeEarnModal'
-  );
-
-const earnForm =
-  document.getElementById(
-    'earnForm'
-  );
-
-const partnerPhone =
-  document.getElementById(
-    'partnerPhone'
-  );
-
-const partnerName =
-  document.getElementById(
-    'partnerName'
-  );
-
-const partnerUpi =
-  document.getElementById(
-    'partnerUpi'
-  );
-
-const earnSubmitBtn =
-  document.getElementById(
-    'earnSubmitBtn'
-  );
-
-const earnSubText =
-  document.getElementById(
-    'earnSubText'
-  );
-
-
-let earnStep = 1;
-
-
-function resetEarnForm() {
-
-  earnStep = 1;
-
-  partnerPhone.style.display =
-    'block';
-
-  partnerName.style.display =
-    'none';
-
-  partnerUpi.style.display =
-    'none';
-
-  earnSubmitBtn.textContent =
-    "Check Eligibility";
-
-
-  if (earnSubText) {
-
-    earnSubText.textContent =
-      "Enter your WhatsApp or mobile number to check your partnership eligibility status.";
-
+  if (bottomContactBtn) {
+    bottomContactBtn.addEventListener('click', () => {
+      openModal(contactModal);
+    });
   }
 
-
-  if (earnForm) {
-
-    earnForm.reset();
-
+  if (closeContactModal) {
+    closeContactModal.addEventListener('click', () => {
+      closeModal(contactModal);
+    });
   }
 
-}
+  if (customerCareBtn) {
+    customerCareBtn.addEventListener('click', () => {
+      window.location.href = '/Complaint.html';
+    });
+  }
 
+  /* --- EARN PARTNER LOGIC --- */ 
+  const earnModal = document.getElementById('earnModal'); 
+  const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
+  const closeEarnModal = document.getElementById('closeEarnModal'); 
+  const earnForm = document.getElementById('earnForm'); 
+  const partnerPhone = document.getElementById('partnerPhone');
+  const partnerName = document.getElementById('partnerName');
+  const partnerUpi = document.getElementById('partnerUpi');
+  const earnSubmitBtn = document.getElementById('earnSubmitBtn');
+  const earnSubText = document.getElementById('earnSubText');
 
-function openEarnRegistrationModal() {
+  let earnStep = 1;
 
-  resetEarnForm();
+  function resetEarnForm() {
+    earnStep = 1;
+    partnerPhone.style.display = 'block';
+    partnerName.style.display = 'none';
+    partnerUpi.style.display = 'none';
+    earnSubmitBtn.textContent = "Check Eligibility";
+    if(earnSubText) earnSubText.textContent = "Enter your WhatsApp or mobile number to check your partnership eligibility status.";
+    if (earnForm) earnForm.reset();
+  }
 
-  partnerPhone.value =
-    localStorage.getItem(
-      'partnerPhone'
-    ) ||
-    localStorage.getItem(
-      'userPhone'
-    ) ||
-    "";
+  function openEarnRegistrationModal() {
+    resetEarnForm();
+    partnerPhone.value = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone') || "";
+    openModal(earnModal);
+  }
 
-  openModal(
-    earnModal
-  );
+  function checkEarnPartnerStatus(phone) {
+    const partnerRef = ref(db, `earn_partners/${phone}`);
+    get(partnerRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const partnerData = snapshot.val();
+        const status = (partnerData.status || "").toLowerCase();
 
-}
+        localStorage.setItem('partnerPhone', phone);
+        if(partnerData.name) localStorage.setItem('partnerName', partnerData.name);
+        if(partnerData.partnerId) localStorage.setItem('partnerId', partnerData.partnerId);
 
+        closeModal(earnModal);
+        resetEarnForm();
 
-function checkEarnPartnerStatus(
-  phone
-) {
-
-  const partnerRef =
-    ref(
-      db,
-      `earn_partners/${phone}`
-    );
-
-
-  get(partnerRef)
-    .then(
-      (snapshot) => {
-
-        if (snapshot.exists()) {
-
-          const partnerData =
-            snapshot.val();
-
-          const status =
-            (
-              partnerData.status ||
-              ""
-            ).toLowerCase();
-
-
-          localStorage.setItem(
-            'partnerPhone',
-            phone
+        if (status === 'approved' || status === 'active') {
+          window.location.href = '/wallet.html';
+        } else if (status === 'pending') {
+          showCustomAlert(
+            "Under Verification", 
+            `Your Partner Account is currently under review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access once approved.`, 
+            true
           );
-
-
-          if (partnerData.name) {
-
-            localStorage.setItem(
-              'partnerName',
-              partnerData.name
-            );
-
-          }
-
-
-          if (partnerData.partnerId) {
-
-            localStorage.setItem(
-              'partnerId',
-              partnerData.partnerId
-            );
-
-          }
-
-
-          closeModal(
-            earnModal
+        } else {
+          showCustomAlert(
+            "Application Status", 
+            `Status: ${partnerData.status || 'Pending'}. Please contact support if you need assistance.`, 
+            false
           );
-
-          resetEarnForm();
-
-
-          if (
-            status === 'approved' ||
-            status === 'active'
-          ) {
-
-            window.location.href =
-              '/wallet.html';
-
-          }
-
-          else if (
-            status === 'pending'
-          ) {
-
-            showCustomAlert(
-              "Under Verification",
-              `Your Partner Account is currently under review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access once approved.`,
-              true
-            );
-
-          }
-
-          else {
-
-            showCustomAlert(
-              "Application Status",
-              `Status: ${partnerData.status || 'Pending'}. Please contact support if you need assistance.`,
-              false
-            );
-
-          }
-
         }
-
-        else {
-
-          earnStep = 2;
-
-          partnerName.style.display =
-            'block';
-
-          partnerUpi.style.display =
-            'block';
-
-
-          partnerName.value =
-            localStorage.getItem(
-              'userName'
-            ) || "";
-
-
-          earnSubmitBtn.textContent =
-            "Submit Application";
-
-
-          if (earnSubText) {
-
-            earnSubText.textContent =
-              "You are eligible! Complete your profile details to register.";
-
-          }
-
-
-          openModal(
-            earnModal
-          );
-
-        }
-
+      } else {
+        earnStep = 2;
+        partnerName.style.display = 'block';
+        partnerUpi.style.display = 'block';
+        partnerName.value = localStorage.getItem('userName') || "";
+        earnSubmitBtn.textContent = "Submit Application";
+        if(earnSubText) earnSubText.textContent = "You are eligible! Complete your profile details to register.";
+        openModal(earnModal);
       }
-    )
-    .catch(
-      () => {
-
-        openEarnRegistrationModal();
-
-      }
-    );
-
-}
-
-
-function handleEarnClick() {
-
-  const phone =
-    localStorage.getItem(
-      'partnerPhone'
-    ) ||
-    localStorage.getItem(
-      'userPhone'
-    );
-
-
-  if (!phone) {
-
-    openEarnRegistrationModal();
-
-  } else {
-
-    checkEarnPartnerStatus(
-      phone
-    );
-
+    }).catch(() => {
+      openEarnRegistrationModal();
+    });
   }
 
-}
+  function handleEarnClick() {
+    const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    if (!phone) {
+      openEarnRegistrationModal();
+    } else {
+      checkEarnPartnerStatus(phone);
+    }
+  }
+  
+  if (bottomEarnBtn) { 
+    bottomEarnBtn.addEventListener('click', handleEarnClick); 
+  } 
 
-
-if (bottomEarnBtn) {
-
-  bottomEarnBtn.addEventListener(
-    'click',
-    handleEarnClick
-  );
-
-}
-
-
-if (closeEarnModal) {
-
-  closeEarnModal.addEventListener(
-    'click',
-    () => {
-
-      closeModal(
-        earnModal
-      );
-
+  if (closeEarnModal) { 
+    closeEarnModal.addEventListener('click', () => { 
+      closeModal(earnModal); 
       resetEarnForm();
+    }); 
+  } 
 
-    }
-  );
-
-}
-
-
-if (earnForm) {
-
-  earnForm.addEventListener(
-    'submit',
-    (e) => {
-
-      e.preventDefault();
-
-
-      const phone =
-        partnerPhone.value.trim();
-
+  if (earnForm) { 
+    earnForm.addEventListener('submit', (e) => { 
+      e.preventDefault(); 
+      const phone = partnerPhone.value.trim(); 
 
       if (earnStep === 1) {
-
         if (phone) {
-
-          checkEarnPartnerStatus(
-            phone
-          );
-
+          checkEarnPartnerStatus(phone);
         }
+      } else if (earnStep === 2) {
+        const name = partnerName.value.trim(); 
+        const upi = partnerUpi.value.trim(); 
 
+        if (name && phone && upi) { 
+          const partnerRef = ref(db, `earn_partners/${phone}`); 
+          const uniquePartnerId = generateUniquePartnerId();
+
+          set(partnerRef, { 
+            partnerId: uniquePartnerId,
+            name: name, 
+            phone: phone, 
+            upi: upi, 
+            status: "Pending", 
+            timestamp: Date.now() 
+          }).then(() => { 
+            localStorage.setItem('partnerPhone', phone);
+            localStorage.setItem('partnerName', name);
+            localStorage.setItem('partnerId', uniquePartnerId);
+            closeModal(earnModal); 
+            resetEarnForm();
+            listenNotifications();
+            showCustomAlert(
+              "Application Submitted!", 
+              `Your partner application was received successfully! Partner ID: ${uniquePartnerId}. Access will be granted after verification.`, 
+              true
+            ); 
+          }).catch((err) => { 
+            showCustomAlert(
+              "Submission Failed", 
+              "Error submitting request: " + err.message, 
+              false
+            ); 
+          }); 
+        } 
       }
-
-      else if (earnStep === 2) {
-
-        const name =
-          partnerName.value.trim();
-
-        const upi =
-          partnerUpi.value.trim();
-
-
-        if (
-          name &&
-          phone &&
-          upi
-        ) {
-
-          const partnerRef =
-            ref(
-              db,
-              `earn_partners/${phone}`
-            );
-
-
-          const uniquePartnerId =
-            generateUniquePartnerId();
-
-
-          set(
-            partnerRef,
-            {
-
-              partnerId:
-                uniquePartnerId,
-
-              name:
-                name,
-
-              phone:
-                phone,
-
-              upi:
-                upi,
-
-              status:
-                "Pending",
-
-              timestamp:
-                Date.now()
-
-            }
-          )
-          .then(
-            () => {
-
-              localStorage.setItem(
-                'partnerPhone',
-                phone
-              );
-
-              localStorage.setItem(
-                'partnerName',
-                name
-              );
-
-              localStorage.setItem(
-                'partnerId',
-                uniquePartnerId
-              );
-
-
-              closeModal(
-                earnModal
-              );
-
-              resetEarnForm();
-
-              listenNotifications();
-
-
-              showCustomAlert(
-                "Application Submitted!",
-                `Your partner application was received successfully! Partner ID: ${uniquePartnerId}. Access will be granted after verification.`,
-                true
-              );
-
-            }
-          )
-          .catch(
-            (err) => {
-
-              showCustomAlert(
-                "Submission Failed",
-                "Error submitting request: " +
-                err.message,
-                false
-              );
-
-            }
-          );
-
-        }
-
-      }
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   PRODUCTS
-   ========================================================= */
-
-let allProducts = [];
-
-let activeCategory = "All";
-
-let autoScrollInterval = null;
-
-let currentUser = null;
-
-let userWishlistIds = {};
-
-
-/* =========================================================
-   SKELETONS
-   ========================================================= */
-
-showSkeletons();
-
-
-function showSkeletons() {
-
-  const grid =
-    document.getElementById(
-      'productGrid'
-    );
-
-  grid.innerHTML = "";
-
-
-  for (
-    let i = 0;
-    i < 8;
-    i++
-  ) {
-
-    grid.innerHTML += `
-
-      <div class="skeleton-card">
-
-        <div class="skeleton-img"></div>
-
-        <div class="skeleton-info">
-
-          <div
-            class="skeleton-line"
-            style="width:80%;"
-          ></div>
-
-          <div
-            class="skeleton-line"
-            style="
-              width:40%;
-              margin-top:6px;
-            "
-          ></div>
-
-          <div
-            class="skeleton-line"
-            style="
-              width:60%;
-              margin-top:auto;
-            "
-          ></div>
-
-          <div
-            class="skeleton-line"
-            style="
-              height:38px;
-              border-radius:12px;
-              margin-top:8px;
-            "
-          ></div>
-
-        </div>
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-
-/* =========================================================
-   PRODUCT CLICK
-   ========================================================= */
-
-function trackProductClickAndRedirect(
-  productId
-) {
-
-  let viewedProducts =
-    JSON.parse(
-      localStorage.getItem(
-        'viewedProductIds'
-      ) || "[]"
-    );
-
-
-  let visitCounted =
-    localStorage.getItem(
-      'visitCounted'
-    ) === 'true';
-
-
-  if (
-    !viewedProducts.includes(
-      productId
-    )
-  ) {
-
-    viewedProducts.push(
-      productId
-    );
-
-    localStorage.setItem(
-      'viewedProductIds',
-      JSON.stringify(
-        viewedProducts
-      )
-    );
-
-  }
-
-
-  const affId =
-    localStorage.getItem(
-      'cartPrime_affiliateId'
-    );
-
-
-  const userName =
-    localStorage.getItem(
-      'partnerName'
-    ) ||
-    localStorage.getItem(
-      'userName'
-    ) ||
-    '';
-
-
-  const userPhone =
-    localStorage.getItem(
-      'partnerPhone'
-    ) ||
-    localStorage.getItem(
-      'userPhone'
-    ) ||
-    '';
-
-
-  let queryParams = [
-    `id=${encodeURIComponent(
-      productId
-    )}`
-  ];
-
-
-  if (affId) {
-
-    queryParams.push(
-      `ref=${encodeURIComponent(
-        affId
-      )}`
-    );
-
-  }
-
-
-  if (userName) {
-
-    queryParams.push(
-      `name=${encodeURIComponent(
-        userName
-      )}`
-    );
-
-  }
-
-
-  if (userPhone) {
-
-    queryParams.push(
-      `phone=${encodeURIComponent(
-        userPhone
-      )}`
-    );
-
-  }
-
-
-  const finalUrl =
-    `/product-details?${queryParams.join(
-      '&'
-    )}`;
-
-
-  if (
-    viewedProducts.length >= 5 &&
-    !visitCounted
-  ) {
-
-    const visitsRef =
-      ref(
-        db,
-        'admin/visits'
-      );
-
-
-    get(visitsRef)
-      .then(
-        (snapshot) => {
-
-          let currentVisits =
-            snapshot.exists()
-              ? snapshot.val()
-              : 0;
-
-
-          set(
-            visitsRef,
-            currentVisits + 1
-          )
-          .then(
-            () => {
-
-              localStorage.setItem(
-                'visitCounted',
-                'true'
-              );
-
-              window.location.href =
-                finalUrl;
-
-            }
-          )
-          .catch(
-            () => {
-
-              window.location.href =
-                finalUrl;
-
-            }
-          );
-
-        }
-      )
-      .catch(
-        () => {
-
-          window.location.href =
-            finalUrl;
-
-        }
-      );
-
-  }
-
-  else {
-
-    window.location.href =
-      finalUrl;
-
-  }
-
-}
-
-
-/* =========================================================
-   CLEAN HTML URL
-   ========================================================= */
-
-if (
-  window.location.pathname.endsWith(
-    '.html'
-  )
-) {
-
-  let cleanPath =
-    window.location.pathname
-      .replace(
-        '.html',
-        ''
-      );
-
-
-  if (
-    cleanPath.endsWith(
-      '/index'
-    )
-  ) {
-
-    cleanPath = '/';
-
-  }
-
-
-  window.history.replaceState(
-    null,
-    '',
-    cleanPath +
-    window.location.search
-  );
-
-}
-
-
-/* =========================================================
-   LOGO
-   ========================================================= */
-
-document
-  .getElementById(
-    'navLogo'
-  )
-  .addEventListener(
-    'click',
-    () => {
-
-      window.location.href =
-        "/";
-
-    }
-  );
-
-
-/* =========================================================
-   BADGES
-   ========================================================= */
-
-function updateBadges(user) {
-
-  const bottomWishlistBadge =
-    document.getElementById(
-      'bottomWishlistBadge'
-    );
-
-  const bottomOrdersBadge =
-    document.getElementById(
-      'bottomOrdersBadge'
-    );
-
-  const bottomEarnBadge =
-    document.getElementById(
-      'bottomEarnBadge'
-    );
-
-
-  if (user) {
-
-    onValue(
-      ref(
-        db,
-        `wishlist/${user.uid}`
-      ),
-      (snapshot) => {
-
-        if (snapshot.exists()) {
-
-          userWishlistIds =
-            snapshot.val();
-
-        }
-
-        else {
-
-          userWishlistIds =
-            {};
-
-        }
-
-
-        updateWishlistUIAndBadge(
-          bottomWishlistBadge
-        );
-
-      }
-    );
-
-  }
-
-  else {
-
-    let localWishlist =
-      JSON.parse(
-        localStorage.getItem(
-          'guestWishlist'
-        ) || "{}"
-      );
-
-
-    userWishlistIds =
-      localWishlist;
-
-
-    updateWishlistUIAndBadge(
-      bottomWishlistBadge
-    );
-
-  }
-
-
-  const phoneSources = [
-
-    localStorage.getItem(
-      'userPhone'
-    ),
-
-    localStorage.getItem(
-      'cartPrime_LastOrderPhone'
-    ),
-
-    localStorage.getItem(
-      'cartPrime_Phone'
-    ),
-
-    user
-      ? user.phoneNumber
-      : null
-
-  ];
-
-
-  let targetPhone =
-    phoneSources.find(
-      p =>
-        p &&
-        p.trim() !== ""
-    );
-
-
-  if (targetPhone) {
-
-    onValue(
-      ref(
-        db,
-        `orders/${targetPhone}`
-      ),
-      (snapshot) => {
-
-        const count =
-          snapshot.exists()
-            ? Object.keys(
-                snapshot.val()
-              ).length
-            : 0;
-
-
-        if (count > 0) {
-
-          if (
-            bottomOrdersBadge
-          ) {
-
-            bottomOrdersBadge.textContent =
-              count;
-
-            bottomOrdersBadge.style.display =
-              'flex';
-
+    }); 
+  } 
+
+  let allProducts = []; 
+  let activeCategory = "All"; 
+  let autoScrollInterval = null; 
+  let currentUser = null; 
+  let userWishlistIds = {}; 
+
+  showSkeletons(); 
+
+  function showSkeletons() { 
+    const grid = document.getElementById('productGrid'); 
+    if(!grid) return;
+    grid.innerHTML = ""; 
+    for (let i = 0; i < 8; i++) { 
+      grid.innerHTML += ` 
+        <div class="skeleton-card"> 
+          <div class="skeleton-img"></div> 
+          <div class="skeleton-info"> 
+            <div class="skeleton-line" style="width: 80%;"></div> 
+            <div class="skeleton-line" style="width: 40%; margin-top: 6px;"></div> 
+            <div class="skeleton-line" style="width: 60%; margin-top: auto;"></div> 
+            <div class="skeleton-line" style="height: 38px; border-radius: 12px; margin-top: 8px;"></div> 
+          </div> 
+        </div> 
+      `; 
+    } 
+  } 
+
+  function trackProductClickAndRedirect(productId) { 
+    let viewedProducts = JSON.parse(localStorage.getItem('viewedProductIds') || "[]"); 
+    let visitCounted = localStorage.getItem('visitCounted') === 'true'; 
+    if (!viewedProducts.includes(productId)) { 
+      viewedProducts.push(productId); 
+      localStorage.setItem('viewedProductIds', JSON.stringify(viewedProducts)); 
+    } 
+
+    const affId = localStorage.getItem('cartPrime_affiliateId'); 
+    const userName = localStorage.getItem('partnerName') || localStorage.getItem('userName') || '';
+    const userPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone') || '';
+
+    let queryParams = [`id=${encodeURIComponent(productId)}`];
+    if (affId) queryParams.push(`ref=${encodeURIComponent(affId)}`);
+    if (userName) queryParams.push(`name=${encodeURIComponent(userName)}`);
+    if (userPhone) queryParams.push(`phone=${encodeURIComponent(userPhone)}`);
+
+    const finalUrl = `/product-details?${queryParams.join('&')}`;
+
+    if (viewedProducts.length >= 5 && !visitCounted) { 
+      const visitsRef = ref(db, 'admin/visits'); 
+      get(visitsRef).then((snapshot) => { 
+        let currentVisits = snapshot.exists() ? snapshot.val() : 0; 
+        set(visitsRef, currentVisits + 1).then(() => { 
+          localStorage.setItem('visitCounted', 'true'); 
+          window.location.href = finalUrl; 
+        }).catch(() => { 
+          window.location.href = finalUrl; 
+        }); 
+      }).catch(() => { 
+        window.location.href = finalUrl; 
+      }); 
+    } else { 
+      window.location.href = finalUrl; 
+    } 
+  } 
+
+  if (window.location.pathname.endsWith('.html')) { 
+    let cleanPath = window.location.pathname.replace('.html', ''); 
+    if (cleanPath.endsWith('/index')) cleanPath = '/'; 
+    window.history.replaceState(null, '', cleanPath + window.location.search); 
+  } 
+
+  document.getElementById('navLogo').addEventListener('click', () => { 
+    window.location.href = "/"; 
+  }); 
+
+  function updateBadges(user) { 
+    const bottomWishlistBadge = document.getElementById('bottomWishlistBadge'); 
+    const bottomOrdersBadge = document.getElementById('bottomOrdersBadge'); 
+    const bottomEarnBadge = document.getElementById('bottomEarnBadge');
+
+    if (user) { 
+      onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => { 
+        if (snapshot.exists()) { 
+          userWishlistIds = snapshot.val(); 
+        } else { 
+          userWishlistIds = {}; 
+        } 
+        updateWishlistUIAndBadge(bottomWishlistBadge); 
+      }); 
+    } else { 
+      let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
+      userWishlistIds = localWishlist; 
+      updateWishlistUIAndBadge(bottomWishlistBadge); 
+    } 
+
+    const phoneSources = [ 
+      localStorage.getItem('userPhone'), 
+      localStorage.getItem('cartPrime_LastOrderPhone'), 
+      localStorage.getItem('cartPrime_Phone'), 
+      user ? user.phoneNumber : null 
+    ]; 
+    let targetPhone = phoneSources.find(p => p && p.trim() !== ""); 
+    if (targetPhone) { 
+      onValue(ref(db, `orders/${targetPhone}`), (snapshot) => { 
+        const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0; 
+        if (count > 0) { 
+          if(bottomOrdersBadge) {
+            bottomOrdersBadge.textContent = count;
+            bottomOrdersBadge.style.display = 'flex';
           }
+        } else { 
+          if(bottomOrdersBadge) bottomOrdersBadge.style.display = 'none';
+        } 
+      }); 
+    } else { 
+      if(bottomOrdersBadge) bottomOrdersBadge.style.display = 'none';
+    } 
 
-        }
+    const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    const partnerId = localStorage.getItem('partnerId');
 
-        else {
+    if (partnerPhone || partnerId) {
+      const directRefPath = partnerPhone ? ref(db, `ReferralOrders/${partnerPhone}`) : null;
 
-          if (
-            bottomOrdersBadge
-          ) {
+      if (directRefPath) {
+        onValue(directRefPath, (snapshot) => {
+          let directCount = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
 
-            bottomOrdersBadge.style.display =
-              'none';
-
-          }
-
-        }
-
-      }
-    );
-
-  }
-
-  else {
-
-    if (
-      bottomOrdersBadge
-    ) {
-
-      bottomOrdersBadge.style.display =
-        'none';
-
-    }
-
-  }
-
-
-  const partnerPhone =
-    localStorage.getItem(
-      'partnerPhone'
-    ) ||
-    localStorage.getItem(
-      'userPhone'
-    );
-
-
-  const partnerId =
-    localStorage.getItem(
-      'partnerId'
-    );
-
-
-  if (
-    partnerPhone ||
-    partnerId
-  ) {
-
-    const directRefPath =
-      partnerPhone
-        ? ref(
-            db,
-            `ReferralOrders/${partnerPhone}`
-          )
-        : null;
-
-
-    if (directRefPath) {
-
-      onValue(
-        directRefPath,
-        (snapshot) => {
-
-          let directCount =
-            snapshot.exists()
-              ? Object.keys(
-                  snapshot.val()
-                ).length
-              : 0;
-
-
-          if (
-            directCount > 0
-          ) {
-
-            if (
-              bottomEarnBadge
-            ) {
-
-              bottomEarnBadge.textContent =
-                directCount;
-
-              bottomEarnBadge.style.display =
-                'flex';
-
+          if (directCount > 0) {
+            if (bottomEarnBadge) {
+              bottomEarnBadge.textContent = directCount;
+              bottomEarnBadge.style.display = 'flex';
             }
-
-          }
-
-          else {
-
-            onValue(
-              ref(
-                db,
-                'ReferralOrders'
-              ),
-              (allRefOrdersSnap) => {
-
-                let totalCount = 0;
-
-
-                if (
-                  allRefOrdersSnap.exists()
-                ) {
-
-                  allRefOrdersSnap.forEach(
-                    childSnap => {
-
-                      const val =
-                        childSnap.val();
-
-
-                      if (
-
-                        childSnap.key ===
-                          partnerPhone ||
-
-                        childSnap.key ===
-                          partnerId ||
-
-                        (
-                          val &&
-                          (
-                            val.partnerPhone ===
-                              partnerPhone ||
-
-                            val.partnerId ===
-                              partnerId ||
-
-                            val.ref ===
-                              partnerId ||
-
-                            val.affiliateId ===
-                              partnerId
-                          )
-                        )
-
-                      ) {
-
-                        if (
-                          typeof val ===
-                            'object' &&
-                          !val.orderId &&
-                          !val.price
-                        ) {
-
-                          totalCount +=
-                            Object.keys(
-                              val
-                            ).length;
-
-                        }
-
-                        else {
-
-                          totalCount++;
-
-                        }
-
-                      }
-
-                    }
-                  );
-
-                }
-
-
-                if (
-                  totalCount > 0 &&
-                  bottomEarnBadge
-                ) {
-
-                  bottomEarnBadge.textContent =
-                    totalCount;
-
-                  bottomEarnBadge.style.display =
-                    'flex';
-
-                }
-
-                else {
-
-                  onValue(
-                    ref(
-                      db,
-                      `earn_orders/${partnerPhone}`
-                    ),
-                    (earnSnap) => {
-
-                      let earnOrdersCount =
-                        earnSnap.exists()
-                          ? Object.keys(
-                              earnSnap.val()
-                            ).length
-                          : 0;
-
-
-                      onValue(
-                        ref(
-                          db,
-                          `wallet/${partnerPhone}/orders`
-                        ),
-                        (walletSnap) => {
-
-                          let walletCount =
-                            walletSnap.exists()
-                              ? Object.keys(
-                                  walletSnap.val()
-                                ).length
-                              : 0;
-
-
-                          let finalEarnCount =
-                            Math.max(
-                              earnOrdersCount,
-                              walletCount
-                            );
-
-
-                          if (
-                            finalEarnCount > 0 &&
-                            bottomEarnBadge
-                          ) {
-
-                            bottomEarnBadge.textContent =
-                              finalEarnCount;
-
-                            bottomEarnBadge.style.display =
-                              'flex';
-
-                          }
-
-                          else if (
-                            bottomEarnBadge
-                          ) {
-
-                            bottomEarnBadge.style.display =
-                              'none';
-
-                          }
-
-                        }
-                      );
-
-                    }
-                  );
-
-                }
-
-              }
-            );
-
-          }
-
-        }
-      );
-
-    }
-
-    else {
-
-      if (
-        bottomEarnBadge
-      ) {
-
-        bottomEarnBadge.style.display =
-          'none';
-
-      }
-
-    }
-
-  }
-
-  else {
-
-    if (
-      bottomEarnBadge
-    ) {
-
-      bottomEarnBadge.style.display =
-        'none';
-
-    }
-
-  }
-
-}
-
-
-/* =========================================================
-   WISHLIST UI
-   ========================================================= */
-
-function updateWishlistUIAndBadge(
-  bottomWishlistBadge
-) {
-
-  const count =
-    Object.keys(
-      userWishlistIds
-    ).length;
-
-
-  if (count > 0) {
-
-    if (
-      bottomWishlistBadge
-    ) {
-
-      bottomWishlistBadge.textContent =
-        count;
-
-      bottomWishlistBadge.style.display =
-        'flex';
-
-    }
-
-  }
-
-  else {
-
-    if (
-      bottomWishlistBadge
-    ) {
-
-      bottomWishlistBadge.style.display =
-        'none';
-
-    }
-
-  }
-
-
-  if (
-    allProducts.length > 0
-  ) {
-
-    let filtered =
-      allProducts;
-
-
-    if (
-      activeCategory !==
-      "All"
-    ) {
-
-      filtered =
-        allProducts.filter(
-          p =>
-            p.category &&
-            p.category
-              .trim()
-              .toLowerCase() ===
-            activeCategory.toLowerCase()
-        );
-
-    }
-
-
-    renderProducts(
-      filtered
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   AUTH
-   ========================================================= */
-
-onAuthStateChanged(
-  auth,
-  (user) => {
-
-    currentUser =
-      user;
-
-    updateBadges(
-      user
-    );
-
-  }
-);
-
-
-updateBadges(
-  null
-);
-
-
-/* =========================================================
-   PRODUCTS FIREBASE
-   ========================================================= */
-
-onValue(
-  ref(
-    db,
-    'products'
-  ),
-  (snapshot) => {
-
-    allProducts = [];
-
-
-    snapshot.forEach(
-      child => {
-
-        const data =
-          child.val();
-
-        data.id =
-          child.key;
-
-        allProducts.push(
-          data
-        );
-
-      }
-    );
-
-
-    renderCategoryBar();
-
-    renderProducts(
-      allProducts
-    );
-
-  }
-);
-
-
-/* =========================================================
-   BANNERS
-   ========================================================= */
-
-const bannerSection =
-  document.getElementById(
-    'bannerSection'
-  );
-
-const bannerSlider =
-  document.getElementById(
-    'bannerSlider'
-  );
-
-const bannerDots =
-  document.getElementById(
-    'bannerDots'
-  );
-
-
-onValue(
-  ref(
-    db,
-    'banners'
-  ),
-  (snapshot) => {
-
-    if (snapshot.exists()) {
-
-      bannerSlider.innerHTML =
-        "";
-
-      bannerDots.innerHTML =
-        "";
-
-
-      let index = 0;
-
-
-      snapshot.forEach(
-        child => {
-
-          const bannerData =
-            child.val();
-
-
-          const imgUrl =
-            bannerData.imageUrl ||
-            bannerData.image ||
-            bannerData.url;
-
-
-          if (imgUrl) {
-
-            const item =
-              document.createElement(
-                'div'
-              );
-
-
-            item.className =
-              'banner-item';
-
-
-            item.innerHTML =
-              `<img src="${imgUrl}" alt="Promo Banner">`;
-
-
-            const targetLink =
-              bannerData.redirectLink ||
-              bannerData.link ||
-              bannerData.targetUrl ||
-              bannerData.url ||
-              bannerData.redirectUrl;
-
-
-            item.addEventListener(
-              'click',
-              () => {
-
-                if (
-                  targetLink &&
-                  targetLink
-                    .toString()
-                    .trim() !== ""
-                ) {
-
-                  let linkStr =
-                    targetLink
-                      .toString()
-                      .trim();
-
-
+          } else {
+            onValue(ref(db, 'ReferralOrders'), (allRefOrdersSnap) => {
+              let totalCount = 0;
+              if (allRefOrdersSnap.exists()) {
+                allRefOrdersSnap.forEach(childSnap => {
+                  const val = childSnap.val();
                   if (
-                    linkStr.startsWith(
-                      'http://'
-                    ) ||
-                    linkStr.startsWith(
-                      'https://'
-                    )
+                    childSnap.key === partnerPhone ||
+                    childSnap.key === partnerId ||
+                    (val && (val.partnerPhone === partnerPhone || val.partnerId === partnerId || val.ref === partnerId || val.affiliateId === partnerId))
                   ) {
-
-                    window.location.href =
-                      linkStr;
-
+                    if (typeof val === 'object' && !val.orderId && !val.price) {
+                      totalCount += Object.keys(val).length;
+                    } else {
+                      totalCount++;
+                    }
                   }
-
-                  else {
-
-                    window.location.href =
-                      linkStr.startsWith(
-                        '/'
-                      )
-                        ? linkStr
-                        : `/${linkStr}`;
-
-                  }
-
-                }
-
-                else if (
-                  bannerData.productId
-                ) {
-
-                  trackProductClickAndRedirect(
-                    bannerData.productId
-                  );
-
-                }
-
-                else if (
-                  bannerData.category
-                ) {
-
-                  activeCategory =
-                    bannerData.category;
-
-
-                  const filtered =
-                    allProducts.filter(
-                      p =>
-                        p.category &&
-                        p.category
-                          .trim()
-                          .toLowerCase() ===
-                        activeCategory
-                          .toLowerCase()
-                    );
-
-
-                  renderProducts(
-                    filtered
-                  );
-
-
-                  document
-                    .querySelectorAll(
-                      '.category-btn'
-                    )
-                    .forEach(
-                      b => {
-
-                        if (
-                          b.getAttribute(
-                            'data-cat'
-                          )
-                          .toLowerCase() ===
-                          activeCategory
-                            .toLowerCase()
-                        ) {
-
-                          b.classList.add(
-                            'active'
-                          );
-
-                        }
-
-                        else {
-
-                          b.classList.remove(
-                            'active'
-                          );
-
-                        }
-
-                      }
-                    );
-
-                }
-
+                });
               }
-            );
 
+              if (totalCount > 0 && bottomEarnBadge) {
+                bottomEarnBadge.textContent = totalCount;
+                bottomEarnBadge.style.display = 'flex';
+              } else {
+                onValue(ref(db, `earn_orders/${partnerPhone}`), (earnSnap) => {
+                  let earnOrdersCount = earnSnap.exists() ? Object.keys(earnSnap.val()).length : 0;
+                  onValue(ref(db, `wallet/${partnerPhone}/orders`), (walletSnap) => {
+                    let walletCount = walletSnap.exists() ? Object.keys(walletSnap.val()).length : 0;
+                    let finalEarnCount = Math.max(earnOrdersCount, walletCount);
 
-            bannerSlider.appendChild(
-              item
-            );
-
-
-            const dot =
-              document.createElement(
-                'div'
-              );
-
-
-            dot.className =
-              `dot ${
-                index === 0
-                  ? 'active'
-                  : ''
-              }`;
-
-
-            dot.setAttribute(
-              'data-index',
-              index
-            );
-
-
-            bannerDots.appendChild(
-              dot
-            );
-
-
-            index++;
-
+                    if (finalEarnCount > 0 && bottomEarnBadge) {
+                      bottomEarnBadge.textContent = finalEarnCount;
+                      bottomEarnBadge.style.display = 'flex';
+                    } else if (bottomEarnBadge) {
+                      bottomEarnBadge.style.display = 'none';
+                    }
+                  });
+                });
+              }
+            });
           }
+        });
+      } else {
+        if (bottomEarnBadge) bottomEarnBadge.style.display = 'none';
+      }
+    } else {
+      if (bottomEarnBadge) bottomEarnBadge.style.display = 'none';
+    }
+  } 
 
+  function updateWishlistUIAndBadge(bottomWishlistBadge) { 
+    const count = Object.keys(userWishlistIds).length; 
+    if (count > 0) { 
+      if(bottomWishlistBadge) {
+        bottomWishlistBadge.textContent = count;
+        bottomWishlistBadge.style.display = 'flex';
+      }
+    } else { 
+      if(bottomWishlistBadge) bottomWishlistBadge.style.display = 'none';
+    } 
+    if (allProducts.length > 0) { 
+      let filtered = allProducts; 
+      if (activeCategory !== "All") { 
+        filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase()); 
+      } 
+      renderProducts(filtered); 
+    } 
+  } 
+
+  onAuthStateChanged(auth, (user) => { 
+    currentUser = user; 
+    updateBadges(user); 
+  }); 
+
+  updateBadges(null); 
+
+  onValue(ref(db, 'products'), (snapshot) => { 
+    allProducts = []; 
+    snapshot.forEach(child => { 
+      const data = child.val(); 
+      data.id = child.key; 
+      allProducts.push(data); 
+    }); 
+    renderCategoryBar(); 
+    renderProducts(allProducts); 
+  }); 
+
+  const bannerSection = document.getElementById('bannerSection'); 
+  const bannerSlider = document.getElementById('bannerSlider'); 
+  const bannerDots = document.getElementById('bannerDots'); 
+
+  onValue(ref(db, 'banners'), (snapshot) => { 
+    if (snapshot.exists()) { 
+      bannerSlider.innerHTML = ""; 
+      bannerDots.innerHTML = ""; 
+      let index = 0; 
+      snapshot.forEach(child => { 
+        const bannerData = child.val(); 
+        const imgUrl = bannerData.imageUrl || bannerData.image || bannerData.url; 
+        if (imgUrl) { 
+          const item = document.createElement('div'); 
+          item.className = 'banner-item'; 
+          item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner">`; 
+          const targetLink = bannerData.redirectLink || bannerData.link || bannerData.targetUrl || bannerData.url || bannerData.redirectUrl; 
+          item.addEventListener('click', () => { 
+            if (targetLink && targetLink.toString().trim() !== "") { 
+              let linkStr = targetLink.toString().trim(); 
+              if (linkStr.startsWith('http://') || linkStr.startsWith('https://')) { 
+                window.location.href = linkStr; 
+              } else { 
+                window.location.href = linkStr.startsWith('/') ? linkStr : `/${linkStr}`; 
+              } 
+            } else if (bannerData.productId) { 
+              trackProductClickAndRedirect(bannerData.productId); 
+            } else if (bannerData.category) { 
+              activeCategory = bannerData.category; 
+              const filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase()); 
+              renderProducts(filtered); 
+              document.querySelectorAll('.category-btn').forEach(b => { 
+                if(b.getAttribute('data-cat').toLowerCase() === activeCategory.toLowerCase()) b.classList.add('active'); 
+                else b.classList.remove('active'); 
+              }); 
+            } 
+          }); 
+          bannerSlider.appendChild(item); 
+          const dot = document.createElement('div'); 
+          dot.className = `dot ${index === 0 ? 'active' : ''}`; 
+          dot.setAttribute('data-index', index); 
+          bannerDots.appendChild(dot); 
+          index++; 
+        } 
+      }); 
+      if (index > 0) { 
+        bannerSection.style.display = 'block'; 
+        initializeSliderScroll(); 
+      } else { 
+        bannerSection.style.display = 'none'; 
+      } 
+    } else { 
+      bannerSection.style.display = 'none'; 
+    } 
+  }); 
+
+  function initializeSliderScroll() { 
+    const slider = document.getElementById('bannerSlider'); 
+    const dots = document.querySelectorAll('.dot'); 
+    const totalBanners = dots.length; 
+    if (totalBanners === 0 || !slider) return; 
+    if (autoScrollInterval) clearInterval(autoScrollInterval); 
+
+    const startAutoScroll = () => { 
+      autoScrollInterval = setInterval(() => { 
+        const width = slider.clientWidth; 
+        const currentScroll = slider.scrollLeft; 
+        let nextIndex = Math.round(currentScroll / width) + 1; 
+        if (nextIndex >= totalBanners) { 
+          nextIndex = 0; 
+        } 
+        slider.scrollTo({ left: nextIndex * width, behavior: 'smooth' }); 
+      }, 3500); 
+    }; 
+    startAutoScroll(); 
+
+    slider.addEventListener('scroll', () => { 
+      const width = slider.clientWidth; 
+      const scrollLeft = slider.scrollLeft; 
+      const activeIndex = Math.round(scrollLeft / width); 
+      dots.forEach((dot, idx) => { 
+        if (idx === activeIndex) dot.classList.add('active'); 
+        else dot.classList.remove('active'); 
+      }); 
+    }); 
+
+    dots.forEach(dot => { 
+      dot.addEventListener('click', (e) => { 
+        clearInterval(autoScrollInterval); 
+        const idx = parseInt(e.target.getAttribute('data-index')); 
+        const width = slider.clientWidth; 
+        slider.scrollTo({ left: idx * width, behavior: 'smooth' }); 
+        startAutoScroll(); 
+      }); 
+    }); 
+
+    slider.addEventListener('touchstart', () => clearInterval(autoScrollInterval)); 
+    slider.addEventListener('touchend', () => startAutoScroll()); 
+  } 
+
+  function renderCategoryBar() {
+    const categoryBar = document.getElementById('categoryBar');
+    if (!categoryBar) return;
+    
+    const categories = ["All", ...new Set(allProducts.map(p => p.category).filter(Boolean))];
+    categoryBar.innerHTML = categories.map(cat => `
+      <button class="category-btn ${cat.toLowerCase() === activeCategory.toLowerCase() ? 'active' : ''}" data-cat="${cat}">
+        ${cat}
+      </button>
+    `).join('');
+
+    categoryBar.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const cat = e.currentTarget.getAttribute('data-cat');
+        activeCategory = cat;
+        
+        categoryBar.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+
+        let filtered = allProducts;
+        if (cat !== "All") {
+          filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === cat.toLowerCase());
         }
+        renderProducts(filtered);
+      });
+    });
+  }
+
+  function renderProducts(products) {
+    const grid = document.getElementById('productGrid');
+    if (!grid) return;
+
+    if (products.length === 0) {
+      grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">No products found.</div>`;
+      return;
+    }
+
+    grid.innerHTML = products.map(product => {
+      const isWishlisted = !!userWishlistIds[product.id];
+      const discount = product.mrp && product.mrp > product.price 
+        ? Math.round(((product.mrp - product.price) / product.mrp) * 100) 
+        : 0;
+
+      return `
+        <div class="card" data-id="${product.id}">
+          <div class="image-box">
+            <img src="${product.imageUrl || product.image || 'https://via.placeholder.com/200'}" alt="${product.name}">
+            ${product.stock === false || product.outOfStock ? `<span class="stock-badge">Out of Stock</span>` : ''}
+            ${discount > 0 ? `<span class="discount-badge ${isWishlisted ? 'with-wishlist' : ''}">${discount}% OFF</span>` : ''}
+            <div class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" data-wishlist-id="${product.id}">
+              <i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart"></i>
+            </div>
+            <div class="verified-tag">
+              <i class="fa-solid fa-circle-check"></i> Verified
+            </div>
+          </div>
+          <div class="card-info">
+            <h3>${product.name}</h3>
+            <div class="price-container">
+              <span class="price">₹${product.price}</span>
+              ${product.mrp ? `<span class="mrp">₹${product.mrp}</span>` : ''}
+            </div>
+            <button class="buy-btn" ${product.stock === false || product.outOfStock ? 'disabled' : ''}>
+              ${product.stock === false || product.outOfStock ? 'Out of Stock' : 'Buy Now'}
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    grid.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.card-wishlist-btn')) return;
+        const id = card.getAttribute('data-id');
+        trackProductClickAndRedirect(id);
+      });
+    });
+
+    grid.querySelectorAll('.card-wishlist-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const productId = btn.getAttribute('data-wishlist-id');
+        toggleWishlist(productId);
+      });
+    });
+  }
+
+  function toggleWishlist(productId) {
+    if (currentUser) {
+      const wishRef = ref(db, `wishlist/${currentUser.uid}/${productId}`);
+      if (userWishlistIds[productId]) {
+        remove(wishRef);
+      } else {
+        set(wishRef, true);
+      }
+    } else {
+      let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}");
+      if (localWishlist[productId]) {
+        delete localWishlist[productId];
+      } else {
+        localWishlist[productId] = true;
+      }
+      localStorage.setItem('guestWishlist', JSON.stringify(localWishlist));
+      userWishlistIds = localWishlist;
+      updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge'));
+    }
+  }
+
+  /* --- Search & Suggestions Logic --- */
+  const searchInput = document.getElementById('searchInput');
+  const searchSuggestions = document.getElementById('searchSuggestions');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.trim().toLowerCase();
+      if (!query) {
+        searchSuggestions.style.display = 'none';
+        renderProducts(allProducts);
+        return;
+      }
+
+      const matches = allProducts.filter(p => 
+        p.name && p.name.toLowerCase().includes(query)
       );
 
+      if (matches.length > 0) {
+        searchSuggestions.innerHTML = matches.slice(0, 6).map(p => `
+          <div class="suggestion-item" data-id="${p.id}">
+            <img src="${p.imageUrl || p.image || 'https://via.placeholder.com/40'}" alt="${p.name}">
+            <div class="suggestion-info">
+              <h4>${p.name}</h4>
+              <p>₹${p.price}</p>
+            </div>
+          </div>
+        `).join('');
+        searchSuggestions.style.display = 'block';
 
-      if (index > 0) {
-
-        bannerSection.style.display =
-          'block';
-
-        initializeSliderScroll();
-
+        searchSuggestions.querySelectorAll('.suggestion-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const id = item.getAttribute('data-id');
+            trackProductClickAndRedirect(id);
+          });
+        });
+      } else {
+        searchSuggestions.style.display = 'none';
       }
 
-      else {
+      renderProducts(matches);
+    });
 
-        bannerSection.style.display =
-          'none';
-
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-container')) {
+        searchSuggestions.style.display = 'none';
       }
-
-    }
-
-    else {
-
-      bannerSection.style.display =
-        'none';
-
-    }
-
+    });
   }
-);
-
-
-/* =========================================================
-   BANNER SLIDER
-   ========================================================= */
-
-function initializeSliderScroll() {
-
-  const slider =
-    document.getElementById(
-      'bannerSlider'
-    );
-
-
-  const dots =
-    document.querySelectorAll(
-      '.dot'
-    );
-
-
-  const totalBanners =
-    dots.length;
-
-
-  if (totalBanners === 0)
-    return;
-
-
-  if (autoScrollInterval)
-    clearInterval(
-      autoScrollInterval
-    );
-
-
-  const startAutoScroll =
-    () => {
-
-      autoScrollInterval =
-        setInterval(
-          () => {
-
-            const width =
-              slider.clientWidth;
-
-            const currentScroll =
-              slider.scrollLeft;
-
-
-            let nextIndex =
-              Math.round(
-                currentScroll /
-                width
-              ) + 1;
-
-
-            if (
-              nextIndex >=
-              totalBanners
-            ) {
-
-              nextIndex = 0;
-
-            }
-
-
-            slider.scrollTo(
-              {
-                left:
-                  nextIndex *
-                  width,
-
-                behavior:
-                  'smooth'
-              }
-            );
-
-          },
-          3500
-        );
-
-    };
-
-
-  startAutoScroll();
-
-
-  slider.addEventListener(
-    'scroll',
-    () => {
-
-      const width =
-        slider.clientWidth;
-
-
-      const scrollLeft =
-        slider.scrollLeft;
-
-
-      const activeIndex =
-        Math.round(
-         
+</script> 
+</body> 
+</html>
