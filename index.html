@@ -7,7 +7,7 @@
 <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"> 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
-<link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-09-20-b4b944f2-2047-4c3b-ace2-348521478b38.png" sizes="96x96" />
+ <link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-09-20-b4b944f2-2047-4c3b-ace2-348521478b38.png" sizes="96x96" />
 <style> 
 /* --- Light Theme Variables --- */ 
 :root { 
@@ -1801,6 +1801,8 @@ nav {
     renderNotifications();
   }
 
+  // Adds a client-side only notification (e.g. OTP sent) that shows up under
+  // the bell icon immediately, without needing a logged-in phone/Firebase.
   function addLocalNotification(title, message, iconClass = 'fa-bell') {
     const id = `local_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     localNotifications[id] = {
@@ -1878,6 +1880,7 @@ nav {
         if (phone) {
           delete notificationsData[notifId];
           renderNotifications();
+
           remove(ref(db, `earn_partners/${phone}/notifications/${notifId}`));
         }
       });
@@ -1899,12 +1902,16 @@ nav {
 
   listenNotifications();
 
-  let registrationStep = 1; 
+
+  let registrationStep = 1; // 1: Enter Phone, 2: Enter OTP, 3: Enter Name (if new user)
   let pendingPhone = "";
   let pendingExistingName = "";
   let isNewUserSession = false;
   let generatedOtpCode = "";
 
+  // Shows the OTP as a real notification-style popup (uses the same premium
+  // toast used elsewhere in the app; falls back to a system notification if
+  // the user has already granted notification permission).
   function showOtpNotificationPopup(phone, otp) {
     if ("Notification" in window && Notification.permission === "granted") {
       try {
@@ -1913,16 +1920,32 @@ nav {
           icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
         });
         return;
-      } catch (err) {}
+      } catch (err) {
+        // fall through to in-app toast below
+      }
     }
     showCustomAlert("OTP Sent", `Sent to ${phone}. Do not share this code with anyone.`, true, otp);
   }
 
+  // Function to send free OTP to user
   async function sendFreeOtpToUser(phoneNumber) {
     generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
     console.log(`[CartPrime Security] Generated OTP for ${phoneNumber}: ${generatedOtpCode}`);
+
+    // Show the OTP as a notification-style popup instead of embedding it in the form text
     showOtpNotificationPopup(phoneNumber, generatedOtpCode);
+
+    // Also add it to the bell icon notification list so the user can see it there
     addLocalNotification("OTP Verification Code", `Your OTP for ${phoneNumber} is ${generatedOtpCode}. Do not share this code with anyone.`, 'fa-key');
+    
+    // സൗജന്യമായി Fast2SMS / Twilio API വഴി OTP അയക്കുന്നതിന്:
+    /*
+    try {
+      await fetch(`https://your-otp-api-provider.com/send?phone=${phoneNumber}&otp=${generatedOtpCode}`);
+    } catch(err) {
+      console.log("OTP API Send Error:", err);
+    }
+    */
   }
 
   function updateHeaderProfileUI() {
@@ -1943,7 +1966,7 @@ nav {
       userWelcomePhone.style.display = 'block';
       userWelcomeOtp.style.display = 'none';
       userWelcomeName.style.display = 'block';
-      registrationStep = 3; 
+      registrationStep = 3; // Edit mode
       welcomeModalTitle.textContent = "Edit Your Profile";
       welcomeModalSub.textContent = "Update your details below.";
       if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
@@ -1965,6 +1988,7 @@ nav {
     logoutBtn.addEventListener('click', () => {
       const currentPhone = localStorage.getItem('userPhone');
       if (currentPhone) {
+        // Clear session token in database on explicit logout
         update(ref(db, `users/${currentPhone}`), { sessionToken: null });
       }
       localStorage.removeItem('userName');
@@ -2009,10 +2033,12 @@ nav {
     welcomeForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      // STEP 1: Phone submission -> Request OTP
       if (registrationStep === 1) {
         const phone = userWelcomePhone.value.trim();
         if (!phone) return;
 
+        // SINGLE SESSION CHECK: Already logged in with a different phone number locally
         const existingActivePhone = localStorage.getItem('userPhone');
         if (existingActivePhone && existingActivePhone !== phone) {
           showCustomAlert("Already Logged In", "You are already logged in with another number. Please log out first before logging in with a different phone number.", false);
@@ -2024,6 +2050,7 @@ nav {
         loadingText.textContent = "Checking Mobile Number & Sending OTP...";
         verifyLoadingBox.style.display = 'flex';
 
+        // Send OTP
         await sendFreeOtpToUser(phone);
 
         const userRef = ref(db, `users/${phone}`);
@@ -2039,6 +2066,7 @@ nav {
             isNewUserSession = true;
           }
 
+          // Transition to OTP Step
           registrationStep = 2;
           userWelcomePhone.style.display = 'none';
           userWelcomeOtp.style.display = 'block';
@@ -2056,7 +2084,9 @@ nav {
           showCustomAlert("Error", "Could not verify details. Try again.", false);
         });
 
-      } else if (registrationStep === 2) {
+      } 
+      // STEP 2: OTP Verification
+      else if (registrationStep === 2) {
         const otpVal = userWelcomeOtp.value.trim();
         if (otpVal !== "OTP" && otpVal !== generatedOtpCode) {
           showCustomAlert("Invalid OTP", "Please enter the correct OTP.", false);
@@ -2064,6 +2094,7 @@ nav {
         }
 
         if (isNewUserSession) {
+          // Proceed to Name entry step
           registrationStep = 3;
           userWelcomeOtp.style.display = 'none';
           userWelcomeName.style.display = 'block';
@@ -2073,6 +2104,7 @@ nav {
           welcomeModalSub.textContent = "OTP Verified! Please enter your full name.";
           welcomeSubmitBtn.textContent = "Save Profile";
         } else {
+          // Existing user login complete -> Generate and store new Single-Device Session Token
           welcomeForm.style.display = 'none';
           verifyLoadingBox.style.display = 'flex';
           loadingText.textContent = "Logging you in...";
@@ -2082,6 +2114,7 @@ nav {
           localStorage.setItem('userPhone', pendingPhone);
           localStorage.setItem('sessionToken', newSessionToken);
 
+          // Update active single-device session token in Database (Logouts any other phone)
           update(ref(db, `users/${pendingPhone}`), {
             sessionToken: newSessionToken,
             lastLogin: Date.now()
@@ -2106,7 +2139,9 @@ nav {
             resetRegistrationForm();
           });
         }
-      } else if (registrationStep === 3) {
+      } 
+      // STEP 3: Save Name (New User Signup or Profile Edit)
+      else if (registrationStep === 3) {
         const name = userWelcomeName.value.trim();
         const phone = pendingPhone || localStorage.getItem('userPhone');
 
@@ -2377,7 +2412,6 @@ nav {
 
   function showSkeletons() { 
     const grid = document.getElementById('productGrid'); 
-    if(!grid) return;
     grid.innerHTML = ""; 
     for (let i = 0; i < 8; i++) { 
       grid.innerHTML += ` 
@@ -2646,7 +2680,7 @@ nav {
     const slider = document.getElementById('bannerSlider'); 
     const dots = document.querySelectorAll('.dot'); 
     const totalBanners = dots.length; 
-    if (totalBanners === 0 || !slider) return; 
+    if (totalBanners === 0) return; 
     if (autoScrollInterval) clearInterval(autoScrollInterval); 
 
     const startAutoScroll = () => { 
@@ -2686,162 +2720,183 @@ nav {
     slider.addEventListener('touchend', () => startAutoScroll()); 
   } 
 
-  function renderCategoryBar() {
-    const categoryBar = document.getElementById('categoryBar');
-    if (!categoryBar) return;
-    
-    const categories = ["All", ...new Set(allProducts.map(p => p.category).filter(Boolean))];
-    categoryBar.innerHTML = categories.map(cat => `
-      <button class="category-btn ${cat.toLowerCase() === activeCategory.toLowerCase() ? 'active' : ''}" data-cat="${cat}">
-        ${cat}
-      </button>
-    `).join('');
+  function renderCategoryBar() { 
+    const catBar = document.getElementById('categoryBar'); 
+    const categories = new Set(["Gadgets", "Fashion", "Watches", "Accessories"]); 
+    allProducts.forEach(p => { 
+      if (p.category && p.category.trim() !== "" && p.showOnHome !== false) { 
+        categories.add(p.category.trim()); 
+      } 
+    }); 
+    let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All">All</div>`; 
+    categories.forEach(cat => { 
+      barHtml += `<div class="category-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`; 
+    }); 
+    catBar.innerHTML = barHtml; 
+    document.querySelectorAll('.category-btn').forEach(btn => { 
+      btn.addEventListener('click', (e) => { 
+        activeCategory = e.target.getAttribute('data-cat'); 
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
+        e.target.classList.add('active'); 
+        let filtered = allProducts; 
+        if (activeCategory !== "All") { 
+          filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === activeCategory.toLowerCase()); 
+        } 
+        renderProducts(filtered); 
+      }); 
+    }); 
+  } 
 
-    categoryBar.querySelectorAll('.category-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const cat = e.currentTarget.getAttribute('data-cat');
-        activeCategory = cat;
-        
-        categoryBar.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
+  function renderProducts(products) { 
+    const grid = document.getElementById('productGrid'); 
+    grid.innerHTML = ""; 
+    let animationDelayIndex = 0; 
+    products.forEach((p) => { 
+      if (p.showOnHome === false) return; 
+      const isOut = p.outOfStock === true; 
+      const pr = parseFloat(p.price.toString().replace(/,/g, '')); 
+      const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr); 
+      let discTag = ""; 
+      let hasDisc = false; 
+      if(mr > pr) { 
+        const disc = Math.round(((mr - pr) / mr) * 100); 
+        hasDisc = true; 
+        discTag = `<div class="discount-badge ${hasDisc ? 'with-wishlist' : ''}">${disc}% OFF</div>`; 
+      } 
+      const isWishlisted = userWishlistIds[p.id] ? true : false; 
+      const card = document.createElement('div'); 
+      card.className = 'card'; 
+      card.style.animationDelay = `${animationDelayIndex * 0.08}s`; 
+      animationDelayIndex++; 
+      const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150'; 
+      card.innerHTML = ` 
+        ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''} 
+        ${!isOut ? discTag : ''} 
+        <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist" data-id="${p.id}"> 
+          <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
+        </button> 
+        <div class="image-box"> 
+          <img src="${productMainImg}" alt="${p.name || 'Product'}" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}"> 
+          <div class="verified-tag"><i class="fa-solid fa-shield-check"></i> Quality Assured</div> 
+        </div> 
+        <div class="card-info"> 
+          <h3>${p.name || 'No Title'}</h3> 
+          <div class="price-container"> 
+            <span class="price">₹${p.price}</span> 
+            ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''} 
+          </div> 
+          <button class="buy-btn" ${isOut ? 'disabled' : ''}> 
+            ${isOut ? 'Unavailable' : 'View Product'} 
+          </button> 
+        </div> 
+      `; 
 
-        let filtered = allProducts;
-        if (cat !== "All") {
-          filtered = allProducts.filter(p => p.category && p.category.trim().toLowerCase() === cat.toLowerCase());
-        }
-        renderProducts(filtered);
-      });
-    });
-  }
+      const wishlistBtn = card.querySelector('.card-wishlist-btn'); 
+      wishlistBtn.addEventListener('click', (e) => { 
+        e.stopPropagation(); 
+        const prodId = wishlistBtn.getAttribute('data-id'); 
+        if (currentUser) { 
+          const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`); 
+          if (userWishlistIds[prodId]) { 
+            remove(wishRef).then(() => { 
+              delete userWishlistIds[prodId]; 
+              wishlistBtn.classList.remove('active'); 
+              wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
+              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+            }); 
+          } else { 
+            set(wishRef, true).then(() => { 
+              userWishlistIds[prodId] = true; 
+              wishlistBtn.classList.add('active'); 
+              wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
+              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+            }); 
+          } 
+        } else { 
+          let guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
+          if (guestWishlist[prodId]) { 
+            delete guestWishlist[prodId]; 
+            wishlistBtn.classList.remove('active'); 
+            wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
+          } else { 
+            guestWishlist[prodId] = true; 
+            wishlistBtn.classList.add('active'); 
+            wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
+          } 
+          localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist)); 
+          userWishlistIds = guestWishlist; 
+          updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+        } 
+      }); 
 
-  function renderProducts(products) {
-    const grid = document.getElementById('productGrid');
-    if (!grid) return;
+      card.addEventListener('click', () => { 
+        if(isOut) return; 
+        trackProductClickAndRedirect(p.id); 
+      }); 
 
-    if (products.length === 0) {
-      grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">No products found.</div>`;
-      return;
-    }
+      grid.appendChild(card); 
+    }); 
+  } 
 
-    grid.innerHTML = products.map(product => {
-      const isWishlisted = !!userWishlistIds[product.id];
-      const discount = product.mrp && product.mrp > product.price 
-        ? Math.round(((product.mrp - product.price) / product.mrp) * 100) 
-        : 0;
+  const searchInput = document.getElementById('searchInput'); 
+  const suggestionsBox = document.getElementById('searchSuggestions'); 
 
-      return `
-        <div class="card" data-id="${product.id}">
-          <div class="image-box">
-            <img src="${product.imageUrl || product.image || 'https://via.placeholder.com/200'}" alt="${product.name}">
-            ${product.stock === false || product.outOfStock ? `<span class="stock-badge">Out of Stock</span>` : ''}
-            ${discount > 0 ? `<span class="discount-badge ${isWishlisted ? 'with-wishlist' : ''}">${discount}% OFF</span>` : ''}
-            <div class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" data-wishlist-id="${product.id}">
-              <i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart"></i>
-            </div>
-            <div class="verified-tag">
-              <i class="fa-solid fa-circle-check"></i> Verified
-            </div>
-          </div>
-          <div class="card-info">
-            <h3>${product.name}</h3>
-            <div class="price-container">
-              <span class="price">₹${product.price}</span>
-              ${product.mrp ? `<span class="mrp">₹${product.mrp}</span>` : ''}
-            </div>
-            <button class="buy-btn" ${product.stock === false || product.outOfStock ? 'disabled' : ''}>
-              ${product.stock === false || product.outOfStock ? 'Out of Stock' : 'Buy Now'}
-            </button>
-          </div>
-        </div>
-      `;
-    }).join('');
+  searchInput.addEventListener('input', (e) => { 
+    const val = e.target.value.toLowerCase().trim(); 
+    suggestionsBox.innerHTML = ""; 
+    if (val.length < 1) { 
+      suggestionsBox.style.display = 'none'; 
+      return; 
+    } 
+    const searchWords = val.split(/\s+/).filter(word => word); 
+    let matchedProducts = allProducts.filter(p => { 
+      const productName = (p.name || "").toLowerCase(); 
+      const productCat = (p.category || "").toLowerCase(); 
+      const productDesc = (p.description || "").toLowerCase(); 
+      return searchWords.some(word => productName.includes(word) || productCat.includes(word) || productDesc.includes(word) ); 
+    }); 
 
-    grid.querySelectorAll('.card').forEach(card => {
-      card.addEventListener('click', (e) => {
-        if (e.target.closest('.card-wishlist-btn')) return;
-        const id = card.getAttribute('data-id');
-        trackProductClickAndRedirect(id);
-      });
-    });
+    if (matchedProducts.length > 0) { 
+      suggestionsBox.style.display = 'block'; 
+      matchedProducts.slice(0, 10).forEach(p => { 
+        const div = document.createElement('div'); 
+        div.className = 'suggestion-item'; 
+        const productImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/50'; 
+        div.innerHTML = ` 
+          <img src="${productImg}" alt="${p.name || 'Product'}"> 
+          <div class="suggestion-info"> 
+            <h4>${p.name || 'No Name'}</h4> 
+            <p>₹${p.price || '0'}</p> 
+          </div> 
+        `; 
+        div.addEventListener('click', () => { 
+          trackProductClickAndRedirect(p.id); 
+        }); 
+        suggestionsBox.appendChild(div); 
+      }); 
+    } else { 
+      suggestionsBox.style.display = 'none'; 
+    } 
+  }); 
 
-    grid.querySelectorAll('.card-wishlist-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const productId = btn.getAttribute('data-wishlist-id');
-        toggleWishlist(productId);
-      });
-    });
-  }
+  searchInput.addEventListener('keydown', (e) => { 
+    if (e.key === 'Enter') { 
+      const searchVal = searchInput.value.trim(); 
+      if (searchVal.toLowerCase() === "cartecom@com") { 
+        window.location.href = "/ecom"; 
+        return; 
+      } 
+      if (searchVal.length >= 1) { 
+        window.location.href = `/search?q=${encodeURIComponent(searchVal)}`; 
+      } 
+    } 
+  }); 
 
-  function toggleWishlist(productId) {
-    if (currentUser) {
-      const wishRef = ref(db, `wishlist/${currentUser.uid}/${productId}`);
-      if (userWishlistIds[productId]) {
-        remove(wishRef);
-      } else {
-        set(wishRef, true);
-      }
-    } else {
-      let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}");
-      if (localWishlist[productId]) {
-        delete localWishlist[productId];
-      } else {
-        localWishlist[productId] = true;
-      }
-      localStorage.setItem('guestWishlist', JSON.stringify(localWishlist));
-      userWishlistIds = localWishlist;
-      updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge'));
-    }
-  }
-
-  /* --- Search & Suggestions Logic --- */
-  const searchInput = document.getElementById('searchInput');
-  const searchSuggestions = document.getElementById('searchSuggestions');
-
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.trim().toLowerCase();
-      if (!query) {
-        searchSuggestions.style.display = 'none';
-        renderProducts(allProducts);
-        return;
-      }
-
-      const matches = allProducts.filter(p => 
-        p.name && p.name.toLowerCase().includes(query)
-      );
-
-      if (matches.length > 0) {
-        searchSuggestions.innerHTML = matches.slice(0, 6).map(p => `
-          <div class="suggestion-item" data-id="${p.id}">
-            <img src="${p.imageUrl || p.image || 'https://via.placeholder.com/40'}" alt="${p.name}">
-            <div class="suggestion-info">
-              <h4>${p.name}</h4>
-              <p>₹${p.price}</p>
-            </div>
-          </div>
-        `).join('');
-        searchSuggestions.style.display = 'block';
-
-        searchSuggestions.querySelectorAll('.suggestion-item').forEach(item => {
-          item.addEventListener('click', () => {
-            const id = item.getAttribute('data-id');
-            trackProductClickAndRedirect(id);
-          });
-        });
-      } else {
-        searchSuggestions.style.display = 'none';
-      }
-
-      renderProducts(matches);
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.search-container')) {
-        searchSuggestions.style.display = 'none';
-      }
-    });
-  }
+  document.addEventListener('click', (e) => { 
+    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { 
+      suggestionsBox.style.display = 'none'; 
+    } 
+  }); 
 </script> 
 </body> 
 </html>
