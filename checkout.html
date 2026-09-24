@@ -258,10 +258,16 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label>
                     <input type="text" id="custName" placeholder="Enter your full name" class="input-style">
+                    <p id="custNameHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1">
+                        <i class="fa-solid fa-pen"></i> Auto-filled from your account — you can edit it
+                    </p>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Mobile Number *</label>
                     <input type="tel" id="custPhone" placeholder="10-digit mobile number" maxlength="10" class="input-style">
+                    <p id="custPhoneHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1">
+                        <i class="fa-solid fa-pen"></i> Auto-filled from your account — you can edit it
+                    </p>
                 </div>
             </div>
 
@@ -600,14 +606,21 @@
         const autoFillUserDetails = async (user) => {
             const nameInput = document.getElementById('custName');
             const phoneInput = document.getElementById('custPhone');
+            const nameHint = document.getElementById('custNameHint');
+            const phoneHint = document.getElementById('custPhoneHint');
             if (!nameInput || !phoneInput) return;
+
+            let nameWasAutoFilled = false;
+            let phoneWasAutoFilled = false;
 
             // 1. From Firebase Auth profile
             if (!nameInput.value.trim() && user.displayName) {
                 nameInput.value = user.displayName;
+                nameWasAutoFilled = true;
             }
             if (!phoneInput.value.trim() && user.phoneNumber) {
                 phoneInput.value = cleanPhone(user.phoneNumber);
+                phoneWasAutoFilled = true;
             }
 
             // 2. From Realtime Database user profile node
@@ -621,9 +634,11 @@
 
                     if (dbName && !nameInput.value.trim()) {
                         nameInput.value = dbName;
+                        nameWasAutoFilled = true;
                     }
                     if (dbPhone && !phoneInput.value.trim()) {
                         phoneInput.value = cleanPhone(dbPhone);
+                        phoneWasAutoFilled = true;
                     }
                 }
             } catch (e) {
@@ -635,11 +650,25 @@
                 const lastDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
                 if (!nameInput.value.trim() && (lastDetails.name || lastDetails.customerName)) {
                     nameInput.value = lastDetails.name || lastDetails.customerName;
+                    nameWasAutoFilled = true;
                 }
                 if (!phoneInput.value.trim() && (lastDetails.phone || lastDetails.customerPhone)) {
                     phoneInput.value = cleanPhone(lastDetails.phone || lastDetails.customerPhone);
+                    phoneWasAutoFilled = true;
                 }
             } catch (e) { }
+
+            // Show a small "you can edit this" hint for whichever fields got auto-filled.
+            // Fields stay fully editable (never readonly/disabled) — if the person types
+            // in the box themselves, the hint disappears and their manual entry is kept.
+            if (nameWasAutoFilled && nameHint) {
+                nameHint.classList.remove('hidden');
+                nameInput.addEventListener('input', () => nameHint.classList.add('hidden'), { once: true });
+            }
+            if (phoneWasAutoFilled && phoneHint) {
+                phoneHint.classList.remove('hidden');
+                phoneInput.addEventListener('input', () => phoneHint.classList.add('hidden'), { once: true });
+            }
         };
 
         onAuthStateChanged(auth, (user) => {
