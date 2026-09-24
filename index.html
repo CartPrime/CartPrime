@@ -3,47 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>CartPrime | Home</title>
 
 <link rel="icon" type="image/x-icon"
-href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
+      href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
 
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet">
 
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <link rel="icon"
-type="image/png"
-href="https://cdn.phototourl.com/free/2026-09-20-b4b944f2-2047-4c3b-ace2-348521478b38.png"
-sizes="96x96"/>
+      type="image/png"
+      href="https://cdn.phototourl.com/free/2026-09-20-b4b944f2-2047-4c3b-ace2-348521478b38.png"
+      sizes="96x96" />
 
 <style>
 
 /* =========================================================
-   CARTPRIME PREMIUM BLACK + ORANGE THEME
+   CARTPRIME GREEN + BLACK PREMIUM THEME
    ========================================================= */
 
 :root {
-
-  --primary: #111318;
-  --accent: #f59e0b;
-  --accent-dark: #d97706;
-  --accent-soft: rgba(245, 158, 11, 0.10);
+  --primary: #111111;
+  --accent: #419b41;
 
   --bg: #ffffff;
-  --surface: #f7f8fa;
+  --surface: #f5faf5;
   --card-bg: #ffffff;
 
   --text-main: #111827;
   --text-muted: #667085;
 
-  --border: #e5e7eb;
+  --border: #dbe7db;
 
-  --nav-bg: rgba(255, 255, 255, 0.92);
+  --nav-bg: rgba(255, 255, 255, 0.88);
 
-  --skeleton-start: #f3f4f6;
-  --skeleton-mid: #e5e7eb;
+  --skeleton-start: #edf4ed;
+  --skeleton-mid: #dce9dc;
+
+  --accent-soft: rgba(65, 155, 65, 0.10);
+  --accent-border: rgba(65, 155, 65, 0.25);
 }
 
 /* =========================================================
@@ -51,25 +53,25 @@ sizes="96x96"/>
    ========================================================= */
 
 [data-theme="dark"] {
-
   --primary: #ffffff;
-  --accent: #fbbf24;
-  --accent-dark: #f59e0b;
-  --accent-soft: rgba(251, 191, 36, 0.12);
+  --accent: #65c465;
 
-  --bg: #0d0f12;
-  --surface: #171a20;
-  --card-bg: #171a20;
+  --bg: #0b110b;
+  --surface: #111b11;
+  --card-bg: #131d13;
 
-  --text-main: #f8fafc;
-  --text-muted: #98a2b3;
+  --text-main: #f5fff5;
+  --text-muted: #9bb09b;
 
-  --border: #2b3038;
+  --border: #294029;
 
-  --nav-bg: rgba(13, 15, 18, 0.92);
+  --nav-bg: rgba(11, 17, 11, 0.90);
 
-  --skeleton-start: #171a20;
-  --skeleton-mid: #2b3038;
+  --skeleton-start: #111b11;
+  --skeleton-mid: #203320;
+
+  --accent-soft: rgba(101, 196, 101, 0.10);
+  --accent-border: rgba(101, 196, 101, 0.25);
 }
 
 /* =========================================================
@@ -80,9 +82,7 @@ sizes="96x96"/>
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-
   font-family: 'Plus Jakarta Sans', sans-serif;
-
   outline: none !important;
 }
 
@@ -91,15 +91,9 @@ sizes="96x96"/>
   box-shadow: none !important;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
-
   background-color: var(--bg);
   color: var(--text-main);
-
   overflow-x: hidden;
   min-height: 100vh;
 
@@ -123,10 +117,8 @@ button,
 .bottom-nav-item,
 .profile-chip,
 .notification-icon-btn {
-
   touch-action: manipulation;
   user-select: none;
-
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -136,18 +128,15 @@ button:active,
 .bottom-nav-item:active,
 .profile-chip:active,
 .notification-icon-btn:active {
-
   transform: scale(0.96) !important;
 }
 
 /* =========================================================
-   NAVIGATION
+   NAVBAR
    ========================================================= */
 
 nav {
-
   display: flex;
-
   justify-content: space-between;
   align-items: center;
 
@@ -157,8 +146,7 @@ nav {
   top: 0;
 
   background: var(--nav-bg);
-
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(12px);
 
   z-index: 1000;
 
@@ -171,32 +159,23 @@ nav {
     border-color 0.3s ease;
 }
 
-/* Logo */
-
 .logo {
-
   font-weight: 800;
-
   font-size: 1.4rem;
 
   letter-spacing: -1px;
-
   text-transform: uppercase;
 
   cursor: pointer;
-
   flex-shrink: 0;
-
   user-select: none;
 
   color: var(--text-main);
 }
 
 .logo span {
-
   color: var(--accent);
-
-  font-weight: 800;
+  font-weight: 300;
 }
 
 /* =========================================================
@@ -204,21 +183,17 @@ nav {
    ========================================================= */
 
 .search-container {
-
   flex: 1;
-
   max-width: 500px;
-
   position: relative;
 }
 
 .search-container input {
-
   width: 100%;
 
-  padding: 11px 15px 11px 42px;
+  padding: 10px 15px 10px 40px;
 
-  border-radius: 14px;
+  border-radius: 12px;
 
   border: 1px solid var(--border);
 
@@ -233,23 +208,14 @@ nav {
   font-size: 0.9rem;
 }
 
-.search-container input::placeholder {
-
-  color: var(--text-muted);
-}
-
 .search-container input:focus {
-
   border-color: var(--accent);
-
   background: var(--card-bg);
 
-  box-shadow:
-    0 4px 15px rgba(245, 158, 11, 0.08);
+  box-shadow: 0 4px 12px rgba(65, 155, 65, 0.08);
 }
 
 .search-container i {
-
   position: absolute;
 
   left: 14px;
@@ -259,9 +225,7 @@ nav {
 
   color: var(--text-muted);
 
-  font-size: 0.9rem;
-
-  z-index: 2;
+  font-size: 0.85rem;
 }
 
 /* =========================================================
@@ -269,24 +233,22 @@ nav {
    ========================================================= */
 
 .nav-right {
-
   display: flex;
-
   align-items: center;
 
   gap: 12px;
 
   position: relative;
-
   flex-shrink: 0;
 }
 
-/* Notification */
+/* =========================================================
+   NOTIFICATION BUTTON
+   ========================================================= */
 
 .notification-icon-btn {
-
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
 
   border-radius: 50%;
 
@@ -295,9 +257,7 @@ nav {
   border: 1px solid var(--border);
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   position: relative;
@@ -312,27 +272,20 @@ nav {
 }
 
 .notification-icon-btn:hover {
-
   border-color: var(--accent);
-
   color: var(--accent);
-
-  background: var(--accent-soft);
 }
 
 .notif-badge {
-
   position: absolute;
 
   top: -2px;
   right: -2px;
 
   background: #ef4444;
-
   color: #ffffff;
 
   font-size: 0.65rem;
-
   font-weight: 800;
 
   border-radius: 50%;
@@ -341,7 +294,6 @@ nav {
   height: 18px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
@@ -355,9 +307,7 @@ nav {
    ========================================================= */
 
 .profile-chip {
-
   display: flex;
-
   align-items: center;
 
   gap: 10px;
@@ -376,47 +326,35 @@ nav {
 }
 
 .profile-chip:hover {
-
   border-color: var(--accent);
-
-  background: var(--accent-soft);
 }
 
 .profile-avatar {
-
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
 
   border-radius: 50%;
 
-  background: var(--primary);
-
-  color: var(--bg);
+  background: var(--accent);
+  color: #ffffff;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   font-weight: 800;
-
   font-size: 0.9rem;
 
   text-transform: uppercase;
 }
 
 .profile-info {
-
   display: flex;
-
   flex-direction: column;
 }
 
 .profile-name {
-
   font-size: 0.78rem;
-
   font-weight: 700;
 
   color: var(--text-main);
@@ -425,7 +363,6 @@ nav {
 }
 
 .profile-phone {
-
   font-size: 0.68rem;
 
   color: var(--text-muted);
@@ -434,7 +371,6 @@ nav {
 }
 
 .edit-profile-btn {
-
   color: var(--accent);
 
   font-size: 0.78rem;
@@ -447,11 +383,9 @@ nav {
    ========================================================= */
 
 .bottom-nav {
-
   position: fixed;
 
   bottom: 0;
-
   left: 0;
   right: 0;
 
@@ -464,25 +398,19 @@ nav {
   border-top: 1px solid var(--border);
 
   display: flex;
-
   justify-content: space-around;
-
   align-items: center;
 
   z-index: 9999;
 
-  box-shadow:
-    0 -4px 20px rgba(0,0,0,0.06);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .bottom-nav-item {
-
   display: flex;
-
   flex-direction: column;
 
   align-items: center;
-
   justify-content: center;
 
   gap: 4px;
@@ -492,7 +420,6 @@ nav {
   text-decoration: none;
 
   font-size: 0.72rem;
-
   font-weight: 600;
 
   position: relative;
@@ -505,35 +432,29 @@ nav {
 }
 
 .bottom-nav-item i {
-
   font-size: 1.2rem;
 }
 
 .bottom-nav-item.active,
 .bottom-nav-item:hover {
-
   color: var(--accent);
 }
 
 .bottom-nav-item .badge {
-
   top: -2px;
-
   right: 14px;
 }
 
 /* =========================================================
-   VERIFY / SPINNER
+   LOADING
    ========================================================= */
 
 .verify-loading-box {
-
   display: none;
 
   flex-direction: column;
 
   align-items: center;
-
   justify-content: center;
 
   gap: 12px;
@@ -542,12 +463,10 @@ nav {
 }
 
 .spinner {
-
   width: 36px;
   height: 36px;
 
   border: 4px solid var(--border);
-
   border-top: 4px solid var(--accent);
 
   border-radius: 50%;
@@ -564,14 +483,14 @@ nav {
   100% {
     transform: rotate(360deg);
   }
+
 }
 
 /* =========================================================
-   GENERAL MODALS
+   MODAL OVERLAY
    ========================================================= */
 
 .modal-overlay {
-
   display: none;
 
   position: fixed;
@@ -582,9 +501,9 @@ nav {
   width: 100%;
   height: 100%;
 
-  background: rgba(0,0,0,0.65);
+  background: rgba(0, 0, 0, 0.60);
 
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(4px);
 
   z-index: 10000;
 
@@ -599,42 +518,33 @@ nav {
 }
 
 .modal-overlay.active {
-
   opacity: 1;
 }
 
 .modal-card {
-
   background: var(--card-bg);
 
   color: var(--text-main);
 
   padding: 25px;
 
-  border-radius: 22px;
+  border-radius: 20px;
 
   width: 100%;
-
   max-width: 400px;
 
-  box-shadow:
-    0 20px 50px rgba(0,0,0,0.25);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20);
 
   border: 1px solid var(--border);
 
-  transform:
-    translateY(20px)
-    scale(0.95);
+  transform: translateY(20px) scale(0.95);
 
   transition:
-    transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal-overlay.active .modal-card {
-
-  transform:
-    translateY(0)
-    scale(1);
+  transform: translateY(0) scale(1);
 }
 
 /* =========================================================
@@ -642,9 +552,7 @@ nav {
    ========================================================= */
 
 .welcome-modal-header {
-
   display: flex;
-
   align-items: center;
 
   gap: 14px;
@@ -653,7 +561,6 @@ nav {
 }
 
 .welcome-modal-icon {
-
   width: 50px;
   height: 50px;
 
@@ -664,23 +571,18 @@ nav {
   border-radius: 14px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   font-size: 1.4rem;
 
   flex-shrink: 0;
 
-  border:
-    1px solid rgba(245,158,11,0.25);
+  border: 1px solid var(--accent-border);
 }
 
 .welcome-benefits {
-
   display: flex;
-
   flex-direction: column;
 
   gap: 8px;
@@ -697,22 +599,18 @@ nav {
 }
 
 .welcome-benefit-item {
-
   display: flex;
-
   align-items: center;
 
   gap: 10px;
 
   font-size: 0.8rem;
-
   font-weight: 600;
 
   color: var(--text-main);
 }
 
 .welcome-benefit-item i {
-
   color: #22c55e;
 
   font-size: 0.9rem;
@@ -723,51 +621,46 @@ nav {
    ========================================================= */
 
 .notif-modal-card {
-
   max-width: 480px;
 
   max-height: 85vh;
 
   display: flex;
-
   flex-direction: column;
 
   padding: 20px;
 }
 
 .notif-modal-header {
-
   display: flex;
 
   justify-content: space-between;
-
   align-items: center;
 
   padding-bottom: 12px;
 
-  border-bottom:
-    1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 
   margin-bottom: 15px;
 }
 
 .notif-modal-header h3 {
-
   font-size: 1.15rem;
 
   font-weight: 800;
 
   display: flex;
-
   align-items: center;
 
   gap: 8px;
 }
 
+.notif-modal-header h3 i {
+  color: var(--accent) !important;
+}
+
 .notif-list {
-
   display: flex;
-
   flex-direction: column;
 
   gap: 12px;
@@ -780,7 +673,6 @@ nav {
 }
 
 .notif-item {
-
   display: flex;
 
   align-items: flex-start;
@@ -801,16 +693,12 @@ nav {
 }
 
 .notif-item.unread {
+  background: var(--accent-soft);
 
-  background:
-    rgba(245,158,11,0.05);
-
-  border-color:
-    rgba(245,158,11,0.35);
+  border-color: var(--accent-border);
 }
 
 .notif-icon {
-
   width: 38px;
   height: 38px;
 
@@ -821,9 +709,7 @@ nav {
   color: var(--accent);
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   font-size: 1.1rem;
@@ -832,12 +718,10 @@ nav {
 }
 
 .notif-content {
-
   flex: 1;
 }
 
 .notif-title {
-
   font-size: 0.88rem;
 
   font-weight: 700;
@@ -848,7 +732,6 @@ nav {
 }
 
 .notif-message {
-
   font-size: 0.78rem;
 
   color: var(--text-muted);
@@ -859,7 +742,6 @@ nav {
 }
 
 .notif-time {
-
   font-size: 0.68rem;
 
   color: var(--text-muted);
@@ -868,7 +750,6 @@ nav {
 }
 
 .mark-read-btn {
-
   background: transparent;
 
   border: none;
@@ -891,7 +772,6 @@ nav {
 }
 
 .no-notif {
-
   text-align: center;
 
   padding: 30px 10px;
@@ -908,7 +788,6 @@ nav {
    ========================================================= */
 
 .earn-modal-header {
-
   display: flex;
 
   align-items: center;
@@ -919,7 +798,6 @@ nav {
 }
 
 .earn-modal-icon {
-
   width: 44px;
   height: 44px;
 
@@ -930,9 +808,7 @@ nav {
   border-radius: 12px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   font-size: 1.2rem;
@@ -941,9 +817,7 @@ nav {
 }
 
 .earn-benefits {
-
   display: flex;
-
   flex-direction: column;
 
   gap: 8px;
@@ -960,22 +834,18 @@ nav {
 }
 
 .earn-benefit-item {
-
   display: flex;
-
   align-items: center;
 
   gap: 8px;
 
   font-size: 0.8rem;
-
   font-weight: 600;
 
   color: var(--text-main);
 }
 
 .earn-benefit-item i {
-
   color: #22c55e;
 
   font-size: 0.85rem;
@@ -986,7 +856,6 @@ nav {
    ========================================================= */
 
 .search-suggestions-box {
-
   position: absolute;
 
   top: calc(100% + 8px);
@@ -998,8 +867,7 @@ nav {
 
   border-radius: 16px;
 
-  box-shadow:
-    0 15px 30px rgba(0,0,0,0.18);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.20);
 
   max-height: 350px;
 
@@ -1013,7 +881,6 @@ nav {
 }
 
 .suggestion-item {
-
   display: flex;
 
   align-items: center;
@@ -1024,21 +891,17 @@ nav {
 
   cursor: pointer;
 
-  border-bottom:
-    1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 
   transition: 0.2s;
 }
 
 .suggestion-item:hover {
-
-  background: var(--accent-soft);
+  background: var(--surface);
 }
 
 .suggestion-item img {
-
   width: 40px;
-
   height: 40px;
 
   border-radius: 8px;
@@ -1049,9 +912,7 @@ nav {
 }
 
 .suggestion-info {
-
   display: flex;
-
   flex-direction: column;
 
   gap: 1px;
@@ -1060,7 +921,6 @@ nav {
 }
 
 .suggestion-item h4 {
-
   font-size: 0.85rem;
 
   font-weight: 600;
@@ -1077,7 +937,6 @@ nav {
 }
 
 .suggestion-item p {
-
   font-size: 0.75rem;
 
   color: var(--accent);
@@ -1092,7 +951,6 @@ nav {
    ========================================================= */
 
 .hero {
-
   padding: 30px 6% 10px;
 
   display: flex;
@@ -1107,7 +965,6 @@ nav {
 }
 
 .hero-text h1 {
-
   font-size: 2.5rem;
 
   font-weight: 800;
@@ -1120,7 +977,6 @@ nav {
 }
 
 .hero-text p {
-
   color: var(--text-muted);
 
   margin-top: 8px;
@@ -1128,12 +984,7 @@ nav {
   font-size: 0.95rem;
 }
 
-/* =========================================================
-   TRUST STATS
-   ========================================================= */
-
 .trust-stats {
-
   display: flex;
 
   align-items: center;
@@ -1150,7 +1001,6 @@ nav {
 }
 
 .stat-item {
-
   display: flex;
 
   align-items: center;
@@ -1159,21 +1009,17 @@ nav {
 }
 
 .stat-item i {
-
   font-size: 1.3rem;
 
   color: var(--accent);
 }
 
 .stat-info {
-
   display: flex;
-
   flex-direction: column;
 }
 
 .stat-info strong {
-
   font-size: 0.88rem;
 
   font-weight: 800;
@@ -1182,7 +1028,6 @@ nav {
 }
 
 .stat-info span {
-
   font-size: 0.72rem;
 
   color: var(--text-muted);
@@ -1191,7 +1036,6 @@ nav {
 }
 
 .stat-divider {
-
   width: 1px;
 
   height: 25px;
@@ -1204,16 +1048,13 @@ nav {
    ========================================================= */
 
 .trust-bar-section {
-
   padding: 10px 6% 15px 6%;
 }
 
 .trust-bar-grid {
-
   display: grid;
 
-  grid-template-columns:
-    repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 
   gap: 12px;
 
@@ -1227,7 +1068,6 @@ nav {
 }
 
 .trust-card {
-
   display: flex;
 
   align-items: center;
@@ -1236,7 +1076,6 @@ nav {
 }
 
 .trust-icon {
-
   width: 40px;
   height: 40px;
 
@@ -1247,9 +1086,7 @@ nav {
   border: 1px solid var(--border);
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   font-size: 1.1rem;
@@ -1260,7 +1097,6 @@ nav {
 }
 
 .trust-details h4 {
-
   font-size: 0.82rem;
 
   font-weight: 700;
@@ -1271,18 +1107,16 @@ nav {
 }
 
 .trust-details p {
-
   font-size: 0.72rem;
 
   color: var(--text-muted);
 }
 
 /* =========================================================
-   CATEGORY
+   CATEGORY BAR
    ========================================================= */
 
 .category-bar {
-
   padding: 10px 6% 5px 6%;
 
   display: flex;
@@ -1299,12 +1133,10 @@ nav {
 }
 
 .category-bar::-webkit-scrollbar {
-
   display: none;
 }
 
 .category-btn {
-
   background: var(--surface);
 
   color: var(--text-main);
@@ -1340,15 +1172,13 @@ nav {
 
 .category-btn:hover,
 .category-btn.active {
-
   background: var(--primary);
 
   color: var(--bg);
 
   border-color: var(--primary);
 
-  box-shadow:
-    0 5px 14px rgba(0,0,0,0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
 }
 
 /* =========================================================
@@ -1356,8 +1186,7 @@ nav {
    ========================================================= */
 
 .banner-section {
-
-  padding: 15px 6% 10px;
+  padding: 15px 6% 10px 6%;
 
   position: relative;
 
@@ -1365,7 +1194,6 @@ nav {
 }
 
 .banner-wrapper {
-
   position: relative;
 
   display: flex;
@@ -1374,7 +1202,6 @@ nav {
 }
 
 .banner-slider {
-
   display: flex;
 
   gap: 16px;
@@ -1393,12 +1220,10 @@ nav {
 }
 
 .banner-slider::-webkit-scrollbar {
-
   display: none;
 }
 
 .banner-item {
-
   flex: 0 0 calc(50% - 8px);
 
   scroll-snap-align: start;
@@ -1414,13 +1239,11 @@ nav {
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
   cursor: pointer;
 
-  box-shadow:
-    0 6px 20px rgba(0,0,0,0.06);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
 
   transition: transform 0.3s ease;
 
@@ -1428,26 +1251,21 @@ nav {
 }
 
 .banner-item:hover {
-
   transform: scale(1.005);
 }
 
 .banner-item img {
-
   width: 100%;
-
   height: 100%;
 
   object-fit: cover;
 
   border-radius: 20px;
 
-  image-rendering:
-    -webkit-optimize-contrast;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .banner-dots {
-
   display: flex;
 
   justify-content: center;
@@ -1460,7 +1278,6 @@ nav {
 }
 
 .dot {
-
   width: 8px;
   height: 8px;
 
@@ -1474,7 +1291,6 @@ nav {
 }
 
 .dot.active {
-
   background: var(--accent);
 
   width: 20px;
@@ -1483,22 +1299,19 @@ nav {
 }
 
 /* =========================================================
-   PRODUCT AREA
+   CONTAINER
    ========================================================= */
 
 .container {
-
   padding: 10px 6% 40px;
 
   flex: 1;
 }
 
 .grid {
-
   display: grid;
 
-  grid-template-columns:
-    repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 
   gap: 15px;
 }
@@ -1508,7 +1321,6 @@ nav {
    ========================================================= */
 
 .modal-form {
-
   display: flex;
 
   flex-direction: column;
@@ -1519,7 +1331,6 @@ nav {
 }
 
 .modal-input {
-
   padding: 12px;
 
   border-radius: 10px;
@@ -1533,17 +1344,13 @@ nav {
   font-size: 0.9rem;
 
   width: 100%;
-
-  transition: 0.2s;
 }
 
 .modal-input:focus {
-
   border-color: var(--accent);
 }
 
 .modal-btn-group {
-
   display: flex;
 
   gap: 10px;
@@ -1552,7 +1359,6 @@ nav {
 }
 
 .modal-btn-submit {
-
   flex: 1;
 
   padding: 12px;
@@ -1561,9 +1367,9 @@ nav {
 
   border: none;
 
-  background: var(--primary);
+  background: var(--accent);
 
-  color: var(--bg);
+  color: #ffffff;
 
   font-weight: 700;
 
@@ -1577,22 +1383,18 @@ nav {
 
   justify-content: center;
 
-  transition: 0.2s;
+  transition: all 0.2s ease;
 }
 
 .modal-btn-submit:hover {
-
-  background: var(--accent);
-
-  color: #111318;
+  filter: brightness(0.92);
 }
 
 /* =========================================================
-   TOAST
+   CUSTOM TOAST
    ========================================================= */
 
 .custom-toast-overlay {
-
   display: none;
 
   position: fixed;
@@ -1603,15 +1405,13 @@ nav {
   width: 100%;
   height: 100%;
 
-  background:
-    rgba(15, 17, 20, 0.68);
+  background: rgba(15, 23, 42, 0.60);
 
   backdrop-filter: blur(8px);
 
   z-index: 20000;
 
   align-items: center;
-
   justify-content: center;
 
   padding: 20px;
@@ -1620,7 +1420,6 @@ nav {
 }
 
 .custom-toast-card {
-
   background: var(--card-bg);
 
   border: 1px solid var(--border);
@@ -1630,13 +1429,11 @@ nav {
   padding: 30px 24px;
 
   width: 100%;
-
   max-width: 380px;
 
   text-align: center;
 
-  box-shadow:
-    0 20px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.20);
 
   display: flex;
 
@@ -1647,12 +1444,10 @@ nav {
   gap: 16px;
 
   animation:
-    slideUp 0.3s
-    cubic-bezier(0.16,1,0.3,1);
+    slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .toast-icon-wrap {
-
   width: 60px;
   height: 60px;
 
@@ -1661,36 +1456,28 @@ nav {
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
   font-size: 1.8rem;
 }
 
 .toast-icon-wrap.success {
-
-  background:
-    rgba(34,197,94,0.12);
+  background: rgba(34, 197, 94, 0.12);
 
   color: #22c55e;
 
-  border:
-    1px solid rgba(34,197,94,0.2);
+  border: 1px solid rgba(34, 197, 94, 0.20);
 }
 
 .toast-icon-wrap.error {
-
-  background:
-    rgba(239,68,68,0.12);
+  background: rgba(239, 68, 68, 0.12);
 
   color: #ef4444;
 
-  border:
-    1px solid rgba(239,68,68,0.2);
+  border: 1px solid rgba(239, 68, 68, 0.20);
 }
 
 .custom-toast-card h4 {
-
   font-size: 1.15rem;
 
   font-weight: 800;
@@ -1701,7 +1488,6 @@ nav {
 }
 
 .custom-toast-card p {
-
   font-size: 0.88rem;
 
   color: var(--text-muted);
@@ -1712,20 +1498,16 @@ nav {
 }
 
 .otp-highlight-box {
-
   display: none;
 
   align-items: center;
-
   justify-content: center;
 
   gap: 10px;
 
-  background:
-    var(--accent-soft);
+  background: var(--accent-soft);
 
-  border:
-    1.5px dashed var(--accent);
+  border: 1.5px dashed var(--accent);
 
   border-radius: 14px;
 
@@ -1735,7 +1517,6 @@ nav {
 }
 
 .otp-highlight-box span {
-
   font-size: 1.9rem;
 
   font-weight: 800;
@@ -1744,12 +1525,10 @@ nav {
 
   color: var(--accent);
 
-  font-family:
-    'Plus Jakarta Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .toast-close-btn {
-
   width: 100%;
 
   padding: 12px;
@@ -1774,11 +1553,14 @@ nav {
 }
 
 .toast-close-btn:hover {
-
   background: var(--accent);
 
-  color: #111318;
+  color: #ffffff;
 }
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
 
 @keyframes fadeIn {
 
@@ -1789,6 +1571,7 @@ nav {
   to {
     opacity: 1;
   }
+
 }
 
 @keyframes slideUp {
@@ -1802,6 +1585,7 @@ nav {
     transform: translateY(0);
     opacity: 1;
   }
+
 }
 
 @keyframes slideUpFade {
@@ -1815,6 +1599,7 @@ nav {
     opacity: 1;
     transform: translateY(0);
   }
+
 }
 
 /* =========================================================
@@ -1822,7 +1607,6 @@ nav {
    ========================================================= */
 
 .card {
-
   background: var(--card-bg);
 
   border-radius: 22px;
@@ -1834,7 +1618,7 @@ nav {
   border: 1px solid var(--border);
 
   box-shadow:
-    0 10px 25px -5px rgba(0,0,0,0.05);
+    0 10px 25px -5px rgba(0, 0, 0, 0.05);
 
   display: flex;
 
@@ -1845,30 +1629,25 @@ nav {
   cursor: pointer;
 
   animation:
-    slideUpFade 0.5s
-    cubic-bezier(0.16,1,0.3,1)
+    slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1)
     forwards;
 
   opacity: 0;
 
   transition:
-    all 0.3s
-    cubic-bezier(0.16,1,0.3,1);
+    all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card:hover {
-
   transform: translateY(-6px);
 
   box-shadow:
-    0 20px 35px -10px
-    rgba(0,0,0,0.12);
+    0 20px 35px -10px rgba(0, 0, 0, 0.12);
 
   border-color: var(--accent);
 }
 
 .image-box {
-
   width: 100%;
 
   height: 180px;
@@ -1885,34 +1664,31 @@ nav {
 }
 
 .card img {
-
   width: 100%;
-
   height: 100%;
 
   object-fit: contain;
 
-  transition:
-    transform 0.5s ease;
+  transition: transform 0.5s ease;
 }
 
 .card:hover img {
-
   transform: scale(1.05);
 }
 
-/* SOLD OUT */
+/* =========================================================
+   PRODUCT BADGES
+   ========================================================= */
 
 .stock-badge {
-
   position: absolute;
 
   top: 10px;
   left: 10px;
 
-  background: var(--primary);
+  background: #111111;
 
-  color: var(--bg);
+  color: white;
 
   padding: 4px 10px;
 
@@ -1925,10 +1701,7 @@ nav {
   z-index: 10;
 }
 
-/* DISCOUNT */
-
 .discount-badge {
-
   position: absolute;
 
   top: 10px;
@@ -1936,7 +1709,7 @@ nav {
 
   background: var(--accent);
 
-  color: #111318;
+  color: white;
 
   padding: 4px 10px;
 
@@ -1947,29 +1720,21 @@ nav {
   font-weight: 800;
 
   z-index: 10;
-
-  box-shadow:
-    0 3px 10px
-    rgba(245,158,11,0.20);
 }
 
-/* VERIFIED */
-
 .verified-tag {
-
   position: absolute;
 
   bottom: 8px;
   left: 8px;
 
-  background:
-    rgba(255,255,255,0.94);
+  background: rgba(255, 255, 255, 0.92);
 
-  color: #111827;
+  color: #0f172a;
 
-  padding: 5px 10px;
+  padding: 4px 10px;
 
-  border-radius: 9px;
+  border-radius: 8px;
 
   font-size: 0.65rem;
 
@@ -1982,21 +1747,20 @@ nav {
   gap: 4px;
 
   box-shadow:
-    0 2px 8px
-    rgba(0,0,0,0.08);
+    0 2px 8px rgba(0, 0, 0, 0.08);
 
   backdrop-filter: blur(4px);
 }
 
 .verified-tag i {
-
   color: var(--accent);
 }
 
-/* WISHLIST */
+/* =========================================================
+   WISHLIST
+   ========================================================= */
 
 .card-wishlist-btn {
-
   position: absolute;
 
   top: 10px;
@@ -2005,8 +1769,7 @@ nav {
   width: 34px;
   height: 34px;
 
-  background:
-    rgba(255,255,255,0.94);
+  background: rgba(255, 255, 255, 0.92);
 
   border: 1px solid var(--border);
 
@@ -2015,7 +1778,6 @@ nav {
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
   cursor: pointer;
@@ -2029,32 +1791,30 @@ nav {
   transition: all 0.2s ease;
 
   box-shadow:
-    0 2px 8px rgba(0,0,0,0.10);
+    0 2px 8px rgba(0, 0, 0, 0.10);
 }
 
 .card-wishlist-btn:hover {
-
   transform: scale(1.12);
 
   color: #ef4444;
 }
 
 .card-wishlist-btn.active {
-
   color: #ef4444;
 
   background: #fff;
 }
 
 .discount-badge.with-wishlist {
-
   right: 50px;
 }
 
-/* CARD INFO */
+/* =========================================================
+   PRODUCT CONTENT
+   ========================================================= */
 
 .card-info {
-
   flex-grow: 1;
 
   display: flex;
@@ -2063,7 +1823,6 @@ nav {
 }
 
 .card h3 {
-
   font-size: 0.92rem;
 
   font-weight: 700;
@@ -2083,10 +1842,7 @@ nav {
   text-overflow: ellipsis;
 }
 
-/* PRICE */
-
 .price-container {
-
   display: flex;
 
   align-items: center;
@@ -2099,7 +1855,6 @@ nav {
 }
 
 .price {
-
   font-weight: 800;
 
   font-size: 1.05rem;
@@ -2108,7 +1863,6 @@ nav {
 }
 
 .mrp {
-
   text-decoration: line-through;
 
   color: var(--text-muted);
@@ -2116,10 +1870,7 @@ nav {
   font-size: 0.8rem;
 }
 
-/* BUTTON */
-
 .buy-btn {
-
   width: 100%;
 
   padding: 10px 12px;
@@ -2152,33 +1903,24 @@ nav {
 }
 
 .buy-btn:hover {
-
   background: var(--accent);
 
-  color: #111318;
-
-  box-shadow:
-    0 5px 14px
-    rgba(245,158,11,0.18);
+  color: #ffffff;
 }
 
 .buy-btn:disabled {
-
   background: var(--border);
 
   color: var(--text-muted);
 
   cursor: not-allowed;
-
-  box-shadow: none;
 }
 
 /* =========================================================
-   BADGE
+   GENERIC BADGES
    ========================================================= */
 
 .badge {
-
   position: absolute;
 
   top: -4px;
@@ -2195,7 +1937,6 @@ nav {
   border-radius: 50%;
 
   min-width: 18px;
-
   height: 18px;
 
   display: flex;
@@ -2206,8 +1947,7 @@ nav {
 
   padding: 2px;
 
-  border:
-    2px solid var(--card-bg);
+  border: 2px solid var(--card-bg);
 }
 
 /* =========================================================
@@ -2215,7 +1955,6 @@ nav {
    ========================================================= */
 
 .skeleton-card {
-
   background: var(--card-bg);
 
   border-radius: 20px;
@@ -2232,7 +1971,6 @@ nav {
 }
 
 .skeleton-img {
-
   width: 100%;
 
   height: 180px;
@@ -2249,14 +1987,12 @@ nav {
 
   background-size: 200% 100%;
 
-  animation:
-    skeletonLoading 1.5s infinite;
+  animation: skeletonLoading 1.5s infinite;
 
   margin-bottom: 10px;
 }
 
 .skeleton-line {
-
   height: 12px;
 
   background:
@@ -2269,8 +2005,7 @@ nav {
 
   background-size: 200% 100%;
 
-  animation:
-    skeletonLoading 1.5s infinite;
+  animation: skeletonLoading 1.5s infinite;
 
   border-radius: 6px;
 }
@@ -2284,6 +2019,7 @@ nav {
   100% {
     background-position: -200% 0;
   }
+
 }
 
 /* =========================================================
@@ -2291,7 +2027,6 @@ nav {
    ========================================================= */
 
 .safe-checkout-box {
-
   margin: 20px 6% 40px;
 
   background: var(--surface);
@@ -2314,7 +2049,6 @@ nav {
 }
 
 .safe-checkout-box h3 {
-
   font-size: 0.95rem;
 
   font-weight: 800;
@@ -2329,12 +2063,10 @@ nav {
 }
 
 .safe-checkout-box h3 i {
-
-  color: var(--accent);
+  color: #22c55e;
 }
 
 .payment-badges {
-
   display: flex;
 
   gap: 15px;
@@ -2351,7 +2083,6 @@ nav {
 }
 
 .payment-badges span {
-
   display: flex;
 
   align-items: center;
@@ -2368,7 +2099,6 @@ nav {
 }
 
 .payment-badges span i {
-
   color: var(--accent);
 }
 
@@ -2377,7 +2107,6 @@ nav {
    ========================================================= */
 
 .cookie-banner {
-
   position: fixed;
 
   bottom: 80px;
@@ -2392,7 +2121,7 @@ nav {
   border: 1px solid var(--border);
 
   box-shadow:
-    0 10px 30px rgba(0,0,0,0.15);
+    0 10px 30px rgba(0, 0, 0, 0.15);
 
   border-radius: 18px;
 
@@ -2410,7 +2139,6 @@ nav {
 }
 
 .cookie-banner p {
-
   font-size: 0.85rem;
 
   color: var(--text-muted);
@@ -2419,12 +2147,10 @@ nav {
 }
 
 .cookie-banner p strong {
-
   color: var(--text-main);
 }
 
 .cookie-actions {
-
   display: flex;
 
   gap: 10px;
@@ -2433,7 +2159,6 @@ nav {
 }
 
 .cookie-btn {
-
   padding: 10px 20px;
 
   border-radius: 10px;
@@ -2458,25 +2183,22 @@ nav {
 }
 
 .cookie-accept {
-
   background: var(--primary);
 
   color: var(--bg);
 }
 
 .cookie-accept:hover {
-
   background: var(--accent);
 
-  color: #111318;
+  color: #ffffff;
 }
 
 /* =========================================================
-   CONTACT OPTIONS
+   CONTACT
    ========================================================= */
 
 .contact-option {
-
   display: flex;
 
   align-items: center;
@@ -2505,16 +2227,12 @@ nav {
 }
 
 .contact-option:hover {
-
   border-color: var(--accent);
 
   transform: translateY(-2px);
-
-  background: var(--accent-soft);
 }
 
 .contact-option i {
-
   font-size: 1.4rem;
 }
 
@@ -2525,7 +2243,6 @@ nav {
 @media (max-width: 768px) {
 
   nav {
-
     padding: 10px 4%;
 
     flex-wrap: wrap;
@@ -2536,14 +2253,12 @@ nav {
   }
 
   .logo {
-
     font-size: 1.2rem;
 
     order: 1;
   }
 
   .nav-right {
-
     order: 2;
 
     gap: 8px;
@@ -2552,36 +2267,29 @@ nav {
   }
 
   .search-container {
-
     order: 3;
 
     flex-basis: 100%;
 
     max-width: 100%;
 
-    margin:
-      4px 0 2px 0;
+    margin: 4px 0 2px 0;
   }
 
   .search-container input {
-
-    padding:
-      9px 12px 9px 36px;
+    padding: 8px 12px 8px 36px;
 
     font-size: 0.85rem;
 
-    border-radius: 11px;
+    border-radius: 10px;
   }
 
   .search-container i {
-
     left: 12px;
   }
 
   .hero {
-
-    padding:
-      16px 4% 5px;
+    padding: 16px 4% 5px;
 
     flex-direction: column;
 
@@ -2591,17 +2299,14 @@ nav {
   }
 
   .hero-text h1 {
-
     font-size: 1.7rem;
   }
 
   .hero-text p {
-
     font-size: 0.82rem;
   }
 
   .trust-stats {
-
     width: 100%;
 
     justify-content: space-around;
@@ -2610,15 +2315,11 @@ nav {
   }
 
   .trust-bar-section {
-
-    padding:
-      8px 4%;
+    padding: 8px 4%;
   }
 
   .trust-bar-grid {
-
-    grid-template-columns:
-      repeat(2,1fr);
+    grid-template-columns: repeat(2, 1fr);
 
     gap: 10px;
 
@@ -2626,17 +2327,13 @@ nav {
   }
 
   .category-bar {
-
-    padding:
-      8px 4%;
+    padding: 8px 4%;
 
     gap: 6px;
   }
 
   .category-btn {
-
-    padding:
-      8px 16px;
+    padding: 8px 16px;
 
     font-size: 0.8rem;
 
@@ -2644,15 +2341,11 @@ nav {
   }
 
   .banner-section {
-
-    padding:
-      8px 4%;
+    padding: 8px 4%;
   }
 
   .banner-item {
-
-    flex:
-      0 0 100%;
+    flex: 0 0 100%;
 
     height: 160px;
 
@@ -2660,37 +2353,29 @@ nav {
   }
 
   .banner-item img {
-
     border-radius: 14px;
   }
 
   .dot {
-
     width: 6px;
     height: 6px;
   }
 
   .dot.active {
-
     width: 14px;
   }
 
   .container {
-
-    padding:
-      8px 4% 20px;
+    padding: 8px 4% 20px;
   }
 
   .image-box {
-
     height: 140px;
   }
 
   .stock-badge,
   .discount-badge {
-
-    padding:
-      3px 6px;
+    padding: 3px 6px;
 
     font-size: 0.58rem;
 
@@ -2698,22 +2383,18 @@ nav {
   }
 
   .stock-badge {
-
     left: 6px;
   }
 
   .discount-badge {
-
     right: 6px;
   }
 
   .discount-badge.with-wishlist {
-
     right: 38px;
   }
 
   .card-wishlist-btn {
-
     width: 28px;
     height: 28px;
 
@@ -2724,15 +2405,12 @@ nav {
   }
 
   .safe-checkout-box {
-
-    margin:
-      10px 4% 25px;
+    margin: 10px 4% 25px;
 
     padding: 15px;
   }
 
   .cookie-banner {
-
     left: 10px;
     right: 10px;
 
@@ -2746,25 +2424,24 @@ nav {
   }
 
   .cookie-actions {
-
     width: 100%;
   }
 
   .cookie-btn {
-
     width: 100%;
 
     min-height: 40px;
   }
+
 }
 
 </style>
 
-<!-- =========================================================
-     META ADS PRODUCT REDIRECT
-     ========================================================= -->
-
 <script>
+
+/* =========================================================
+   META PRODUCT REDIRECT
+   ========================================================= */
 
 (function () {
 
@@ -2779,15 +2456,9 @@ nav {
     if (productId) {
 
       const productUrl =
-        new URL(
-          "/product-details",
-          window.location.origin
-        );
+        new URL("/product-details", window.location.origin);
 
-      productUrl.searchParams.set(
-        "id",
-        productId
-      );
+      productUrl.searchParams.set("id", productId);
 
       [
         "ref",
@@ -2804,16 +2475,21 @@ nav {
         const value =
           params.get(key);
 
-        if (value)
+        if (value) {
+
           productUrl.searchParams.set(
             key,
             value
           );
+
+        }
+
       });
 
       window.location.replace(
         productUrl.toString()
       );
+
     }
 
   } catch (e) {
@@ -2822,6 +2498,7 @@ nav {
       "Product redirect skipped:",
       e
     );
+
   }
 
 })();
@@ -2833,7 +2510,7 @@ nav {
 <body>
 
 <!-- =========================================================
-     NAVIGATION
+     NAVBAR
      ========================================================= -->
 
 <nav>
@@ -2862,10 +2539,13 @@ nav {
 
   <div class="nav-right">
 
+    <!-- Notification Bell -->
+
     <div
       class="notification-icon-btn"
       id="notifBtn"
-      title="Notifications">
+      title="Notifications"
+    >
 
       <i class="fa-regular fa-bell"></i>
 
@@ -2878,10 +2558,13 @@ nav {
 
     </div>
 
+    <!-- Profile -->
+
     <div
       class="profile-chip"
       id="profileChip"
-      title="Click to edit profile">
+      title="Click to edit profile"
+    >
 
       <div
         class="profile-avatar"
@@ -2894,13 +2577,8 @@ nav {
         <span
           class="profile-name"
           id="navProfileName">
-
           User
-
-          <i
-            class="fa-solid fa-pen edit-profile-btn">
-          </i>
-
+          <i class="fa-solid fa-pen edit-profile-btn"></i>
         </span>
 
         <span
@@ -2917,28 +2595,26 @@ nav {
 
 </nav>
 
-
 <!-- =========================================================
      NOTIFICATION MODAL
      ========================================================= -->
 
 <div
   id="notifModal"
-  class="modal-overlay">
+  class="modal-overlay"
+>
 
-  <div class="modal-card notif-modal-card">
+  <div
+    class="modal-card notif-modal-card"
+  >
 
-    <div class="notif-modal-header">
+    <div
+      class="notif-modal-header"
+    >
 
       <h3>
-
-        <i
-          class="fa-solid fa-bell"
-          style="color:var(--accent);">
-        </i>
-
+        <i class="fa-solid fa-bell"></i>
         Notifications
-
       </h3>
 
       <button
@@ -2950,28 +2626,25 @@ nav {
           font-size:1.2rem;
           cursor:pointer;
           color:var(--text-muted);
-        ">
-
+        "
+      >
         <i class="fa-solid fa-xmark"></i>
-
       </button>
 
     </div>
 
     <div
       class="notif-list"
-      id="notifListContainer">
-
+      id="notifListContainer"
+    >
       <div class="no-notif">
         Loading notifications...
       </div>
-
     </div>
 
   </div>
 
 </div>
-
 
 <!-- =========================================================
      USER WELCOME / LOGIN MODAL
@@ -2979,11 +2652,14 @@ nav {
 
 <div
   id="userWelcomeModal"
-  class="modal-overlay">
+  class="modal-overlay"
+>
 
   <div class="modal-card">
 
-    <div class="welcome-modal-header">
+    <div
+      class="welcome-modal-header"
+    >
 
       <div class="welcome-modal-icon">
 
@@ -2998,10 +2674,9 @@ nav {
             margin:0 0 2px 0;
             font-size:1.15rem;
           "
-          id="welcomeModalTitle">
-
+          id="welcomeModalTitle"
+        >
           Welcome to CartPrime
-
         </h3>
 
         <p
@@ -3010,52 +2685,42 @@ nav {
             color:var(--text-muted);
             margin:0;
           "
-          id="welcomeModalSub">
-
-          Secure & Verified Shopping Platform
-
+          id="welcomeModalSub"
+        >
+          100% Secure & Verified Shopping Platform
         </p>
 
       </div>
 
     </div>
 
-
     <div
       class="welcome-benefits"
-      id="welcomeBenefitsBox">
+      id="welcomeBenefitsBox"
+    >
 
       <div class="welcome-benefit-item">
-
         <i class="fa-solid fa-circle-check"></i>
-
         Fast & Free Shipping Across India
-
       </div>
 
       <div class="welcome-benefit-item">
-
         <i class="fa-solid fa-circle-check"></i>
-
         7 Days Easy Returns & Buyer Protection
-
       </div>
 
       <div class="welcome-benefit-item">
-
         <i class="fa-solid fa-circle-check"></i>
-
         Cash on Delivery (COD) Available
-
       </div>
 
     </div>
 
-
     <form
       id="userWelcomeForm"
       class="modal-form"
-      style="margin-top:0;">
+      style="margin-top:0;"
+    >
 
       <input
         type="tel"
@@ -3069,7 +2734,7 @@ nav {
         type="text"
         id="userWelcomeOtp"
         class="modal-input"
-        placeholder="Enter 6-digit OTP"
+        placeholder="Enter 6-digit OTP (e.g. 123456)"
         style="display:none;"
         maxlength="6"
       >
@@ -3097,32 +2762,32 @@ nav {
             color:var(--text-main);
             font-weight:600;
             cursor:pointer;
-          ">
-
+          "
+        >
           Cancel
-
         </button>
 
         <button
           type="submit"
           class="modal-btn-submit"
-          id="welcomeSubmitBtn">
-
+          id="welcomeSubmitBtn"
+        >
           Continue Securely
-
         </button>
 
       </div>
 
     </form>
 
+    <!-- Logout -->
 
     <div
       id="logoutSection"
       style="
         display:none;
         margin-top:12px;
-      ">
+      "
+    >
 
       <button
         type="button"
@@ -3136,20 +2801,20 @@ nav {
           color:#ef4444;
           font-weight:700;
           cursor:pointer;
-        ">
+        "
+      >
 
         <i class="fa-solid fa-right-from-bracket"></i>
-
         Logout
 
       </button>
 
     </div>
 
-
     <div
       id="verifyLoadingBox"
-      class="verify-loading-box">
+      class="verify-loading-box"
+    >
 
       <div class="spinner"></div>
 
@@ -3160,10 +2825,9 @@ nav {
           color:var(--text-main);
           margin:0;
         "
-        id="loadingText">
-
+        id="loadingText"
+      >
         Checking Mobile Number...
-
       </p>
 
     </div>
@@ -3172,14 +2836,14 @@ nav {
 
 </div>
 
-
 <!-- =========================================================
      EARN PARTNER MODAL
      ========================================================= -->
 
 <div
   id="earnModal"
-  class="modal-overlay">
+  class="modal-overlay"
+>
 
   <div class="modal-card">
 
@@ -3197,10 +2861,9 @@ nav {
           style="
             margin:0 0 2px 0;
             font-size:1.15rem;
-          ">
-
+          "
+        >
           CartPrime Partner Program
-
         </h3>
 
         <p
@@ -3208,45 +2871,33 @@ nav {
             font-size:0.78rem;
             color:var(--text-muted);
             margin:0;
-          ">
-
+          "
+        >
           Earn commissions on every referral
-
         </p>
 
       </div>
 
     </div>
 
-
     <div class="earn-benefits">
 
       <div class="earn-benefit-item">
-
         <i class="fa-solid fa-circle-check"></i>
-
         Instant Admin Verification
-
       </div>
 
       <div class="earn-benefit-item">
-
         <i class="fa-solid fa-circle-check"></i>
-
         Direct UPI Payouts to your Account
-
       </div>
 
       <div class="earn-benefit-item">
-
         <i class="fa-solid fa-circle-check"></i>
-
         Real-time Earnings Dashboard
-
       </div>
 
     </div>
-
 
     <p
       style="
@@ -3254,18 +2905,16 @@ nav {
         color:var(--text-muted);
         margin-bottom:12px;
       "
-      id="earnSubText">
-
-      Enter your WhatsApp or mobile number to check
-      your partnership eligibility status.
-
+      id="earnSubText"
+    >
+      Enter your WhatsApp or mobile number to check your partnership eligibility status.
     </p>
-
 
     <form
       id="earnForm"
       class="modal-form"
-      style="margin-top:0;">
+      style="margin-top:0;"
+    >
 
       <input
         type="tel"
@@ -3305,19 +2954,17 @@ nav {
             color:var(--text-main);
             font-weight:600;
             cursor:pointer;
-          ">
-
+          "
+        >
           Cancel
-
         </button>
 
         <button
           type="submit"
           class="modal-btn-submit"
-          id="earnSubmitBtn">
-
+          id="earnSubmitBtn"
+        >
           Check Eligibility
-
         </button>
 
       </div>
@@ -3328,14 +2975,14 @@ nav {
 
 </div>
 
-
 <!-- =========================================================
      CONTACT MODAL
      ========================================================= -->
 
 <div
   id="contactModal"
-  class="modal-overlay">
+  class="modal-overlay"
+>
 
   <div class="modal-card">
 
@@ -3343,10 +2990,9 @@ nav {
       style="
         margin:0 0 8px 0;
         font-size:1.2rem;
-      ">
-
+      "
+    >
       Contact Customer Support
-
     </h3>
 
     <p
@@ -3354,29 +3000,28 @@ nav {
         font-size:0.85rem;
         color:var(--text-muted);
         margin-bottom:16px;
-      ">
-
-      We are here to help you 24/7.
-      Reach out via any platform below:
-
+      "
+    >
+      We are here to help you 24/7. Reach out via any platform below:
     </p>
-
 
     <div
       style="
         display:flex;
         flex-direction:column;
         gap:12px;
-      ">
+      "
+    >
 
       <a
         href="mailto:cartprimeshopping@gmail.com"
-        class="contact-option">
+        class="contact-option"
+      >
 
         <i
           class="fa-regular fa-envelope"
-          style="color:#ea4335;">
-        </i>
+          style="color:var(--accent);"
+        ></i>
 
         <span>
           Email: cartprimeshopping@gmail.com
@@ -3384,17 +3029,17 @@ nav {
 
       </a>
 
-
       <a
         href="https://www.instagram.com/cartprimeonlinestore?igsh=MWFmYTkzdHhyOXoyYQ=="
         target="_blank"
         rel="noopener noreferrer"
-        class="contact-option">
+        class="contact-option"
+      >
 
         <i
           class="fa-brands fa-instagram"
-          style="color:#e1306c;">
-        </i>
+          style="color:#e1306c;"
+        ></i>
 
         <span>
           Instagram: @cartprimeonlinestore
@@ -3402,15 +3047,15 @@ nav {
 
       </a>
 
-
       <div
         id="customerCareBtn"
-        class="contact-option">
+        class="contact-option"
+      >
 
         <i
           class="fa-solid fa-headset"
-          style="color:var(--accent);">
-        </i>
+          style="color:#22c55e;"
+        ></i>
 
         <span>
           Customer care
@@ -3419,7 +3064,6 @@ nav {
       </div>
 
     </div>
-
 
     <button
       type="button"
@@ -3434,16 +3078,14 @@ nav {
         color:var(--text-main);
         font-weight:700;
         cursor:pointer;
-      ">
-
+      "
+    >
       Close
-
     </button>
 
   </div>
 
 </div>
-
 
 <!-- =========================================================
      HERO
@@ -3461,11 +3103,10 @@ nav {
 
     <h1
       style="
-        color:var(--accent);
-      ">
-
+        color:#419b41;
+      "
+    >
       Online Shop
-
     </h1>
 
     <p>
@@ -3473,7 +3114,6 @@ nav {
     </p>
 
   </div>
-
 
   <div class="trust-stats">
 
@@ -3495,9 +3135,7 @@ nav {
 
     </div>
 
-
     <div class="stat-divider"></div>
-
 
     <div class="stat-item">
 
@@ -3521,9 +3159,8 @@ nav {
 
 </header>
 
-
 <!-- =========================================================
-     TRUST BAR
+     TRUST CARDS
      ========================================================= -->
 
 <div class="trust-bar-section">
@@ -3533,9 +3170,7 @@ nav {
     <div class="trust-card">
 
       <div class="trust-icon">
-
         <i class="fa-solid fa-truck-fast"></i>
-
       </div>
 
       <div class="trust-details">
@@ -3552,13 +3187,10 @@ nav {
 
     </div>
 
-
     <div class="trust-card">
 
       <div class="trust-icon">
-
         <i class="fa-solid fa-shield-halved"></i>
-
       </div>
 
       <div class="trust-details">
@@ -3575,13 +3207,10 @@ nav {
 
     </div>
 
-
     <div class="trust-card">
 
       <div class="trust-icon">
-
         <i class="fa-solid fa-hand-holding-dollar"></i>
-
       </div>
 
       <div class="trust-details">
@@ -3598,13 +3227,10 @@ nav {
 
     </div>
 
-
     <div class="trust-card">
 
       <div class="trust-icon">
-
         <i class="fa-solid fa-headset"></i>
-
       </div>
 
       <div class="trust-details">
@@ -3625,38 +3251,36 @@ nav {
 
 </div>
 
-
 <div
   class="category-bar"
-  id="categoryBar">
-</div>
-
+  id="categoryBar"
+></div>
 
 <!-- =========================================================
-     BANNER
+     BANNERS
      ========================================================= -->
 
 <div
   class="banner-section"
   id="bannerSection"
-  style="display:none;">
+  style="display:none;"
+>
 
   <div class="banner-wrapper">
 
     <div
       class="banner-slider"
-      id="bannerSlider">
-    </div>
+      id="bannerSlider"
+    ></div>
 
   </div>
 
   <div
     class="banner-dots"
-    id="bannerDots">
-  </div>
+    id="bannerDots"
+  ></div>
 
 </div>
-
 
 <!-- =========================================================
      PRODUCTS
@@ -3666,14 +3290,13 @@ nav {
 
   <div
     class="grid"
-    id="productGrid">
-  </div>
+    id="productGrid"
+  ></div>
 
 </div>
 
-
 <!-- =========================================================
-     SECURE CHECKOUT
+     SAFE CHECKOUT
      ========================================================= -->
 
 <div class="safe-checkout-box">
@@ -3689,33 +3312,23 @@ nav {
   <div class="payment-badges">
 
     <span>
-
       <i class="fa-solid fa-check"></i>
-
       Verified Merchant
-
     </span>
 
     <span>
-
       <i class="fa-solid fa-box-check"></i>
-
       100% Genuine Products
-
     </span>
 
     <span>
-
       <i class="fa-solid fa-wallet"></i>
-
       Cash on Delivery
-
     </span>
 
   </div>
 
 </div>
-
 
 <!-- =========================================================
      COOKIE
@@ -3724,7 +3337,8 @@ nav {
 <div
   class="cookie-banner"
   id="cookieBanner"
-  style="display:none;">
+  style="display:none;"
+>
 
   <p>
 
@@ -3732,9 +3346,7 @@ nav {
       We use cookies!
     </strong>
 
-    We use cookies to enhance your
-    shopping experience and analyze
-    our website traffic.
+    We use cookies to enhance your shopping experience and analyze our website traffic.
 
   </p>
 
@@ -3742,26 +3354,25 @@ nav {
 
     <button
       class="cookie-btn cookie-accept"
-      id="acceptCookiesBtn">
-
+      id="acceptCookiesBtn"
+    >
       Accept Cookies
-
     </button>
 
   </div>
 
 </div>
 
-
 <!-- =========================================================
-     BOTTOM NAVIGATION
+     BOTTOM NAV
      ========================================================= -->
 
 <div class="bottom-nav">
 
   <a
     href="/"
-    class="bottom-nav-item active">
+    class="bottom-nav-item active"
+  >
 
     <i class="fa-solid fa-house"></i>
 
@@ -3771,10 +3382,10 @@ nav {
 
   </a>
 
-
   <a
     href="/wishlist"
-    class="bottom-nav-item">
+    class="bottom-nav-item"
+  >
 
     <i class="fa-regular fa-heart"></i>
 
@@ -3785,18 +3396,17 @@ nav {
     <span
       id="bottomWishlistBadge"
       class="badge"
-      style="display:none;">
-
+      style="display:none;"
+    >
       0
-
     </span>
 
   </a>
 
-
   <a
     href="/orders"
-    class="bottom-nav-item">
+    class="bottom-nav-item"
+  >
 
     <i class="fa-solid fa-bag-shopping"></i>
 
@@ -3807,18 +3417,17 @@ nav {
     <span
       id="bottomOrdersBadge"
       class="badge"
-      style="display:none;">
-
+      style="display:none;"
+    >
       0
-
     </span>
 
   </a>
 
-
   <div
     id="bottomEarnBtn"
-    class="bottom-nav-item">
+    class="bottom-nav-item"
+  >
 
     <i class="fa-solid fa-wallet"></i>
 
@@ -3829,18 +3438,17 @@ nav {
     <span
       id="bottomEarnBadge"
       class="badge"
-      style="display:none;">
-
+      style="display:none;"
+    >
       0
-
     </span>
 
   </div>
 
-
   <div
     id="bottomContactBtn"
-    class="bottom-nav-item">
+    class="bottom-nav-item"
+  >
 
     <i class="fa-solid fa-headset"></i>
 
@@ -3852,20 +3460,21 @@ nav {
 
 </div>
 
-
 <!-- =========================================================
      CUSTOM TOAST
      ========================================================= -->
 
 <div
   id="customToast"
-  class="custom-toast-overlay">
+  class="custom-toast-overlay"
+>
 
   <div class="custom-toast-card">
 
     <div
       id="toastIcon"
-      class="toast-icon-wrap success">
+      class="toast-icon-wrap success"
+    >
 
       <i class="fa-solid fa-circle-check"></i>
 
@@ -3881,7 +3490,8 @@ nav {
 
     <div
       id="toastOtpBox"
-      class="otp-highlight-box">
+      class="otp-highlight-box"
+    >
 
       <span id="toastOtpText"></span>
 
@@ -3889,16 +3499,14 @@ nav {
 
     <button
       id="toastCloseBtn"
-      class="toast-close-btn">
-
+      class="toast-close-btn"
+    >
       Continue
-
     </button>
 
   </div>
 
 </div>
-
 
 <!-- =========================================================
      NOTIFICATION PERMISSION
@@ -3910,33 +3518,28 @@ window.addEventListener('load', () => {
 
   if ("Notification" in window) {
 
-    if (
-      Notification.permission === "default"
-    ) {
+    if (Notification.permission === "default") {
 
-      Notification.requestPermission()
-        .then((permission) => {
+      Notification.requestPermission().then(
+        (permission) => {
 
-          if (
-            permission === "granted"
-          ) {
+          if (permission === "granted") {
 
             new Notification(
               "CartPrime",
               {
-
                 body:
                   "Welcome to CartPrime! You will now receive updates on offers and orders.",
 
                 icon:
                   "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
-
               }
             );
 
           }
 
-        });
+        }
+      );
 
     }
 
@@ -3946,7 +3549,6 @@ window.addEventListener('load', () => {
 
 </script>
 
-
 <!-- =========================================================
      FIREBASE
      ========================================================= -->
@@ -3955,14 +3557,12 @@ window.addEventListener('load', () => {
 
 import {
   initializeApp
-} from
-"https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 
 import {
   getAuth,
   onAuthStateChanged
-} from
-"https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 import {
   getDatabase,
@@ -3972,8 +3572,7 @@ import {
   set,
   remove,
   update
-} from
-"https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 
 /* =========================================================
@@ -4002,8 +3601,8 @@ const firebaseConfig = {
 
   measurementId:
     "G-9GREWHMEYL"
-};
 
+};
 
 const app =
   initializeApp(firebaseConfig);
@@ -4016,7 +3615,7 @@ const db =
 
 
 /* =========================================================
-   SESSION
+   SESSION TOKEN
    ========================================================= */
 
 function generateSessionToken() {
@@ -4032,6 +3631,10 @@ function generateSessionToken() {
 }
 
 
+/* =========================================================
+   SINGLE DEVICE SESSION
+   ========================================================= */
+
 function monitorSingleDeviceSession() {
 
   const userPhone =
@@ -4040,10 +3643,7 @@ function monitorSingleDeviceSession() {
   const localToken =
     localStorage.getItem('sessionToken');
 
-  if (
-    userPhone &&
-    localToken
-  ) {
+  if (userPhone && localToken) {
 
     const userRef =
       ref(
@@ -4060,34 +3660,14 @@ function monitorSingleDeviceSession() {
           const activeToken =
             snapshot.val();
 
-          if (
-            activeToken !==
-            localToken
-          ) {
+          if (activeToken !== localToken) {
 
-            localStorage.removeItem(
-              'userName'
-            );
-
-            localStorage.removeItem(
-              'userPhone'
-            );
-
-            localStorage.removeItem(
-              'sessionToken'
-            );
-
-            localStorage.removeItem(
-              'partnerPhone'
-            );
-
-            localStorage.removeItem(
-              'partnerName'
-            );
-
-            localStorage.removeItem(
-              'partnerId'
-            );
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userPhone');
+            localStorage.removeItem('sessionToken');
+            localStorage.removeItem('partnerPhone');
+            localStorage.removeItem('partnerName');
+            localStorage.removeItem('partnerId');
 
             showCustomAlert(
               "Session Expired",
@@ -4111,7 +3691,6 @@ function monitorSingleDeviceSession() {
   }
 
 }
-
 
 monitorSingleDeviceSession();
 
@@ -4143,25 +3722,19 @@ function openModal(modalElement) {
 
   setTimeout(() => {
 
-    modalElement.classList.add(
-      'active'
-    );
+    modalElement.classList.add('active');
 
   }, 10);
 
 }
 
-
 function closeModal(modalElement) {
 
-  modalElement.classList.remove(
-    'active'
-  );
+  modalElement.classList.remove('active');
 
   setTimeout(() => {
 
-    modalElement.style.display =
-      'none';
+    modalElement.style.display = 'none';
 
   }, 300);
 
@@ -4173,95 +3746,63 @@ function closeModal(modalElement) {
    ========================================================= */
 
 const profileChip =
-  document.getElementById(
-    'profileChip'
-  );
+  document.getElementById('profileChip');
 
 const navProfileAvatar =
-  document.getElementById(
-    'navProfileAvatar'
-  );
+  document.getElementById('navProfileAvatar');
 
 const navProfileName =
-  document.getElementById(
-    'navProfileName'
-  );
+  document.getElementById('navProfileName');
 
 const navProfilePhone =
-  document.getElementById(
-    'navProfilePhone'
-  );
+  document.getElementById('navProfilePhone');
 
+
+/* =========================================================
+   WELCOME ELEMENTS
+   ========================================================= */
 
 const welcomeModal =
-  document.getElementById(
-    'userWelcomeModal'
-  );
+  document.getElementById('userWelcomeModal');
 
 const welcomeForm =
-  document.getElementById(
-    'userWelcomeForm'
-  );
+  document.getElementById('userWelcomeForm');
 
 const userWelcomePhone =
-  document.getElementById(
-    'userWelcomePhone'
-  );
+  document.getElementById('userWelcomePhone');
 
 const userWelcomeOtp =
-  document.getElementById(
-    'userWelcomeOtp'
-  );
+  document.getElementById('userWelcomeOtp');
 
 const userWelcomeName =
-  document.getElementById(
-    'userWelcomeName'
-  );
+  document.getElementById('userWelcomeName');
 
 const welcomeSubmitBtn =
-  document.getElementById(
-    'welcomeSubmitBtn'
-  );
+  document.getElementById('welcomeSubmitBtn');
 
 const verifyLoadingBox =
-  document.getElementById(
-    'verifyLoadingBox'
-  );
+  document.getElementById('verifyLoadingBox');
 
 const loadingText =
-  document.getElementById(
-    'loadingText'
-  );
+  document.getElementById('loadingText');
 
 const closeWelcomeModal =
-  document.getElementById(
-    'closeWelcomeModal'
-  );
+  document.getElementById('closeWelcomeModal');
 
 const welcomeModalTitle =
-  document.getElementById(
-    'welcomeModalTitle'
-  );
+  document.getElementById('welcomeModalTitle');
 
 const welcomeModalSub =
-  document.getElementById(
-    'welcomeModalSub'
-  );
+  document.getElementById('welcomeModalSub');
 
 const welcomeBenefitsBox =
-  document.getElementById(
-    'welcomeBenefitsBox'
-  );
+  document.getElementById('welcomeBenefitsBox');
 
 const logoutSection =
-  document.getElementById(
-    'logoutSection'
-  );
+  document.getElementById('logoutSection');
 
 const logoutBtn =
-  document.getElementById(
-    'logoutBtn'
-  );
+  document.getElementById('logoutBtn');
 
 
 /* =========================================================
@@ -4269,24 +3810,16 @@ const logoutBtn =
    ========================================================= */
 
 const notifBtn =
-  document.getElementById(
-    'notifBtn'
-  );
+  document.getElementById('notifBtn');
 
 const notifBadge =
-  document.getElementById(
-    'notifBadge'
-  );
+  document.getElementById('notifBadge');
 
 const notifModal =
-  document.getElementById(
-    'notifModal'
-  );
+  document.getElementById('notifModal');
 
 const closeNotifModal =
-  document.getElementById(
-    'closeNotifModal'
-  );
+  document.getElementById('closeNotifModal');
 
 const notifListContainer =
   document.getElementById(
@@ -4301,16 +3834,17 @@ let localNotifications = {};
 
 function isNotificationUnread(item) {
 
-  if (!item)
-    return false;
+  if (!item) return false;
 
   if (
     item.read === true ||
     item.unread === false
-  )
+  ) {
     return false;
+  }
 
   return true;
+
 }
 
 
@@ -4331,25 +3865,21 @@ function refreshNotifUI() {
 
   let unreadCount = 0;
 
-  Object.keys(combined)
-    .forEach((key) => {
+  Object.keys(combined).forEach(
+    (key) => {
 
       if (
         isNotificationUnread(
           combined[key]
         )
       ) {
-
         unreadCount++;
-
       }
 
-    });
+    }
+  );
 
-
-  if (
-    unreadCount > 0
-  ) {
+  if (unreadCount > 0) {
 
     if (notifBadge) {
 
@@ -4363,9 +3893,12 @@ function refreshNotifUI() {
 
   } else {
 
-    if (notifBadge)
+    if (notifBadge) {
+
       notifBadge.style.display =
         'none';
+
+    }
 
   }
 
@@ -4387,20 +3920,15 @@ function addLocalNotification(
 
   localNotifications[id] = {
 
-    title:
-      title,
+    title: title,
 
-    message:
-      message,
+    message: message,
 
-    icon:
-      iconClass,
+    icon: iconClass,
 
-    timestamp:
-      Date.now(),
+    timestamp: Date.now(),
 
-    read:
-      false
+    read: false
 
   };
 
@@ -4412,12 +3940,8 @@ function addLocalNotification(
 function listenNotifications() {
 
   const phone =
-    localStorage.getItem(
-      'partnerPhone'
-    ) ||
-    localStorage.getItem(
-      'userPhone'
-    );
+    localStorage.getItem('partnerPhone') ||
+    localStorage.getItem('userPhone');
 
   if (!phone) {
 
@@ -4426,15 +3950,14 @@ function listenNotifications() {
     refreshNotifUI();
 
     return;
-  }
 
+  }
 
   const notifRef =
     ref(
       db,
       `earn_partners/${phone}/notifications`
     );
-
 
   onValue(
     notifRef,
@@ -4455,9 +3978,7 @@ function listenNotifications() {
 
 function renderNotifications() {
 
-  if (!notifListContainer)
-    return;
-
+  if (!notifListContainer) return;
 
   const combined =
     getCombinedNotifications();
@@ -4465,20 +3986,30 @@ function renderNotifications() {
   const keys =
     Object.keys(combined);
 
-
   if (keys.length === 0) {
 
-    notifListContainer.innerHTML =
+    notifListContainer.innerHTML = `
 
-      '<div class="no-notif">' +
-      '<i class="fa-regular fa-bell-slash" style="font-size:2rem;margin-bottom:8px;display:block;"></i>' +
-      'No notifications yet.' +
-      '</div>';
+      <div class="no-notif">
+
+        <i
+          class="fa-regular fa-bell-slash"
+          style="
+            font-size:2rem;
+            margin-bottom:8px;
+            display:block;
+          "
+        ></i>
+
+        No notifications yet.
+
+      </div>
+
+    `;
 
     return;
 
   }
-
 
   keys.sort(
     (a, b) =>
@@ -4490,75 +4021,73 @@ function renderNotifications() {
   let html = '';
 
 
-  keys.forEach((id) => {
+  keys.forEach(
+    (id) => {
 
-    const item =
-      combined[id];
+      const item =
+        combined[id];
 
-    const isUnread =
-      isNotificationUnread(item);
+      const isUnread =
+        isNotificationUnread(item);
 
+      const timeStr =
+        item.timestamp
+          ? new Date(
+              item.timestamp
+            ).toLocaleString(
+              'en-IN',
+              {
+                dateStyle: 'short',
+                timeStyle: 'short'
+              }
+            )
+          : '';
 
-    const timeStr =
-      item.timestamp
-        ? new Date(
-            item.timestamp
-          ).toLocaleString(
-            'en-IN',
-            {
-              dateStyle:
-                'short',
-              timeStyle:
-                'short'
-            }
-          )
-        : '';
-
-
-    const iconClass =
-      item.icon ||
-      'fa-bell';
+      const iconClass =
+        item.icon || 'fa-bell';
 
 
-    html += `
+      html += `
 
-      <div class="notif-item ${isUnread ? 'unread' : ''}">
+        <div class="notif-item ${
+          isUnread ? 'unread' : ''
+        }">
 
-        <div class="notif-icon">
+          <div class="notif-icon">
 
-          <i class="fa-solid ${iconClass}"></i>
+            <i class="fa-solid ${iconClass}"></i>
+
+          </div>
+
+          <div class="notif-content">
+
+            <div class="notif-title">
+              ${item.title || 'Notification'}
+            </div>
+
+            <div class="notif-message">
+              ${item.message || ''}
+            </div>
+
+            <div class="notif-time">
+              ${timeStr}
+            </div>
+
+            <button
+              class="mark-read-btn"
+              data-id="${id}"
+            >
+              Mark as read
+            </button>
+
+          </div>
 
         </div>
 
-        <div class="notif-content">
+      `;
 
-          <div class="notif-title">
-            ${item.title || 'Notification'}
-          </div>
-
-          <div class="notif-message">
-            ${item.message || ''}
-          </div>
-
-          <div class="notif-time">
-            ${timeStr}
-          </div>
-
-          <button
-            class="mark-read-btn"
-            data-id="${id}">
-
-            Mark as read
-
-          </button>
-
-        </div>
-
-      </div>
-
-    `;
-
-  });
+    }
+  );
 
 
   notifListContainer.innerHTML =
@@ -4569,69 +4098,70 @@ function renderNotifications() {
     .querySelectorAll(
       '.mark-read-btn'
     )
-    .forEach((btn) => {
+    .forEach(
+      (btn) => {
 
-      btn.addEventListener(
-        'click',
-        (e) => {
+        btn.addEventListener(
+          'click',
+          (e) => {
 
-          const notifId =
-            e.currentTarget
-              .getAttribute(
-                'data-id'
+            const notifId =
+              e.currentTarget
+                .getAttribute(
+                  'data-id'
+                );
+
+            if (!notifId) return;
+
+
+            if (
+              notifId.startsWith(
+                'local_'
+              )
+            ) {
+
+              delete localNotifications[
+                notifId
+              ];
+
+              refreshNotifUI();
+
+              return;
+
+            }
+
+
+            const phone =
+              localStorage.getItem(
+                'partnerPhone'
+              ) ||
+              localStorage.getItem(
+                'userPhone'
               );
 
-          if (!notifId)
-            return;
 
+            if (phone) {
 
-          if (
-            notifId.startsWith(
-              'local_'
-            )
-          ) {
+              delete notificationsData[
+                notifId
+              ];
 
-            delete localNotifications[
-              notifId
-            ];
+              renderNotifications();
 
-            refreshNotifUI();
+              remove(
+                ref(
+                  db,
+                  `earn_partners/${phone}/notifications/${notifId}`
+                )
+              );
 
-            return;
-          }
-
-
-          const phone =
-            localStorage.getItem(
-              'partnerPhone'
-            ) ||
-            localStorage.getItem(
-              'userPhone'
-            );
-
-
-          if (phone) {
-
-            delete notificationsData[
-              notifId
-            ];
-
-            renderNotifications();
-
-
-            remove(
-              ref(
-                db,
-                `earn_partners/${phone}/notifications/${notifId}`
-              )
-            );
+            }
 
           }
+        );
 
-        }
-      );
-
-    });
+      }
+    );
 
 }
 
@@ -4642,9 +4172,7 @@ if (notifBtn) {
     'click',
     () => {
 
-      openModal(
-        notifModal
-      );
+      openModal(notifModal);
 
       renderNotifications();
 
@@ -4660,9 +4188,7 @@ if (closeNotifModal) {
     'click',
     () => {
 
-      closeModal(
-        notifModal
-      );
+      closeModal(notifModal);
 
     }
   );
@@ -4674,7 +4200,7 @@ listenNotifications();
 
 
 /* =========================================================
-   REGISTRATION
+   REGISTRATION VARIABLES
    ========================================================= */
 
 let registrationStep = 1;
@@ -4688,6 +4214,10 @@ let isNewUserSession = false;
 let generatedOtpCode = "";
 
 
+/* =========================================================
+   OTP NOTIFICATION
+   ========================================================= */
+
 function showOtpNotificationPopup(
   phone,
   otp
@@ -4695,8 +4225,7 @@ function showOtpNotificationPopup(
 
   if (
     "Notification" in window &&
-    Notification.permission ===
-      "granted"
+    Notification.permission === "granted"
   ) {
 
     try {
@@ -4716,7 +4245,9 @@ function showOtpNotificationPopup(
 
       return;
 
-    } catch (err) {}
+    } catch (err) {
+
+    }
 
   }
 
@@ -4731,6 +4262,10 @@ function showOtpNotificationPopup(
 }
 
 
+/* =========================================================
+   FREE OTP
+   ========================================================= */
+
 async function sendFreeOtpToUser(
   phoneNumber
 ) {
@@ -4740,7 +4275,6 @@ async function sendFreeOtpToUser(
       100000 +
       Math.random() * 900000
     ).toString();
-
 
   console.log(
     `[CartPrime Security] Generated OTP for ${phoneNumber}: ${generatedOtpCode}`
@@ -4771,34 +4305,39 @@ function updateHeaderProfileUI() {
   const name =
     localStorage.getItem(
       'userName'
-    ) ||
-    "User";
+    ) || "User";
 
   const phone =
     localStorage.getItem(
       'userPhone'
-    ) ||
-    "";
+    ) || "";
 
 
-  if (navProfileAvatar)
+  if (navProfileAvatar) {
+
     navProfileAvatar.textContent =
-      name
-        .charAt(0)
-        .toUpperCase();
+      name.charAt(0).toUpperCase();
+
+  }
 
 
-  if (navProfileName)
+  if (navProfileName) {
+
     navProfileName.innerHTML =
       `${name}
-      <i class="fa-solid fa-pen edit-profile-btn"></i>`;
+       <i class="fa-solid fa-pen edit-profile-btn"></i>`;
+
+  }
 
 
-  if (navProfilePhone)
+  if (navProfilePhone) {
+
     navProfilePhone.textContent =
       phone
         ? phone
         : "Tap to set";
+
+  }
 
 }
 
@@ -4807,7 +4346,7 @@ updateHeaderProfileUI();
 
 
 /* =========================================================
-   PROFILE CLICK
+   PROFILE EDIT
    ========================================================= */
 
 if (profileChip) {
@@ -4847,23 +4386,32 @@ if (profileChip) {
         "Update your details below.";
 
 
-      if (welcomeBenefitsBox)
+      if (welcomeBenefitsBox) {
+
         welcomeBenefitsBox.style.display =
           'none';
+
+      }
 
 
       welcomeSubmitBtn.textContent =
         "Save Changes";
 
 
-      if (closeWelcomeModal)
+      if (closeWelcomeModal) {
+
         closeWelcomeModal.style.display =
           "block";
 
+      }
 
-      if (logoutSection)
+
+      if (logoutSection) {
+
         logoutSection.style.display =
           "block";
+
+      }
 
 
       openModal(
@@ -4875,10 +4423,6 @@ if (profileChip) {
 
 }
 
-
-/* =========================================================
-   CLOSE PROFILE MODAL
-   ========================================================= */
 
 if (closeWelcomeModal) {
 
@@ -4912,7 +4456,6 @@ if (logoutBtn) {
         localStorage.getItem(
           'userPhone'
         );
-
 
       if (currentPhone) {
 
@@ -5007,23 +4550,27 @@ function resetRegistrationForm() {
     'none';
 
 
-  if (welcomeBenefitsBox)
+  if (welcomeBenefitsBox) {
+
     welcomeBenefitsBox.style.display =
       'flex';
 
+  }
 
-  if (logoutSection)
+
+  if (logoutSection) {
+
     logoutSection.style.display =
       'none';
+
+  }
 
 
   welcomeSubmitBtn.textContent =
     "Continue Securely";
 
-
   welcomeModalTitle.textContent =
     "Welcome to CartPrime";
-
 
   welcomeModalSub.textContent =
     "100% Secure & Verified Shopping Platform";
@@ -5032,7 +4579,7 @@ function resetRegistrationForm() {
 
 
 /* =========================================================
-   AUTO OPEN LOGIN
+   OPEN LOGIN IF NOT LOGGED IN
    ========================================================= */
 
 const storedUserPhone =
@@ -5040,18 +4587,21 @@ const storedUserPhone =
     'userPhone'
   );
 
-
 if (!storedUserPhone) {
 
-  if (closeWelcomeModal)
+  if (closeWelcomeModal) {
+
     closeWelcomeModal.style.display =
       "none";
 
+  }
 
-  if (logoutSection)
+  if (logoutSection) {
+
     logoutSection.style.display =
       "none";
 
+  }
 
   resetRegistrationForm();
 
@@ -5075,20 +4625,16 @@ if (welcomeForm) {
       e.preventDefault();
 
 
-      /* STEP 1 */
+      /* =====================================================
+         STEP 1
+         ===================================================== */
 
-      if (
-        registrationStep === 1
-      ) {
+      if (registrationStep === 1) {
 
         const phone =
-          userWelcomePhone
-            .value
-            .trim();
+          userWelcomePhone.value.trim();
 
-
-        if (!phone)
-          return;
+        if (!phone) return;
 
 
         const existingActivePhone =
@@ -5113,17 +4659,14 @@ if (welcomeForm) {
         }
 
 
-        pendingPhone =
-          phone;
+        pendingPhone = phone;
 
 
         welcomeForm.style.display =
           'none';
 
-
         loadingText.textContent =
           "Checking Mobile Number & Sending OTP...";
-
 
         verifyLoadingBox.style.display =
           'flex';
@@ -5142,103 +4685,109 @@ if (welcomeForm) {
 
 
         get(userRef)
-          .then((snapshot) => {
+          .then(
+            (snapshot) => {
 
-            verifyLoadingBox.style.display =
-              'none';
-
-            welcomeForm.style.display =
-              'flex';
-
-
-            if (snapshot.exists()) {
-
-              const userData =
-                snapshot.val();
-
-              pendingExistingName =
-                userData.name ||
-                "User";
-
-              isNewUserSession =
-                false;
-
-            } else {
-
-              isNewUserSession =
-                true;
-
-            }
-
-
-            registrationStep =
-              2;
-
-
-            userWelcomePhone.style.display =
-              'none';
-
-            userWelcomeOtp.style.display =
-              'block';
-
-            userWelcomeOtp.value =
-              "";
-
-            userWelcomeOtp.focus();
-
-
-            welcomeModalTitle.textContent =
-              "Enter Verification OTP";
-
-
-            welcomeModalSub.textContent =
-              `OTP sent to ${phone}`;
-
-
-            if (welcomeBenefitsBox)
-              welcomeBenefitsBox.style.display =
+              verifyLoadingBox.style.display =
                 'none';
 
-
-            welcomeSubmitBtn.textContent =
-              "Verify OTP";
-
-
-            if (closeWelcomeModal)
-              closeWelcomeModal.style.display =
-                "block";
-
-          })
-          .catch(() => {
-
-            verifyLoadingBox.style.display =
-              'none';
-
-            welcomeForm.style.display =
-              'flex';
+              welcomeForm.style.display =
+                'flex';
 
 
-            showCustomAlert(
-              "Error",
-              "Could not verify details. Try again.",
-              false
-            );
+              if (snapshot.exists()) {
 
-          });
+                const userData =
+                  snapshot.val();
 
+                pendingExistingName =
+                  userData.name || "User";
+
+                isNewUserSession =
+                  false;
+
+              } else {
+
+                isNewUserSession =
+                  true;
+
+              }
+
+
+              registrationStep = 2;
+
+
+              userWelcomePhone.style.display =
+                'none';
+
+              userWelcomeOtp.style.display =
+                'block';
+
+              userWelcomeOtp.value =
+                "";
+
+              userWelcomeOtp.focus();
+
+
+              welcomeModalTitle.textContent =
+                "Enter Verification OTP";
+
+              welcomeModalSub.textContent =
+                `OTP sent to ${phone}`;
+
+
+              if (welcomeBenefitsBox) {
+
+                welcomeBenefitsBox.style.display =
+                  'none';
+
+              }
+
+
+              welcomeSubmitBtn.textContent =
+                "Verify OTP";
+
+
+              if (closeWelcomeModal) {
+
+                closeWelcomeModal.style.display =
+                  "block";
+
+              }
+
+            }
+          )
+          .catch(
+            () => {
+
+              verifyLoadingBox.style.display =
+                'none';
+
+              welcomeForm.style.display =
+                'flex';
+
+              showCustomAlert(
+                "Error",
+                "Could not verify details. Try again.",
+                false
+              );
+
+            }
+          );
 
       }
 
-      /* STEP 2 */
+
+      /* =====================================================
+         STEP 2
+         ===================================================== */
 
       else if (
         registrationStep === 2
       ) {
 
         const otpVal =
-          userWelcomeOtp
-            .value
-            .trim();
+          userWelcomeOtp.value.trim();
 
 
         if (
@@ -5259,9 +4808,7 @@ if (welcomeForm) {
 
         if (isNewUserSession) {
 
-          registrationStep =
-            3;
-
+          registrationStep = 3;
 
           userWelcomeOtp.style.display =
             'none';
@@ -5278,14 +4825,11 @@ if (welcomeForm) {
           welcomeModalTitle.textContent =
             "Create Your Profile";
 
-
           welcomeModalSub.textContent =
             "OTP Verified! Please enter your full name.";
 
-
           welcomeSubmitBtn.textContent =
             "Save Profile";
-
 
         } else {
 
@@ -5325,97 +4869,97 @@ if (welcomeForm) {
               `users/${pendingPhone}`
             ),
             {
-
               sessionToken:
                 newSessionToken,
 
               lastLogin:
                 Date.now()
+            }
+          )
+          .then(
+            () => {
+
+              closeModal(
+                welcomeModal
+              );
+
+              verifyLoadingBox.style.display =
+                'none';
+
+              welcomeForm.style.display =
+                'flex';
+
+              updateHeaderProfileUI();
+
+              listenNotifications();
+
+              monitorSingleDeviceSession();
+
+
+              showCustomAlert(
+                "Welcome Back!",
+                `Successfully logged in as ${pendingExistingName}`,
+                true
+              );
+
+
+              updateBadges(
+                currentUser
+              );
+
+              resetRegistrationForm();
 
             }
           )
-          .then(() => {
+          .catch(
+            () => {
 
-            closeModal(
-              welcomeModal
-            );
+              closeModal(
+                welcomeModal
+              );
 
-            verifyLoadingBox.style.display =
-              'none';
+              verifyLoadingBox.style.display =
+                'none';
 
-            welcomeForm.style.display =
-              'flex';
+              welcomeForm.style.display =
+                'flex';
 
-            updateHeaderProfileUI();
+              updateHeaderProfileUI();
 
-            listenNotifications();
-
-            monitorSingleDeviceSession();
-
-
-            showCustomAlert(
-              "Welcome Back!",
-              `Successfully logged in as ${pendingExistingName}`,
-              true
-            );
+              listenNotifications();
 
 
-            updateBadges(
-              currentUser
-            );
+              showCustomAlert(
+                "Welcome Back!",
+                `Successfully logged in as ${pendingExistingName}`,
+                true
+              );
 
 
-            resetRegistrationForm();
+              updateBadges(
+                currentUser
+              );
 
-          })
-          .catch(() => {
+              resetRegistrationForm();
 
-            closeModal(
-              welcomeModal
-            );
-
-            verifyLoadingBox.style.display =
-              'none';
-
-            welcomeForm.style.display =
-              'flex';
-
-            updateHeaderProfileUI();
-
-            listenNotifications();
-
-
-            showCustomAlert(
-              "Welcome Back!",
-              `Successfully logged in as ${pendingExistingName}`,
-              true
-            );
-
-
-            updateBadges(
-              currentUser
-            );
-
-
-            resetRegistrationForm();
-
-          });
+            }
+          );
 
         }
 
       }
 
-      /* STEP 3 */
+
+      /* =====================================================
+         STEP 3
+         ===================================================== */
 
       else if (
         registrationStep === 3
       ) {
 
         const name =
-          userWelcomeName
-            .value
-            .trim();
-
+          userWelcomeName.value.trim();
 
         const phone =
           pendingPhone ||
@@ -5424,10 +4968,7 @@ if (welcomeForm) {
           );
 
 
-        if (
-          name &&
-          phone
-        ) {
+        if (name && phone) {
 
           welcomeForm.style.display =
             'none';
@@ -5469,87 +5010,85 @@ if (welcomeForm) {
           update(
             userRef,
             {
+              name: name,
 
-              name:
-                name,
-
-              phone:
-                phone,
+              phone: phone,
 
               sessionToken:
                 newSessionToken,
 
               joinedAt:
                 Date.now()
+            }
+          )
+          .then(
+            () => {
+
+              closeModal(
+                welcomeModal
+              );
+
+              verifyLoadingBox.style.display =
+                'none';
+
+              welcomeForm.style.display =
+                'flex';
+
+              updateHeaderProfileUI();
+
+              listenNotifications();
+
+              monitorSingleDeviceSession();
+
+
+              showCustomAlert(
+                "Profile Saved!",
+                "Welcome to CartPrime!",
+                true
+              );
+
+
+              updateBadges(
+                currentUser
+              );
+
+              resetRegistrationForm();
 
             }
           )
-          .then(() => {
+          .catch(
+            () => {
 
-            closeModal(
-              welcomeModal
-            );
+              closeModal(
+                welcomeModal
+              );
 
-            verifyLoadingBox.style.display =
-              'none';
+              verifyLoadingBox.style.display =
+                'none';
 
-            welcomeForm.style.display =
-              'flex';
+              welcomeForm.style.display =
+                'flex';
 
-            updateHeaderProfileUI();
+              updateHeaderProfileUI();
 
-            listenNotifications();
-
-            monitorSingleDeviceSession();
-
-
-            showCustomAlert(
-              "Profile Saved!",
-              "Welcome to CartPrime!",
-              true
-            );
+              listenNotifications();
 
 
-            updateBadges(
-              currentUser
-            );
+              showCustomAlert(
+                "Profile Saved!",
+                "Welcome to CartPrime!",
+                true
+              );
 
 
-            resetRegistrationForm();
+              updateBadges(
+                currentUser
+              );
 
-          })
-          .catch(() => {
+              resetRegistrationForm();
 
-            closeModal(
-              welcomeModal
-            );
-
-            verifyLoadingBox.style.display =
-              'none';
-
-            welcomeForm.style.display =
-              'flex';
-
-            updateHeaderProfileUI();
-
-            listenNotifications();
-
-
-            showCustomAlert(
-              "Profile Saved!",
-              "Welcome to CartPrime!",
-              true
-            );
-
-
-            updateBadges(
-              currentUser
-            );
-
-
-            resetRegistrationForm();
-
-          });
+            }
+          );
 
         }
 
@@ -5697,7 +5236,7 @@ function showCustomAlert(
 
 
 /* =========================================================
-   COOKIES
+   COOKIE
    ========================================================= */
 
 const cookieBanner =
@@ -5753,7 +5292,7 @@ const bottomContactBtn =
     'bottomContactBtn'
   );
 
-const closeContactModalBtn =
+const closeContactModal =
   document.getElementById(
     'closeContactModal'
   );
@@ -5780,9 +5319,9 @@ if (bottomContactBtn) {
 }
 
 
-if (closeContactModalBtn) {
+if (closeContactModal) {
 
-  closeContactModalBtn.addEventListener(
+  closeContactModal.addEventListener(
     'click',
     () => {
 
@@ -5812,7 +5351,7 @@ if (customerCareBtn) {
 
 
 /* =========================================================
-   EARN PARTNER
+   EARN
    ========================================================= */
 
 const earnModal =
@@ -5881,15 +5420,19 @@ function resetEarnForm() {
     "Check Eligibility";
 
 
-  if (earnSubText)
+  if (earnSubText) {
 
     earnSubText.textContent =
       "Enter your WhatsApp or mobile number to check your partnership eligibility status.";
 
+  }
 
-  if (earnForm)
+
+  if (earnForm) {
 
     earnForm.reset();
+
+  }
 
 }
 
@@ -5926,131 +5469,132 @@ function checkEarnPartnerStatus(
 
 
   get(partnerRef)
-    .then((snapshot) => {
+    .then(
+      (snapshot) => {
 
-      if (snapshot.exists()) {
+        if (snapshot.exists()) {
 
-        const partnerData =
-          snapshot.val();
+          const partnerData =
+            snapshot.val();
 
-        const status =
-          (
-            partnerData.status ||
-            ""
-          ).toLowerCase();
+          const status =
+            (
+              partnerData.status ||
+              ""
+            ).toLowerCase();
 
-
-        localStorage.setItem(
-          'partnerPhone',
-          phone
-        );
-
-
-        if (partnerData.name)
 
           localStorage.setItem(
-            'partnerName',
-            partnerData.name
+            'partnerPhone',
+            phone
           );
 
 
-        if (
-          partnerData.partnerId
-        )
+          if (partnerData.name) {
 
-          localStorage.setItem(
-            'partnerId',
-            partnerData.partnerId
+            localStorage.setItem(
+              'partnerName',
+              partnerData.name
+            );
+
+          }
+
+
+          if (partnerData.partnerId) {
+
+            localStorage.setItem(
+              'partnerId',
+              partnerData.partnerId
+            );
+
+          }
+
+
+          closeModal(
+            earnModal
           );
 
-
-        closeModal(
-          earnModal
-        );
+          resetEarnForm();
 
 
-        resetEarnForm();
+          if (
+            status === 'approved' ||
+            status === 'active'
+          ) {
 
+            window.location.href =
+              '/wallet.html';
 
-        if (
-          status === 'approved' ||
-          status === 'active'
-        ) {
+          }
 
-          window.location.href =
-            '/wallet.html';
+          else if (
+            status === 'pending'
+          ) {
 
-        }
+            showCustomAlert(
+              "Under Verification",
+              `Your Partner Account is currently under review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access once approved.`,
+              true
+            );
 
-        else if (
-          status === 'pending'
-        ) {
+          }
 
-          showCustomAlert(
+          else {
 
-            "Under Verification",
+            showCustomAlert(
+              "Application Status",
+              `Status: ${partnerData.status || 'Pending'}. Please contact support if you need assistance.`,
+              false
+            );
 
-            `Your Partner Account is currently under review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access once approved.`,
-
-            true
-
-          );
+          }
 
         }
 
         else {
 
-          showCustomAlert(
+          earnStep = 2;
 
-            "Application Status",
+          partnerName.style.display =
+            'block';
 
-            `Status: ${partnerData.status || 'Pending'}. Please contact support if you need assistance.`,
+          partnerUpi.style.display =
+            'block';
 
-            false
 
+          partnerName.value =
+            localStorage.getItem(
+              'userName'
+            ) || "";
+
+
+          earnSubmitBtn.textContent =
+            "Submit Application";
+
+
+          if (earnSubText) {
+
+            earnSubText.textContent =
+              "You are eligible! Complete your profile details to register.";
+
+          }
+
+
+          openModal(
+            earnModal
           );
 
         }
 
       }
+    )
+    .catch(
+      () => {
 
-      else {
-
-        earnStep = 2;
-
-        partnerName.style.display =
-          'block';
-
-        partnerUpi.style.display =
-          'block';
-
-        partnerName.value =
-          localStorage.getItem(
-            'userName'
-          ) || "";
-
-        earnSubmitBtn.textContent =
-          "Submit Application";
-
-
-        if (earnSubText)
-
-          earnSubText.textContent =
-            "You are eligible! Complete your profile details to register.";
-
-
-        openModal(
-          earnModal
-        );
+        openEarnRegistrationModal();
 
       }
-
-    })
-    .catch(() => {
-
-      openEarnRegistrationModal();
-
-    });
+    );
 
 }
 
@@ -6070,9 +5614,7 @@ function handleEarnClick() {
 
     openEarnRegistrationModal();
 
-  }
-
-  else {
+  } else {
 
     checkEarnPartnerStatus(
       phone
@@ -6121,9 +5663,7 @@ if (earnForm) {
 
 
       const phone =
-        partnerPhone
-          .value
-          .trim();
+        partnerPhone.value.trim();
 
 
       if (earnStep === 1) {
@@ -6138,19 +5678,13 @@ if (earnForm) {
 
       }
 
-      else if (
-        earnStep === 2
-      ) {
+      else if (earnStep === 2) {
 
         const name =
-          partnerName
-            .value
-            .trim();
+          partnerName.value.trim();
 
         const upi =
-          partnerUpi
-            .value
-            .trim();
+          partnerUpi.value.trim();
 
 
         if (
@@ -6194,60 +5728,54 @@ if (earnForm) {
 
             }
           )
-          .then(() => {
+          .then(
+            () => {
 
-            localStorage.setItem(
-              'partnerPhone',
-              phone
-            );
+              localStorage.setItem(
+                'partnerPhone',
+                phone
+              );
 
-            localStorage.setItem(
-              'partnerName',
-              name
-            );
+              localStorage.setItem(
+                'partnerName',
+                name
+              );
 
-            localStorage.setItem(
-              'partnerId',
-              uniquePartnerId
-            );
-
-
-            closeModal(
-              earnModal
-            );
+              localStorage.setItem(
+                'partnerId',
+                uniquePartnerId
+              );
 
 
-            resetEarnForm();
+              closeModal(
+                earnModal
+              );
+
+              resetEarnForm();
+
+              listenNotifications();
 
 
-            listenNotifications();
+              showCustomAlert(
+                "Application Submitted!",
+                `Your partner application was received successfully! Partner ID: ${uniquePartnerId}. Access will be granted after verification.`,
+                true
+              );
 
+            }
+          )
+          .catch(
+            (err) => {
 
-            showCustomAlert(
+              showCustomAlert(
+                "Submission Failed",
+                "Error submitting request: " +
+                err.message,
+                false
+              );
 
-              "Application Submitted!",
-
-              `Your partner application was received successfully! Partner ID: ${uniquePartnerId}. Access will be granted after verification.`,
-
-              true
-
-            );
-
-          })
-          .catch((err) => {
-
-            showCustomAlert(
-
-              "Submission Failed",
-
-              "Error submitting request: " +
-              err.message,
-
-              false
-
-            );
-
-          });
+            }
+          );
 
         }
 
@@ -6260,22 +5788,18 @@ if (earnForm) {
 
 
 /* =========================================================
-   PRODUCT DATA
+   PRODUCTS
    ========================================================= */
 
 let allProducts = [];
 
-let activeCategory =
-  "All";
+let activeCategory = "All";
 
-let autoScrollInterval =
-  null;
+let autoScrollInterval = null;
 
-let currentUser =
-  null;
+let currentUser = null;
 
-let userWishlistIds =
-  {};
+let userWishlistIds = {};
 
 
 /* =========================================================
@@ -6292,9 +5816,7 @@ function showSkeletons() {
       'productGrid'
     );
 
-
-  grid.innerHTML =
-    "";
+  grid.innerHTML = "";
 
 
   for (
@@ -6313,24 +5835,24 @@ function showSkeletons() {
 
           <div
             class="skeleton-line"
-            style="width:80%;">
-          </div>
+            style="width:80%;"
+          ></div>
 
           <div
             class="skeleton-line"
             style="
               width:40%;
               margin-top:6px;
-            ">
-          </div>
+            "
+          ></div>
 
           <div
             class="skeleton-line"
             style="
               width:60%;
               margin-top:auto;
-            ">
-          </div>
+            "
+          ></div>
 
           <div
             class="skeleton-line"
@@ -6338,8 +5860,8 @@ function showSkeletons() {
               height:38px;
               border-radius:12px;
               margin-top:8px;
-            ">
-          </div>
+            "
+          ></div>
 
         </div>
 
@@ -6353,7 +5875,7 @@ function showSkeletons() {
 
 
 /* =========================================================
-   PRODUCT REDIRECT
+   PRODUCT CLICK
    ========================================================= */
 
 function trackProductClickAndRedirect(
@@ -6421,15 +5943,1113 @@ function trackProductClickAndRedirect(
 
 
   let queryParams = [
-
     `id=${encodeURIComponent(
       productId
     )}`
+  ];
+
+
+  if (affId) {
+
+    queryParams.push(
+      `ref=${encodeURIComponent(
+        affId
+      )}`
+    );
+
+  }
+
+
+  if (userName) {
+
+    queryParams.push(
+      `name=${encodeURIComponent(
+        userName
+      )}`
+    );
+
+  }
+
+
+  if (userPhone) {
+
+    queryParams.push(
+      `phone=${encodeURIComponent(
+        userPhone
+      )}`
+    );
+
+  }
+
+
+  const finalUrl =
+    `/product-details?${queryParams.join(
+      '&'
+    )}`;
+
+
+  if (
+    viewedProducts.length >= 5 &&
+    !visitCounted
+  ) {
+
+    const visitsRef =
+      ref(
+        db,
+        'admin/visits'
+      );
+
+
+    get(visitsRef)
+      .then(
+        (snapshot) => {
+
+          let currentVisits =
+            snapshot.exists()
+              ? snapshot.val()
+              : 0;
+
+
+          set(
+            visitsRef,
+            currentVisits + 1
+          )
+          .then(
+            () => {
+
+              localStorage.setItem(
+                'visitCounted',
+                'true'
+              );
+
+              window.location.href =
+                finalUrl;
+
+            }
+          )
+          .catch(
+            () => {
+
+              window.location.href =
+                finalUrl;
+
+            }
+          );
+
+        }
+      )
+      .catch(
+        () => {
+
+          window.location.href =
+            finalUrl;
+
+        }
+      );
+
+  }
+
+  else {
+
+    window.location.href =
+      finalUrl;
+
+  }
+
+}
+
+
+/* =========================================================
+   CLEAN HTML URL
+   ========================================================= */
+
+if (
+  window.location.pathname.endsWith(
+    '.html'
+  )
+) {
+
+  let cleanPath =
+    window.location.pathname
+      .replace(
+        '.html',
+        ''
+      );
+
+
+  if (
+    cleanPath.endsWith(
+      '/index'
+    )
+  ) {
+
+    cleanPath = '/';
+
+  }
+
+
+  window.history.replaceState(
+    null,
+    '',
+    cleanPath +
+    window.location.search
+  );
+
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+document
+  .getElementById(
+    'navLogo'
+  )
+  .addEventListener(
+    'click',
+    () => {
+
+      window.location.href =
+        "/";
+
+    }
+  );
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+function updateBadges(user) {
+
+  const bottomWishlistBadge =
+    document.getElementById(
+      'bottomWishlistBadge'
+    );
+
+  const bottomOrdersBadge =
+    document.getElementById(
+      'bottomOrdersBadge'
+    );
+
+  const bottomEarnBadge =
+    document.getElementById(
+      'bottomEarnBadge'
+    );
+
+
+  if (user) {
+
+    onValue(
+      ref(
+        db,
+        `wishlist/${user.uid}`
+      ),
+      (snapshot) => {
+
+        if (snapshot.exists()) {
+
+          userWishlistIds =
+            snapshot.val();
+
+        }
+
+        else {
+
+          userWishlistIds =
+            {};
+
+        }
+
+
+        updateWishlistUIAndBadge(
+          bottomWishlistBadge
+        );
+
+      }
+    );
+
+  }
+
+  else {
+
+    let localWishlist =
+      JSON.parse(
+        localStorage.getItem(
+          'guestWishlist'
+        ) || "{}"
+      );
+
+
+    userWishlistIds =
+      localWishlist;
+
+
+    updateWishlistUIAndBadge(
+      bottomWishlistBadge
+    );
+
+  }
+
+
+  const phoneSources = [
+
+    localStorage.getItem(
+      'userPhone'
+    ),
+
+    localStorage.getItem(
+      'cartPrime_LastOrderPhone'
+    ),
+
+    localStorage.getItem(
+      'cartPrime_Phone'
+    ),
+
+    user
+      ? user.phoneNumber
+      : null
 
   ];
 
 
-  if (affId)
+  let targetPhone =
+    phoneSources.find(
+      p =>
+        p &&
+        p.trim() !== ""
+    );
 
-    queryParams.push(
-      `ref=${encodeURIComponent(
+
+  if (targetPhone) {
+
+    onValue(
+      ref(
+        db,
+        `orders/${targetPhone}`
+      ),
+      (snapshot) => {
+
+        const count =
+          snapshot.exists()
+            ? Object.keys(
+                snapshot.val()
+              ).length
+            : 0;
+
+
+        if (count > 0) {
+
+          if (
+            bottomOrdersBadge
+          ) {
+
+            bottomOrdersBadge.textContent =
+              count;
+
+            bottomOrdersBadge.style.display =
+              'flex';
+
+          }
+
+        }
+
+        else {
+
+          if (
+            bottomOrdersBadge
+          ) {
+
+            bottomOrdersBadge.style.display =
+              'none';
+
+          }
+
+        }
+
+      }
+    );
+
+  }
+
+  else {
+
+    if (
+      bottomOrdersBadge
+    ) {
+
+      bottomOrdersBadge.style.display =
+        'none';
+
+    }
+
+  }
+
+
+  const partnerPhone =
+    localStorage.getItem(
+      'partnerPhone'
+    ) ||
+    localStorage.getItem(
+      'userPhone'
+    );
+
+
+  const partnerId =
+    localStorage.getItem(
+      'partnerId'
+    );
+
+
+  if (
+    partnerPhone ||
+    partnerId
+  ) {
+
+    const directRefPath =
+      partnerPhone
+        ? ref(
+            db,
+            `ReferralOrders/${partnerPhone}`
+          )
+        : null;
+
+
+    if (directRefPath) {
+
+      onValue(
+        directRefPath,
+        (snapshot) => {
+
+          let directCount =
+            snapshot.exists()
+              ? Object.keys(
+                  snapshot.val()
+                ).length
+              : 0;
+
+
+          if (
+            directCount > 0
+          ) {
+
+            if (
+              bottomEarnBadge
+            ) {
+
+              bottomEarnBadge.textContent =
+                directCount;
+
+              bottomEarnBadge.style.display =
+                'flex';
+
+            }
+
+          }
+
+          else {
+
+            onValue(
+              ref(
+                db,
+                'ReferralOrders'
+              ),
+              (allRefOrdersSnap) => {
+
+                let totalCount = 0;
+
+
+                if (
+                  allRefOrdersSnap.exists()
+                ) {
+
+                  allRefOrdersSnap.forEach(
+                    childSnap => {
+
+                      const val =
+                        childSnap.val();
+
+
+                      if (
+
+                        childSnap.key ===
+                          partnerPhone ||
+
+                        childSnap.key ===
+                          partnerId ||
+
+                        (
+                          val &&
+                          (
+                            val.partnerPhone ===
+                              partnerPhone ||
+
+                            val.partnerId ===
+                              partnerId ||
+
+                            val.ref ===
+                              partnerId ||
+
+                            val.affiliateId ===
+                              partnerId
+                          )
+                        )
+
+                      ) {
+
+                        if (
+                          typeof val ===
+                            'object' &&
+                          !val.orderId &&
+                          !val.price
+                        ) {
+
+                          totalCount +=
+                            Object.keys(
+                              val
+                            ).length;
+
+                        }
+
+                        else {
+
+                          totalCount++;
+
+                        }
+
+                      }
+
+                    }
+                  );
+
+                }
+
+
+                if (
+                  totalCount > 0 &&
+                  bottomEarnBadge
+                ) {
+
+                  bottomEarnBadge.textContent =
+                    totalCount;
+
+                  bottomEarnBadge.style.display =
+                    'flex';
+
+                }
+
+                else {
+
+                  onValue(
+                    ref(
+                      db,
+                      `earn_orders/${partnerPhone}`
+                    ),
+                    (earnSnap) => {
+
+                      let earnOrdersCount =
+                        earnSnap.exists()
+                          ? Object.keys(
+                              earnSnap.val()
+                            ).length
+                          : 0;
+
+
+                      onValue(
+                        ref(
+                          db,
+                          `wallet/${partnerPhone}/orders`
+                        ),
+                        (walletSnap) => {
+
+                          let walletCount =
+                            walletSnap.exists()
+                              ? Object.keys(
+                                  walletSnap.val()
+                                ).length
+                              : 0;
+
+
+                          let finalEarnCount =
+                            Math.max(
+                              earnOrdersCount,
+                              walletCount
+                            );
+
+
+                          if (
+                            finalEarnCount > 0 &&
+                            bottomEarnBadge
+                          ) {
+
+                            bottomEarnBadge.textContent =
+                              finalEarnCount;
+
+                            bottomEarnBadge.style.display =
+                              'flex';
+
+                          }
+
+                          else if (
+                            bottomEarnBadge
+                          ) {
+
+                            bottomEarnBadge.style.display =
+                              'none';
+
+                          }
+
+                        }
+                      );
+
+                    }
+                  );
+
+                }
+
+              }
+            );
+
+          }
+
+        }
+      );
+
+    }
+
+    else {
+
+      if (
+        bottomEarnBadge
+      ) {
+
+        bottomEarnBadge.style.display =
+          'none';
+
+      }
+
+    }
+
+  }
+
+  else {
+
+    if (
+      bottomEarnBadge
+    ) {
+
+      bottomEarnBadge.style.display =
+        'none';
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   WISHLIST UI
+   ========================================================= */
+
+function updateWishlistUIAndBadge(
+  bottomWishlistBadge
+) {
+
+  const count =
+    Object.keys(
+      userWishlistIds
+    ).length;
+
+
+  if (count > 0) {
+
+    if (
+      bottomWishlistBadge
+    ) {
+
+      bottomWishlistBadge.textContent =
+        count;
+
+      bottomWishlistBadge.style.display =
+        'flex';
+
+    }
+
+  }
+
+  else {
+
+    if (
+      bottomWishlistBadge
+    ) {
+
+      bottomWishlistBadge.style.display =
+        'none';
+
+    }
+
+  }
+
+
+  if (
+    allProducts.length > 0
+  ) {
+
+    let filtered =
+      allProducts;
+
+
+    if (
+      activeCategory !==
+      "All"
+    ) {
+
+      filtered =
+        allProducts.filter(
+          p =>
+            p.category &&
+            p.category
+              .trim()
+              .toLowerCase() ===
+            activeCategory.toLowerCase()
+        );
+
+    }
+
+
+    renderProducts(
+      filtered
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+
+onAuthStateChanged(
+  auth,
+  (user) => {
+
+    currentUser =
+      user;
+
+    updateBadges(
+      user
+    );
+
+  }
+);
+
+
+updateBadges(
+  null
+);
+
+
+/* =========================================================
+   PRODUCTS FIREBASE
+   ========================================================= */
+
+onValue(
+  ref(
+    db,
+    'products'
+  ),
+  (snapshot) => {
+
+    allProducts = [];
+
+
+    snapshot.forEach(
+      child => {
+
+        const data =
+          child.val();
+
+        data.id =
+          child.key;
+
+        allProducts.push(
+          data
+        );
+
+      }
+    );
+
+
+    renderCategoryBar();
+
+    renderProducts(
+      allProducts
+    );
+
+  }
+);
+
+
+/* =========================================================
+   BANNERS
+   ========================================================= */
+
+const bannerSection =
+  document.getElementById(
+    'bannerSection'
+  );
+
+const bannerSlider =
+  document.getElementById(
+    'bannerSlider'
+  );
+
+const bannerDots =
+  document.getElementById(
+    'bannerDots'
+  );
+
+
+onValue(
+  ref(
+    db,
+    'banners'
+  ),
+  (snapshot) => {
+
+    if (snapshot.exists()) {
+
+      bannerSlider.innerHTML =
+        "";
+
+      bannerDots.innerHTML =
+        "";
+
+
+      let index = 0;
+
+
+      snapshot.forEach(
+        child => {
+
+          const bannerData =
+            child.val();
+
+
+          const imgUrl =
+            bannerData.imageUrl ||
+            bannerData.image ||
+            bannerData.url;
+
+
+          if (imgUrl) {
+
+            const item =
+              document.createElement(
+                'div'
+              );
+
+
+            item.className =
+              'banner-item';
+
+
+            item.innerHTML =
+              `<img src="${imgUrl}" alt="Promo Banner">`;
+
+
+            const targetLink =
+              bannerData.redirectLink ||
+              bannerData.link ||
+              bannerData.targetUrl ||
+              bannerData.url ||
+              bannerData.redirectUrl;
+
+
+            item.addEventListener(
+              'click',
+              () => {
+
+                if (
+                  targetLink &&
+                  targetLink
+                    .toString()
+                    .trim() !== ""
+                ) {
+
+                  let linkStr =
+                    targetLink
+                      .toString()
+                      .trim();
+
+
+                  if (
+                    linkStr.startsWith(
+                      'http://'
+                    ) ||
+                    linkStr.startsWith(
+                      'https://'
+                    )
+                  ) {
+
+                    window.location.href =
+                      linkStr;
+
+                  }
+
+                  else {
+
+                    window.location.href =
+                      linkStr.startsWith(
+                        '/'
+                      )
+                        ? linkStr
+                        : `/${linkStr}`;
+
+                  }
+
+                }
+
+                else if (
+                  bannerData.productId
+                ) {
+
+                  trackProductClickAndRedirect(
+                    bannerData.productId
+                  );
+
+                }
+
+                else if (
+                  bannerData.category
+                ) {
+
+                  activeCategory =
+                    bannerData.category;
+
+
+                  const filtered =
+                    allProducts.filter(
+                      p =>
+                        p.category &&
+                        p.category
+                          .trim()
+                          .toLowerCase() ===
+                        activeCategory
+                          .toLowerCase()
+                    );
+
+
+                  renderProducts(
+                    filtered
+                  );
+
+
+                  document
+                    .querySelectorAll(
+                      '.category-btn'
+                    )
+                    .forEach(
+                      b => {
+
+                        if (
+                          b.getAttribute(
+                            'data-cat'
+                          )
+                          .toLowerCase() ===
+                          activeCategory
+                            .toLowerCase()
+                        ) {
+
+                          b.classList.add(
+                            'active'
+                          );
+
+                        }
+
+                        else {
+
+                          b.classList.remove(
+                            'active'
+                          );
+
+                        }
+
+                      }
+                    );
+
+                }
+
+              }
+            );
+
+
+            bannerSlider.appendChild(
+              item
+            );
+
+
+            const dot =
+              document.createElement(
+                'div'
+              );
+
+
+            dot.className =
+              `dot ${
+                index === 0
+                  ? 'active'
+                  : ''
+              }`;
+
+
+            dot.setAttribute(
+              'data-index',
+              index
+            );
+
+
+            bannerDots.appendChild(
+              dot
+            );
+
+
+            index++;
+
+          }
+
+        }
+      );
+
+
+      if (index > 0) {
+
+        bannerSection.style.display =
+          'block';
+
+        initializeSliderScroll();
+
+      }
+
+      else {
+
+        bannerSection.style.display =
+          'none';
+
+      }
+
+    }
+
+    else {
+
+      bannerSection.style.display =
+        'none';
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   BANNER SLIDER
+   ========================================================= */
+
+function initializeSliderScroll() {
+
+  const slider =
+    document.getElementById(
+      'bannerSlider'
+    );
+
+
+  const dots =
+    document.querySelectorAll(
+      '.dot'
+    );
+
+
+  const totalBanners =
+    dots.length;
+
+
+  if (totalBanners === 0)
+    return;
+
+
+  if (autoScrollInterval)
+    clearInterval(
+      autoScrollInterval
+    );
+
+
+  const startAutoScroll =
+    () => {
+
+      autoScrollInterval =
+        setInterval(
+          () => {
+
+            const width =
+              slider.clientWidth;
+
+            const currentScroll =
+              slider.scrollLeft;
+
+
+            let nextIndex =
+              Math.round(
+                currentScroll /
+                width
+              ) + 1;
+
+
+            if (
+              nextIndex >=
+              totalBanners
+            ) {
+
+              nextIndex = 0;
+
+            }
+
+
+            slider.scrollTo(
+              {
+                left:
+                  nextIndex *
+                  width,
+
+                behavior:
+                  'smooth'
+              }
+            );
+
+          },
+          3500
+        );
+
+    };
+
+
+  startAutoScroll();
+
+
+  slider.addEventListener(
+    'scroll',
+    () => {
+
+      const width =
+        slider.clientWidth;
+
+
+      const scrollLeft =
+        slider.scrollLeft;
+
+
+      const activeIndex =
+        Math.round(
+         
