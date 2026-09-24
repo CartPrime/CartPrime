@@ -12,12 +12,16 @@
 
     <style>
         :root {
-            --primary: #000000;
-            --bg-light: #f8fafc;
+            --primary: #0b0b0f;
+            --accent: #f59e0b;
+            --accent-dark: #b45309;
+            --accent-soft: #fff7e6;
+            --accent-border: #fde3a7;
+            --bg-light: #f4f6fa;
             --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --border-color: #e6e9f0;
             --green: #16a34a;
             --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
             --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
@@ -42,7 +46,7 @@
         header {
             position: sticky;
             top: 0;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(10px);
             z-index: 100;
             padding: 12px 16px;
@@ -54,7 +58,7 @@
 
         .back-btn {
             background: #f1f5f9;
-            border: none;
+            border: 1px solid var(--border-color);
             width: 38px;
             height: 38px;
             border-radius: 50%;
@@ -66,6 +70,8 @@
             font-size: 1rem;
             transition: 0.2s;
         }
+
+        .back-btn:hover { border-color: var(--accent); color: var(--accent); }
 
         .header-title {
             font-size: 1rem;
@@ -154,7 +160,7 @@
         }
 
         .thumb.active {
-            border-color: var(--primary);
+            border-color: var(--accent);
         }
 
         .wishlist-container, .share-container {
@@ -162,7 +168,7 @@
             top: 12px;
             width: 38px;
             height: 38px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(5px);
             border-radius: 50%;
             display: flex;
@@ -302,7 +308,7 @@
 
         .modal-thumb.active {
             opacity: 1;
-            border-color: #fff;
+            border-color: var(--accent);
         }
 
         .info-section {
@@ -341,19 +347,19 @@
 
         .discount {
             font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--green);
-            background: #dcfce7;
-            padding: 4px 8px;
-            border-radius: 6px;
+            font-weight: 800;
+            color: #1a1a1a;
+            background: var(--accent);
+            padding: 4px 10px;
+            border-radius: 8px;
         }
 
         .mini-trust-strip {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
+            background: var(--accent-soft);
+            border: 1px solid var(--accent-border);
             border-radius: 10px;
             padding: 9px 12px;
             margin-bottom: 14px;
@@ -366,16 +372,16 @@
             gap: 5px;
             font-size: 0.72rem;
             font-weight: 700;
-            color: #166534;
+            color: var(--accent-dark);
             white-space: nowrap;
         }
 
-        .mini-trust-strip i { font-size: 0.78rem; }
+        .mini-trust-strip i { font-size: 0.78rem; color: var(--accent); }
 
         .earn-banner {
-            background: #e0f2fe;
-            border: 1px solid #bae6fd;
-            color: #0284c7;
+            background: var(--accent-soft);
+            border: 1px solid var(--accent-border);
+            color: var(--accent-dark);
             padding: 12px 14px;
             border-radius: 12px;
             font-weight: 700;
@@ -388,11 +394,11 @@
         }
 
         .earn-btn {
-            background: #0284c7;
+            background: var(--primary);
             color: #fff;
             border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 8px 14px;
+            border-radius: 10px;
             font-size: 0.78rem;
             font-weight: 700;
             cursor: pointer;
@@ -401,6 +407,8 @@
             gap: 6px;
             white-space: nowrap;
         }
+
+        .earn-btn i { color: var(--accent); }
 
         .size-box-wrapper {
             margin-bottom: 20px;
@@ -434,7 +442,7 @@
         .size-btn.active {
             background: var(--primary);
             color: #fff;
-            border-color: var(--primary);
+            border-color: var(--accent);
         }
 
         .policy-container {
@@ -455,6 +463,8 @@
             gap: 10px;
         }
 
+        .delivery-highlight-box i { color: var(--accent); }
+
         .policy-row-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -474,7 +484,7 @@
 
         .return-available { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
         .return-not-available { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
-        .cod-highlight-tag { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+        .cod-highlight-tag { background: var(--accent-soft); color: var(--accent-dark); border-color: var(--accent-border); }
         .cod-disabled-tag { background: #f8fafc; color: #64748b; }
 
         .trust-grid {
@@ -491,7 +501,7 @@
         .trust-item i {
             font-size: 1.1rem;
             margin-bottom: 4px;
-            color: var(--text-main);
+            color: var(--accent);
         }
 
         .trust-item span {
@@ -663,7 +673,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(10px);
             padding: 10px 16px 12px;
             display: flex;
@@ -694,7 +704,7 @@
             white-space: nowrap;
         }
 
-        .sticky-trust-row i { color: var(--green); font-size: 0.72rem; }
+        .sticky-trust-row i { color: var(--accent); font-size: 0.72rem; }
 
         .sticky-bottom-row {
             display: flex;
@@ -714,7 +724,7 @@
             color: #fff;
             border: none;
             padding: 12px 28px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 700;
             font-size: 0.95rem;
             cursor: pointer;
@@ -723,6 +733,7 @@
             max-width: 220px;
         }
 
+        .buy-now:hover { background: var(--accent); color: #111; }
         .buy-now:active { transform: scale(0.98); }
 
         .out-btn {
@@ -745,7 +756,7 @@
             width: 40px;
             height: 40px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary);
+            border-top: 4px solid var(--accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -1149,7 +1160,7 @@
             const earnBannerHTML = isApprovedEarner ? `
                 <div class="earn-banner">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-coins" style="color: #0284c7; font-size: 1.1rem;"></i>
+                        <i class="fa-solid fa-coins" style="color: #f59e0b; font-size: 1.1rem;"></i>
                         <span>Earn <b>₹${commissionAmount}</b> commission on successful sale!</span>
                     </div>
                     <button class="earn-btn" id="earnMoneyBtn">
