@@ -37,6 +37,7 @@
             --accent-rose: #f43f5e;
             --whatsapp-green: #25D366;
             --whatsapp-dark: #128C7E;
+            --aisensy-color: #6366f1;
 
             --bg-body: #f8fafc; 
             --card-bg: #ffffff;
@@ -706,11 +707,40 @@
         .btn-copy-address { background: var(--primary); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 5px; }
 
         /* ========================================================
-           WHATSAPP OFFERS & MARKETING HUB STYLES
+           WHATSAPP & AISENSY OFFERS MARKETING HUB STYLES
         ======================================================== */
+        .aisensy-status-card {
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+            color: #ffffff;
+            padding: 18px 22px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 18px rgba(79, 70, 229, 0.25);
+        }
+        .aisensy-status-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .aisensy-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .whatsapp-hub-grid {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
+            grid-template-columns: 1.25fr 0.75fr;
             gap: 24px;
         }
         @media (max-width: 1024px) {
@@ -834,8 +864,8 @@
             color: #8696a0;
         }
 
-        .btn-wa-action {
-            background: var(--whatsapp-green);
+        .btn-aisensy-send {
+            background: linear-gradient(135deg, #4f46e5, #3730a3);
             color: #ffffff;
             border: none;
             padding: 14px 20px;
@@ -848,20 +878,40 @@
             justify-content: center;
             gap: 8px;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+        }
+        .btn-aisensy-send:hover {
+            background: linear-gradient(135deg, #4338ca, #312e81);
+            transform: translateY(-1px);
+        }
+
+        .btn-wa-action {
+            background: #22c55e;
+            color: #ffffff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
             text-decoration: none;
         }
         .btn-wa-action:hover {
-            background: #22bf5b;
-            transform: translateY(-1px);
+            background: #16a34a;
         }
+
         .btn-copy-wa {
             background: #0f172a;
             color: #ffffff;
             border: none;
             padding: 14px 20px;
             border-radius: var(--radius-md);
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -872,7 +922,27 @@
         }
         .btn-copy-wa:hover { background: #1e293b; }
 
-        /* Direct WhatsApp Button in Tables */
+        /* Direct Buttons in Tables */
+        .btn-table-aisensy {
+            background: #e0e7ff;
+            color: #3730a3;
+            border: 1px solid #c7d2fe;
+            padding: 6px 11px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 11.5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .btn-table-aisensy:hover {
+            background: #4f46e5;
+            color: #ffffff;
+            border-color: #4f46e5;
+        }
+
         .btn-table-wa {
             background: #dcfce7;
             color: #15803d;
@@ -1053,7 +1123,7 @@
                     <i class="fa-brands fa-whatsapp" style="color:var(--whatsapp-green);"></i> 
                     <span>WhatsApp Offers</span>
                 </div>
-                <span class="badge-new">NEW</span>
+                <span class="badge-new">AiSensy</span>
             </button>
             <button onclick="openTab('affiliates', this)" class="sidebar-btn" id="side-affiliates">
                 <div class="sidebar-btn-content"><i class="fa-solid fa-handshake"></i> <span>Earn Partners</span></div>
@@ -1219,12 +1289,32 @@
                 </div>
             </div>
 
-            <!-- TAB 2: WHATSAPP OFFERS & MARKETING (NEW!) -->
+            <!-- TAB 2: WHATSAPP OFFERS & MARKETING (AISENSY POWERED) -->
             <div id="whatsappMarketing" class="tab-content">
                 <div class="section-header">
                     <div>
-                        <h2 class="tab-title"><i class="fa-brands fa-whatsapp" style="color:var(--whatsapp-green);"></i> WhatsApp Offer Broadcaster</h2>
-                        <p class="tab-subtitle">Create high-converting WhatsApp offer templates and broadcast them directly to customers</p>
+                        <h2 class="tab-title"><i class="fa-brands fa-whatsapp" style="color:var(--whatsapp-green);"></i> Automated WhatsApp Marketing Hub</h2>
+                        <p class="tab-subtitle">Powered by AiSensy Official API — Send offers automatically without displaying your personal phone number</p>
+                    </div>
+                </div>
+
+                <!-- AiSensy Status Banner -->
+                <div class="aisensy-status-card">
+                    <div class="aisensy-status-info">
+                        <div style="font-size:28px;"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div>
+                            <div style="font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px;">
+                                <span>AiSensy WhatsApp API Active</span>
+                                <span class="aisensy-badge"><i class="fa fa-check-circle" style="color:#4ade80;"></i> Connected</span>
+                            </div>
+                            <div style="font-size:12px; opacity:0.85; margin-top:2px;">
+                                App: <strong>AiSensy</strong> • Client: <strong>CartPrime Official</strong> • Personal Phone Number is completely hidden.
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:12px; font-weight:600;">Campaign:</span>
+                        <input type="text" id="aiSensyCampaignInput" value="cartprime_offer" onchange="saveCampaignName(this.value)" style="margin:0; width:170px; padding:6px 12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:12.5px; font-weight:bold; border-radius:8px;" title="Set your Live API Campaign Name from AiSensy">
                     </div>
                 </div>
 
@@ -1233,7 +1323,7 @@
                     <!-- Composer Left Card -->
                     <div class="admin-card">
                         <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 12px; color: var(--primary);">
-                            <i class="fa-solid fa-wand-magic-sparkles" style="color:#f59e0b; margin-right:6px;"></i> Choose Pre-built Template
+                            <i class="fa-solid fa-wand-magic-sparkles" style="color:#f59e0b; margin-right:6px;"></i> Choose Offer Template
                         </h3>
                         <div class="template-pills">
                             <div class="template-pill active" onclick="applyOfferTemplate('flash_sale', this)">⚡ Flash Sale (30% OFF)</div>
@@ -1258,24 +1348,29 @@
 
                         <div class="form-row">
                             <div>
-                                <label>TARGET RECIPIENT PHONE (WITH COUNTRY CODE)</label>
-                                <input type="text" id="waRecipientPhone" placeholder="919876543210 (Leave blank for general link)" oninput="updateWAPreview()">
+                                <label>RECIPIENT MOBILE NUMBER (WITH COUNTRY CODE OR 10-DIGIT)</label>
+                                <input type="text" id="waRecipientPhone" placeholder="9876543210 or +919876543210" oninput="updateWAPreview()">
                             </div>
                             <div>
-                                <label>RECIPIENT NAME (OPTIONAL)</label>
+                                <label>CUSTOMER NAME (OPTIONAL)</label>
                                 <input type="text" id="waRecipientName" placeholder="e.g. Rahul" oninput="updateWAPreview()" value="Customer">
                             </div>
                         </div>
 
-                        <label>OFFER MESSAGE DRAFT (SUPPORTS EMOJIS & WHATSAPP FORMATTING)</label>
-                        <textarea id="waMessageText" rows="9" oninput="updateWAPreview()"></textarea>
+                        <label>OFFER MESSAGE TEXT / PREVIEW</label>
+                        <textarea id="waMessageText" rows="7" oninput="updateWAPreview()"></textarea>
 
-                        <div style="display:flex; gap:12px; margin-top:10px; flex-wrap:wrap;">
-                            <button onclick="sendToWhatsAppDirect()" class="btn-wa-action" style="flex:1;">
-                                <i class="fa-brands fa-whatsapp"></i> Send / Open in WhatsApp
+                        <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+                            <!-- Automatic Direct Send (No personal phone number visible!) -->
+                            <button onclick="sendViaAiSensyAuto()" class="btn-aisensy-send" style="flex:1 1 240px;">
+                                <i class="fa-solid fa-bolt"></i> Send Auto via AiSensy (Hidden Number)
                             </button>
-                            <button onclick="copyWAMessage()" class="btn-copy-wa">
-                                <i class="fa-solid fa-copy"></i> Copy Message
+                            <!-- Manual Fallback to open in WhatsApp Web / App -->
+                            <button onclick="sendToWhatsAppDirect()" class="btn-wa-action" title="Open in Personal WhatsApp as backup">
+                                <i class="fa-brands fa-whatsapp"></i> Open in WhatsApp
+                            </button>
+                            <button onclick="copyWAMessage()" class="btn-copy-wa" title="Copy text">
+                                <i class="fa-solid fa-copy"></i>
                             </button>
                         </div>
                     </div>
@@ -1287,8 +1382,10 @@
                                 <div class="wa-mockup-profile">
                                     <div class="wa-mockup-avatar"><i class="fa-solid fa-bag-shopping"></i></div>
                                     <div>
-                                        <div style="font-weight:700; font-size:13.5px;">CartPrime Store</div>
-                                        <div style="font-size:11px; color:#8696a0;">Official Store • Online</div>
+                                        <div style="font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:5px;">
+                                            CartPrime Official <i class="fa-solid fa-circle-check" style="color:#25D366; font-size:12px;"></i>
+                                        </div>
+                                        <div style="font-size:11px; color:#8696a0;">Official Business Account</div>
                                     </div>
                                 </div>
                                 <div style="color:#8696a0; font-size:16px;">
@@ -1592,7 +1689,12 @@
                 <div class="section-header">
                     <div>
                         <h2 class="tab-title"><i class="fa-solid fa-users"></i> Registered Customers</h2>
-                        <p class="tab-subtitle">Customer base directory with 1-click WhatsApp offer reachout</p>
+                        <p class="tab-subtitle">Customer base directory with 1-click AiSensy Automatic WhatsApp delivery</p>
+                    </div>
+                    <div>
+                        <button onclick="broadcastOfferToAllUsers()" class="btn-aisensy-send" style="padding:10px 18px; font-size:12.5px;">
+                            <i class="fa-solid fa-paper-plane"></i> Broadcast Offer to All Customers via AiSensy
+                        </button>
                     </div>
                 </div>
 
@@ -1603,7 +1705,7 @@
                                 <tr>
                                     <th>Customer Name</th>
                                     <th>Mobile / Email Contact</th>
-                                    <th>Quick WhatsApp Offer</th>
+                                    <th>Send Offer via WhatsApp</th>
                                 </tr>
                             </thead>
                             <tbody id="userList"></tbody>
@@ -1656,6 +1758,20 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const ADMIN_PASSCODE = "73569778";
+
+/* ========================================================
+   AISENSY OFFICIAL WHATSAPP API CONFIGURATION
+======================================================== */
+const AISENSY_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYjZhOTI4MzJkMWE1NmM0ODFmY2Y3NiIsIm5hbWUiOiJjYXJ0cHJpbWUiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNmFiNmE5MjgzMmQxYTU2YzQ4MWZjZjcxIiwiYWN0aXZlUGxhbiI6IkZSRUVfRk9SRVZFUiIsImlhdCI6MTc5MDM1NTgwM30.P8Uaj0lJyiIocKnAA4uDpq7esWWrtOPxrL6Eqy_Mqks";
+
+window.saveCampaignName = (val) => {
+    localStorage.setItem("cartprime_aisensy_campaign", val.trim());
+    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Campaign name updated!', showConfirmButton: false, timer: 1500 });
+};
+
+function getActiveCampaignName() {
+    return localStorage.getItem("cartprime_aisensy_campaign") || document.getElementById('aiSensyCampaignInput')?.value.trim() || "cartprime_offer";
+}
 
 async function checkAdminPasscode() {
     const isAuthenticated = localStorage.getItem("cartprime_admin_logged_in");
@@ -1718,6 +1834,11 @@ window.addEventListener('load', () => {
         Notification.requestPermission();
     }
     initWADefaultTemplate();
+
+    const savedCampaign = localStorage.getItem("cartprime_aisensy_campaign");
+    if (savedCampaign && document.getElementById('aiSensyCampaignInput')) {
+        document.getElementById('aiSensyCampaignInput').value = savedCampaign;
+    }
 });
 
 const firebaseConfig = {
@@ -1785,6 +1906,7 @@ let ordersChartInstance = null;
 let earningsChartInstance = null;
 let globalOrdersCache = {};
 let globalProductsCache = {};
+let globalUsersList = [];
 let extractedFetchedReviews = [];
 
 window.triggerSingleUpload = (btn) => {
@@ -2002,7 +2124,7 @@ window.handleBullets = (e) => {
     }
 };
 
-/* Unified Tab Switcher (Sidebar + Mobile Bottom Nav sync) */
+/* Unified Tab Switcher */
 window.openTab = (tabId, element) => {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
     document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
@@ -2011,18 +2133,15 @@ window.openTab = (tabId, element) => {
     const targetTab = document.getElementById(tabId);
     if (targetTab) targetTab.classList.add('active-tab');
 
-    // Highlight sidebar button
     const sideBtn = document.getElementById('side-' + tabId);
     if (sideBtn) sideBtn.classList.add('active');
 
-    // Highlight mobile bottom nav button
     const bottomBtn = document.getElementById('btn-' + tabId);
     if (bottomBtn) bottomBtn.classList.add('active');
 
-    // Update Top Title
     const titles = {
         dashboard: "Overview Dashboard",
-        whatsappMarketing: "WhatsApp Offer Broadcaster",
+        whatsappMarketing: "AiSensy Automated WhatsApp Hub",
         orders: "Customer Order Management",
         addProduct: "Add New Product",
         manageProducts: "Catalog Inventory",
@@ -2034,7 +2153,6 @@ window.openTab = (tabId, element) => {
     const topTitleElem = document.getElementById('topPageTitle');
     if (topTitleElem && titles[tabId]) topTitleElem.innerText = titles[tabId];
 
-    // Close mobile drawer if open
     const sidebar = document.getElementById('desktopSidebar');
     const overlay = document.getElementById('sidebarOverlay');
     if (sidebar && sidebar.classList.contains('mobile-open')) {
@@ -2196,7 +2314,205 @@ function updateEarningsChart(dailyEarningsMap) {
 }
 
 /* ========================================================
-   WHATSAPP MARKETING & BROADCASTER ENGINE
+   AISENSY WHATSAPP API SENDER ENGINE (BACKGROUND SEND)
+======================================================== */
+function cleanPhoneNumberWithCountryCode(phone) {
+    if (!phone) return "";
+    let clean = phone.replace(/[^0-9]/g, '');
+    if (clean.length === 10) clean = "91" + clean;
+    return clean;
+}
+
+window.callAiSensyApi = async (destination, userName, campaignName, templateParams = [], mediaUrl = "") => {
+    let cleanPhone = cleanPhoneNumberWithCountryCode(destination);
+    if (!cleanPhone || cleanPhone.length < 10) {
+        throw new Error("Invalid recipient phone number");
+    }
+
+    const payload = {
+        apiKey: AISENSY_API_KEY,
+        campaignName: campaignName || getActiveCampaignName(),
+        destination: cleanPhone,
+        userName: userName || "Customer",
+        source: "CartPrime Dashboard",
+        templateParams: templateParams
+    };
+
+    if (mediaUrl) {
+        payload.media = {
+            url: mediaUrl,
+            filename: "offer_banner.jpg"
+        };
+    }
+
+    // Call AiSensy v2 API Endpoint
+    const res = await fetch("https://backend.aisensy.com/campaign/t1/api/v2", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    return { ok: res.ok, status: res.status, data: data };
+};
+
+window.sendViaAiSensyAuto = async () => {
+    const phoneInput = document.getElementById('waRecipientPhone');
+    const nameInput = document.getElementById('waRecipientName');
+    const couponInput = document.getElementById('waCouponCode');
+    const prodKey = document.getElementById('waProductSelect')?.value;
+    const selectedProd = globalProductsCache[prodKey] || null;
+
+    let phone = phoneInput ? phoneInput.value.trim() : '';
+    let name = nameInput ? nameInput.value.trim() : 'Customer';
+    let coupon = couponInput ? couponInput.value.trim() : 'PRIME30';
+    let campaignName = getActiveCampaignName();
+
+    if (!phone) {
+        Swal.fire('Phone Required', 'Please enter recipient mobile number to send automatically.', 'warning');
+        return;
+    }
+
+    // Prepare template params: [Name, Offer, Product Name/Price, Store Link]
+    const templateParams = [
+        name,
+        coupon,
+        selectedProd ? selectedProd.name : "Exclusive Offer",
+        `${window.location.origin}/index.html`
+    ];
+
+    Swal.fire({
+        title: 'Dispatching via AiSensy...',
+        text: `Sending automated WhatsApp to ${phone} without revealing your personal number...`,
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+
+    try {
+        const result = await window.callAiSensyApi(phone, name, campaignName, templateParams, selectedProd?.images?.[0] || "");
+
+        if (result.ok && (result.data.success !== false)) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Sent Automatically!',
+                html: `<p style="font-size:13px; color:#475569;">WhatsApp message has been dispatched successfully to <strong>${phone}</strong> via your verified CartPrime business account!</p>`,
+                confirmButtonColor: '#4f46e5'
+            });
+        } else {
+            // If campaign is not live or requires template check
+            let errMsg = result.data.message || result.data.error || 'Failed to dispatch via AiSensy.';
+            Swal.fire({
+                icon: 'warning',
+                title: 'AiSensy Response',
+                html: `<p style="font-size:13px; color:#ef4444;">${errMsg}</p>
+                       <p style="font-size:12px; color:#64748b; margin-top:8px;">Make sure campaign <strong>"${campaignName}"</strong> is created and set to 'Live' in your AiSensy dashboard.</p>`,
+                confirmButtonColor: '#0f172a'
+            });
+        }
+    } catch (err) {
+        console.error("AiSensy Send Error:", err);
+        Swal.fire({
+            icon: 'error',
+            title: 'API Request Error',
+            text: err.message || 'Network issue communicating with AiSensy API.',
+            confirmButtonColor: '#0f172a'
+        });
+    }
+};
+
+/* Quick Single-Click Send from Users List */
+window.sendAiSensyToUserDirect = async (userName, userPhone) => {
+    let campaignName = getActiveCampaignName();
+    let coupon = document.getElementById('waCouponCode')?.value || 'PRIME30';
+
+    const confirmRes = await Swal.fire({
+        title: `Send Offer to ${userName}?`,
+        html: `<p style="font-size:13px; color:#64748b;">This will automatically send the active WhatsApp offer to <strong>${userPhone}</strong> via AiSensy without showing your number.</p>`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Send Automatically',
+        confirmButtonColor: '#4f46e5'
+    });
+
+    if (!confirmRes.isConfirmed) return;
+
+    Swal.fire({
+        title: 'Sending...',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+
+    try {
+        const result = await window.callAiSensyApi(userPhone, userName, campaignName, [userName, coupon, `${window.location.origin}/index.html`]);
+        if (result.ok && result.data.success !== false) {
+            Swal.fire({ icon: 'success', title: 'Sent!', text: `Offer sent to ${userName}!`, timer: 1800, showConfirmButton: false });
+        } else {
+            Swal.fire('Notice', result.data.message || 'Check if AiSensy campaign is Live.', 'warning');
+        }
+    } catch(err) {
+        Swal.fire('Error', err.message, 'error');
+    }
+};
+
+/* Bulk Broadcast to All Registered Users */
+window.broadcastOfferToAllUsers = async () => {
+    if (!globalUsersList || globalUsersList.length === 0) {
+        Swal.fire('No Users', 'No registered users found to broadcast.', 'info');
+        return;
+    }
+
+    const { isConfirmed } = await Swal.fire({
+        title: 'Broadcast to All Users?',
+        html: `<p style="font-size:13.5px; color:#475569;">You are about to automatically broadcast WhatsApp offers to <strong>${globalUsersList.length} customers</strong> via AiSensy.</p>
+               <p style="font-size:12px; color:#ef4444; margin-top:6px;">Your personal number will remain hidden.</p>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: `Start Broadcast (${globalUsersList.length} Users)`,
+        confirmButtonColor: '#4f46e5'
+    });
+
+    if (!isConfirmed) return;
+
+    let successCount = 0;
+    let failCount = 0;
+    let campaignName = getActiveCampaignName();
+    let coupon = document.getElementById('waCouponCode')?.value || 'PRIME30';
+
+    Swal.fire({
+        title: 'Broadcasting Offers...',
+        html: `Sending 0 / ${globalUsersList.length}...`,
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+
+    for (let i = 0; i < globalUsersList.length; i++) {
+        const u = globalUsersList[i];
+        Swal.update({ html: `Sending ${i + 1} of ${globalUsersList.length} (${u.name})...` });
+
+        try {
+            const res = await window.callAiSensyApi(u.phone, u.name, campaignName, [u.name, coupon, `${window.location.origin}/index.html`]);
+            if (res.ok && res.data.success !== false) successCount++;
+            else failCount++;
+        } catch (e) {
+            failCount++;
+        }
+
+        // Small interval to respect rate limits
+        await new Promise(r => setTimeout(r, 400));
+    }
+
+    Swal.fire({
+        icon: 'success',
+        title: 'Broadcast Finished!',
+        html: `<p style="font-size:14px;"><strong>${successCount}</strong> messages sent successfully.<br><span style="color:#ef4444;">${failCount} failed.</span></p>`,
+        confirmButtonColor: '#4f46e5'
+    });
+};
+
+/* ========================================================
+   TEMPLATE TEXT & PREVIEW ENGINE
 ======================================================== */
 const waTemplates = {
     flash_sale: (name, prod, coupon) => 
@@ -2302,7 +2618,6 @@ window.updateWAPreview = () => {
 
     if (!previewEl) return;
 
-    // Convert WhatsApp markdown (*bold*, _italic_) to HTML for mockup
     let formatted = rawMsg
         .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
         .replace(/_(.*?)_/g, '<em>$1</em>')
@@ -2310,13 +2625,6 @@ window.updateWAPreview = () => {
 
     previewEl.innerHTML = formatted || 'Type an offer message to preview...';
 };
-
-function formatPhoneForWhatsApp(phone) {
-    if (!phone) return "";
-    let clean = phone.replace(/[^0-9]/g, '');
-    if (clean.length === 10) clean = "91" + clean; // standard 10 digit Indian number prefix
-    return clean;
-}
 
 window.sendToWhatsAppDirect = () => {
     const phoneInput = document.getElementById('waRecipientPhone');
@@ -2330,14 +2638,10 @@ window.sendToWhatsAppDirect = () => {
         return;
     }
 
-    let cleanPhone = formatPhoneForWhatsApp(phone);
-    let waUrl = "";
-    if (cleanPhone) {
-        waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
-    } else {
-        // Broadcast / share link if no phone provided
-        waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
-    }
+    let cleanPhone = cleanPhoneNumberWithCountryCode(phone);
+    let waUrl = cleanPhone 
+        ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`
+        : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
 
     window.open(waUrl, '_blank');
 };
@@ -2358,7 +2662,7 @@ window.copyWAMessage = () => {
     });
 };
 
-/* Quick WhatsApp trigger from Registered Users table */
+/* Quick prefill from user table to composer */
 window.quickSendOfferToUser = (userName, userPhone) => {
     openTab('whatsappMarketing');
     const nameField = document.getElementById('waRecipientName');
@@ -2597,7 +2901,7 @@ function renderOrderRow(container, o, path) {
     const statusClass = currentStatus.replace(/\s+/g, '');
     const fullOrderId = o.orderId || path.split('/').pop();
     const userPhone = o.phone || o.mobile || o.customerPhone || o.parentPhone || 'N/A';
-    const cleanPhone = formatPhoneForWhatsApp(userPhone);
+    const cleanPhone = cleanPhoneNumberWithCountryCode(userPhone);
 
     container.innerHTML += `
     <tr>
@@ -2655,7 +2959,7 @@ window.viewFullOrderDetails = (path) => {
     const fullAddress = o.address || 'No Address Provided';
     const fullOrderId = o.orderId || path.split('/').pop();
     const userPhone = o.phone || o.mobile || o.customerPhone || o.parentPhone || 'N/A';
-    const cleanPhone = formatPhoneForWhatsApp(userPhone);
+    const cleanPhone = cleanPhoneNumberWithCountryCode(userPhone);
 
     let productsListHtml = "";
     if (o.items && Array.isArray(o.items) && o.items.length > 0) {
@@ -3426,6 +3730,7 @@ onValue(ref(db, 'users'), snap => {
     list.innerHTML = "";
 
     let totalUsersCount = 0;
+    globalUsersList = [];
     
     if(snap.exists()) {
         snap.forEach(u => { 
@@ -3433,6 +3738,8 @@ onValue(ref(db, 'users'), snap => {
             const userData = u.val();
             const userName = userData.name || 'Customer'; 
             const phone = userData.phone || userData.email || u.key; 
+
+            globalUsersList.push({ name: userName, phone: phone, uid: u.key });
 
             list.innerHTML += `
                 <tr>
@@ -3442,9 +3749,14 @@ onValue(ref(db, 'users'), snap => {
                     </td>
                     <td><span style="font-weight:600; color:#2563eb;"><i class="fa fa-phone" style="font-size:11px; margin-right:4px;"></i>${phone}</span></td>
                     <td>
-                        <button onclick="quickSendOfferToUser('${userName.replace(/'/g, "\\'")}', '${phone}')" class="btn-table-wa">
-                            <i class="fa-brands fa-whatsapp"></i> Send WhatsApp Offer
-                        </button>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                            <button onclick="sendAiSensyToUserDirect('${userName.replace(/'/g, "\\'")}', '${phone}')" class="btn-table-aisensy" title="Send Automatically without showing personal number">
+                                <i class="fa-solid fa-bolt"></i> Auto Send
+                            </button>
+                            <button onclick="quickSendOfferToUser('${userName.replace(/'/g, "\\'")}', '${phone}')" class="btn-table-wa" title="Open in WhatsApp">
+                                <i class="fa-brands fa-whatsapp"></i> Chat
+                            </button>
+                        </div>
                     </td>
                 </tr>`; 
         });
