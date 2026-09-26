@@ -461,8 +461,11 @@ nav {
 .dot { width: 8px; height: 8px; background: var(--border); border-radius: 50%; transition: all 0.3s ease; cursor: pointer; } 
 .dot.active { background: var(--accent); width: 20px; border-radius: 4px; } 
 
-.container { padding: 10px 6% 40px; flex: 1; } 
-.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; } 
+.container { padding: 10px 6% 40px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; } 
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 15px; } 
+@media (min-width: 1200px) { 
+  .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; } 
+} 
 .modal-form { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; } 
 .modal-input { padding: 13px 14px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-main); font-size: 0.92rem; width: 100%; } 
 .modal-btn-group { display: flex; gap: 10px; margin-top: 10px; } 
@@ -586,6 +589,7 @@ nav {
   .dot { width: 6px; height: 6px; } 
   .dot.active { width: 14px; } 
   .container { padding: 8px 4% 20px; } 
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } 
   .image-box { height: 140px; } 
   .stock-badge, .discount-badge { padding: 3px 8px; font-size: 0.58rem; top: 6px; } 
   .stock-badge { left: 6px; } 
@@ -1985,7 +1989,16 @@ nav {
       allProducts.push(data); 
     }); 
     renderCategoryBar(); 
-    renderProducts(allProducts); 
+    if (allProducts.length === 0) { 
+      const grid = document.getElementById('productGrid'); 
+      grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color: var(--text-muted); padding: 30px 0;">No products found. Please check back soon.</p>'; 
+    } else { 
+      renderProducts(allProducts); 
+    } 
+  }, (error) => { 
+    console.error("Failed to load products from Firebase:", error); 
+    const grid = document.getElementById('productGrid'); 
+    grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color: var(--text-muted); padding: 30px 0;">Could not load products. Please refresh the page.</p>'; 
   }); 
 
   const bannerSection = document.getElementById('bannerSection'); 
@@ -2121,9 +2134,13 @@ nav {
     let animationDelayIndex = 0; 
     products.forEach((p) => { 
       if (p.showOnHome === false) return; 
+      if (p.price === undefined || p.price === null || p.price === "") { 
+        console.warn("Skipping product with no price:", p.id, p.name); 
+        return; 
+      } 
       const isOut = p.outOfStock === true; 
-      const pr = parseFloat(p.price.toString().replace(/,/g, '')); 
-      const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr); 
+      const pr = parseFloat(p.price.toString().replace(/,/g, '')) || 0; 
+      const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr) || pr; 
       let discTag = ""; 
       let hasDisc = false; 
       if(mr > pr) { 
@@ -2133,6 +2150,7 @@ nav {
       } 
       const isWishlisted = userWishlistIds[p.id] ? true : false; 
       const card = document.createElement('div'); 
+      try { 
       card.className = 'card'; 
       card.style.animationDelay = `${animationDelayIndex * 0.08}s`; 
       animationDelayIndex++; 
@@ -2203,6 +2221,9 @@ nav {
       }); 
 
       grid.appendChild(card); 
+      } catch (err) { 
+        console.warn("Skipping product due to render error:", p && p.id, err); 
+      } 
     }); 
   } 
 
