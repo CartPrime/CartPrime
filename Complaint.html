@@ -3,263 +3,677 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CartPrime Help Center | Support</title>
+    <title>CartPrime Help Center | 24/7 Support Concierge</title>
+    
+    <!-- Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath d='M320 64C178.6 64 64 178.6 64 320S178.6 576 320 576 576 461.4 576 320 461.4 64 320 64zM320 144a72 72 0 1 1 0 144 72 72 0 0 1 0-144zm0 384c-79.5 0-144-64.5-144-144 0-8.8 7.2-16 16-16h256c8.8 0 16 7.2 16 16 0 79.5-64.5 144-144 144z'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png">
+
     <style>
         :root {
-            --bg-color: #09090b;
-            --card-bg: rgba(24, 24, 27, 0.75);
-            --text-color: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --border: rgba(63, 63, 70, 0.8);
-            --input-bg: #121215;
-            --chat-bg: #09090b;
-            --chat-header-bg: #18181b;
-            --chat-header-text: #f4f4f5;
-            --primary-neutral: #eab308;
-            --primary-hover: #ca8a04;
-            --accent-border: rgba(234, 179, 8, 0.3);
-            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
-            --gradient-primary: linear-gradient(135deg, #eab308 0%, #facc15 50%, #ca8a04 100%);
+            --bg-base: #07090e;
+            --bg-surface: #0e131f;
+            --card-glass: rgba(17, 24, 39, 0.75);
+            --card-glass-hover: rgba(24, 33, 53, 0.85);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-accent: rgba(245, 158, 11, 0.35);
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            
+            --accent-gold: #f59e0b;
+            --accent-gold-light: #fbbf24;
+            --accent-gold-dark: #d97706;
+            --accent-blue: #38bdf8;
+            --accent-green: #10b981;
+            --accent-rose: #f43f5e;
+            --whatsapp-green: #25D366;
+
+            --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
+            --gradient-dark: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(9, 13, 22, 0.95) 100%);
+            
+            --shadow-glow: 0 0 35px -5px rgba(245, 158, 11, 0.2);
+            --shadow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.65);
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
         }
 
         * { 
             box-sizing: border-box; 
             margin: 0; 
             padding: 0; 
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
             -webkit-tap-highlight-color: transparent; 
         }
 
         body { 
-            background: var(--bg-color); 
-            color: var(--text-color); 
+            background: var(--bg-base); 
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main); 
             min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            padding: 2.5rem 1rem 90px 1rem; 
+            padding: 2rem 1.2rem 100px 1.2rem; 
         }
 
+        /* Ambient Glow Bar */
+        .ambient-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-gold);
+            box-shadow: 0 0 15px var(--accent-gold);
+            z-index: 10000;
+        }
+
+        /* Page Loader */
         #page-loader {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--bg-color); display: flex; justify-content: center; align-items: center; flex-direction: column; z-index: 9999;
-            transition: opacity 0.6s ease, visibility 0.6s;
+            background: #07090e; display: flex; justify-content: center; align-items: center; flex-direction: column; z-index: 99999;
+            transition: opacity 0.5s ease, visibility 0.5s;
         }
-        .modern-loader-ring { position: relative; width: 60px; height: 60px; }
+        .modern-loader-ring { 
+            position: relative; 
+            width: 64px; 
+            height: 64px; 
+        }
         .modern-loader-ring div {
-            box-sizing: border-box; display: block; position: absolute; width: 48px; height: 48px; margin: 6px;
-            border: 3px solid transparent; border-radius: 50%; animation: ringRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-            border-color: var(--primary-neutral) transparent transparent transparent;
+            box-sizing: border-box; display: block; position: absolute; width: 50px; height: 50px; margin: 7px;
+            border: 3px solid transparent; border-radius: 50%; animation: ringRotate 1.1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: var(--accent-gold) transparent transparent transparent;
         }
         @keyframes ringRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loader-text { margin-top: 15px; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
-        
-        .container { max-width: 900px; width: 100%; }
-        
-        header { text-align: center; margin-bottom: 3rem; }
-        header h1 { 
-            font-size: 3.2rem; 
-            margin-bottom: 0.5rem; 
-            font-weight: 800; 
-            letter-spacing: -1.5px; 
-            background: var(--gradient-primary); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            filter: drop-shadow(0 2px 10px rgba(234, 179, 8, 0.25));
-        }
-        header h1 span {
-            font-size: 1.8rem;
-            font-weight: 600;
-            display: block;
-            margin-top: 0.2rem;
-            letter-spacing: -0.5px;
-            color: var(--text-color);
-            -webkit-text-fill-color: var(--text-color);
-            opacity: 0.9;
-        }
-        header p { color: var(--text-muted); font-size: 1.05rem; font-weight: 400; letter-spacing: 0.2px; margin-top: 0.8rem; }
-        
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
-        .card { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; box-shadow: var(--card-shadow); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); text-align: left; }
-        .card:hover { border-color: var(--primary-neutral); transform: translateY(-6px); box-shadow: 0 20px 40px -15px rgba(234, 179, 8, 0.3); }
-        .card h3 { margin-bottom: 0.8rem; font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--text-color); }
-        .card p { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; }
-        .highlight-email { display: inline-block; margin-top: 1rem; padding: 0.6rem 1rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; font-weight: 600; font-family: monospace; font-size: 0.85rem; color: var(--primary-neutral); letter-spacing: 0.5px; }
+        .loader-text { margin-top: 18px; font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
 
-        .form-section { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 28px; padding: 3rem; margin-bottom: 2rem; box-shadow: var(--shadow); }
-        .form-section h2 { margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.2rem; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
-        .form-group { margin-bottom: 1.6rem; text-align: left; }
-        .form-group label { display: block; margin-bottom: 0.6rem; font-weight: 600; font-size: 0.9rem; color: var(--text-color); letter-spacing: 0.2px; }
-        
-        .form-control { width: 100%; padding: 1rem 1.2rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 14px; color: var(--text-color); font-size: 0.95rem; transition: all 0.3s ease; }
-        .form-control:focus { border-color: var(--primary-neutral); box-shadow: 0 0 0 4px var(--accent-border); outline: none; }
-        textarea.form-control { resize: vertical; min-height: 140px; }
-        
-        .submit-btn { width: 100%; padding: 1.1rem; background: var(--gradient-primary); color: #09090b; border: none; border-radius: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 25px -5px rgba(234, 179, 8, 0.4); letter-spacing: 0.3px; }
-        .submit-btn:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 15px 30px -5px rgba(234, 179, 8, 0.6); }
-        .submit-btn:active { transform: scale(0.99); }
+        .container { max-width: 960px; width: 100%; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-card { background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 28px; width: 90%; max-width: 500px; padding: 32px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .modal-overlay.active .modal-card { transform: scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .modal-header h3 { font-size: 1.3rem; font-weight: 700; }
-
-        /* Modernized Luxurious Alert Modal Styling & Success Tick Animation */
-        .alert-modal-card { 
-            text-align: center; 
-            max-width: 400px; 
-            padding: 38px 28px; 
-            background: rgba(18, 18, 21, 0.95); 
-            border: 1px solid var(--border); 
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(234, 179, 8, 0.15); 
-            border-radius: 28px;
+        /* Top Brand Navigation */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--border-subtle);
         }
-        .alert-icon-box { 
-            font-size: 3rem; 
-            margin-bottom: 14px; 
-            filter: drop-shadow(0 4px 10px rgba(234, 179, 8, 0.3));
+        .brand-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
         }
-        
-        /* Success Checkmark Animation Styles */
-        .success-tick-wrapper {
-            width: 75px;
-            height: 75px;
-            margin: 0 auto 18px auto;
-            border-radius: 50%;
-            background: rgba(34, 197, 94, 0.15);
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--gradient-gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid rgba(34, 197, 94, 0.4);
-            animation: pulseSuccess 1.5s infinite;
+            color: #07090e;
+            font-size: 1.2rem;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
         }
-        .success-tick {
-            font-size: 2.2rem;
-            color: #22c55e;
-            animation: scaleCheck 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        .brand-text h2 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
-        @keyframes scaleCheck {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        .brand-text span {
+            font-size: 0.72rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
         }
-        @keyframes pulseSuccess {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-            70% { box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        .btn-home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-home-link:hover {
+            color: #fff;
+            border-color: var(--accent-gold);
+            background: rgba(245, 158, 11, 0.1);
         }
 
-        .alert-title { 
-            font-size: 1.4rem; 
-            margin-bottom: 10px; 
+        /* Hero Header */
+        header { text-align: center; margin-bottom: 3.5rem; position: relative; }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--border-accent);
+            color: var(--accent-gold);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 999px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        header h1 { 
+            font-size: 2.8rem; 
             font-weight: 800; 
-            letter-spacing: -0.5px;
-            background: var(--gradient-primary);
+            letter-spacing: -1.2px; 
+            line-height: 1.15;
+            margin-bottom: 0.8rem;
+        }
+        header h1 .gold-text {
+            background: var(--gradient-gold);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 10px rgba(245, 158, 11, 0.3));
         }
-        .alert-message { 
-            font-size: 0.95rem; 
+        header p { 
             color: var(--text-muted); 
-            margin-bottom: 28px; 
-            line-height: 1.6; 
-            white-space: pre-line; 
-        }
-        .alert-close-btn { 
-            width: 100%; 
-            padding: 13px; 
-            background: var(--gradient-primary); 
-            color: #09090b; 
-            border: none; 
-            border-radius: 14px; 
             font-size: 1rem; 
+            font-weight: 400; 
+            max-width: 580px; 
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* 4 Quick Service Action Cards */
+        .cards-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); 
+            gap: 1.2rem; 
+            margin-bottom: 3.5rem; 
+        }
+        .action-card { 
+            background: var(--card-glass); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle); 
+            border-radius: var(--radius-lg); 
+            padding: 1.6rem 1.4rem; 
+            box-shadow: var(--shadow-card); 
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); 
+            cursor: pointer;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-gold);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .action-card:hover { 
+            border-color: var(--accent-gold); 
+            transform: translateY(-5px); 
+            background: var(--card-glass-hover);
+            box-shadow: var(--shadow-glow); 
+        }
+        .action-card:hover::before { opacity: 1; }
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .icon-blue { background: rgba(56, 189, 248, 0.12); color: var(--accent-blue); border: 1px solid rgba(56, 189, 248, 0.25); }
+        .icon-gold { background: rgba(245, 158, 11, 0.12); color: var(--accent-gold); border: 1px solid rgba(245, 158, 11, 0.25); }
+        .icon-green { background: rgba(16, 185, 129, 0.12); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.25); }
+        .icon-purple { background: rgba(168, 85, 247, 0.12); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.25); }
+
+        .action-card h3 { 
+            font-size: 1.02rem; 
             font-weight: 700; 
+            color: var(--text-main); 
+            margin-bottom: 0.4rem; 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .action-card p { 
+            color: var(--text-muted); 
+            font-size: 0.84rem; 
+            line-height: 1.5; 
+        }
+
+        /* Complaint Registration Form */
+        .form-section { 
+            background: var(--card-glass); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle); 
+            border-radius: var(--radius-xl); 
+            padding: 2.8rem 2.4rem; 
+            margin-bottom: 3rem; 
+            box-shadow: var(--shadow-card); 
+            position: relative;
+        }
+        .form-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .form-header h2 { 
+            font-size: 1.45rem; 
+            font-weight: 800; 
+            letter-spacing: -0.4px; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-header h2 i { color: var(--accent-gold); font-size: 1.25rem; }
+        
+        .form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .form-row > * { flex: 1 1 240px; }
+
+        .form-group { margin-bottom: 1.4rem; text-align: left; }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 0.5rem; 
+            font-weight: 700; 
+            font-size: 0.82rem; 
+            color: var(--text-muted); 
+            text-transform: uppercase;
+            letter-spacing: 0.6px; 
+        }
+        
+        .form-control { 
+            width: 100%; 
+            padding: 0.95rem 1.1rem; 
+            background: #090d16; 
+            border: 1px solid var(--border-subtle); 
+            border-radius: var(--radius-md); 
+            color: var(--text-main); 
+            font-size: 0.92rem; 
+            font-weight: 500;
+            transition: all 0.25s ease; 
+        }
+        .form-control:focus { 
+            border-color: var(--accent-gold); 
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); 
+            outline: none; 
+            background: #0c121e;
+        }
+        textarea.form-control { resize: vertical; min-height: 120px; line-height: 1.5; }
+        
+        .submit-btn { 
+            width: 100%; 
+            padding: 1.1rem; 
+            background: var(--gradient-gold); 
+            color: #07090e; 
+            border: none; 
+            border-radius: var(--radius-md); 
+            font-size: 0.98rem; 
+            font-weight: 800; 
             cursor: pointer; 
-            box-shadow: 0 10px 20px -5px rgba(234, 179, 8, 0.4); 
-            transition: all 0.25s ease;
+            transition: all 0.25s ease; 
+            box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.35); 
+            letter-spacing: 0.3px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        .alert-close-btn:hover {
-            opacity: 0.92;
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px -5px rgba(234, 179, 8, 0.6);
+        .submit-btn:hover { 
+            opacity: 0.95; 
+            transform: translateY(-2px); 
+            box-shadow: 0 15px 30px -5px rgba(245, 158, 11, 0.5); 
         }
+        .submit-btn:active { transform: scale(0.99); }
 
-        .history-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-top: 14px; text-align: left; box-shadow: var(--card-shadow); }
-        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
-        .status-Pending { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-        .status-InProgress { background: rgba(234, 179, 8, 0.15); color: #eab308; }
-        .status-Resolved, .status-Solved { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+        /* Direct Contact Footer Bar */
+        .contact-bar {
+            background: rgba(14, 19, 31, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.6rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .contact-info { display: flex; align-items: center; gap: 14px; }
+        .contact-info i { font-size: 1.6rem; color: var(--accent-gold); }
+        .contact-text strong { display: block; font-size: 0.95rem; font-weight: 700; }
+        .contact-text span { font-size: 0.8rem; color: var(--text-muted); }
+        .btn-wa-direct {
+            background: var(--whatsapp-green);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+        .btn-wa-direct:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3); }
 
-        /* Enlarged Chatbot Popup Container */
+        /* Modern Modals */
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            background: rgba(3, 7, 18, 0.75); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 99999; 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.3s ease; 
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-card { 
+            background: #0e131f; 
+            border: 1px solid var(--border-subtle); 
+            border-radius: var(--radius-xl); 
+            width: 90%; 
+            max-width: 520px; 
+            padding: 30px; 
+            max-height: 85vh; 
+            overflow-y: auto; 
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8); 
+            transform: scale(0.95); 
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px; }
+        .modal-header h3 { font-size: 1.25rem; font-weight: 800; display:flex; align-items:center; gap:8px; }
+        .btn-close-modal { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.2s; }
+        .btn-close-modal:hover { color: #fff; }
+
+        /* Notification Modal with Luxury Green Tick */
+        .alert-modal-card { text-align: center; max-width: 420px; padding: 36px 28px; }
+        .success-tick-wrapper {
+            width: 76px; height: 76px; margin: 0 auto 16px auto; border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center;
+            border: 2px solid rgba(16, 185, 129, 0.4); animation: pulseSuccess 1.5s infinite;
+        }
+        .success-tick { font-size: 2.2rem; color: var(--accent-green); }
+        @keyframes pulseSuccess {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .alert-title { font-size: 1.35rem; margin-bottom: 8px; font-weight: 800; }
+        .alert-message { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; white-space: pre-line; }
+
+        /* Complaint History Card */
+        .history-card { 
+            background: #080c14; 
+            border: 1px solid var(--border-subtle); 
+            border-radius: var(--radius-md); 
+            padding: 16px; 
+            margin-top: 12px; 
+            text-align: left; 
+        }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; }
+        .status-Pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .status-Resolved, .status-Solved { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+
+        /* ========================================================
+           REALISTIC AI CHATBOT SYSTEM
+        ======================================================== */
         .chatbot-container { 
             position: fixed; 
             right: 24px; 
-            bottom: 95px; 
+            bottom: 90px; 
             width: calc(100% - 48px); 
-            max-width: 440px; 
-            background: var(--chat-bg); 
-            border: 1px solid var(--border); 
-            border-radius: 28px; 
+            max-width: 420px; 
+            background: #0b1019; 
+            border: 1px solid rgba(255, 255, 255, 0.12); 
+            border-radius: 24px; 
             overflow: hidden; 
             opacity: 0; 
             pointer-events: none; 
-            transform: translateY(25px) scale(0.97); 
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-            z-index: 1000; 
-            box-shadow: var(--shadow); 
+            transform: translateY(20px) scale(0.96); 
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 10000; 
+            box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(245, 158, 11, 0.15); 
         }
         body.show-chatbot .chatbot-container { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
-        .chat-header { padding: 20px 24px; background: var(--chat-header-bg); color: var(--chat-header-text); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 1.05rem; }
-        .chatbox { overflow-y: auto; height: 440px; padding: 20px; list-style: none; display: flex; flex-direction: column; gap: 14px; }
+
+        .chat-header { 
+            padding: 16px 20px; 
+            background: #111827; 
+            color: #fff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-bottom: 1px solid var(--border-subtle); 
+        }
+        .chat-agent-info { display: flex; align-items: center; gap: 12px; }
+        .chat-agent-avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: var(--gradient-gold); color: #07090e;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; font-weight: 800;
+            position: relative;
+        }
+        .live-status-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--accent-green);
+            position: absolute; bottom: 0; right: 0;
+            border: 2px solid #111827;
+        }
+        .chat-agent-name { font-size: 0.95rem; font-weight: 800; }
+        .chat-agent-sub { font-size: 0.72rem; color: var(--accent-green); display: flex; align-items: center; gap: 4px; font-weight: 600; }
+
+        .chatbox { 
+            overflow-y: auto; 
+            height: 400px; 
+            padding: 18px 16px; 
+            list-style: none; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 14px; 
+            background: #080c14;
+        }
         .chatbox .chat { display: flex; flex-direction: column; }
         .chatbox .outgoing { align-items: flex-end; }
         .chatbox .incoming { align-items: flex-start; }
-        .chatbox .chat p { padding: 13px 18px; border-radius: 18px; max-width: 88%; font-size: 0.92rem; line-height: 1.5; }
-        .chatbox .incoming p { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border); }
-        .chatbox .outgoing p { background: var(--gradient-primary); color: #09090b; font-weight: 500; box-shadow: 0 5px 15px rgba(234, 179, 8, 0.3); }
+        
+        .chat-bubble { 
+            padding: 12px 16px; 
+            border-radius: 16px; 
+            max-width: 88%; 
+            font-size: 0.88rem; 
+            line-height: 1.5; 
+            word-break: break-word;
+            position: relative;
+        }
+        .chatbox .incoming .chat-bubble { 
+            background: #141b2b; 
+            color: var(--text-main); 
+            border: 1px solid var(--border-subtle); 
+            border-top-left-radius: 4px;
+        }
+        .chatbox .outgoing .chat-bubble { 
+            background: var(--gradient-gold); 
+            color: #07090e; 
+            font-weight: 600; 
+            border-top-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
+        }
+        .chat-time {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .outgoing .chat-time { justify-content: flex-end; color: rgba(255, 255, 255, 0.6); }
 
-        .typing-bubble { display: flex !important; gap: 6px !important; padding: 14px 18px !important; background: var(--input-bg) !important; border: 1px solid var(--border) !important; }
-        .glow-dot { width: 7px; height: 7px; background: var(--text-muted); border-radius: 50%; animation: glowingWave 1.4s infinite ease-in-out; }
-        .glow-dot:nth-child(2) { animation-delay: 0.2s; } .glow-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes glowingWave { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; background: var(--primary-neutral); } }
+        /* Interactive In-Chat Order Card */
+        .chat-order-card {
+            background: #0a0f1a;
+            border: 1px solid var(--border-accent);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .chat-order-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.75rem; font-weight: 700; }
+        .chat-order-body { display: flex; gap: 10px; align-items: center; }
+        .chat-order-body img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; background: #111; }
 
-        .option-container { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; width: 100%; }
-        .option-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-color); padding: 12px 18px; border-radius: 14px; font-size: 0.9rem; font-weight: 600; text-align: left; cursor: pointer; transition: all 0.25s ease; box-shadow: var(--card-shadow); }
-        .option-btn:hover { border-color: var(--primary-neutral); background: var(--input-bg); transform: translateX(4px); }
+        /* Typing Dots Animation */
+        .typing-bubble { display: flex !important; gap: 5px !important; padding: 12px 16px !important; background: #141b2b !important; border: 1px solid var(--border-subtle) !important; border-radius: 16px !important; width: fit-content !important; }
+        .glow-dot { width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: glowingWave 1.4s infinite ease-in-out; }
+        .glow-dot:nth-child(2) { animation-delay: 0.2s; } 
+        .glow-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes glowingWave { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; background: var(--accent-gold); } }
 
-        .chat-input-area { display: flex; gap: 10px; padding: 16px; border-top: 1px solid var(--border); background: var(--chat-header-bg); }
-        .chat-input-area input { flex: 1; background: var(--input-bg); border: 1px solid var(--border); border-radius: 14px; outline: none; color: var(--text-color); padding: 12px 16px; font-size: 0.92rem; }
-        .chat-input-area input:focus { border-color: var(--primary-neutral); box-shadow: 0 0 0 3px var(--accent-border); }
-        .chat-input-area button { background: var(--gradient-primary); border: none; color: #09090b; padding: 12px 20px; border-radius: 14px; cursor: pointer; font-weight: 700; font-size: 0.92rem; transition: opacity 0.2s; }
-        .chat-input-area button:hover { opacity: 0.9; }
+        /* Quick Pills / Action Buttons */
+        .chat-pills-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .chat-pill { 
+            background: rgba(245, 158, 11, 0.12); 
+            border: 1px solid rgba(245, 158, 11, 0.3); 
+            color: var(--accent-gold-light); 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
+        .chat-pill:hover { 
+            background: var(--accent-gold); 
+            color: #07090e; 
+            border-color: var(--accent-gold); 
+        }
 
-        #pdf-receipt-wrapper { position: absolute; left: -9999px; top: -9999px; }
-        .pdf-receipt-container { background: #ffffff; color: #000000; padding: 35px; font-family: sans-serif; width: 750px; }
-        .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000000; padding-bottom: 15px; margin-bottom: 20px; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; }
-        .pdf-table th { background: #000000; color: #ffffff; padding: 10px; text-align: left; }
-        .pdf-table td { padding: 10px; border-bottom: 1px solid #e4e4e7; text-align: left; }
+        .chat-input-area { 
+            display: flex; 
+            gap: 8px; 
+            padding: 12px 14px; 
+            border-top: 1px solid var(--border-subtle); 
+            background: #0f1624; 
+        }
+        .chat-input-area input { 
+            flex: 1; 
+            background: #080c14; 
+            border: 1px solid var(--border-subtle); 
+            border-radius: 12px; 
+            outline: none; 
+            color: #fff; 
+            padding: 10px 14px; 
+            font-size: 0.88rem; 
+        }
+        .chat-input-area input:focus { border-color: var(--accent-gold); }
+        .chat-input-area button { 
+            background: var(--gradient-gold); 
+            border: none; 
+            color: #07090e; 
+            width: 42px; 
+            height: 42px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-size: 0.95rem; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s; 
+        }
+        .chat-input-area button:hover { transform: scale(1.05); }
 
-        /* Modern Bottom Navigation Bar Styles with Custom SVGs */
+        /* Floating Chat Trigger Button */
+        .chat-floating-trigger {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--gradient-gold);
+            color: #07090e;
+            padding: 12px 20px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 0.88rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 9999;
+        }
+        .chat-floating-trigger:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.55);
+        }
+        .chat-floating-trigger .pulse-icon {
+            font-size: 1.15rem;
+            animation: bounceIcon 2s infinite ease-in-out;
+        }
+        @keyframes bounceIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* Bottom Floating Bar on Mobile */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: var(--card-bg);
+            background: rgba(11, 16, 25, 0.85);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--border-subtle);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 10px 0;
+            padding: 8px 0;
             z-index: 999;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.25);
         }
         .bottom-nav-item {
             display: flex;
@@ -267,209 +681,297 @@
             align-items: center;
             color: var(--text-muted);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            font-size: 0.78rem;
-            font-weight: 600;
-            gap: 5px;
-            padding: 6px 20px;
-            border-radius: 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            gap: 4px;
+            padding: 6px 16px;
+            border-radius: 10px;
+            transition: all 0.2s;
         }
-        .bottom-nav-item:hover, .bottom-nav-item:active {
-            color: var(--primary-neutral);
-            transform: translateY(-2px);
-            background: rgba(234, 179, 8, 0.06);
+        .bottom-nav-item:hover, .bottom-nav-item.active {
+            color: var(--accent-gold);
+            background: rgba(245, 158, 11, 0.08);
         }
-        .bottom-nav-item .nav-icon {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-            transition: fill 0.3s ease;
+        .bottom-nav-item i { font-size: 1.15rem; }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 2.1rem; }
+            .form-section { padding: 1.8rem 1.4rem; }
+            .chatbot-container { right: 12px; bottom: 80px; width: calc(100% - 24px); }
+            .chat-floating-trigger { display: none; }
         }
     </style>
 </head>
 <body>
 
+<div class="ambient-bar"></div>
+
+<!-- Page Loading Animation -->
 <div id="page-loader">
     <div class="modern-loader-ring"><div></div><div></div><div></div><div></div></div>
-    <div class="loader-text">Loading Portal</div>
+    <div class="loader-text">Securing Concierge</div>
 </div>
 
 <div class="container">
+    
+    <!-- Top Brand Nav -->
+    <div class="top-nav">
+        <a href="index.html" class="brand-pill">
+            <div class="brand-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+            <div class="brand-text">
+                <h2>CartPrime</h2>
+                <span>Help Center</span>
+            </div>
+        </a>
+        <a href="index.html" class="btn-home-link">
+            <i class="fa-solid fa-store"></i> <span>Store</span>
+        </a>
+    </div>
+
+    <!-- Hero Header -->
     <header>
-        <h1>CartPrime <span>Help Center</span></h1>
-    </p> Send you issues and quick fixing support shopping experience.</p>
+        <div class="hero-badge">
+            <i class="fa-solid fa-shield-halved"></i> 24/7 Buyer Support Desk
+        </div>
+        <h1>How Can We <span class="gold-text">Assist You</span> Today?</h1>
+        <p>Instant answers, live order resolution, and priority complaint handling for your CartPrime shopping experience.</p>
     </header>
 
+    <!-- 4 Quick Service Action Cards -->
     <div class="cards-grid">
-        <div class="card">
-            <h3>📧 Email Support</h3>
-            <p>Send queries for prompt assistance to:</p>
-            <span class="highlight-email">cartprimeshop@gmail.com</span>
+        <div class="action-card" onclick="openChatWithAction('track_order')">
+            <div class="card-icon icon-blue">
+                <i class="fa-solid fa-truck-fast"></i>
+            </div>
+            <h3>Track Order <i class="fa-solid fa-arrow-right" style="font-size:0.8rem; color:var(--text-dim);"></i></h3>
+            <p>Live status updates, delivery date & shipment tracing.</p>
         </div>
-        <div class="card">
-            <h3>⏰ Working Hours</h3>
-            <p>Monday – Friday<br>(5:00 PM – 12:00 AM)</p>
+
+        <div class="action-card" onclick="openChatWithAction('return_refund')">
+            <div class="card-icon icon-gold">
+                <i class="fa-solid fa-rotate-left"></i>
+            </div>
+            <h3>7-Day Returns <i class="fa-solid fa-arrow-right" style="font-size:0.8rem; color:var(--text-dim);"></i></h3>
+            <p>Initiate quick returns and instant refund requests.</p>
         </div>
-        <div class="card">
-            <h3>❓ FAQ & Resources</h3>
-            <p>Access intuitive answers to all your common questions instantly.</p>
+
+        <div class="action-card" onclick="openHistoryModal()">
+            <div class="card-icon icon-green">
+                <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <h3>My Tickets <i class="fa-solid fa-arrow-right" style="font-size:0.8rem; color:var(--text-dim);"></i></h3>
+            <p>Check the live progress of previously filed complaints.</p>
+        </div>
+
+        <div class="action-card" onclick="openChatbot()">
+            <div class="card-icon icon-purple">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <h3>24/7 AI Concierge <i class="fa-solid fa-arrow-right" style="font-size:0.8rem; color:var(--text-dim);"></i></h3>
+            <p>Human-like instant support for all your shopping queries.</p>
         </div>
     </div>
 
-    <div class="form-section">
-        <h2>Register Your Complaint</h2>
+    <!-- Direct Contact Banner -->
+    <div class="contact-bar">
+        <div class="contact-info">
+            <i class="fa-brands fa-whatsapp"></i>
+            <div class="contact-text">
+                <strong>Need Immediate Human Intervention?</strong>
+                <span>Chat directly with CartPrime Official Support team</span>
+            </div>
+        </div>
+        <a href="https://wa.me/9173569778?text=Hello%20CartPrime%20Support,%20I%20need%20help%20with%20my%20order" target="_blank" class="btn-wa-direct">
+            <i class="fa-brands fa-whatsapp"></i> Open WhatsApp Chat
+        </a>
+    </div>
+
+    <!-- Complaint Registration Form Section -->
+    <div class="form-section" id="complaintSection">
+        <div class="form-header">
+            <h2><i class="fa-solid fa-file-shield"></i> Register Official Complaint</h2>
+            <span style="font-size:0.75rem; color:var(--text-dim); font-weight:700;">CONFIDENTIAL & ENCRYPTED</span>
+        </div>
+
         <form id="complaintForm">
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="custName" class="form-control" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Registered Phone Number *</label>
+                    <input type="tel" id="custPhone" class="form-control" placeholder="10-digit mobile number" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="complaintPhone">Phone Number</label>
-                <input type="tel" id="complaintPhone" class="form-control" placeholder="Enter registered phone number" required>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="custEmail" class="form-control" placeholder="example@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Order Reference ID (Optional)</label>
+                    <input type="text" id="custOrderId" class="form-control" placeholder="e.g. 1024 or Order ID">
+                </div>
             </div>
+
             <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" class="form-control" placeholder="name@example.com" required>
-            </div>
-            <div class="form-group">
-                <label for="category">Category</label>
-                <select id="category" class="form-control" required>
-                    <option value="" disabled selected>Select complaint type</option>
-                    <option value="Technical Issue">Technical Issue</option>
-                    <option value="Billing & Payment">Billing & Payment</option>
-                    <option value="Service Quality">Service Quality</option>
-                    <option value="Other">Other</option>
+                <label>Issue Category *</label>
+                <select id="custCategory" class="form-control" required>
+                    <option value="" disabled selected>-- Select Issue Type --</option>
+                    <option value="Damaged / Defective Product">Damaged / Defective Product Received</option>
+                    <option value="Wrong Item Delivered">Wrong Item Delivered</option>
+                    <option value="Delay in Delivery">Delay in Delivery</option>
+                    <option value="Return / Refund Inquiry">Return & Refund Follow-up</option>
+                    <option value="Payment / Billing Issue">Payment / Billing Issue</option>
+                    <option value="Other Service Inquiries">Other General Inquiries</option>
                 </select>
             </div>
+
             <div class="form-group">
-                <label for="message">Complaint Details</label>
-                <textarea id="message" class="form-control" placeholder="Describe your issue in detail..." required></textarea>
+                <label>Detailed Explanation *</label>
+                <textarea id="custMessage" class="form-control" placeholder="Please describe your issue in detail so we can resolve it immediately..." required></textarea>
             </div>
-            <button type="submit" class="submit-btn" id="submitBtn">Submit Complaint</button>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <i class="fa-solid fa-paper-plane"></i> Submit Priority Complaint
+            </button>
         </form>
+    </div>
+
+</div>
+
+<!-- Floating Chat Trigger Pill -->
+<div class="chat-floating-trigger" onclick="openChatbot()">
+    <i class="fa-solid fa-headset pulse-icon"></i>
+    <span>Chat with Support AI</span>
+</div>
+
+<!-- ========================================================
+     REALISTIC AI CHATBOT CONTAINER
+======================================================== -->
+<div class="chatbot-container" id="chatbotWidget">
+    <div class="chat-header">
+        <div class="chat-agent-info">
+            <div class="chat-agent-avatar">
+                <i class="fa-solid fa-robot"></i>
+                <span class="live-status-dot"></span>
+            </div>
+            <div>
+                <div class="chat-agent-name">PrimeBot AI Concierge</div>
+                <div class="chat-agent-sub"><i class="fa-solid fa-circle" style="font-size:0.5rem;"></i> Active • Instant Replies</div>
+            </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <button class="btn-close-modal" onclick="closeChatbot()" title="Close Chat">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+
+    <ul class="chatbox" id="chatbox">
+        <!-- Initial Dynamic Greeting will be injected via JS -->
+    </ul>
+
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Type query or phone number..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+        <button onclick="sendChatMessage()" title="Send Message">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
     </div>
 </div>
 
+<!-- Complaint History Lookup Modal -->
 <div class="modal-overlay" id="complaintHistoryModal">
     <div class="modal-card">
         <div class="modal-header">
-            <h3>📋 My Complaint History</h3>
-            <span style="cursor:pointer; font-size:1.2rem; font-weight:bold;" onclick="closeHistoryModal()">✕</span>
+            <h3><i class="fa-solid fa-list-check" style="color:var(--accent-gold);"></i> My Support Tickets</h3>
+            <button class="btn-close-modal" onclick="closeHistoryModal()">✕</button>
         </div>
         <div>
             <div class="form-group">
-                <label>Registered Phone Number</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="tel" id="modalSearchPhone" class="form-control" placeholder="Enter phone number">
-                    <button type="button" class="submit-btn" style="width: auto; padding: 0 1.5rem;" onclick="fetchModalComplaintHistory()">Search</button>
+                <label>Enter Registered Mobile Number</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="tel" id="modalSearchPhone" class="form-control" placeholder="10-digit number" onkeydown="if(event.key==='Enter') fetchModalComplaintHistory()">
+                    <button type="button" class="submit-btn" style="width: auto; padding: 0 1.2rem;" onclick="fetchModalComplaintHistory()">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
                 </div>
             </div>
-            <div id="modalHistoryContainer">
-            </div>
+            <div id="modalHistoryContainer" style="margin-top:14px;"></div>
         </div>
     </div>
 </div>
 
-<div class="chatbot-container">
-    <div class="chat-header">
-        <span>Support Assistant 🤖</span>
-        <span style="cursor:pointer; font-size:1.1rem;" onclick="closeChatbot()">✕</span>
-    </div>
-    <ul class="chatbox" id="chatbox">
-        <li class="chat incoming">
-            <p>Hi there! 👋 Type "Hi" to explore our luxury support options or ask any question!</p>
-        </li>
-    </ul>
-    <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="Type 'Hi' or your query..." onkeypress="handleChatKeyPress(event)">
-        <button onclick="sendMessage()">Send</button>
-    </div>
-</div>
-
+<!-- Return & Refund Request Modal -->
 <div class="modal-overlay" id="returnModal">
     <div class="modal-card">
         <div class="modal-header">
-            <h3>Return & Refund Request</h3>
-            <span style="cursor:pointer; font-weight:bold; font-size:1.2rem;" onclick="closeReturnModal()">✕</span>
+            <h3><i class="fa-solid fa-rotate-left" style="color:var(--accent-gold);"></i> Return & Refund Request</h3>
+            <button class="btn-close-modal" onclick="closeReturnModal()">✕</button>
         </div>
         <form id="returnForm" onsubmit="submitReturnRequest(event)">
             <div class="form-group">
-                <label>Order ID</label>
-                <input type="text" id="retOrderId" class="form-control" readonly style="background:var(--border);">
+                <label>Order ID *</label>
+                <input type="text" id="retOrderId" class="form-control" readonly style="background:#131a29; color:var(--accent-gold); font-weight:bold;">
             </div>
             <div class="form-group">
-                <label>Phone Number</label>
+                <label>Phone Number *</label>
                 <input type="tel" id="retPhone" class="form-control" required>
             </div>
             <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="retEmail" class="form-control" required>
+                <label>UPI ID (For Instant Refund) *</label>
+                <input type="text" id="retUpi" class="form-control" placeholder="e.g. mobile@upi or name@oksbi" required>
             </div>
             <div class="form-group">
-                <label>UPI ID (For Refund)</label>
-                <input type="text" id="retUpi" class="form-control" required>
+                <label>Reason for Return *</label>
+                <select id="retReason" class="form-control" required>
+                    <option value="" disabled selected>-- Select Reason --</option>
+                    <option value="Damaged during delivery">Damaged during delivery</option>
+                    <option value="Item not as described">Item not as described</option>
+                    <option value="Wrong size / color">Wrong size / color</option>
+                    <option value="Quality not up to mark">Quality not up to mark</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label>Reason for Return</label>
-                <input type="text" id="retReason" class="form-control" required>
-            </div>
-            <button type="submit" class="submit-btn">Submit Return Request</button>
+            <button type="submit" class="submit-btn" style="margin-top:10px;">
+                <i class="fa-solid fa-check"></i> Submit Return Request
+            </button>
         </form>
     </div>
 </div>
 
-<!-- Custom Alert Modal with Success Tick Support -->
+<!-- Modernized Alert Notification Modal -->
 <div class="modal-overlay" id="customAlertModal">
     <div class="modal-card alert-modal-card">
-        <div id="alertIconContainer" class="alert-icon-box">🔔</div>
+        <div id="alertIconContainer" class="alert-icon-box"></div>
         <div class="alert-title" id="alertTitle">Notification</div>
         <div class="alert-message" id="alertMessage">Message goes here...</div>
-        <button class="alert-close-btn" onclick="closeCustomAlert()">OK</button>
+        <button class="submit-btn" onclick="closeCustomAlert()">Got it</button>
     </div>
 </div>
 
-<div id="pdf-receipt-wrapper">
-    <div class="pdf-receipt-container" id="pdf-receipt-content">
-        <div class="pdf-header">
-            <div>
-                <h2>CartPrime</h2>
-                <p>Official Order Summary Statement</p>
-            </div>
-            <div style="text-align: right;">
-                <p><b>Date:</b> <span id="pdf-statement-date"></span></p>
-            </div>
-        </div>
-        <div style="background:#f4f4f5; padding:12px; margin-bottom:20px; border-radius:6px;">
-            <p><b>Phone Number:</b> <span id="pdf-cust-phone"></span></p>
-            <p><b>Customer Name:</b> <span id="pdf-cust-name"></span></p>
-        </div>
-        <table class="pdf-table">
-            <thead>
-                <tr>
-                    <th>Order ID</th><th>Date</th><th>Item Description</th><th>Status</th><th>Amount</th>
-                </tr>
-            </thead>
-            <tbody id="pdf-orders-rows"></tbody>
-        </table>
-        <div style="text-align:right; font-weight:bold; font-size:1.1rem;">Total Amount: ₹<span id="pdf-grand-total">0</span></div>
-    </div>
-</div>
-
-<!-- Modern Bottom Navigation Menu with SVG Icons -->
+<!-- Mobile Bottom Sticky Navigation -->
 <nav class="bottom-nav">
-    <div class="bottom-nav-item" onclick="openHistoryModal()">
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-        <span>My Complaints</span>
+    <div class="bottom-nav-item" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-store"></i>
+        <span>Store</span>
     </div>
-    <div class="bottom-nav-item" onclick="toggleChatbot()">
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-        <span>24/7 Chat Support</span>
+    <div class="bottom-nav-item" onclick="openHistoryModal()">
+        <i class="fa-solid fa-clipboard-check"></i>
+        <span>Tickets</span>
+    </div>
+    <div class="bottom-nav-item" onclick="openChatbot()">
+        <i class="fa-solid fa-robot"></i>
+        <span>AI Assistant</span>
     </div>
 </nav>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, get, set, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
@@ -485,19 +987,40 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    let awaitingPhone = false;
-    let awaitingReturnOrderId = false;
-    let awaitingComplaintPhone = false;
-    let currentCustomerPhone = "";
-    let fetchedOrdersList = []; 
-    let selectedOrderForReturn = null;
+    // Audio synthesizer for chat pop sound without external assets
+    function playChatChime() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(659.25, ctx.currentTime); // E5
+            osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08); // A5
+            gain.gain.setValueAtTime(0.06, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.16);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.16);
+        } catch(e) {}
+    }
 
-    window.showCustomAlert = function(title, message, icon = '🔔', isSuccess = false) {
+    window.addEventListener('load', () => {
+        const loader = document.getElementById('page-loader');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 500);
+        }
+        initChatbotGreeting();
+    });
+
+    // Custom Alert Functionality
+    window.showCustomAlert = function(title, message, isSuccess = false) {
         const iconContainer = document.getElementById('alertIconContainer');
         if (isSuccess) {
-            iconContainer.innerHTML = `<div class="success-tick-wrapper"><span class="success-tick">✓</span></div>`;
+            iconContainer.innerHTML = `<div class="success-tick-wrapper"><span class="success-tick"><i class="fa-solid fa-check"></i></span></div>`;
         } else {
-            iconContainer.innerHTML = icon;
+            iconContainer.innerHTML = `<div style="font-size:2.8rem; margin-bottom:12px; color:var(--accent-gold);"><i class="fa-solid fa-circle-exclamation"></i></div>`;
         }
         document.getElementById('alertTitle').innerText = title;
         document.getElementById('alertMessage').innerText = message;
@@ -508,67 +1031,64 @@
         document.getElementById('customAlertModal').classList.remove('active');
     };
 
-    window.addEventListener('load', () => {
-        const loader = document.getElementById('page-loader');
-        loader.style.opacity = '0';
-        setTimeout(() => loader.style.display = 'none', 600);
-    });
-
-    window.openHistoryModal = function() {
-        document.getElementById('complaintHistoryModal').classList.add('active');
+    // Modal Handlers
+    window.openHistoryModal = () => document.getElementById('complaintHistoryModal').classList.add('active');
+    window.closeHistoryModal = () => document.getElementById('complaintHistoryModal').classList.remove('active');
+    
+    window.openReturnModal = (orderId) => {
+        document.getElementById('retOrderId').value = orderId;
+        document.getElementById('returnModal').classList.add('active');
     };
-    window.closeHistoryModal = function() {
-        document.getElementById('complaintHistoryModal').classList.remove('active');
-    };
+    window.closeReturnModal = () => document.getElementById('returnModal').classList.remove('active');
 
-    window.toggleChatbot = function() {
-        document.body.classList.toggle('show-chatbot');
+    window.openChatbot = () => {
+        document.body.classList.add('show-chatbot');
+        document.getElementById('chatInput')?.focus();
     };
 
-    window.closeChatbot = function() {
+    window.closeChatbot = () => {
         document.body.classList.remove('show-chatbot');
-        resetChatbotState();
     };
 
-    function resetChatbotState() {
-        awaitingPhone = false;
-        awaitingReturnOrderId = false;
-        awaitingComplaintPhone = false;
-        currentCustomerPhone = "";
-        const chatbox = document.getElementById('chatbox');
-        chatbox.innerHTML = `
-            <li class="chat incoming">
-                <p>Hi there! 👋 Type "Hi" to explore our luxury support options or ask any question!</p>
-            </li>
-        `;
-        document.getElementById('chatInput').value = "";
-    }
+    window.openChatWithAction = (action) => {
+        openChatbot();
+        if (action === 'track_order') {
+            triggerBotQuery("How can I track my order?");
+        } else if (action === 'return_refund') {
+            triggerBotQuery("How do returns and refunds work?");
+        }
+    };
 
+    // Ticket History Search
     window.fetchModalComplaintHistory = async function() {
         const phone = document.getElementById('modalSearchPhone').value.trim();
         const container = document.getElementById('modalHistoryContainer');
 
         if (!phone) {
-            showCustomAlert("Attention", "Please enter a valid phone number to search!", "⚠️");
+            showCustomAlert("Required", "Please enter your registered mobile number.");
             return;
         }
 
-        container.innerHTML = "<p style='margin-top:15px; color:var(--text-muted);'>Searching Database...</p>";
+        container.innerHTML = `
+            <div style="text-align:center; padding:20px; color:var(--text-muted);">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem; color:var(--accent-gold); margin-bottom:8px;"></i>
+                <p>Searching tickets...</p>
+            </div>
+        `;
 
         try {
-            const snapshot = await get(ref(db, 'complaints'));
+            const snap = await get(ref(db, 'complaints'));
             let complaints = [];
 
-            if (snapshot.exists()) {
-                const data = snapshot.val();
+            if (snap.exists()) {
+                const data = snap.val();
                 Object.keys(data).forEach(key => {
                     const c = data[key];
-                    const itemPhone = String(c.phone || c.userPhone || c.number || c.phoneNumber || '').trim();
-                    if (itemPhone === phone) {
-                        complaints.push({
-                            complaintId: key,
-                            ...c
-                        });
+                    const rawPhone = String(c.phone || c.userPhone || c.mobile || '').replace(/[^0-9]/g, '');
+                    const searchClean = phone.replace(/[^0-9]/g, '');
+                    
+                    if (rawPhone.includes(searchClean) || searchClean.includes(rawPhone)) {
+                        complaints.push({ complaintId: key, ...c });
                     }
                 });
             }
@@ -577,330 +1097,388 @@
                 let html = "";
                 complaints.forEach(c => {
                     const status = c.status || 'Pending';
-                    const statusClass = status.replace(/\s+/g, '');
-                    const messageText = c.message || c.issue || c.complaint || 'No Message';
-                    const dateText = c.date || c.createdAt || 'N/A';
-                    
+                    const isResolved = status.toLowerCase() === 'resolved';
+
                     html += `
                         <div class="history-card">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                <strong>Ticket #${c.complaintId}</strong>
-                                <span class="status-badge status-${statusClass}">${status}</span>
+                                <strong style="color:var(--text-main); font-size:0.9rem;">Ticket #${c.complaintId}</strong>
+                                <span class="status-badge status-${isResolved ? 'Resolved' : 'Pending'}">${status}</span>
                             </div>
-                            <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:6px;"><b>Date:</b> ${dateText}</p>
-                            <p style="font-size:0.88rem; margin-bottom:8px;"><b>Message:</b> ${messageText}</p>
-                            ${c.adminReply ? `<div style="background:var(--card-bg); padding:10px; border-left:3px solid var(--primary-neutral); font-size:0.82rem; margin-top:8px; border-radius:6px;"><b>Reply:</b> ${c.adminReply}</div>` : ''}
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;"><b>Category:</b> ${c.category || 'General'}</p>
+                            <p style="font-size:0.84rem; color:var(--text-main); margin-bottom:6px; line-height:1.4;">${c.message || 'No details provided.'}</p>
+                            ${c.adminReply ? `
+                                <div style="background:#131c2d; padding:10px; border-left:3px solid var(--accent-gold); border-radius:6px; font-size:0.8rem; margin-top:8px;">
+                                    <strong style="color:var(--accent-gold);"><i class="fa-solid fa-reply"></i> Admin Response:</strong>
+                                    <p style="margin-top:2px;">${c.adminReply}</p>
+                                </div>
+                            ` : ''}
+                            <div style="font-size:0.7rem; color:var(--text-dim); margin-top:6px;"><i class="fa-solid fa-clock"></i> ${c.date || 'Recent'}</div>
                         </div>
                     `;
                 });
                 container.innerHTML = html;
             } else {
-                container.innerHTML = `<p style="color:var(--text-muted); margin-top:15px;">No complaints found for <b>${phone}</b></p>`;
+                container.innerHTML = `
+                    <div style="text-align:center; padding:20px; color:var(--text-muted);">
+                        <p>No complaints found for <strong>${phone}</strong></p>
+                    </div>
+                `;
             }
-        } catch (err) {
-            console.error(err);
-            container.innerHTML = "<p style='color:red; margin-top:15px;'>Error fetching status from Database!</p>";
+        } catch(err) {
+            container.innerHTML = `<p style="color:#ef4444; text-align:center;">Could not retrieve complaints.</p>`;
         }
     };
 
-    window.handleChatKeyPress = function(e) {
-        if (e.key === 'Enter') sendMessage();
-    };
-
-    window.sendMessage = function() {
-        const input = document.getElementById('chatInput');
-        const text = input.value.trim();
-        if (!text) return;
-
-        appendUserMessage(text);
-        input.value = '';
-        showTypingDots();
-
-        setTimeout(() => {
-            removeTypingDots();
-            handleBotResponse(text);
-        }, 1200);
-    };
-
-    function appendUserMessage(msg) {
-        const chatbox = document.getElementById('chatbox');
-        const li = document.createElement('li');
-        li.classList.add('chat', 'outgoing');
-        li.innerHTML = `<p>${msg}</p>`;
-        chatbox.appendChild(li);
-        chatbox.scrollTop = chatbox.scrollHeight;
-    }
-
-    function showTypingDots() {
-        const chatbox = document.getElementById('chatbox');
-        const li = document.createElement('li');
-        li.classList.add('chat', 'incoming');
-        li.id = 'bot-typing-dots';
-        li.innerHTML = `<p class="typing-bubble"><span class="glow-dot"></span><span class="glow-dot"></span><span class="glow-dot"></span></p>`;
-        chatbox.appendChild(li);
-        chatbox.scrollTop = chatbox.scrollHeight;
-    }
-
-    function removeTypingDots() {
-        const dots = document.getElementById('bot-typing-dots');
-        if (dots) dots.remove();
-    }
-
-    async function handleBotResponse(userMsg) {
-        const chatbox = document.getElementById('chatbox');
-        const lowerMsg = userMsg.toLowerCase();
-
-        if (awaitingPhone) {
-            awaitingPhone = false;
-            currentCustomerPhone = userMsg.trim();
-            showTypingDots();
-
-            try {
-                const snapshot = await get(ref(db, `orders/${currentCustomerPhone}`));
-                removeTypingDots();
-                const resultLi = document.createElement('li');
-                resultLi.classList.add('chat', 'incoming');
-
-                if (snapshot.exists()) {
-                    fetchedOrdersList = [];
-                    snapshot.forEach((child) => fetchedOrdersList.push({ orderId: child.key, ...child.val() }));
-                    resultLi.innerHTML = `<p>✅ Order receipt is ready to download 👇<button class="submit-btn" style="margin-top:10px; padding:10px;" onclick="generateAllOrdersPDF()">📄 Download PDF Receipt</button></p>`;
-                } else {
-                    resultLi.innerHTML = `<p>❌ No orders found for phone number: <b>${currentCustomerPhone}</b>.</p>`;
-                }
-                chatbox.appendChild(resultLi);
-            } catch (error) {
-                removeTypingDots();
-            }
-            chatbox.scrollTop = chatbox.scrollHeight;
-            return;
-        }
-
-        if (awaitingComplaintPhone) {
-            awaitingComplaintPhone = false;
-            const phoneInput = userMsg.trim();
-            showTypingDots();
-
-            try {
-                const snapshot = await get(ref(db, 'complaints'));
-                removeTypingDots();
-                const resultLi = document.createElement('li');
-                resultLi.classList.add('chat', 'incoming');
-
-                let userComplaints = [];
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    Object.keys(data).forEach(key => {
-                        const c = data[key];
-                        const itemPhone = String(c.phone || c.userPhone || c.number || c.phoneNumber || '').trim();
-                        if (itemPhone === phoneInput) {
-                            userComplaints.push({ complaintId: key, ...c });
-                        }
-                    });
-                }
-
-                if (userComplaints.length > 0) {
-                    let htmlContent = `<b>📋 Your Complaint History:</b><br><br>`;
-                    userComplaints.forEach((c) => {
-                        const status = c.status || 'Pending';
-                        htmlContent += `
-                            <b>ID:</b> #${c.complaintId}<br>
-                            <b>Category:</b> ${c.category || 'General'}<br>
-                            <b>Status:</b> <span style="font-weight:bold;">${status}</span><br>
-                            ${c.adminReply ? `<b>Reply:</b> ${c.adminReply}<br>` : ''}
-                            <hr style="border:0.5px solid var(--border); margin:8px 0;">
-                        `;
-                    });
-                    resultLi.innerHTML = `<p>${htmlContent}</p>`;
-                } else {
-                    resultLi.innerHTML = `<p>❌ No complaints found for phone: <b>${phoneInput}</b></p>`;
-                }
-                chatbox.appendChild(resultLi);
-            } catch (err) {
-                removeTypingDots();
-            }
-            chatbox.scrollTop = chatbox.scrollHeight;
-            return;
-        }
-
-        if (awaitingReturnOrderId) {
-            awaitingReturnOrderId = false;
-            const enteredOrderId = userMsg.trim();
-            showTypingDots();
-
-            try {
-                const snapshot = await get(ref(db, `orders`));
-                removeTypingDots();
-                let foundOrder = null;
-
-                if (snapshot.exists()) {
-                    snapshot.forEach((phoneGroup) => {
-                        phoneGroup.forEach((orderSnap) => {
-                            const val = orderSnap.val();
-                            if ((val.orderId || orderSnap.key).toString().toLowerCase() === enteredOrderId.toLowerCase()) {
-                                foundOrder = { orderId: orderSnap.key, phoneKey: phoneGroup.key, ...val };
-                            }
-                        });
-                    });
-                }
-
-                const resultLi = document.createElement('li');
-                resultLi.classList.add('chat', 'incoming');
-
-                if (foundOrder) {
-                    selectedOrderForReturn = foundOrder;
-                    if ((foundOrder.status || '').toLowerCase() === "delivered") {
-                        resultLi.innerHTML = `<p>📦 Order Found (#${foundOrder.orderId})<br>Status: Delivered<br><br><button class="submit-btn" style="padding:10px;" onclick="openReturnModal('${foundOrder.orderId}')">🔄 Request Return</button></p>`;
-                    } else {
-                        resultLi.innerHTML = `<p>🚫 Return allowed only for delivered orders. Current Status: <b>${foundOrder.status || 'Pending'}</b></p>`;
-                    }
-                } else {
-                    resultLi.innerHTML = `<p>❌ Invalid Order ID!</p>`;
-                }
-                chatbox.appendChild(resultLi);
-            } catch (error) {
-                removeTypingDots();
-            }
-            chatbox.scrollTop = chatbox.scrollHeight;
-            return;
-        }
-
-        if (lowerMsg === 'hi' || lowerMsg === 'hello' || lowerMsg === 'hey') {
-            const li = document.createElement('li');
-            li.classList.add('chat', 'incoming');
-            li.innerHTML = `
-                <p>Hello! How can I assist your luxury experience today?</p>
-                <div class="option-container">
-                    <button class="option-btn" onclick="selectOption('Order Status')">📦 Order Status</button>
-                    <button class="option-btn" onclick="selectOption('Check Complaint Status')">📋 Check Complaint Status</button>
-                    <button class="option-btn" onclick="selectOption('Return & Refund Issue')">🔄 Return & Refund Issue</button>
-                    <button class="option-btn" onclick="selectOption('Other')">❓ Other</button>
-                </div>
-            `;
-            chatbox.appendChild(li);
-        } else {
-            const li = document.createElement('li');
-            li.classList.add('chat', 'incoming');
-            li.innerHTML = `<p>For priority assistance, please mail us at <b>cartprimeshop@gmail.com</b></p>`;
-            chatbox.appendChild(li);
-        }
-        chatbox.scrollTop = chatbox.scrollHeight;
-    }
-
-    window.selectOption = function(optionText) {
-        appendUserMessage(optionText);
-        showTypingDots();
-
-        setTimeout(() => {
-            removeTypingDots();
-            const chatbox = document.getElementById('chatbox');
-            const li = document.createElement('li');
-            li.classList.add('chat', 'incoming');
-
-            if (optionText === 'Order Status') {
-                awaitingPhone = true;
-                li.innerHTML = `<p>Please enter your registered <b>Phone Number</b>:</p>`;
-            } else if (optionText === 'Check Complaint Status') {
-                awaitingComplaintPhone = true;
-                li.innerHTML = `<p>Please enter your <b>Phone Number</b> to check Complaint Status:</p>`;
-            } else if (optionText === 'Return & Refund Issue') {
-                awaitingReturnOrderId = true;
-                li.innerHTML = `<p>Please enter your <b>Order ID</b> to proceed with return:</p>`;
-            } else {
-                li.innerHTML = `<p>How else can we help? Please describe your query.</p>`;
-            }
-
-            chatbox.appendChild(li);
-            chatbox.scrollTop = chatbox.scrollHeight;
-        }, 1000);
-    };
-
+    // Complaint Form Submission
     document.getElementById('complaintForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const submitBtn = document.getElementById('submitBtn');
-        submitBtn.innerText = "Submitting...";
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting Ticket...`;
         submitBtn.disabled = true;
 
         const complaintId = "CMP" + Math.floor(100000 + Math.random() * 900000);
+        const name = document.getElementById('custName').value.trim();
+        const phone = document.getElementById('custPhone').value.trim();
+        const email = document.getElementById('custEmail').value.trim();
+        const orderId = document.getElementById('custOrderId').value.trim();
+        const category = document.getElementById('custCategory').value;
+        const message = document.getElementById('custMessage').value.trim();
+
         const data = {
             complaintId: complaintId,
-            name: document.getElementById('name').value.trim(),
-            phone: document.getElementById('complaintPhone').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            category: document.getElementById('category').value,
-            message: document.getElementById('message').value.trim(),
+            name: name,
+            phone: phone,
+            email: email,
+            orderId: orderId || "N/A",
+            category: category,
+            message: message,
             status: "Pending",
             adminReply: "",
-            date: new Date().toLocaleDateString()
+            date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+            timestamp: new Date().toISOString()
         };
 
         try {
             await set(ref(db, `complaints/${complaintId}`), data);
-            // Triggering the success popup with animated green tick icon
-            showCustomAlert("Complaint Registered", `Your complaint has been submitted successfully!\n\nTicket ID: #${complaintId}`, "✓", true);
+            showCustomAlert("Complaint Submitted!", `Your ticket has been registered successfully.\n\nTicket Reference: #${complaintId}\n\nOur team usually resolves tickets within 24 hours.`, true);
             this.reset();
         } catch (err) {
-            showCustomAlert("Error", "Failed to submit complaint. Please try again later.", "❌", false);
+            showCustomAlert("Submission Error", err.message || "Could not register complaint. Please try again.");
         } finally {
-            submitBtn.innerText = "Submit Complaint";
+            submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Submit Priority Complaint`;
             submitBtn.disabled = false;
         }
     });
 
-    window.openReturnModal = function(id) {
-        document.getElementById('retOrderId').value = id;
-        document.getElementById('returnModal').classList.add('active');
-    };
-    window.closeReturnModal = function() {
-        document.getElementById('returnModal').classList.remove('active');
-    };
-
+    // Return Form Submission
     window.submitReturnRequest = async function(e) {
         e.preventDefault();
-        const orderId = document.getElementById('retOrderId').value;
+        const orderId = document.getElementById('retOrderId').value.trim();
         const phone = document.getElementById('retPhone').value.trim();
+        const upi = document.getElementById('retUpi').value.trim();
+        const reason = document.getElementById('retReason').value;
 
         try {
             await set(ref(db, `return_requests/${orderId}`), {
                 orderId: orderId,
                 phone: phone,
-                email: document.getElementById('retEmail').value.trim(),
-                upiId: document.getElementById('retUpi').value.trim(),
-                reason: document.getElementById('retReason').value.trim(),
-                status: "Pending Admin Approval"
+                upiId: upi,
+                reason: reason,
+                status: "Return Requested",
+                requestedAt: new Date().toISOString()
             });
-            if(selectedOrderForReturn) {
-                await update(ref(db, `orders/${selectedOrderForReturn.phoneKey}/${selectedOrderForReturn.orderId}`), { status: "Return Requested" });
-            }
+
+            // Update order status in orders database as well
+            await update(ref(db, `orders/${phone}/${orderId}`), {
+                status: "Return Requested",
+                refundMethod: "UPI",
+                refundDetails: upi
+            }).catch(() => {});
+
             closeReturnModal();
-            showCustomAlert("Request Sent", "Return request submitted successfully!", "🔄", false);
+            showCustomAlert("Return Request Received", `We have received your return request for Order #${orderId}.\nOur pickup courier will contact you shortly.`, true);
         } catch (err) {
-            showCustomAlert("Error", "Error submitting return request. Please try again.", "❌", false);
+            showCustomAlert("Error", "Could not process return request.");
         }
     };
 
-    window.generateAllOrdersPDF = async function() {
-        if (!fetchedOrdersList.length) {
-            showCustomAlert("No Data", "No orders found to generate PDF receipt!", "📄", false);
+    /* ========================================================
+       REALISTIC HUMAN-LIKE AI CONCIERGE ENGINE
+    ======================================================== */
+    const chatbox = document.getElementById('chatbox');
+
+    function getTimeString() {
+        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function initChatbotGreeting() {
+        const hour = new Date().getHours();
+        let greeting = "Good day";
+        if (hour < 12) greeting = "Good morning";
+        else if (hour < 17) greeting = "Good afternoon";
+        else greeting = "Good evening";
+
+        chatbox.innerHTML = `
+            <li class="chat incoming">
+                <div class="chat-bubble">
+                    ${greeting}! 👋 I'm <strong>PrimeBot</strong>, your personal CartPrime assistant.
+                    <br><br>
+                    How can I assist you with your orders or shopping today?
+                    <div class="chat-pills-row">
+                        <button class="chat-pill" onclick="triggerBotQuery('Track my order')">📦 Track Order</button>
+                        <button class="chat-pill" onclick="triggerBotQuery('How to return an item?')">🔄 Return Policy</button>
+                        <button class="chat-pill" onclick="triggerBotQuery('Check complaint status')">📋 Check Ticket</button>
+                        <button class="chat-pill" onclick="triggerBotQuery('Connect to human agent')">👨‍💼 Talk to Agent</button>
+                    </div>
+                </div>
+                <span class="chat-time">${getTimeString()}</span>
+            </li>
+        `;
+    }
+
+    window.triggerBotQuery = function(text) {
+        document.getElementById('chatInput').value = text;
+        sendChatMessage();
+    };
+
+    window.sendChatMessage = function() {
+        const input = document.getElementById('chatInput');
+        const userText = input.value.trim();
+        if (!userText) return;
+
+        appendMessage(userText, 'outgoing');
+        input.value = '';
+
+        showTypingIndicator();
+
+        // Realistic reading + processing delay
+        const delay = Math.min(2200, Math.max(900, userText.length * 40));
+        setTimeout(async () => {
+            removeTypingIndicator();
+            await processAIResponse(userText);
+            playChatChime();
+        }, delay);
+    };
+
+    function appendMessage(text, sender, isHTML = false) {
+        const li = document.createElement('li');
+        li.classList.add('chat', sender);
+        
+        li.innerHTML = `
+            <div class="chat-bubble">
+                ${isHTML ? text : escapeHTML(text)}
+            </div>
+            <span class="chat-time">${getTimeString()}</span>
+        `;
+        chatbox.appendChild(li);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        const li = document.createElement('li');
+        li.classList.add('chat', 'incoming');
+        li.id = 'bot-typing-indicator';
+        li.innerHTML = `
+            <div class="typing-bubble">
+                <span class="glow-dot"></span>
+                <span class="glow-dot"></span>
+                <span class="glow-dot"></span>
+            </div>
+        `;
+        chatbox.appendChild(li);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+        const el = document.getElementById('bot-typing-indicator');
+        if (el) el.remove();
+    }
+
+    function escapeHTML(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    /* REALISTIC INTENT ENGINE */
+    async function processAIResponse(rawQuery) {
+        const text = rawQuery.toLowerCase();
+        
+        // 1. Phone Number Detection (10-digit number for instant tracking)
+        const phoneMatch = text.match(/\b\d{10}\b/);
+        if (phoneMatch) {
+            await handleOrderTrackingLookup(phoneMatch[0]);
             return;
         }
-        document.getElementById('pdf-statement-date').innerText = new Date().toLocaleDateString();
-        document.getElementById('pdf-cust-phone').innerText = currentCustomerPhone;
-        
-        const rowsContainer = document.getElementById('pdf-orders-rows');
-        rowsContainer.innerHTML = "";
-        let grandTotal = 0;
 
-        fetchedOrdersList.forEach(o => {
-            const price = parseFloat(o.price || o.amount || 0);
-            grandTotal += isNaN(price) ? 0 : price;
-            rowsContainer.innerHTML += `<tr><td>#${o.orderId}</td><td>${o.date || 'N/A'}</td><td>${o.productName || 'Product'}</td><td>${o.status || 'Pending'}</td><td>₹${price}</td></tr>`;
-        });
-        document.getElementById('pdf-grand-total').innerText = grandTotal;
+        // 2. Order ID Detection (e.g. #1024 or Order 1024)
+        const orderMatch = text.match(/(?:order\s*#?|#)(\w{3,10})/i);
+        if (orderMatch && !text.includes('track') && !text.includes('status')) {
+            await handleDirectOrderLookup(orderMatch[1]);
+            return;
+        }
 
-        const opt = { margin: 10, filename: `Order_Receipt_${currentCustomerPhone}.pdf`, html2canvas: { scale: 2 }, jsPDF: { format: 'a4' } };
-        html2pdf().set(opt).from(document.getElementById('pdf-receipt-content')).save();
-    };
+        // 3. Greetings
+        if (/^(hi|hello|hey|halo|namaste|morning|evening|afternoon|yo)\b/.test(text)) {
+            appendMessage(`Hello! Great to have you here. 😊 Are you looking to track an existing order, request a return, or file a complaint?`, 'incoming');
+            return;
+        }
+
+        // 4. Order Tracking Intents
+        if (text.includes('track') || text.includes('where is my order') || text.includes('order status') || text.includes('delivery date') || text.includes('when will it arrive')) {
+            appendMessage(`I'd be glad to track your order! 📦<br><br>Please enter your <strong>10-digit mobile number</strong> used during checkout:`, 'incoming', true);
+            return;
+        }
+
+        // 5. Return & Refund Policy Intents
+        if (text.includes('return') || text.includes('refund') || text.includes('exchange') || text.includes('replace') || text.includes('money back')) {
+            appendMessage(`
+                <strong>CartPrime 7-Day Hassle-Free Return Policy:</strong> 🔄
+                <br><br>
+                • You can return eligible items within <strong>7 days</strong> of delivery.
+                • Refunds are credited directly via <strong>UPI (GPay / PhonePe / Paytm)</strong> within 24-48 hours after courier pickup.
+                <br><br>
+                To request a return now, enter your <strong>Order ID</strong> or click below:
+                <div class="chat-pills-row">
+                    <button class="chat-pill" onclick="openChatWithAction('track_order')">Find My Order ID</button>
+                    <button class="chat-pill" onclick="document.getElementById('complaintSection').scrollIntoView({behavior:'smooth'})">File Return Query</button>
+                </div>
+            `, 'incoming', true);
+            return;
+        }
+
+        // 6. Cancellation Intents
+        if (text.includes('cancel') || text.includes('stop order')) {
+            appendMessage(`
+                Orders can be cancelled anytime before dispatch! 🚫
+                <br><br>
+                Go to the <strong>My Orders</strong> page while the status is <em>Pending</em> or <em>Confirmed</em> to cancel immediately. If already shipped, you can simply decline delivery upon arrival.
+            `, 'incoming', true);
+            return;
+        }
+
+        // 7. Payment / COD Inquiries
+        if (text.includes('cod') || text.includes('cash on delivery') || text.includes('payment method') || text.includes('paytm') || text.includes('gpay')) {
+            appendMessage(`
+                We support <strong>Cash On Delivery (COD)</strong> as well as 100% Secure Instant Payments via <strong>UPI, PhonePe, Google Pay, Cards & NetBanking</strong>. 💳
+            `, 'incoming', true);
+            return;
+        }
+
+        // 8. Damaged / Defective Product
+        if (text.includes('damaged') || text.includes('broken') || text.includes('wrong item') || text.includes('defect') || text.includes('fake')) {
+            appendMessage(`
+                We are deeply sorry to hear that! 😟 Customer satisfaction is our top priority.
+                <br><br>
+                Please register a quick complaint using the form on this page so our escalation team can dispatch an immediate replacement or full refund.
+                <div class="chat-pills-row">
+                    <button class="chat-pill" onclick="document.getElementById('complaintSection').scrollIntoView({behavior:'smooth'})">📝 Fill Complaint Form</button>
+                </div>
+            `, 'incoming', true);
+            return;
+        }
+
+        // 9. Complaint / Ticket Status
+        if (text.includes('ticket') || text.includes('complaint status') || text.includes('check complaint')) {
+            appendMessage(`
+                You can inspect the live status of all filed tickets instantly.
+                <div class="chat-pills-row">
+                    <button class="chat-pill" onclick="openHistoryModal()">📋 Open Ticket Lookup</button>
+                </div>
+            `, 'incoming', true);
+            return;
+        }
+
+        // 10. Human Agent / Call / WhatsApp Handover
+        if (text.includes('agent') || text.includes('human') || text.includes('call') || text.includes('customer care') || text.includes('whatsapp') || text.includes('contact number')) {
+            appendMessage(`
+                Our human support specialists are on standby! 👨‍💼
+                <br><br>
+                • <strong>WhatsApp Direct Chat:</strong> <a href="https://wa.me/9173569778?text=Hello%20CartPrime%20Support" target="_blank" style="color:var(--accent-gold); font-weight:bold;">Click here to Chat</a>
+                <br>
+                • <strong>Email:</strong> cartprimeshop@gmail.com
+                <br>
+                • <strong>Hours:</strong> Mon - Fri (5:00 PM - 12:00 AM)
+            `, 'incoming', true);
+            return;
+        }
+
+        // 11. Polite Conversational & Malayalam/Manglish Friendly Replies
+        if (text.includes('thank') || text.includes('thanks') || text.includes('nandi') || text.includes('shukriya')) {
+            appendMessage(`You're very welcome! Always happy to assist. Have a wonderful day shopping with CartPrime! ✨`, 'incoming');
+            return;
+        }
+
+        if (text.includes('evide') || text.includes('eppo kittum') || text.includes('enthayi')) {
+            appendMessage(`നിങ്ങളുടെ ഓർഡർ ട്രാക്ക് ചെയ്യാനായി ദയവായി <strong>10 അക്ക ഫോൺ നമ്പർ</strong> ഇവിടെ ടൈപ്പ് ചെയ്യുക. 👇`, 'incoming', true);
+            return;
+        }
+
+        // Default Intelligent Fallback
+        appendMessage(`
+            I understand. To help you with that, could you provide your <strong>10-digit mobile number</strong> or select an option below?
+            <div class="chat-pills-row">
+                <button class="chat-pill" onclick="triggerBotQuery('Track my order')">📦 Track Orders</button>
+                <button class="chat-pill" onclick="triggerBotQuery('Return & Refund')">🔄 Return Issue</button>
+                <button class="chat-pill" onclick="triggerBotQuery('Connect to human agent')">👨‍💼 WhatsApp Agent</button>
+            </div>
+        `, 'incoming', true);
+    }
+
+    // Interactive In-Chat Order Fetcher
+    async function handleOrderTrackingLookup(phoneNumber) {
+        showTypingIndicator();
+        try {
+            const snap = await get(ref(db, `orders/${phoneNumber}`));
+            removeTypingIndicator();
+
+            if (!snap.exists()) {
+                appendMessage(`❌ No orders found for mobile number <strong>${phoneNumber}</strong>. Please ensure this was the number used during checkout.`, 'incoming', true);
+                return;
+            }
+
+            let orders = [];
+            snap.forEach(child => {
+                orders.push({ id: child.key, ...child.val() });
+            });
+
+            let responseHTML = `Found <strong>${orders.length}</strong> order(s) for <strong>${phoneNumber}</strong>:`;
+
+            orders.slice(0, 3).forEach(o => {
+                const status = o.status || 'Pending';
+                const statusColor = status.toLowerCase() === 'delivered' ? '#10b981' : (status.toLowerCase() === 'shipped' ? '#38bdf8' : '#f59e0b');
+                const title = o.productName || (o.items && o.items[0] ? o.items[0].name : 'CartPrime Order');
+                const img = o.productImage || (o.items && o.items[0] ? o.items[0].image : 'https://via.placeholder.com/150');
+                const isDelivered = status.toLowerCase() === 'delivered';
+
+                responseHTML += `
+                    <div class="chat-order-card">
+                        <div class="chat-order-top">
+                            <span>#ID: ${o.id}</span>
+                            <span style="color:${statusColor}; font-weight:800; text-transform:uppercase;">${status}</span>
+                        </div>
+                        <div class="chat-order-body">
+                            <img src="${img}" onerror="this.src='https://via.placeholder.com/150'">
+                            <div style="flex:1;">
+                                <div style="font-weight:700; font-size:0.82rem; color:#fff;">${title.substring(0, 32)}...</div>
+                                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">₹${o.price || 0} • Expected: ${o.deliveryDate || 'Soon'}</div>
+                            </div>
+                        </div>
+                        ${isDelivered ? `
+                            <button class="chat-pill" style="margin-top:8px; width:100%; text-align:center;" onclick="openReturnModal('${o.id}')">
+                                🔄 Request Return on this Order
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            appendMessage(responseHTML, 'incoming', true);
+
+        } catch (e) {
+            removeTypingIndicator();
+            appendMessage(`Sorry, an error occurred while searching for orders. Please try again in a moment.`, 'incoming');
+        }
+    }
 </script>
 
 </body>
