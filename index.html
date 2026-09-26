@@ -1487,12 +1487,7 @@ nav {
           }
         }
 
-        // B. Fallback / Universal Check
-        if (!isOtpValid) {
-          if (otpVal === "123456" || otpVal === generatedFallbackOtp || otpVal === "999999") {
-            isOtpValid = true;
-          }
-        }
+        
 
         if (!isOtpValid) {
           verifyLoadingBox.style.display = 'none';
