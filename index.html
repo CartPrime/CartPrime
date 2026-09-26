@@ -252,29 +252,6 @@ nav {
   text-decoration: none;
 }
 
-/* 1-Click WhatsApp OTP Alternate Button */
-.whatsapp-otp-pill {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(37, 211, 102, 0.3);
-  background: rgba(37, 211, 102, 0.08);
-  color: #15803d;
-  font-size: 0.82rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.whatsapp-otp-pill:hover {
-  background: rgba(37, 211, 102, 0.16);
-  border-color: #25D366;
-}
-
 /* Trust Perks Box */
 .welcome-benefits {
   display: flex; flex-direction: column; gap: 8px; margin: 16px 0; background: var(--surface); padding: 12px 14px;
@@ -396,11 +373,6 @@ nav {
 .toast-icon-wrap.error { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
 .custom-toast-card h4 { font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 0; }
 .custom-toast-card p { font-size: 0.88rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
-.otp-highlight-box {
-  display: none; align-items: center; justify-content: center; gap: 10px; background: var(--accent-soft);
-  border: 1.5px dashed var(--accent); border-radius: 14px; padding: 12px 20px; margin: 2px 0 4px 0;
-}
-.otp-highlight-box span { font-size: 1.9rem; font-weight: 800; letter-spacing: 8px; color: #d97706; font-family: 'Plus Jakarta Sans', sans-serif; }
 .toast-close-btn {
   width: 100%; padding: 12px; background: var(--primary); color: var(--bg); border: none; border-radius: 12px;
   font-weight: 700; font-size: 0.9rem; cursor: pointer; margin-top: 8px; transition: all 0.2s ease;
@@ -408,6 +380,23 @@ nav {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } } 
+
+/* In-page fallback "system notification" banner (used when native Notification isn't available/permitted) */
+.otp-inpage-notif {
+  position: fixed; top: 14px; right: 14px; z-index: 30000; max-width: 320px; width: calc(100% - 28px);
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  padding: 14px; display: flex; gap: 12px; align-items: flex-start; transform: translateY(-20px); opacity: 0;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;
+}
+.otp-inpage-notif.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.otp-inpage-notif .n-icon {
+  width: 36px; height: 36px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+}
+.otp-inpage-notif .n-body { flex: 1; }
+.otp-inpage-notif .n-title { font-size: 0.82rem; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
+.otp-inpage-notif .n-msg { font-size: 0.76rem; color: var(--text-muted); line-height: 1.35; }
+.otp-inpage-notif .n-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; padding: 2px; }
 
 /* Product Card Styling */
 .card { 
@@ -531,6 +520,24 @@ nav {
   .cookie-banner { left: 10px; right: 10px; bottom: 75px; padding: 14px; width: auto; max-width: 100%; } 
   .cookie-actions { width: 100%; } 
   .cookie-btn { width: 100%; min-height: 40px; } 
+
+  /* --- Login / OTP modal: phone-friendly layout --- */
+  .modal-card { padding: 18px; border-radius: 20px; max-width: 100%; }
+  .login-header-zone { margin-bottom: 12px; }
+  .login-shield-badge { width: 40px; height: 40px; font-size: 1.15rem; border-radius: 12px; }
+  .ssl-security-pill { font-size: 0.62rem; padding: 3px 8px; }
+  #welcomeModalTitle { font-size: 1.08rem !important; }
+  #welcomeModalSub { font-size: 0.75rem !important; }
+  .welcome-benefits { padding: 10px 12px; gap: 6px; }
+  .welcome-benefit-item { font-size: 0.74rem; gap: 8px; }
+  .trust-phone-wrap { border-radius: 12px; }
+  .country-prefix { padding: 10px 10px; font-size: 0.85rem; }
+  .country-prefix img { width: 16px; height: 11px; }
+  .trust-phone-input { padding: 11px 10px; font-size: 0.9rem; }
+  .otp-secure-field { font-size: 1.3rem; letter-spacing: 8px; padding: 12px; }
+  .otp-sub-bar { flex-wrap: wrap; gap: 6px; font-size: 0.72rem; }
+  .modal-btn-submit { font-size: 0.88rem; padding: 12px; }
+  .otp-inpage-notif { top: 10px; right: 10px; left: 10px; max-width: none; width: auto; }
 } 
 </style> 
 
@@ -563,6 +570,16 @@ nav {
 
 <!-- Hidden Container for Firebase reCAPTCHA Invisible Verification -->
 <div id="recaptcha-container"></div>
+
+<!-- In-page fallback "system notification" banner for OTP (used when native browser Notification is unavailable/blocked) -->
+<div id="otpInPageNotif" class="otp-inpage-notif">
+  <div class="n-icon"><i class="fa-solid fa-shield-halved"></i></div>
+  <div class="n-body">
+    <div class="n-title" id="otpInPageNotifTitle">CartPrime</div>
+    <div class="n-msg" id="otpInPageNotifMsg"></div>
+  </div>
+  <button type="button" class="n-close" id="otpInPageNotifClose"><i class="fa-solid fa-xmark"></i></button>
+</div>
 
 <nav> 
   <div id="navLogo" class="logo"><i class="fa-solid fa-cart-shopping"></i><div>CART<span>PRIME</span></div></div> 
@@ -652,11 +669,6 @@ nav {
           <span>Resend code in: <span id="otpTimerDisplay" class="otp-timer-count">00:30</span></span>
           <button type="button" id="resendOtpBtn" class="btn-resend-link" disabled>Resend SMS</button>
         </div>
-
-        <!-- Alternate Free WhatsApp Verification Option -->
-        <button type="button" id="whatsappOtpBtn" class="whatsapp-otp-pill">
-          <i class="fa-brands fa-whatsapp fa-lg"></i> Get OTP via WhatsApp (Free)
-        </button>
       </div>
 
       <!-- Step 3: New User Name Setup -->
@@ -864,7 +876,6 @@ nav {
     </div>
     <h4 id="toastTitle">Success</h4>
     <p id="toastMessage">Your request has been submitted.</p>
-    <div id="toastOtpBox" class="otp-highlight-box"><span id="toastOtpText"></span></div>
     <button id="toastCloseBtn" class="toast-close-btn">Continue</button>
   </div>
 </div>
@@ -914,7 +925,9 @@ nav {
   // ⚙️ FREE OTP PLATFORM INTEGRATION SYSTEM
   // ========================================================
   // 1. Google Firebase Phone Auth provides 10,000 FREE SMS/month.
-  // 2. WhatsApp Direct Free Gateway allows 1-click fallback OTP.
+  // 2. OTP is delivered as a real device/system Notification (falls back
+  //    to an in-page banner + the bell icon if Notification permission
+  //    isn't available).
   // ========================================================
 
   let confirmationResult = null; // Holds Firebase Phone Auth confirmation session
@@ -964,6 +977,62 @@ nav {
     }, 1000);
   }
 
+  // --- OTP delivery as a system-style notification ---
+  // Tries the real browser Notification API first (like an OS push notification).
+  // If permission isn't granted, falls back to an in-page slide-in banner
+  // and always mirrors the message into the bell icon's notification list.
+  function deliverOtpAsNotification(phoneNumber, otpCode) {
+    const title = "CartPrime Security Code";
+    const body = `Your OTP for +91 ${phoneNumber} is ${otpCode}. Valid for 5 minutes.`;
+
+    let shown = false;
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        new Notification(title, {
+          body: body,
+          icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
+        });
+        shown = true;
+      } catch (err) {
+        console.warn("Native notification dispatch note:", err);
+      }
+    }
+
+    if (!shown) {
+      showInPageNotifBanner(title, body);
+    }
+
+    addLocalNotification(title, body, 'fa-shield-halved');
+  }
+
+  let inPageNotifTimeout = null;
+  function showInPageNotifBanner(title, message) {
+    const banner = document.getElementById('otpInPageNotif');
+    const titleEl = document.getElementById('otpInPageNotifTitle');
+    const msgEl = document.getElementById('otpInPageNotifMsg');
+    if (!banner || !titleEl || !msgEl) return;
+
+    titleEl.textContent = title;
+    msgEl.textContent = message;
+    banner.classList.add('show');
+
+    clearTimeout(inPageNotifTimeout);
+    inPageNotifTimeout = setTimeout(() => {
+      banner.classList.remove('show');
+    }, 6000);
+  }
+
+  (function initInPageNotifClose() {
+    const closeBtn = document.getElementById('otpInPageNotifClose');
+    const banner = document.getElementById('otpInPageNotif');
+    if (closeBtn && banner) {
+      closeBtn.addEventListener('click', () => {
+        clearTimeout(inPageNotifTimeout);
+        banner.classList.remove('show');
+      });
+    }
+  })();
+
   // Core Free OTP Sender Function
   async function sendFreeOtpPlatform(phoneNumber) {
     const fullIndianPhone = "+91" + phoneNumber;
@@ -981,31 +1050,14 @@ nav {
       console.warn("Firebase SMS gateway standby/quota note, activating Smart Free Gateway fallback:", fbError);
     }
 
-    // 2. Instant Free Fallback Dispatcher
+    // 2. Instant Free Fallback Dispatcher — delivered as a notification, not an on-screen popup
     generatedFallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
     console.log(`[CartPrime Free Security Gateway] Generated OTP: ${generatedFallbackOtp} for ${phoneNumber}`);
 
-    // Show on-screen notification modal
-    showCustomAlert("Secure OTP Generated", `Sent to +91 ${phoneNumber}. Enter code to verify.`, true, generatedFallbackOtp);
-
-    // Add to Notification Bell as well
-    addLocalNotification("CartPrime Security Code", `Your 6-digit login verification OTP is ${generatedFallbackOtp}. Valid for 5 minutes.`, 'fa-shield-halved');
+    deliverOtpAsNotification(phoneNumber, generatedFallbackOtp);
+    showCustomAlert("OTP Sent", `A 6-digit code has been sent to your notifications for +91 ${phoneNumber}.`, true);
 
     return true;
-  }
-
-  // WhatsApp Free OTP Instant Opener
-  function sendOtpViaWhatsApp(phone) {
-    if (!generatedFallbackOtp) {
-      generatedFallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    }
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
-    const waText = encodeURIComponent(`*CartPrime Security Verification*\n\nYour 6-Digit OTP is: *${generatedFallbackOtp}*\n\nPlease enter this on CartPrime to verify your account.`);
-    
-    // Opens WhatsApp to deliver code
-    window.open(`https://api.whatsapp.com/send?phone=91${cleanPhone}&text=${waText}`, '_blank');
-    
-    showCustomAlert("WhatsApp OTP Dispatched", `Your OTP is ${generatedFallbackOtp}. You can also check WhatsApp.`, true, generatedFallbackOtp);
   }
 
   // Generates a unique token to enforce single-device active session per phone number
@@ -1086,7 +1138,6 @@ nav {
   const nameInputGroup = document.getElementById('nameInputGroup');
   const changePhoneBtn = document.getElementById('changePhoneBtn');
   const resendOtpBtn = document.getElementById('resendOtpBtn');
-  const whatsappOtpBtn = document.getElementById('whatsappOtpBtn');
 
   /* --- Notification Panel Modal Logic --- */
   const notifBtn = document.getElementById('notifBtn');
@@ -1296,13 +1347,6 @@ nav {
     });
   }
 
-  if (whatsappOtpBtn) {
-    whatsappOtpBtn.addEventListener('click', () => {
-      if (!pendingPhone) return;
-      sendOtpViaWhatsApp(pendingPhone);
-    });
-  }
-
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       const currentPhone = localStorage.getItem('userPhone');
@@ -1446,7 +1490,7 @@ nav {
         if (!isOtpValid) {
           verifyLoadingBox.style.display = 'none';
           welcomeForm.style.display = 'flex';
-          showCustomAlert("Incorrect OTP", "The code you entered is invalid or has expired. Please check your SMS or WhatsApp.", false);
+          showCustomAlert("Incorrect OTP", "The code you entered is invalid or has expired. Please check your notifications.", false);
           return;
         }
 
@@ -1546,25 +1590,15 @@ nav {
     });
   }
 
-  function showCustomAlert(title, message, isSuccess = true, highlightCode = "") {
+  function showCustomAlert(title, message, isSuccess = true) {
     const toastModal = document.getElementById('customToast');
     const toastTitle = document.getElementById('toastTitle');
     const toastMessage = document.getElementById('toastMessage');
     const toastIcon = document.getElementById('toastIcon');
     const toastCloseBtn = document.getElementById('toastCloseBtn');
-    const toastOtpBox = document.getElementById('toastOtpBox');
-    const toastOtpText = document.getElementById('toastOtpText');
 
     toastTitle.textContent = title;
     toastMessage.textContent = message;
-
-    if (highlightCode) {
-      toastOtpText.textContent = highlightCode;
-      toastOtpBox.style.display = 'flex';
-    } else {
-      toastOtpText.textContent = '';
-      toastOtpBox.style.display = 'none';
-    }
 
     if (isSuccess) {
       toastIcon.className = 'toast-icon-wrap success';
