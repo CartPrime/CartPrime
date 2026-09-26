@@ -542,53 +542,6 @@
         .form-row { display: flex; gap: 14px; flex-wrap: wrap; }
         .form-row > * { flex: 1 1 200px; }
 
-        .auto-fill-box { 
-            display: flex; 
-            gap: 12px; 
-            margin-bottom: 20px; 
-            background: #f8fafc; 
-            padding: 18px; 
-            border-radius: var(--radius-md); 
-            border: 1px dashed #cbd5e1; 
-            flex-wrap: wrap; 
-            align-items: center; 
-        }
-        .auto-fill-box textarea { flex: 1 1 280px; margin: 0; background: white; resize: vertical; }
-        .auto-fill-box button { 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            padding: 13px 22px; 
-            border-radius: var(--radius-md); 
-            font-weight: 700; 
-            cursor: pointer; 
-            white-space: nowrap; 
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .auto-fill-box button:hover { background: #1e293b; }
-
-        .img-input-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
-        .img-input-row input[type="text"] { margin: 0; flex: 1; }
-        .btn-upload-inline { 
-            background: #2563eb; 
-            color: white; 
-            border: none; 
-            padding: 12px 18px; 
-            border-radius: var(--radius-md); 
-            font-weight: 700; 
-            font-size: 13px; 
-            cursor: pointer; 
-            white-space: nowrap; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            transition: 0.2s;
-        }
-        .btn-upload-inline:hover { background: #1d4ed8; }
-
         .search-box { position: relative; margin-bottom: 16px; width: 100%; }
         .search-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
         .search-box input { padding-left: 44px; margin: 0; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); }
@@ -706,222 +659,6 @@
         .address-box { background: #fff; border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-top: 6px; font-size: 12px; color: var(--text-main); }
         .btn-copy-address { background: var(--primary); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 5px; }
 
-        /* ========================================================
-           WHATSAPP & AISENSY OFFERS MARKETING HUB STYLES
-        ======================================================== */
-        .aisensy-status-card {
-            background: linear-gradient(135deg, #4f46e5, #4338ca);
-            color: #ffffff;
-            padding: 18px 22px;
-            border-radius: var(--radius-lg);
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            flex-wrap: wrap;
-            box-shadow: 0 4px 18px rgba(79, 70, 229, 0.25);
-        }
-        .aisensy-status-info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .aisensy-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .whatsapp-hub-grid {
-            display: grid;
-            grid-template-columns: 1.25fr 0.75fr;
-            gap: 24px;
-        }
-        @media (max-width: 1024px) {
-            .whatsapp-hub-grid { grid-template-columns: 1fr; }
-        }
-
-        .template-pills {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            margin-bottom: 16px;
-        }
-        .template-pill {
-            background: #f1f5f9;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 8px 14px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            cursor: pointer;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-        .template-pill:hover, .template-pill.active {
-            background: #25D366;
-            color: #ffffff;
-            border-color: #25D366;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
-        }
-
-        /* Simulated Mobile WhatsApp Preview */
-        .wa-preview-mockup {
-            background: #0b141a;
-            border-radius: 28px;
-            border: 8px solid #1e293b;
-            box-shadow: var(--shadow-lg);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            max-width: 380px;
-            margin: 0 auto;
-            height: 560px;
-        }
-        .wa-mockup-header {
-            background: #1f2c34;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: #e9edef;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .wa-mockup-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .wa-mockup-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #25D366;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 16px;
-        }
-        .wa-mockup-body {
-            flex: 1;
-            background: #0b141a url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            padding: 16px 12px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .wa-bubble {
-            background: #005c4b;
-            color: #e9edef;
-            border-radius: 12px 12px 2px 12px;
-            padding: 10px 14px;
-            font-size: 13px;
-            line-height: 1.45;
-            max-width: 90%;
-            align-self: flex-end;
-            position: relative;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-        .wa-bubble-time {
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 4px;
-            margin-top: 4px;
-        }
-        .wa-bubble-time i { color: #53bdeb; }
-        .wa-mockup-footer {
-            background: #1f2c34;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .wa-mockup-input {
-            flex: 1;
-            background: #2a3942;
-            border-radius: 20px;
-            padding: 8px 14px;
-            font-size: 12px;
-            color: #8696a0;
-        }
-
-        .btn-aisensy-send {
-            background: linear-gradient(135deg, #4f46e5, #3730a3);
-            color: #ffffff;
-            border: none;
-            padding: 14px 20px;
-            border-radius: var(--radius-md);
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
-        }
-        .btn-aisensy-send:hover {
-            background: linear-gradient(135deg, #4338ca, #312e81);
-            transform: translateY(-1px);
-        }
-
-        .btn-wa-action {
-            background: #22c55e;
-            color: #ffffff;
-            border: none;
-            padding: 14px 20px;
-            border-radius: var(--radius-md);
-            font-size: 13.5px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-        .btn-wa-action:hover {
-            background: #16a34a;
-        }
-
-        .btn-copy-wa {
-            background: #0f172a;
-            color: #ffffff;
-            border: none;
-            padding: 14px 20px;
-            border-radius: var(--radius-md);
-            font-size: 13.5px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-        .btn-copy-wa:hover { background: #1e293b; }
-
         /* Direct Buttons in Tables */
         .btn-table-aisensy {
             background: #e0e7ff;
@@ -962,6 +699,52 @@
             background: #25D366;
             color: #ffffff;
             border-color: #25D366;
+        }
+
+        .btn-table-call {
+            background: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 11.5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .btn-table-call:hover {
+            background: #e2e8f0;
+        }
+
+        /* Support Filter Pills */
+        .complaint-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .complaint-filter-pill {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .complaint-filter-pill.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
         }
 
         /* --- Toast Notification --- */
@@ -1146,6 +929,7 @@
             </button>
             <button onclick="openTab('complaints', this)" class="sidebar-btn" id="side-complaints">
                 <div class="sidebar-btn-content"><i class="fa-solid fa-headset"></i> <span>Support Desk</span></div>
+                <span class="sidebar-badge" id="complaintsNavBadge" style="display:none;">0</span>
             </button>
         </nav>
 
@@ -1319,7 +1103,6 @@
                 </div>
 
                 <div class="whatsapp-hub-grid">
-                    
                     <!-- Composer Left Card -->
                     <div class="admin-card">
                         <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 12px; color: var(--primary);">
@@ -1361,11 +1144,9 @@
                         <textarea id="waMessageText" rows="7" oninput="updateWAPreview()"></textarea>
 
                         <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
-                            <!-- Automatic Direct Send (No personal phone number visible!) -->
                             <button onclick="sendViaAiSensyAuto()" class="btn-aisensy-send" style="flex:1 1 240px;">
                                 <i class="fa-solid fa-bolt"></i> Send Auto via AiSensy (Hidden Number)
                             </button>
-                            <!-- Manual Fallback to open in WhatsApp Web / App -->
                             <button onclick="sendToWhatsAppDirect()" class="btn-wa-action" title="Open in Personal WhatsApp as backup">
                                 <i class="fa-brands fa-whatsapp"></i> Open in WhatsApp
                             </button>
@@ -1413,7 +1194,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -1714,18 +1494,36 @@
                 </div>
             </div>
 
-            <!-- TAB 9: COMPLAINTS & SUPPORT -->
+            <!-- TAB 9: COMPLAINTS & SUPPORT (UPGRADED CUSTOMER DESK) -->
             <div id="complaints" class="tab-content">
                 <div class="section-header">
                     <div>
                         <h2 class="tab-title"><i class="fa-solid fa-headset"></i> Customer Support Desk</h2>
-                        <p class="tab-subtitle">Review queries, order complaints and resolve tickets</p>
+                        <p class="tab-subtitle">Review queries, resolve customer tickets and connect via WhatsApp/Call</p>
                     </div>
                 </div>
 
                 <div class="admin-card">
+                    <!-- Search & Filter Controls -->
+                    <div class="search-box">
+                        <i class="fa fa-search"></i>
+                        <input type="text" id="searchComplaintInput" placeholder="Search by customer name, phone, ticket ID, order ID or issue keywords..." onkeyup="filterComplaints()">
+                    </div>
+
+                    <div class="complaint-filters">
+                        <div class="complaint-filter-pill active" onclick="setComplaintFilter('ALL', this)">
+                            <i class="fa-solid fa-list-check"></i> All Tickets (<span id="count-all-complaints">0</span>)
+                        </div>
+                        <div class="complaint-filter-pill" onclick="setComplaintFilter('PENDING', this)">
+                            <i class="fa-solid fa-clock"></i> Pending (<span id="count-pending-complaints">0</span>)
+                        </div>
+                        <div class="complaint-filter-pill" onclick="setComplaintFilter('RESOLVED', this)">
+                            <i class="fa-solid fa-check-circle"></i> Resolved (<span id="count-resolved-complaints">0</span>)
+                        </div>
+                    </div>
+
                     <div id="complaintsListContainer" style="display: flex; flex-direction: column; gap: 14px;">
-                        <p style="color: var(--text-muted); font-weight: 600;">Loading complaints...</p>
+                        <p style="color: var(--text-muted); font-weight: 600;">Connecting to support desk...</p>
                     </div>
                 </div>
             </div>
@@ -2255,7 +2053,7 @@ window.saveBanner = () => {
 
 window.viewProof = (imgUrl) => {
     if(!imgUrl) return Swal.fire('No Proof', 'Customer did not upload a screenshot.', 'info');
-    Swal.fire({ imageUrl: imgUrl, imageAlt: 'Payment Proof', title: 'Payment Screenshot', confirmButtonColor: '#000' });
+    Swal.fire({ imageUrl: imgUrl, imageAlt: 'Proof Image', title: 'Attached Proof / Image', confirmButtonColor: '#000' });
 };
 
 function updateOrdersChart(statusData) {
@@ -2318,7 +2116,7 @@ function updateEarningsChart(dailyEarningsMap) {
 ======================================================== */
 function cleanPhoneNumberWithCountryCode(phone) {
     if (!phone) return "";
-    let clean = phone.replace(/[^0-9]/g, '');
+    let clean = String(phone).replace(/[^0-9]/g, '');
     if (clean.length === 10) clean = "91" + clean;
     return clean;
 }
@@ -2345,7 +2143,6 @@ window.callAiSensyApi = async (destination, userName, campaignName, templatePara
         };
     }
 
-    // Call AiSensy v2 API Endpoint
     const res = await fetch("https://backend.aisensy.com/campaign/t1/api/v2", {
         method: "POST",
         headers: {
@@ -2375,7 +2172,6 @@ window.sendViaAiSensyAuto = async () => {
         return;
     }
 
-    // Prepare template params: [Name, Offer, Product Name/Price, Store Link]
     const templateParams = [
         name,
         coupon,
@@ -2401,7 +2197,6 @@ window.sendViaAiSensyAuto = async () => {
                 confirmButtonColor: '#4f46e5'
             });
         } else {
-            // If campaign is not live or requires template check
             let errMsg = result.data.message || result.data.error || 'Failed to dispatch via AiSensy.';
             Swal.fire({
                 icon: 'warning',
@@ -2422,7 +2217,6 @@ window.sendViaAiSensyAuto = async () => {
     }
 };
 
-/* Quick Single-Click Send from Users List */
 window.sendAiSensyToUserDirect = async (userName, userPhone) => {
     let campaignName = getActiveCampaignName();
     let coupon = document.getElementById('waCouponCode')?.value || 'PRIME30';
@@ -2456,7 +2250,6 @@ window.sendAiSensyToUserDirect = async (userName, userPhone) => {
     }
 };
 
-/* Bulk Broadcast to All Registered Users */
 window.broadcastOfferToAllUsers = async () => {
     if (!globalUsersList || globalUsersList.length === 0) {
         Swal.fire('No Users', 'No registered users found to broadcast.', 'info');
@@ -2499,7 +2292,6 @@ window.broadcastOfferToAllUsers = async () => {
             failCount++;
         }
 
-        // Small interval to respect rate limits
         await new Promise(r => setTimeout(r, 400));
     }
 
@@ -2511,9 +2303,7 @@ window.broadcastOfferToAllUsers = async () => {
     });
 };
 
-/* ========================================================
-   TEMPLATE TEXT & PREVIEW ENGINE
-======================================================== */
+/* TEMPLATE TEXT & PREVIEW ENGINE */
 const waTemplates = {
     flash_sale: (name, prod, coupon) => 
 `🔥 *CARTPRIME FLASH SALE ALERT!* 🔥
@@ -2662,7 +2452,6 @@ window.copyWAMessage = () => {
     });
 };
 
-/* Quick prefill from user table to composer */
 window.quickSendOfferToUser = (userName, userPhone) => {
     openTab('whatsappMarketing');
     const nameField = document.getElementById('waRecipientName');
@@ -3264,7 +3053,7 @@ onValue(ref(db, 'payout_requests'), snap => {
                     <button style="background:#ef4444; color:#fff; border:none; padding:7px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="window.updatePayoutStatus('${reqPathKey}', 'Unpaid')">
                         <i class="fa fa-times"></i> Unpaid
                     </button>
-                    <button style="background:#333; color:#fff; border:none; padding:7px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="deleteItem('payoutRequests/${reqPathKey}')" title="Delete">
+                    <button style="background:#333; color:#fff; border:none; padding:7px 10px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;" onclick="deleteItem('payout_requests/${reqPathKey}')" title="Delete">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
@@ -3720,7 +3509,15 @@ window.addImageField = () => {
 
 window.deleteItem = (p) => {
     Swal.fire({ title: 'Delete Item?', text: "This action cannot be undone!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' })
-    .then((res) => { if (res.isConfirmed) { remove(ref(db, p)); Swal.close(); } });
+    .then((res) => { 
+        if (res.isConfirmed) { 
+            remove(ref(db, p))
+            .then(() => {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Item deleted!', showConfirmButton: false, timer: 1500 });
+            })
+            .catch(err => Swal.fire('Error', err.message, 'error'));
+        } 
+    });
 };
 
 onValue(ref(db, 'users'), snap => {
@@ -3765,99 +3562,295 @@ onValue(ref(db, 'users'), snap => {
     if (totalUsersStat) totalUsersStat.innerText = totalUsersCount.toLocaleString();
 });
 
-onValue(ref(db, 'userComplaints'), snap => {
-    const container = document.getElementById('complaintsListContainer');
-    if (!container) return;
-    container.innerHTML = "";
+/* ========================================================
+   UNIVERSAL CUSTOMER SUPPORT & COMPLAINTS DESK ENGINE
+======================================================== */
+let allComplaintsStore = {};
+let currentComplaintFilter = 'ALL';
 
-    if (!snap.exists()) {
-        container.innerHTML = `<p style="color: var(--text-muted); font-weight: 600;">No support complaints reported yet.</p>`;
+function initComplaintsListeners() {
+    // Listen to all possible nodes used across various frontend complaint pages
+    const supportNodes = ['userComplaints', 'complaints', 'support', 'support_tickets'];
+
+    supportNodes.forEach(nodeName => {
+        onValue(ref(db, nodeName), snap => {
+            // Remove previous items from this specific nodeName
+            for (let id in allComplaintsStore) {
+                if (allComplaintsStore[id].rootNode === nodeName) {
+                    delete allComplaintsStore[id];
+                }
+            }
+
+            if (snap.exists()) {
+                collectComplaintsRecursive(snap.val(), nodeName, "");
+            }
+
+            renderAllComplaints();
+        }, (error) => {
+            console.error(`Error loading from ${nodeName}:`, error);
+        });
+    });
+}
+
+function collectComplaintsRecursive(obj, rootNode, currentPath) {
+    if (!obj || typeof obj !== 'object') return;
+
+    // Check if current object represents a complaint record
+    const hasText = obj.message || obj.complaint || obj.complaintText || obj.description || 
+                    obj.details || obj.issue || obj.problem || obj.query || obj.text || 
+                    obj.reason || obj.feedback || obj.msg || obj.body;
+    
+    const hasHeader = obj.category || obj.subject || obj.title || obj.ticketId || obj.orderId || obj.topic;
+    const hasContact = obj.name || obj.userName || obj.customerName || obj.email || obj.phone || obj.mobile;
+
+    if ((hasText || hasHeader) && (hasContact || hasText)) {
+        const fullDbPath = currentPath ? `${rootNode}/${currentPath}` : rootNode;
+        const uniqueId = fullDbPath.replace(/\//g, '_');
+
+        allComplaintsStore[uniqueId] = {
+            ...obj,
+            uniqueId: uniqueId,
+            fullDbPath: fullDbPath,
+            rootNode: rootNode,
+            id: currentPath.split('/').pop() || 'REF'
+        };
         return;
     }
 
-    let hasComplaints = false;
-
-    snap.forEach(child => {
-        const val = child.val();
-        
-        if (val && (val.message || val.complaint || val.category || val.subject)) {
-            hasComplaints = true;
-            renderComplaintCard(container, val, child.key);
-        } else {
-            child.forEach(subChild => {
-                const subVal = subChild.val();
-                if (subVal && (subVal.message || subVal.complaint || subVal.category || subVal.subject)) {
-                    hasComplaints = true;
-                    renderComplaintCard(container, subVal, `${child.key}/${subChild.key}`);
-                }
-            });
+    // Traverse children if nested (e.g., node/phone/ticketId)
+    for (let key in obj) {
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+            collectComplaintsRecursive(obj[key], rootNode, currentPath ? `${currentPath}/${key}` : key);
         }
-    });
-
-    if (!hasComplaints) {
-        container.innerHTML = `<p style="color: var(--text-muted); font-weight: 600;">No support complaints reported yet.</p>`;
     }
-});
-
-function renderComplaintCard(container, c, pathKey) {
-    const status = c.status || 'Pending';
-    const isResolved = status === 'Resolved';
-    const ticketStr = c.ticketId ? `<strong>Ticket ID:</strong> #${c.ticketId}` : '';
-    const userIdStr = c.userId ? ` | <strong>User ID:</strong> ${c.userId}` : '';
-
-    container.innerHTML += `
-    <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed var(--border); padding-bottom: 8px; flex-wrap: wrap; gap: 6px;">
-            <div>
-                <h4 style="font-size: 15px; font-weight: 800; color: var(--primary);">${c.category || c.subject || 'General Complaint'}</h4>
-                <p style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
-                    <strong>User:</strong> ${c.name || c.userName || 'Anonymous'} | 
-                    <strong>Contact:</strong> ${c.email || c.phone || 'N/A'} 
-                    ${ticketStr ? ` | ${ticketStr}` : ''}
-                    ${userIdStr}
-                </p>
-            </div>
-            <div>
-                <span style="font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; background: ${isResolved ? '#dcfce7' : '#fee2e2'}; color: ${isResolved ? '#15803d' : '#b91c1c'}; text-transform: uppercase;">
-                    ${status}
-                </span>
-            </div>
-        </div>
-
-        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 14px;">
-            <p style="font-size: 13.5px; color: var(--text-main); line-height: 1.5; white-space: pre-line;">${c.message || c.complaint || 'No detail provided.'}</p>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; flex-wrap: wrap; gap: 8px;">
-            <small style="color: var(--text-muted); font-weight: 600;"><i class="fa fa-clock"></i> ${c.date || c.timestamp || 'Date not recorded'}</small>
-            <div style="display: flex; gap: 8px;">
-                ${!isResolved ? `
-                    <button onclick="resolveComplaint('${pathKey}')" style="background: #10b981; color: white; border: none; padding: 7px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;">
-                        <i class="fa fa-check-circle"></i> Mark Resolved
-                    </button>
-                ` : ''}
-                <button onclick="deleteItem('userComplaints/${pathKey}')" style="background: #ef4444; color: white; border: none; padding: 7px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;">
-                    <i class="fa fa-trash"></i> Delete
-                </button>
-            </div>
-        </div>
-    </div>`;
 }
 
-window.resolveComplaint = (pathKey) => {
-    update(ref(db, `userComplaints/${pathKey}`), { status: 'Resolved' })
+function renderAllComplaints() {
+    const container = document.getElementById('complaintsListContainer');
+    if (!container) return;
+
+    const allKeys = Object.keys(allComplaintsStore);
+    
+    let totalCount = allKeys.length;
+    let pendingCount = 0;
+    let resolvedCount = 0;
+
+    allKeys.forEach(k => {
+        const item = allComplaintsStore[k];
+        const st = (item.status || 'Pending').toLowerCase();
+        if (st === 'resolved' || st === 'closed' || st === 'completed') resolvedCount++;
+        else pendingCount++;
+    });
+
+    // Update filter counter pills
+    const allCountElem = document.getElementById('count-all-complaints');
+    const pendingCountElem = document.getElementById('count-pending-complaints');
+    const resolvedCountElem = document.getElementById('count-resolved-complaints');
+    const navBadge = document.getElementById('complaintsNavBadge');
+
+    if (allCountElem) allCountElem.innerText = totalCount;
+    if (pendingCountElem) pendingCountElem.innerText = pendingCount;
+    if (resolvedCountElem) resolvedCountElem.innerText = resolvedCount;
+
+    // Sidebar alert badge
+    if (navBadge) {
+        if (pendingCount > 0) {
+            navBadge.innerText = pendingCount > 99 ? '99+' : pendingCount;
+            navBadge.style.display = 'inline-flex';
+        } else {
+            navBadge.style.display = 'none';
+        }
+    }
+
+    if (totalCount === 0) {
+        container.innerHTML = `
+            <div style="text-align:center; padding:30px; color:var(--text-muted);">
+                <i class="fa-solid fa-headset" style="font-size:2.2rem; color:#cbd5e1; margin-bottom:10px;"></i>
+                <p style="font-size:14px; font-weight:700; color:var(--text-secondary);">No Support Tickets Found</p>
+                <p style="font-size:12px; margin-top:4px;">Customer complaints and help inquiries will appear here automatically.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const searchTerm = document.getElementById('searchComplaintInput')?.value.trim().toLowerCase() || '';
+
+    // Sort: Pending first, then newest first
+    const sortedComplaints = Object.values(allComplaintsStore).sort((a, b) => {
+        const stA = (a.status || 'Pending').toLowerCase();
+        const stB = (b.status || 'Pending').toLowerCase();
+        const isResolvedA = stA === 'resolved' || stA === 'closed';
+        const isResolvedB = stB === 'resolved' || stB === 'closed';
+
+        if (!isResolvedA && isResolvedB) return -1;
+        if (isResolvedA && !isResolvedB) return 1;
+
+        const timeA = new Date(a.date || a.timestamp || a.createdAt || 0).getTime() || 0;
+        const timeB = new Date(b.date || b.timestamp || b.createdAt || 0).getTime() || 0;
+        return timeB - timeA;
+    });
+
+    let renderedCount = 0;
+    container.innerHTML = "";
+
+    sortedComplaints.forEach(c => {
+        const rawStatus = c.status || 'Pending';
+        const isResolved = rawStatus.toLowerCase() === 'resolved' || rawStatus.toLowerCase() === 'closed';
+
+        // Filter by tab pill
+        if (currentComplaintFilter === 'PENDING' && isResolved) return;
+        if (currentComplaintFilter === 'RESOLVED' && !isResolved) return;
+
+        // Search text matching
+        const customerName = c.name || c.userName || c.customerName || 'Customer';
+        const customerPhone = c.phone || c.mobile || c.contact || c.customerPhone || '';
+        const customerEmail = c.email || c.userEmail || '';
+        const ticketId = c.ticketId || c.id || '';
+        const orderId = c.orderId || c.orderRef || c.orderNumber || '';
+        const category = c.category || c.subject || c.title || c.issue || c.topic || 'General Support Ticket';
+        const message = c.message || c.complaint || c.complaintText || c.description || c.details || c.problem || c.query || c.text || c.reason || 'No description provided.';
+        const proofImg = c.image || c.imageUrl || c.photo || c.screenshot || c.proof || c.attachment || '';
+        const dateStr = c.date || c.timestamp || c.createdAt || 'Recent';
+
+        const searchHaystack = `${customerName} ${customerPhone} ${customerEmail} ${ticketId} ${orderId} ${category} ${message}`.toLowerCase();
+        if (searchTerm && !searchHaystack.includes(searchTerm)) {
+            return;
+        }
+
+        renderedCount++;
+        const cleanPhone = cleanPhoneNumberWithCountryCode(customerPhone);
+
+        container.innerHTML += `
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow-xs);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed var(--border); padding-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                <div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size: 11px; font-weight: 800; color: #2563eb; background: #eff6ff; padding: 3px 8px; border-radius: 6px;">
+                            ${ticketId ? `#TICKET-${ticketId}` : `ID: #${c.id}`}
+                        </span>
+                        ${orderId ? `
+                            <span style="font-size: 11px; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 3px 8px; border-radius: 6px;">
+                                <i class="fa fa-bag-shopping"></i> Order #${orderId}
+                            </span>
+                        ` : ''}
+                    </div>
+                    <h4 style="font-size: 15px; font-weight: 800; color: var(--primary); margin-top: 6px;">${category}</h4>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+                        <strong>User:</strong> <span style="color:var(--text-main); font-weight:700;">${customerName}</span> | 
+                        <strong>Phone:</strong> <span style="color:#2563eb; font-weight:700;">${customerPhone || 'N/A'}</span>
+                        ${customerEmail ? ` | <strong>Email:</strong> ${customerEmail}` : ''}
+                    </p>
+                </div>
+                <div>
+                    <span style="font-size: 10.5px; font-weight: 800; padding: 4px 12px; border-radius: 20px; background: ${isResolved ? '#dcfce7' : '#fef3c7'}; color: ${isResolved ? '#15803d' : '#92400e'}; text-transform: uppercase;">
+                        ${rawStatus}
+                    </span>
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: 12px; padding: 14px;">
+                <p style="font-size: 13.5px; color: var(--text-main); line-height: 1.55; white-space: pre-line;">${message}</p>
+                
+                ${proofImg ? `
+                    <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+                        <img src="${proofImg}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; border:1px solid var(--border); cursor:pointer;" onclick="viewProof('${proofImg}')">
+                        <span style="font-size:12px; font-weight:700; color:#2563eb; cursor:pointer;" onclick="viewProof('${proofImg}')">
+                            <i class="fa fa-image"></i> View Customer Uploaded Screenshot/Photo
+                        </span>
+                    </div>
+                ` : ''}
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px; flex-wrap: wrap; gap: 8px;">
+                <small style="color: var(--text-muted); font-weight: 600;"><i class="fa fa-clock"></i> ${dateStr}</small>
+                
+                <div style="display: flex; gap: 8px; flex-wrap:wrap; align-items:center;">
+                    ${cleanPhone ? `
+                        <a href="https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hello ${customerName}, CartPrime Customer Support regarding your inquiry (${category}): `)}" target="_blank" class="btn-table-wa" title="Reply on WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i> WhatsApp Reply
+                        </a>
+                        <a href="tel:${cleanPhone}" class="btn-table-call" title="Call Customer">
+                            <i class="fa fa-phone"></i> Call
+                        </a>
+                    ` : ''}
+
+                    ${!isResolved ? `
+                        <button onclick="resolveComplaint('${c.fullDbPath}', 'Resolved')" style="background: #10b981; color: white; border: none; padding: 7px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; display:inline-flex; align-items:center; gap:5px;">
+                            <i class="fa fa-check-circle"></i> Mark Resolved
+                        </button>
+                    ` : `
+                        <button onclick="resolveComplaint('${c.fullDbPath}', 'Pending')" style="background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border); padding: 7px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; display:inline-flex; align-items:center; gap:5px;">
+                            <i class="fa fa-rotate-left"></i> Reopen Ticket
+                        </button>
+                    `}
+
+                    <button onclick="deleteComplaintItem('${c.fullDbPath}')" style="background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; padding: 7px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;" title="Delete Ticket">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    });
+
+    if (renderedCount === 0) {
+        container.innerHTML = `
+            <div style="text-align:center; padding:24px; color:var(--text-muted);">
+                <p>No complaints matching the selected filter or search keyword.</p>
+            </div>
+        `;
+    }
+}
+
+window.filterComplaints = () => {
+    renderAllComplaints();
+};
+
+window.setComplaintFilter = (status, elem) => {
+    currentComplaintFilter = status;
+    document.querySelectorAll('.complaint-filter-pill').forEach(p => p.classList.remove('active'));
+    if (elem) elem.classList.add('active');
+    renderAllComplaints();
+};
+
+window.resolveComplaint = (fullDbPath, newStatus = 'Resolved') => {
+    update(ref(db, fullDbPath), { 
+        status: newStatus,
+        resolvedAt: new Date().toISOString()
+    })
     .then(() => {
         Swal.fire({
             toast: true,
             position: 'top-end',
             icon: 'success',
-            title: 'Complaint marked as resolved!',
+            title: `Complaint marked as ${newStatus.toLowerCase()}!`,
             showConfirmButton: false,
             timer: 1500
         });
     })
     .catch(err => Swal.fire('Error', err.message, 'error'));
 };
+
+window.deleteComplaintItem = (fullDbPath) => {
+    Swal.fire({
+        title: 'Delete Support Ticket?',
+        text: "This complaint will be permanently removed.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Yes, Delete'
+    }).then((res) => {
+        if (res.isConfirmed) {
+            remove(ref(db, fullDbPath))
+            .then(() => {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Ticket deleted!', showConfirmButton: false, timer: 1500 });
+            })
+            .catch(err => Swal.fire('Error', err.message, 'error'));
+        }
+    });
+};
+
+// Start live complaints listeners
+initComplaintsListeners();
 </script>
 
 </body> 
