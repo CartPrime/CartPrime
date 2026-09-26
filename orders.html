@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-     <link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-09-20-b4b944f2-2047-4c3b-ace2-348521478b38.png" sizes="96x96" />
     <style>
         :root { 
             --primary: #0b0b0f; 
@@ -67,7 +66,7 @@
         .status-pending { background: #fef9c3; color: #a16207; }
         .status-delivered { background: #dcfce7; color: #15803d; }
         .status-cancelled, .status-rejected { background: #fee2e2; color: #b91c1c; }
-        .status-orderconfirmed, .status-confirmed { background: #dcfce7; color: #15803d; }
+        .status-orderconfirmed, .status-confirmed { background: #e0f2fe; color: #0369a1; }
         .status-return, .status-returned { background: #d1fae5; color: #065f46; }
         .status-returnrequested { background: #fef3c7; color: #92400e; }
 
@@ -102,20 +101,17 @@
         .phone-input-box button { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s, color 0.2s; font-size: 0.95rem; }
         .phone-input-box button:hover { background: var(--accent); color: #111; }
 
-        /* SweetAlert Custom Overrides (Completely Removed Backdrop Overlay) */
-        body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) { overflow: auto !important; }
-        .swal2-container.swal2-backdrop-show, .swal2-container.swal2-shown { background: transparent !important; backdrop-filter: none !important; pointer-events: none !important; }
-        .swal2-popup { pointer-events: auto !important; }
-        
-        .swal-custom-popup { border-radius: 24px !important; padding: 1.5rem !important; width: 90% !important; max-width: 440px !important; border: 1px solid var(--border-color) !important; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important; background: #ffffff !important; }
-        .swal-custom-title { font-weight: 800 !important; color: var(--primary) !important; font-size: 1.3rem !important; letter-spacing: -0.5px; }
+        /* SweetAlert Clean Backdrop and Popup Styling */
+        .swal2-container { background: rgba(15, 23, 42, 0.45) !important; backdrop-filter: blur(4px) !important; }
+        .swal-custom-popup { border-radius: 24px !important; padding: 1.5rem !important; width: 90% !important; max-width: 450px !important; border: 1px solid var(--border-color) !important; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15) !important; background: #ffffff !important; }
+        .swal-custom-title { font-weight: 800 !important; color: var(--primary) !important; font-size: 1.25rem !important; letter-spacing: -0.5px; }
         .swal-custom-confirm { background-color: var(--primary) !important; border-radius: 12px !important; padding: 10px 24px !important; font-weight: 700 !important; font-size: 0.9rem !important; box-shadow: none !important; }
         .swal2-cancel { border-radius: 12px !important; padding: 10px 24px !important; font-weight: 700 !important; font-size: 0.9rem !important; background: #f1f5f9 !important; color: var(--text-main) !important; box-shadow: none !important; }
 
         .swal-radio-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; text-align: left; width: 100%; }
         .swal-radio-option { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 0.85rem; cursor: pointer; background: #f8fafc; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border-color); transition: all 0.2s; }
         .swal-radio-option:hover { background: #fff7e6; border-color: #fde3a7; }
-        .swal-radio-option input { accent-color: var(--accent); width: 16px; height: 16px; }
+        .swal-radio-option input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
         .swal-input-field { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 10px; font-size: 0.9rem; font-weight: 600; outline: none; background: #f8fafc; transition: all 0.2s; }
         .swal-input-field:focus { border-color: var(--accent); background: var(--white); box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
 
@@ -130,7 +126,7 @@
         /* Star Rating */
         .star-rating { display: flex; gap: 10px; justify-content: center; font-size: 2rem; margin: 15px 0; cursor: pointer; color: #cbd5e1; }
         .star-rating i { transition: color 0.2s ease, transform 0.2s ease; }
-        .star-rating i:hover { transform: scale(1.1); }
+        .star-rating i:hover { transform: scale(1.15); }
         .star-rating[data-rating="1"] i.selected { color: #ef4444 !important; }
         .star-rating[data-rating="2"] i.selected { color: #f97316 !important; }
         .star-rating[data-rating="3"] i.selected { color: #f59e0b !important; }
@@ -197,12 +193,15 @@
     </div>
     
     <div id="ordersList">
-        <div class="empty-state">Loading your orders...</div>
+        <div class="empty-state">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 10px;"></i>
+            <p>Loading your orders...</p>
+        </div>
     </div>
 
     <div class="trust-grid">
         <div class="trust-item">
-            <i class="fa-solid fa-badge-check"></i>
+            <i class="fa-solid fa-circle-check"></i>
             <span>100% Authentic</span>
         </div>
         <div class="trust-item">
@@ -246,13 +245,60 @@
     let activeRef = null;
     let cachedOrders = {}; 
 
+    // Helper to safely escape strings for HTML
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // Helper to robustly parse various date formats
+    function parseDateSafe(dateVal) {
+        if (!dateVal) return null;
+        if (typeof dateVal === 'number') return new Date(dateVal);
+        
+        let d = new Date(dateVal);
+        if (!isNaN(d.getTime())) return d;
+
+        // Try format: DD/MM/YYYY or DD-MM-YYYY
+        const parts = String(dateVal).split(/[-/]/);
+        if (parts.length === 3) {
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const year = parseInt(parts[2], 10);
+            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                d = new Date(year, month, day);
+                if (!isNaN(d.getTime())) return d;
+            }
+        }
+        return null;
+    }
+
     const showAlert = (title, text, icon, showConfirm = true) => {
-        Swal.fire({
-            title: title, text: text, icon: icon, showConfirmButton: showConfirm,
-            backdrop: false,
+        return Swal.fire({
+            title: title,
+            text: text,
+            icon: icon,
+            showConfirmButton: showConfirm,
             customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
         });
     };
+
+    function isItemReturnable(item) {
+        if (!item) return false;
+        const val = item.return ?? item.returnPolicy ?? item.isReturnable ?? item.returnable;
+        if (val === undefined || val === null) return false;
+        if (typeof val === 'boolean') return val;
+        if (typeof val === 'string') {
+            const lower = val.toLowerCase().trim();
+            return lower !== 'false' && lower !== 'no' && lower !== 'none' && lower !== '';
+        }
+        return Boolean(val);
+    }
 
     function getSavedPhone() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -263,7 +309,8 @@
         const savedUserPhone = localStorage.getItem('userPhone');
         const cartPrimePhone = localStorage.getItem('cartPrime_Phone');
 
-        return urlPhone || lastOrderPhone || savedUserPhone || savedAddr.phone || cartPrimePhone;
+        const rawPhone = urlPhone || lastOrderPhone || savedUserPhone || savedAddr.phone || cartPrimePhone;
+        return rawPhone ? String(rawPhone).trim() : '';
     }
 
     const initialPhone = getSavedPhone();
@@ -283,14 +330,16 @@
                 </div>
                 <h3 style="font-weight:800; font-size:1.15rem; margin-bottom:6px; color:var(--primary);">Find Your Orders</h3>
                 <p style="font-size:0.8rem; color:var(--text-muted); line-height: 1.4;">Enter the mobile number used during checkout to view your orders safely.</p>
-                <input type="tel" id="inputPhoneNum" placeholder="Enter Mobile Number">
+                <input type="tel" id="inputPhoneNum" placeholder="Enter Mobile Number" onkeydown="if(event.key==='Enter') window.fetchOrdersByInput()">
                 <button onclick="window.fetchOrdersByInput()">View Orders</button>
             </div>
         `;
     }
 
     window.fetchOrdersByInput = () => {
-        const phone = document.getElementById('inputPhoneNum').value.trim();
+        const inputElem = document.getElementById('inputPhoneNum');
+        if (!inputElem) return;
+        const phone = inputElem.value.trim().replace(/[\s\-()]/g, '');
         if(!phone) {
             showAlert('Required', 'Please enter your phone number.', 'error');
             return;
@@ -302,6 +351,11 @@
     window.changePhoneNumber = () => {
         localStorage.removeItem('userPhone');
         localStorage.removeItem('cartPrime_LastOrderPhone');
+        localStorage.removeItem('cartPrime_Phone');
+        if (window.history.replaceState) {
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
         renderPhoneInput();
     };
 
@@ -309,13 +363,19 @@
         if (activeRef) off(activeRef);
         activeRef = ref(db, `orders/${phone}`);
 
+        const list = document.getElementById('ordersList');
+        list.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 10px;"></i>
+                <p>Loading orders for ${escapeHtml(phone)}...</p>
+            </div>
+        `;
+
         onValue(activeRef, (snapshot) => {
-            const list = document.getElementById('ordersList');
-            
             const activePhoneHeader = `
                 <div style="background:var(--white); border:1px solid var(--border-color); padding:14px 18px; border-radius:14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 4px rgba(0,0,0,0.01);">
                     <span style="font-size:0.85rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-circle-check" style="color:#16a34a; font-size: 1rem;"></i> Orders for: <strong>${phone}</strong>
+                        <i class="fa-solid fa-circle-check" style="color:#16a34a; font-size: 1rem;"></i> Orders for: <strong>${escapeHtml(phone)}</strong>
                     </span>
                     <button onclick="window.changePhoneNumber()" style="background:#fee2e2; color:#ef4444; border:none; padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.75rem; cursor:pointer; transition: opacity 0.2s;">
                         <i class="fa-solid fa-pen-to-square"></i> Change
@@ -323,86 +383,104 @@
                 </div>
             `;
 
+            // If phone doesn't exist directly, check fallback with/without +91
             if (!snapshot.exists()) {
-                list.innerHTML = activePhoneHeader + `<div class="empty-state"><p>No orders found for this number.</p></div>`;
+                const cleaned = phone.replace(/^\+91/, '').replace(/^91/, '');
+                if (cleaned.length === 10 && phone !== cleaned && !phone.startsWith('+91')) {
+                    const fallbackRef = ref(db, `orders/+91${cleaned}`);
+                    onValue(fallbackRef, (fallbackSnap) => {
+                        if (fallbackSnap.exists()) {
+                            loadOrders(`+91${cleaned}`);
+                            return;
+                        }
+                    }, { onlyOnce: true });
+                }
+
+                list.innerHTML = activePhoneHeader + `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open" style="font-size:2rem; color:var(--text-muted); margin-bottom:10px;"></i>
+                        <p style="font-size:0.95rem; font-weight:800; color:var(--primary); margin-bottom:4px;">No Orders Found</p>
+                        <p style="font-size:0.8rem; color:var(--text-muted);">No orders placed yet with this mobile number.</p>
+                    </div>`;
                 return;
             }
 
             let ordersArr = [];
             cachedOrders = {};
-            const oneMonthAgo = new Date();
-            oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
             snapshot.forEach(orderSnap => { 
-                const orderData = orderSnap.val();
-                let isOlderThanOneMonth = false;
-                if (orderData.date) {
-                    const orderDate = new Date(orderData.date);
-                    if (!isNaN(orderDate.getTime()) && orderDate < oneMonthAgo) {
-                        isOlderThanOneMonth = true;
-                    }
-                }
-
-                if (!isOlderThanOneMonth) {
-                    const fullOrder = { id: orderSnap.key, ...orderData, userPhone: phone };
-                    ordersArr.push(fullOrder); 
-                    cachedOrders[orderSnap.key] = fullOrder; 
-                }
+                const orderData = orderSnap.val() || {};
+                const fullOrder = { id: orderSnap.key, ...orderData, userPhone: phone };
+                ordersArr.push(fullOrder); 
+                cachedOrders[orderSnap.key] = fullOrder; 
             });
 
             if (ordersArr.length === 0) {
-                list.innerHTML = activePhoneHeader + `<div class="empty-state"><p>No recent orders found.</p></div>`;
+                list.innerHTML = activePhoneHeader + `<div class="empty-state"><p>No orders found.</p></div>`;
                 return;
             }
 
+            // Sort: Active orders first, then delivered, then newest first
             ordersArr.sort((a, b) => {
                 const statusA = (a.status || '').toLowerCase().trim();
                 const statusB = (b.status || '').toLowerCase().trim();
 
-                if (statusA === 'delivered' && statusB !== 'delivered') return 1;
-                if (statusA !== 'delivered' && statusB === 'delivered') return -1;
-                return 0;
+                const isDoneA = statusA === 'delivered' || statusA === 'cancelled' || statusA === 'returned';
+                const isDoneB = statusB === 'delivered' || statusB === 'cancelled' || statusB === 'returned';
+
+                if (isDoneA && !isDoneB) return 1;
+                if (!isDoneA && isDoneB) return -1;
+
+                // Sort by date / timestamp descending
+                const timeA = parseDateSafe(a.date || a.timestamp)?.getTime() || 0;
+                const timeB = parseDateSafe(b.date || b.timestamp)?.getTime() || 0;
+                return timeB - timeA;
             });
 
             list.innerHTML = activePhoneHeader;
 
+            const now = new Date();
             const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            
-            const tDay = tomorrow.getDate();
-            const tMonth = tomorrow.toLocaleString('en-IN', { month: 'short' });
-            const tYear = tomorrow.getFullYear();
-            
-            const tomorrowStr1 = `${tDay} ${tMonth} ${tYear}`.toLowerCase(); 
-            const tomorrowStr2 = `${tDay}-${tMonth}-${tYear}`.toLowerCase();
-            const tomorrowStr3 = `${tDay}/${tMonth}/${tYear}`.toLowerCase();
+            tomorrow.setDate(now.getDate() + 1);
+
+            const isSameDay = (d1, d2) => {
+                return d1 && d2 &&
+                    d1.getDate() === d2.getDate() &&
+                    d1.getMonth() === d2.getMonth() &&
+                    d1.getFullYear() === d2.getFullYear();
+            };
 
             ordersArr.forEach(order => {
                 const displayStatus = order.status || 'Pending';
                 const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
 
                 let deliveryMsg = '';
-                const orderDateStr = order.deliveryDate ? order.deliveryDate.trim().toLowerCase() : '';
+                const parsedDeliveryDate = parseDateSafe(order.deliveryDate);
+                const orderDateStr = (order.deliveryDate || '').toLowerCase();
 
-                const isTomorrowDate = orderDateStr === tomorrowStr1 || 
-                                       orderDateStr === tomorrowStr2 || 
-                                       orderDateStr === tomorrowStr3 || 
-                                       orderDateStr.includes('tomorrow') ||
-                                       orderDateStr.includes(`${tDay} ${tMonth.toLowerCase()}`);
-
-                if (checkStatus === 'shipped' && isTomorrowDate) {
-                    deliveryMsg = `<div class="delivery-text" style="color:#d97706; font-weight:800;"><i class="fa-solid fa-truck-fast"></i> Order Tomorrow Arriving</div>`;
-                } else if (checkStatus === 'delivered') {
+                if (checkStatus === 'delivered') {
                     deliveryMsg = `<div class="delivery-text"><i class="fa-solid fa-circle-check"></i> Your Order Delivered</div>`;
                 } else if (checkStatus === 'shipped') {
-                    const expDateText = order.deliveryDate ? `: ${order.deliveryDate}` : '';
-                    deliveryMsg = `<div class="delivery-text" style="color:var(--accent-dark);"><i class="fa-solid fa-truck-fast"></i> Expected Delivery${expDateText}</div>`;
-                } else if (order.deliveryDate) {
-                    deliveryMsg = `<div class="delivery-text" style="color:var(--accent-dark);"><i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${order.deliveryDate}</div>`;
+                    if (isSameDay(parsedDeliveryDate, tomorrow) || orderDateStr.includes('tomorrow')) {
+                        deliveryMsg = `<div class="delivery-text" style="color:#d97706; font-weight:800;"><i class="fa-solid fa-truck-fast"></i> Arriving Tomorrow</div>`;
+                    } else if (isSameDay(parsedDeliveryDate, now) || orderDateStr.includes('today')) {
+                        deliveryMsg = `<div class="delivery-text" style="color:#16a34a; font-weight:800;"><i class="fa-solid fa-truck-fast"></i> Out for Delivery Today</div>`;
+                    } else {
+                        const expText = order.deliveryDate ? `: ${order.deliveryDate}` : '';
+                        deliveryMsg = `<div class="delivery-text" style="color:var(--accent-dark);"><i class="fa-solid fa-truck-fast"></i> Expected Delivery${escapeHtml(expText)}</div>`;
+                    }
                 } else if (checkStatus === 'returned') {
-                    deliveryMsg = `<div class="delivery-text" style="color:#065f46;"><i class="fa-solid fa-rotate-left"></i> Returned</div>`;
+                    deliveryMsg = `<div class="delivery-text" style="color:#065f46;"><i class="fa-solid fa-rotate-left"></i> Returned Successfully</div>`;
+                } else if (checkStatus === 'returnrequested') {
+                    deliveryMsg = `<div class="delivery-text" style="color:#b45309;"><i class="fa-solid fa-clock-rotate-left"></i> Return Requested (Processing)</div>`;
+                } else if (checkStatus === 'cancelled') {
+                    deliveryMsg = `<div class="delivery-text" style="color:#ef4444;"><i class="fa-solid fa-circle-xmark"></i> Order Cancelled</div>`;
                 } else {
-                    deliveryMsg = `<div class="delivery-text" style="color:#d97706;"><i class="fa-solid fa-clock"></i> Status: ${displayStatus}</div>`;
+                    if (order.deliveryDate) {
+                        deliveryMsg = `<div class="delivery-text" style="color:var(--accent-dark);"><i class="fa-solid fa-truck-fast"></i> Expected Delivery: ${escapeHtml(order.deliveryDate)}</div>`;
+                    } else {
+                        deliveryMsg = `<div class="delivery-text" style="color:#d97706;"><i class="fa-solid fa-clock"></i> Status: ${escapeHtml(displayStatus)}</div>`;
+                    }
                 }
 
                 let mainImg = "https://via.placeholder.com/150";
@@ -416,12 +494,12 @@
                     if(order.items.length > 1) {
                         mainTitle += ` (+${order.items.length - 1} more)`;
                     }
-                    hasReturnPolicy = order.items.some(i => i.return === true || i.return === "true" || i.returnPolicy === true || i.isReturnable === true);
+                    hasReturnPolicy = order.items.some(i => isItemReturnable(i));
                 } else {
                     mainImg = order.productImage || mainImg;
                     const rawName = order.productName || mainTitle;
                     mainTitle = rawName.split(' ').slice(0, 4).join(' ') + (rawName.split(' ').length > 4 ? '...' : '');
-                    hasReturnPolicy = order.return === true || order.return === "true" || order.returnPolicy === true || order.isReturnable === true;
+                    hasReturnPolicy = isItemReturnable(order);
                 }
 
                 const returnBadgeHtml = hasReturnPolicy ? `<div class="return-badge"><i class="fa-solid fa-rotate-left"></i> Easy to Return</div>` : '';
@@ -429,22 +507,22 @@
                 let cardReviewBtnHtml = '';
                 if (checkStatus === 'delivered') {
                     if (order.reviewed) {
-                        cardReviewBtnHtml = `<div style="margin-top:12px; padding:10px; background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; border-radius:10px; font-weight:700; font-size:0.75rem; text-align:center;" onclick="event.stopPropagation();"><i class="fa-solid fa-circle-check"></i> Review Submitted</div>`;
+                        cardReviewBtnHtml = `<div style="margin-top:12px; padding:10px; background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; border-radius:10px; font-weight:700; font-size:0.75rem; text-align:center;"><i class="fa-solid fa-circle-check"></i> Review Submitted</div>`;
                     } else {
-                        cardReviewBtnHtml = `<button onclick="event.stopPropagation(); window.openReviewModal('${order.id}')" style="width:100%; padding:10px; background:#fef3c7; color:#b45309; border:1px solid #fde68a; border-radius:10px; font-weight:700; font-size:0.78rem; margin-top:12px; cursor:pointer; transition: opacity 0.2s;"><i class="fa-solid fa-star" style="color:#f59e0b;"></i> Write a Review</button>`;
+                        cardReviewBtnHtml = `<button onclick="event.stopPropagation(); window.openReviewModal('${order.id}')" style="width:100%; padding:10px; background:#fef3c7; color:#b45309; border:1px solid #fde68a; border-radius:10px; font-weight:700; font-size:0.78rem; margin-top:12px; cursor:pointer;"><i class="fa-solid fa-star" style="color:#f59e0b;"></i> Write a Review</button>`;
                     }
                 }
 
                 list.innerHTML += `
                     <div class="order-card" onclick="window.showOrderDetails('${order.id}')">
                         <div class="card-top-bar">
-                            <span class="order-id-badge"><i class="fa-solid fa-check-double" style="color:var(--accent);"></i> ID: #${order.id}</span>
-                            <span class="order-status status-${displayStatus.toLowerCase().replace(/\s+/g, '')}">${displayStatus}</span>
+                            <span class="order-id-badge"><i class="fa-solid fa-check-double" style="color:var(--accent);"></i> ID: #${escapeHtml(order.id)}</span>
+                            <span class="order-status status-${checkStatus}">${escapeHtml(displayStatus)}</span>
                         </div>
                         <div class="item-main-content">
-                            <img src="${mainImg}">
+                            <img src="${escapeHtml(mainImg)}" onerror="this.src='https://via.placeholder.com/150'">
                             <div class="item-info">
-                                <h3>${mainTitle}</h3>
+                                <h3>${escapeHtml(mainTitle)}</h3>
                                 ${deliveryMsg}
                                 ${returnBadgeHtml}
                             </div>
@@ -453,6 +531,14 @@
                         <div class="click-more-text">Tap to view full details <i class="fa-solid fa-chevron-right" style="font-size: 0.65rem;"></i></div>
                     </div>`;
             });
+        }, (error) => {
+            console.error("Firebase error:", error);
+            list.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem; color:#ef4444; margin-bottom:10px;"></i>
+                    <p style="color:#ef4444; font-weight:700;">Could not load orders</p>
+                    <p style="font-size:0.8rem; margin-top:4px;">${escapeHtml(error.message || 'Please check your connection and try again.')}</p>
+                </div>`;
         });
     }
 
@@ -468,97 +554,85 @@
         let itemsListHtml = '';
         let orderHasReturnableProduct = false;
 
-        if (Array.isArray(order.items)) {
+        if (Array.isArray(order.items) && order.items.length > 0) {
             order.items.forEach(item => {
-                const itemCanReturn = item.return === true || item.return === "true" || item.returnPolicy === true || item.isReturnable === true;
-                if (itemCanReturn) orderHasReturnableProduct = true;
-                
+                if (isItemReturnable(item)) orderHasReturnableProduct = true;
                 itemsListHtml += `
                     <div style="display:flex; gap:12px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:10px; border-radius:10px; border:1px solid #f1f5f9;">
-                        <img src="${item.image || 'https://via.placeholder.com/150'}" style="width:45px; height:45px; object-fit:contain; border-radius:8px; background:#fff; padding:2px; border:1px solid #f1f1f1;">
+                        <img src="${escapeHtml(item.image || 'https://via.placeholder.com/150')}" style="width:45px; height:45px; object-fit:contain; border-radius:8px; background:#fff; padding:2px; border:1px solid #f1f1f1;" onerror="this.src='https://via.placeholder.com/150'">
                         <div style="flex-grow:1;">
-                            <div style="font-weight:700; font-size:0.82rem; color:var(--text-main);">${item.name || 'Product'}</div>
-                            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">₹${item.price} | Qty: ${item.quantity || 1}</div>
+                            <div style="font-weight:700; font-size:0.82rem; color:var(--text-main);">${escapeHtml(item.name || 'Product')}</div>
+                            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">₹${escapeHtml(item.price || '0')} | Qty: ${item.quantity || 1}</div>
                         </div>
                     </div>`;
             });
         } else {
-            const singleCanReturn = order.return === true || order.return === "true" || order.returnPolicy === true || order.isReturnable === true;
-            if (singleCanReturn) orderHasReturnableProduct = true;
-
+            if (isItemReturnable(order)) orderHasReturnableProduct = true;
             itemsListHtml = `
                 <div style="display:flex; gap:12px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:10px; border-radius:10px; border:1px solid #f1f5f9;">
-                    <img src="${order.productImage || 'https://via.placeholder.com/150'}" style="width:45px; height:45px; object-fit:contain; border-radius:8px; background:#fff; padding:2px; border:1px solid #f1f1f1;">
+                    <img src="${escapeHtml(order.productImage || 'https://via.placeholder.com/150')}" style="width:45px; height:45px; object-fit:contain; border-radius:8px; background:#fff; padding:2px; border:1px solid #f1f1f1;" onerror="this.src='https://via.placeholder.com/150'">
                     <div style="flex-grow:1;">
-                        <div style="font-weight:700; font-size:0.82rem; color:var(--text-main);">${order.productName || 'Product'}</div>
-                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">₹${order.price}</div>
+                        <div style="font-weight:700; font-size:0.82rem; color:var(--text-main);">${escapeHtml(order.productName || 'Product')}</div>
+                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">₹${escapeHtml(order.price || '0')}</div>
                     </div>
                 </div>`;
         }
 
+        // Return expiration check (7 days from delivery or order date)
         let isReturnExpired = false;
         if (checkStatus === 'delivered') {
             const returnDaysLimit = 7;
-            const baseDateStr = order.deliveredDate || order.date; 
-            
-            if (baseDateStr) {
-                const orderDateObj = new Date(baseDateStr);
-                if (!isNaN(orderDateObj.getTime())) {
-                    const currentDateObj = new Date();
-                    const diffTime = currentDateObj - orderDateObj;
-                    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-                    
-                    if (diffDays > returnDaysLimit) {
-                        isReturnExpired = true;
-                    }
+            const baseDate = parseDateSafe(order.deliveredDate || order.date);
+            if (baseDate) {
+                const diffTime = new Date() - baseDate;
+                const diffDays = diffTime / (1000 * 60 * 60 * 24);
+                if (diffDays > returnDaysLimit) {
+                    isReturnExpired = true;
                 }
             }
         }
 
         let actionBtnHtml = '';
-        if ((checkStatus === 'pending' || checkStatus === 'orderconfirmed') && !order.deliveryDate) { 
-            actionBtnHtml = `<button onclick="cancelOrder('${order.id}', '${order.userPhone}')" style="width:100%; padding:12px; background:#fee2e2; color:#ef4444; border:none; border-radius:12px; font-weight:700; margin-top:16px; cursor:pointer; font-size:0.85rem; transition: opacity 0.2s;">Cancel Order</button>`; 
-        } 
-        else if (checkStatus === 'delivered' && orderHasReturnableProduct) { 
-            if (isReturnExpired) {
-                actionBtnHtml = `<div style="width:100%; padding:12px; background:#f1f5f9; color:var(--text-muted); border:1px solid var(--border-color); border-radius:12px; font-weight:700; margin-top:16px; text-align:center; font-size:0.8rem;"><i class="fa-solid fa-circle-xmark"></i> Return Policy Expired (7 Days Completed)</div>`;
-            } else {
-                actionBtnHtml = `<button onclick="requestReturn('${order.id}', '${order.userPhone}')" style="width:100%; padding:12px; background:#f1f5f9; color:var(--text-main); border:1px solid var(--border-color); border-radius:12px; font-weight:700; margin-top:16px; cursor:pointer; font-size:0.85rem; transition: background 0.2s;"><i class="fa-solid fa-rotate-left"></i> Request Return</button>`;
+        if (checkStatus === 'pending' || checkStatus === 'orderconfirmed' || checkStatus === 'confirmed') { 
+            actionBtnHtml = `<button onclick="window.cancelOrder('${order.id}')" style="width:100%; padding:12px; background:#fee2e2; color:#ef4444; border:none; border-radius:12px; font-weight:700; margin-top:16px; cursor:pointer; font-size:0.85rem;"><i class="fa-solid fa-ban"></i> Cancel Order</button>`; 
+        } else if (checkStatus === 'delivered') { 
+            if (orderHasReturnableProduct) {
+                if (isReturnExpired) {
+                    actionBtnHtml = `<div style="width:100%; padding:12px; background:#f1f5f9; color:var(--text-muted); border:1px solid var(--border-color); border-radius:12px; font-weight:700; margin-top:16px; text-align:center; font-size:0.8rem;"><i class="fa-solid fa-circle-xmark"></i> Return Period Expired (7 Days)</div>`;
+                } else {
+                    actionBtnHtml = `<button onclick="window.requestReturn('${order.id}')" style="width:100%; padding:12px; background:#f8fafc; color:var(--text-main); border:1px solid var(--border-color); border-radius:12px; font-weight:700; margin-top:16px; cursor:pointer; font-size:0.85rem;"><i class="fa-solid fa-rotate-left"></i> Request Return</button>`;
+                }
             }
+        } else if (checkStatus === 'returnrequested') {
+            actionBtnHtml = `<div style="width:100%; padding:12px; background:#fef3c7; color:#92400e; border:1px solid #fde68a; border-radius:12px; font-weight:700; margin-top:16px; text-align:center; font-size:0.8rem;"><i class="fa-solid fa-clock-rotate-left"></i> Return Under Process</div>`;
         }
 
-        const statusBadgeHtml = `<span class="order-status status-${checkStatus}">${checkStatus === 'delivered' ? 'Your Order Delivered' : rawStatus}</span>`;
-
-        const deliveryInfoHtml = checkStatus === 'delivered' 
-            ? `<p><strong>Status:</strong> ${statusBadgeHtml}</p>`
-            : `<p><strong>Status:</strong> ${statusBadgeHtml}</p>
-               <p><strong>Expected Delivery:</strong> <span style="font-weight:600; color:var(--text-main);">${order.deliveryDate || 'Will update soon'}</span></p>`;
-
+        const statusBadgeHtml = `<span class="order-status status-${checkStatus}">${escapeHtml(rawStatus)}</span>`;
         const paymentModeText = isCOD ? 'Cash on Delivery' : (isPaid ? 'Online Paid (Secure)' : 'Pending');
 
         Swal.fire({
-            title: `Order Details (#${order.id})`,
-            backdrop: false,
+            title: `Order Details (#${escapeHtml(order.id)})`,
             html: `
                 <div class="modal-detail-box">
                     <div class="modal-section-title">Items Ordered</div>
                     ${itemsListHtml}
 
                     <div class="modal-section-title">Delivery Info</div>
-                    ${deliveryInfoHtml}
-                    <p><strong>Order Date:</strong> <span style="font-weight:600; color:var(--text-main);">${order.date || 'N/A'}</span></p>
+                    <p><strong>Status:</strong> ${statusBadgeHtml}</p>
+                    <p><strong>Expected Delivery:</strong> <span style="font-weight:600; color:var(--text-main);">${escapeHtml(order.deliveryDate || 'Will update soon')}</span></p>
+                    <p><strong>Order Date:</strong> <span style="font-weight:600; color:var(--text-main);">${escapeHtml(order.date || 'N/A')}</span></p>
 
                     <div class="modal-section-title">Shipping Address</div>
                     <div style="background:#f8fafc; padding:12px; border-radius:10px; margin-top:4px; border:1px solid #f1f5f9;">
-                        <p style="font-weight:700; color:var(--text-main); margin:0;">${order.customerName || 'Customer'}</p>
-                        <p style="margin:4px 0 2px 0; color:var(--text-muted); font-size:0.8rem; line-height: 1.4;">${order.address || 'N/A'}</p>
-                        <p style="margin:0; color:var(--text-muted); font-size:0.8rem;">Phone: ${order.customerPhone || order.phone || order.userPhone}</p>
+                        <p style="font-weight:700; color:var(--text-main); margin:0;">${escapeHtml(order.customerName || 'Customer')}</p>
+                        <p style="margin:4px 0 2px 0; color:var(--text-muted); font-size:0.8rem; line-height: 1.4;">${escapeHtml(order.address || 'N/A')}</p>
+                        <p style="margin:0; color:var(--text-muted); font-size:0.8rem;">Phone: ${escapeHtml(order.customerPhone || order.phone || order.userPhone)}</p>
                     </div>
 
                     <div class="modal-section-title">Payment Summary</div>
-                    <p><strong>Total Amount:</strong> <span class="highlight-price">₹${order.price}</span></p>
+                    <p><strong>Total Amount:</strong> <span class="highlight-price">₹${escapeHtml(order.price || '0')}</span></p>
                     <p><strong>Payment Mode:</strong> <span class="highlight-paymode">${paymentModeText}</span></p>
-                    <p><strong>Transaction ID:</strong> <span style="font-weight:600; color:var(--text-main); font-size:0.78rem;">${order.transactionId || 'N/A'}</span></p>
+                    <p><strong>Transaction ID:</strong> <span style="font-weight:600; color:var(--text-main); font-size:0.78rem;">${escapeHtml(order.transactionId || 'N/A')}</span></p>
 
                     ${actionBtnHtml}
                 </div>
@@ -569,13 +643,126 @@
         });
     };
 
+    window.cancelOrder = (orderId) => {
+        const order = cachedOrders[orderId];
+        if (!order) return;
+
+        Swal.fire({
+            title: 'Cancel Order?',
+            text: `Are you sure you want to cancel Order #${orderId}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Cancel',
+            cancelButtonText: 'No, Keep Order',
+            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
+        }).then((res) => {
+            if(res.isConfirmed) {
+                update(ref(db, `orders/${order.userPhone}/${orderId}`), { 
+                    status: 'Cancelled',
+                    cancelledAt: new Date().toISOString()
+                })
+                .then(() => {
+                    showAlert('Cancelled', 'Your order was successfully cancelled.', 'success');
+                })
+                .catch((err) => {
+                    showAlert('Error', err.message || 'Failed to cancel order.', 'error');
+                });
+            }
+        });
+    };
+
+    window.requestReturn = (orderId) => {
+        const order = cachedOrders[orderId];
+        if (!order) return;
+        const phone = order.userPhone || '';
+
+        Swal.fire({
+            title: 'Select Refund Method',
+            html: `
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Where would you like to receive your refund?</p>
+                <div class="swal-radio-group">
+                    <label class="swal-radio-option" id="labelMobileOption">
+                        <input type="radio" name="refundMethod" value="Mobile Number" checked>
+                        <span><i class="fa-solid fa-mobile-screen" style="color:var(--accent);"></i> Mobile (GPay/PhonePe/Paytm)</span>
+                    </label>
+                    <label class="swal-radio-option" id="labelUpiOption">
+                        <input type="radio" name="refundMethod" value="UPI ID">
+                        <span><i class="fa-solid fa-building-columns" style="color:var(--accent);"></i> Active UPI ID</span>
+                    </label>
+                </div>
+                <input type="text" id="refundDetailsInput" class="swal-input-field" placeholder="Enter Mobile Number" value="${escapeHtml(phone)}">
+                
+                <div style="margin-top: 15px; text-align: left;">
+                    <label style="font-size: 0.8rem; font-weight: 800; color: var(--text-main);">Email for Refund Receipt</label>
+                    <input type="email" id="refundEmailInput" class="swal-input-field" placeholder="example@gmail.com">
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Submit Request',
+            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' },
+            didOpen: () => {
+                const inputField = document.getElementById('refundDetailsInput');
+                const radios = document.querySelectorAll('input[name="refundMethod"]');
+                radios.forEach(radio => {
+                    radio.addEventListener('change', () => {
+                        if (radio.value === 'Mobile Number') {
+                            inputField.placeholder = "Enter 10-digit Mobile Number";
+                            inputField.value = phone;
+                        } else {
+                            inputField.placeholder = "e.g. mobile@upi or user@okaxis";
+                            inputField.value = "";
+                        }
+                    });
+                });
+            },
+            preConfirm: () => {
+                const selectedRadio = document.querySelector('input[name="refundMethod"]:checked');
+                const selectedMethod = selectedRadio ? selectedRadio.value : 'Mobile Number';
+                const detailsValue = document.getElementById('refundDetailsInput').value.trim();
+                const emailValue = document.getElementById('refundEmailInput').value.trim();
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (!detailsValue) {
+                    Swal.showValidationMessage(`Please enter your ${selectedMethod}`);
+                    return false;
+                }
+                if (selectedMethod === 'UPI ID' && !detailsValue.includes('@')) {
+                    Swal.showValidationMessage(`Please enter a valid UPI ID (e.g. name@upi)`);
+                    return false;
+                }
+                if (!emailValue || !emailRegex.test(emailValue)) {
+                    Swal.showValidationMessage(`Please enter a valid Email ID`);
+                    return false;
+                }
+                
+                return { method: selectedMethod, details: detailsValue, email: emailValue };
+            }
+        }).then((res) => {
+            if (res.isConfirmed) {
+                update(ref(db, `orders/${order.userPhone}/${orderId}`), { 
+                    status: 'Return Requested',
+                    refundMethod: res.value.method,
+                    refundDetails: res.value.details,
+                    refundEmail: res.value.email,
+                    returnRequestedAt: new Date().toISOString()
+                })
+                .then(() => {
+                    showAlert('Submitted', 'Your return request has been submitted successfully.', 'success');
+                })
+                .catch((err) => {
+                    showAlert('Error', err.message || 'Failed to submit return request.', 'error');
+                });
+            }
+        });
+    };
+
     window.openReviewModal = (orderId) => {
         const order = cachedOrders[orderId];
+        if (!order) return;
         let currentRating = 5;
 
         Swal.fire({
             title: 'Rate Product',
-            backdrop: false,
             html: `
                 <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom: 5px;">Share your experience with this item</p>
                 <div class="star-rating" id="starContainer" data-rating="5">
@@ -596,7 +783,8 @@
 
                 stars.forEach(star => {
                     star.addEventListener('click', (e) => {
-                        currentRating = parseInt(e.target.getAttribute('data-value'));
+                        const targetVal = e.currentTarget.getAttribute('data-value');
+                        currentRating = parseInt(targetVal, 10);
                         starContainer.setAttribute('data-rating', currentRating);
 
                         stars.forEach((s, idx) => {
@@ -617,7 +805,7 @@
                 }
                 return { rating: currentRating, comment: comment };
             }
-        }).then((res) => {
+        }).then(async (res) => {
             if (res.isConfirmed) {
                 const reviewData = {
                     userName: order.customerName || "Customer",
@@ -627,102 +815,30 @@
                     date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
                 };
 
-                if (Array.isArray(order.items)) {
-                    order.items.forEach(item => {
-                        const productId = item.id || item.productId;
-                        if (productId) {
-                            push(ref(db, `products/${productId}/reviews`), reviewData);
-                        }
+                try {
+                    // Update order reviewed status
+                    await update(ref(db, `orders/${order.userPhone}/${orderId}`), { 
+                        reviewed: true,
+                        reviewRating: res.value.rating,
+                        reviewComment: res.value.comment
                     });
-                } else if (order.productId) {
-                    push(ref(db, `products/${order.productId}/reviews`), reviewData);
+
+                    // Save review under product reviews if ID is available
+                    if (Array.isArray(order.items)) {
+                        for (const item of order.items) {
+                            const pId = item.id || item.productId;
+                            if (pId) {
+                                try { await push(ref(db, `products/${pId}/reviews`), reviewData); } catch(e){}
+                            }
+                        }
+                    } else if (order.productId) {
+                        try { await push(ref(db, `products/${order.productId}/reviews`), reviewData); } catch(e){}
+                    }
+
+                    showAlert('Thank You!', 'Your review has been published successfully.', 'success');
+                } catch(err) {
+                    showAlert('Error', err.message || 'Could not save review.', 'error');
                 }
-
-                update(ref(db, `orders/${order.userPhone}/${orderId}`), { reviewed: true });
-
-                showAlert('Thank You!', 'Your review has been published successfully.', 'success');
-            }
-        });
-    };
-
-    window.requestReturn = (orderId, phone) => {
-        Swal.fire({
-            title: 'Select Refund Method',
-            backdrop: false,
-            html: `
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Where would you like to receive your refund?</p>
-                <div class="swal-radio-group">
-                    <label class="swal-radio-option">
-                        <input type="radio" name="refundMethod" value="Mobile Number" checked onclick="toggleRefundInput('mobile', '${phone}')">
-                        <span><i class="fa-solid fa-mobile-screen" style="color:var(--accent);"></i> Mobile Number (GPay/PhonePe/Paytm)</span>
-                    </label>
-                    <label class="swal-radio-option">
-                        <input type="radio" name="refundMethod" value="UPI ID" onclick="toggleRefundInput('upi', '')">
-                        <span><i class="fa-solid fa-building-columns" style="color:var(--accent);"></i> UPI ID</span>
-                    </label>
-                </div>
-                <input type="text" id="refundDetailsInput" class="swal-input-field" placeholder="Enter Mobile Number" value="${phone}">
-                
-                <div style="margin-top: 15px; text-align: left;">
-                    <label style="font-size: 0.8rem; font-weight: 800; color: var(--text-main);">Enter Email ID for Refund Proof</label>
-                    <input type="email" id="refundEmailInput" class="swal-input-field" placeholder="example@gmail.com">
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Submit Request',
-            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' },
-            preConfirm: () => {
-                const selectedMethod = document.querySelector('input[name="refundMethod"]:checked').value;
-                const detailsValue = document.getElementById('refundDetailsInput').value.trim();
-                const emailValue = document.getElementById('refundEmailInput').value.trim();
-                
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                if (!detailsValue) {
-                    Swal.showValidationMessage(`Please enter your ${selectedMethod}`);
-                    return false;
-                }
-                if (!emailValue || !emailRegex.test(emailValue)) {
-                    Swal.showValidationMessage(`Please enter a valid Email ID`);
-                    return false;
-                }
-                
-                return { method: selectedMethod, details: detailsValue, email: emailValue };
-            }
-        }).then((res) => {
-            if (res.isConfirmed) {
-                update(ref(db, `orders/${phone}/${orderId}`), { 
-                    status: 'Return Requested',
-                    refundMethod: res.value.method,
-                    refundDetails: res.value.details,
-                    refundEmail: res.value.email
-                })
-                .then(() => showAlert('Submitted', 'Your return request has been sent successfully.', 'success'));
-            }
-        });
-    };
-
-    window.toggleRefundInput = (type, phone) => {
-        const inputField = document.getElementById('refundDetailsInput');
-        if (type === 'mobile') {
-            inputField.placeholder = "Enter Mobile Number";
-            inputField.value = phone;
-        } else {
-            inputField.placeholder = "Enter Active UPI ID";
-            inputField.value = "";
-        }
-    };
-
-    window.cancelOrder = (orderId, phone) => {
-        Swal.fire({
-            title: 'Cancel Order?', text: "Confirm to cancel this order.", icon: 'warning',
-            backdrop: false,
-            showCancelButton: true, confirmButtonText: 'Yes, Cancel',
-            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
-        }).then((res) => {
-            if(res.isConfirmed) {
-                update(ref(db, `orders/${phone}/${orderId}`), { status: 'Cancelled' })
-                .then(() => showAlert('Cancelled', 'Your order was cancelled.', 'success'));
             }
         });
     };
