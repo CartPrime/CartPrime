@@ -538,7 +538,26 @@ nav {
   .otp-sub-bar { flex-wrap: wrap; gap: 6px; font-size: 0.72rem; }
   .modal-btn-submit { font-size: 0.88rem; padding: 12px; }
   .otp-inpage-notif { top: 10px; right: 10px; left: 10px; max-width: none; width: auto; }
+
+  /* --- Top header: name/phone chip area --- */
+  .nav-right { gap: 6px; }
+  .notification-icon-btn { width: 34px; height: 34px; font-size: 0.95rem; }
+  .notif-badge { min-width: 15px; height: 15px; font-size: 0.55rem; }
+  .profile-chip { gap: 6px; padding: 4px 8px 4px 4px; max-width: 46vw; }
+  .profile-avatar { width: 26px; height: 26px; font-size: 0.75rem; flex-shrink: 0; }
+  .profile-info { min-width: 0; }
+  .profile-name {
+    font-size: 0.68rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 26vw;
+  }
+  .profile-name .edit-profile-btn { display: none; }
+  .profile-phone { font-size: 0.6rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 26vw; }
 } 
+
+@media (max-width: 380px) {
+  .profile-phone { display: none; }
+  .profile-chip { max-width: 38vw; }
+  .profile-name { max-width: 30vw; }
+}
 </style> 
 
 <script>
@@ -1034,23 +1053,12 @@ nav {
   })();
 
   // Core Free OTP Sender Function
+  // NOTE: Live Firebase Phone Auth SMS is intentionally not attempted here —
+  // it needs phone-auth billing/config enabled on the Firebase project, and
+  // when it isn't, signInWithPhoneNumber can resolve without an SMS ever
+  // actually arriving, which looked like "OTP never comes". The guaranteed
+  // in-app notification path below always fires instead.
   async function sendFreeOtpPlatform(phoneNumber) {
-    const fullIndianPhone = "+91" + phoneNumber;
-    initRecaptcha();
-
-    // 1. Try Google Firebase Phone Auth (10,000 Free SMS / Month)
-    try {
-      if (recaptchaVerifier) {
-        confirmationResult = await signInWithPhoneNumber(auth, fullIndianPhone, recaptchaVerifier);
-        console.log("✅ SMS dispatched via Firebase Phone Auth Gateway to", fullIndianPhone);
-        showCustomAlert("OTP Sent via SMS", `A 6-digit security code has been sent to +91 ${phoneNumber}.`, true);
-        return true;
-      }
-    } catch (fbError) {
-      console.warn("Firebase SMS gateway standby/quota note, activating Smart Free Gateway fallback:", fbError);
-    }
-
-    // 2. Instant Free Fallback Dispatcher — delivered as a notification, not an on-screen popup
     generatedFallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
     console.log(`[CartPrime Free Security Gateway] Generated OTP: ${generatedFallbackOtp} for ${phoneNumber}`);
 
