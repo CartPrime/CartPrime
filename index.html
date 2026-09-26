@@ -997,28 +997,27 @@ nav {
   }
 
   // --- OTP delivery as a system-style notification ---
-  // Tries the real browser Notification API first (like an OS push notification).
-  // If permission isn't granted, falls back to an in-page slide-in banner
-  // and always mirrors the message into the bell icon's notification list.
+  // Always shows the in-page banner (so it's visible on the page itself,
+  // on both desktop and mobile — a native OS notification on PC can be
+  // missed if it's system-tray-only, Focus Assist/DND is on, or the
+  // browser/OS has notifications muted). If native Notification permission
+  // is granted, it also fires a real OS notification as a bonus. Either
+  // way, it's mirrored into the bell icon's notification list too.
   function deliverOtpAsNotification(phoneNumber, otpCode) {
     const title = "CartPrime Security Code";
     const body = `Your OTP for +91 ${phoneNumber} is ${otpCode}. Valid for 5 minutes.`;
 
-    let shown = false;
+    showInPageNotifBanner(title, body);
+
     if ("Notification" in window && Notification.permission === "granted") {
       try {
         new Notification(title, {
           body: body,
           icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
         });
-        shown = true;
       } catch (err) {
         console.warn("Native notification dispatch note:", err);
       }
-    }
-
-    if (!shown) {
-      showInPageNotifBanner(title, body);
     }
 
     addLocalNotification(title, body, 'fa-shield-halved');
