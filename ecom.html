@@ -1202,10 +1202,10 @@
             <div class="menu-category">Marketing & Offers</div>
             <button onclick="openTab('whatsappMarketing', this)" class="sidebar-btn" id="side-whatsappMarketing">
                 <div class="sidebar-btn-content">
-                    <i class="fa-brands fa-whatsapp" style="color:var(--whatsapp-green);"></i> 
-                    <span>WhatsApp Offers</span>
+                    <i class="fa-brands fa-telegram" style="color:#29a9eb;"></i> 
+                    <span>Telegram Offers</span>
                 </div>
-                <span class="badge-new">SendPulse</span>
+                <span class="badge-new">Telegram</span>
             </button>
             <button onclick="openTab('affiliates', this)" class="sidebar-btn" id="side-affiliates">
                 <div class="sidebar-btn-content"><i class="fa-solid fa-handshake"></i> <span>Earn Partners</span></div>
@@ -1263,7 +1263,7 @@
 
             <div class="top-right">
                 <button onclick="openTab('whatsappMarketing')" class="btn-top-action btn-top-whatsapp">
-                    <i class="fa-brands fa-whatsapp"></i>
+                    <i class="fa-brands fa-telegram"></i>
                     <span>Send Offer</span>
                 </button>
                 <a href="index.html" class="btn-top-action btn-top-store">
@@ -1372,33 +1372,43 @@
                 </div>
             </div>
 
-            <!-- TAB 2: WHATSAPP OFFERS & MARKETING (SENDPULSE POWERED) -->
+            <!-- TAB 2: OFFERS & MARKETING (TELEGRAM POWERED) -->
             <div id="whatsappMarketing" class="tab-content">
                 <div class="section-header">
                     <div>
-                        <h2 class="tab-title"><i class="fa-brands fa-whatsapp" style="color:var(--whatsapp-green);"></i> Automated WhatsApp Marketing Hub</h2>
-                        <p class="tab-subtitle">Powered by SendPulse WhatsApp API — Send offers automatically without displaying your personal phone number</p>
+                        <h2 class="tab-title"><i class="fa-brands fa-telegram" style="color:#29a9eb;"></i> Automated Telegram Marketing Hub</h2>
+                        <p class="tab-subtitle">Powered by the free Telegram Bot API — send unlimited offers automatically, no template approval and no per-message cost</p>
                     </div>
                 </div>
 
-                <!-- SendPulse Status Banner -->
+                <!-- Telegram Status Banner -->
                 <div class="aisensy-status-card">
                     <div class="aisensy-status-info">
-                        <div style="font-size:28px;"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div style="font-size:28px;"><i class="fa-brands fa-telegram"></i></div>
                         <div>
                             <div style="font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px;">
-                                <span>SendPulse WhatsApp API Active</span>
-                                <span class="aisensy-badge"><i class="fa fa-check-circle" style="color:#4ade80;"></i> Connected</span>
+                                <span>Telegram Bot API Active</span>
+                                <span class="aisensy-badge"><i class="fa fa-check-circle" style="color:#4ade80;"></i> Free & Unlimited</span>
                             </div>
                             <div style="font-size:12px; opacity:0.85; margin-top:2px;">
-                                App: <strong>SendPulse</strong> • Client: <strong>CartPrime Official</strong> • Personal Phone Number is completely hidden.
+                                Bot: <strong id="tgBotUsernameLabel">@your_bot</strong> • No message templates or approval needed on Telegram.
                             </div>
                         </div>
                     </div>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <span style="font-size:12px; font-weight:600;">Template:</span>
-                        <input type="text" id="spTemplateInput" value="cartprime_offer" onchange="saveTemplateName(this.value)" style="margin:0; width:170px; padding:6px 12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:12.5px; font-weight:bold; border-radius:8px;" title="Set your Approved WhatsApp Template Name from SendPulse">
+                        <button onclick="syncTelegramSubscribers()" class="btn-aisensy-send" style="padding:10px 16px; font-size:12px;">
+                            <i class="fa-solid fa-rotate"></i> Sync New Subscribers
+                        </button>
                     </div>
+                </div>
+
+                <div class="admin-card" style="background:#eff6ff; border-color:#bfdbfe;">
+                    <p style="font-size:12.5px; color:var(--text-secondary); line-height:1.6;">
+                        <i class="fa-solid fa-circle-info" style="color:#2563eb;"></i>
+                        Telegram bots can only message someone after that person has pressed <strong>Start</strong> in a chat with your bot — there's no way to message a phone number directly (this is a Telegram platform rule, not a limitation of this panel). Share your bot link
+                        <code id="tgDeepLinkPreview" style="background:#fff; padding:1px 6px; border-radius:4px;">https://t.me/your_bot</code>
+                        on your storefront so customers can opt in. Once they tap Start, click <strong>"Sync New Subscribers"</strong> above to pull their Chat ID into your Registered Users list automatically.
+                    </p>
                 </div>
 
                 <div class="whatsapp-hub-grid">
@@ -1430,8 +1440,8 @@
 
                         <div class="form-row">
                             <div>
-                                <label>RECIPIENT MOBILE NUMBER (WITH COUNTRY CODE OR 10-DIGIT)</label>
-                                <input type="text" id="waRecipientPhone" placeholder="9876543210 or +919876543210" oninput="updateWAPreview()">
+                                <label>RECIPIENT TELEGRAM CHAT ID</label>
+                                <input type="text" id="waRecipientPhone" placeholder="e.g. 5831234567 (from Registered Users list)" oninput="updateWAPreview()">
                             </div>
                             <div>
                                 <label>CUSTOMER NAME (OPTIONAL)</label>
@@ -1443,11 +1453,8 @@
                         <textarea id="waMessageText" rows="7" oninput="updateWAPreview()"></textarea>
 
                         <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
-                            <button onclick="sendViaSendPulseAuto()" class="btn-aisensy-send" style="flex:1 1 240px;">
-                                <i class="fa-solid fa-bolt"></i> Send Auto via SendPulse (Hidden Number)
-                            </button>
-                            <button onclick="sendToWhatsAppDirect()" class="btn-wa-action" title="Open in Personal WhatsApp as backup">
-                                <i class="fa-brands fa-whatsapp"></i> Open in WhatsApp
+                            <button onclick="sendViaTelegramAuto()" class="btn-aisensy-send" style="flex:1 1 240px;">
+                                <i class="fa-brands fa-telegram"></i> Send Auto via Telegram (Free)
                             </button>
                             <button onclick="copyWAMessage()" class="btn-copy-wa" title="Copy text">
                                 <i class="fa-solid fa-copy"></i>
@@ -1463,9 +1470,9 @@
                                     <div class="wa-mockup-avatar"><i class="fa-solid fa-bag-shopping"></i></div>
                                     <div>
                                         <div style="font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:5px;">
-                                            CartPrime Official <i class="fa-solid fa-circle-check" style="color:#25D366; font-size:12px;"></i>
+                                            CartPrime Official <i class="fa-solid fa-circle-check" style="color:#29a9eb; font-size:12px;"></i>
                                         </div>
-                                        <div style="font-size:11px; color:#8696a0;">Official Business Account</div>
+                                        <div style="font-size:11px; color:#8696a0;">Official Telegram Bot</div>
                                     </div>
                                 </div>
                                 <div style="color:#8696a0; font-size:16px;">
@@ -1489,7 +1496,7 @@
                             <div class="wa-mockup-footer">
                                 <i class="fa-regular fa-face-smile" style="color:#8696a0; font-size:18px;"></i>
                                 <div class="wa-mockup-input">Type a message</div>
-                                <i class="fa-solid fa-paper-plane" style="color:#00a884; font-size:16px;"></i>
+                                <i class="fa-solid fa-paper-plane" style="color:#29a9eb; font-size:16px;"></i>
                             </div>
                         </div>
                     </div>
@@ -1768,11 +1775,11 @@
                 <div class="section-header">
                     <div>
                         <h2 class="tab-title"><i class="fa-solid fa-users"></i> Registered Customers</h2>
-                        <p class="tab-subtitle">Customer base directory with 1-click SendPulse Automatic WhatsApp delivery</p>
+                        <p class="tab-subtitle">Customer base directory with 1-click free Telegram delivery</p>
                     </div>
                     <div>
                         <button onclick="broadcastOfferToAllUsers()" class="btn-aisensy-send" style="padding:10px 18px; font-size:12.5px;">
-                            <i class="fa-solid fa-paper-plane"></i> Broadcast Offer to All Customers via SendPulse
+                            <i class="fa-brands fa-telegram"></i> Broadcast Offer to All Telegram Subscribers
                         </button>
                     </div>
                 </div>
@@ -1784,7 +1791,8 @@
                                 <tr>
                                     <th>Customer Name</th>
                                     <th>Mobile / Email Contact</th>
-                                    <th>Send Offer via WhatsApp</th>
+                                    <th>Telegram</th>
+                                    <th>Send Offer</th>
                                 </tr>
                             </thead>
                             <tbody id="userList"></tbody>
@@ -1839,8 +1847,8 @@
     <button onclick="openTab('orders', this)" class="tablinks" id="btn-orders" title="Orders">
         <i class="fa fa-shopping-bag"></i> <span>Orders</span>
     </button>
-    <button onclick="openTab('whatsappMarketing', this)" class="tablinks" id="btn-whatsappMarketing" title="WhatsApp Offers">
-        <i class="fa-brands fa-whatsapp" style="color:var(--whatsapp-green);"></i> <span>Offers</span>
+    <button onclick="openTab('whatsappMarketing', this)" class="tablinks" id="btn-whatsappMarketing" title="Telegram Offers">
+        <i class="fa-brands fa-telegram" style="color:#29a9eb;"></i> <span>Offers</span>
     </button>
     <button onclick="openTab('addProduct', this)" class="tablinks" id="btn-addProduct" title="Add Product">
         <i class="fa fa-plus"></i> <span>Add</span>
@@ -1857,24 +1865,24 @@ import { getDatabase, ref, onValue, update, remove, push, set, get } from "https
 const ADMIN_PASSCODE = "73569778";
 
 /* ========================================================
-   SENDPULSE WHATSAPP API CONFIGURATION
-   Get these from: SendPulse Dashboard -> Account Settings -> API/WebAPI
-   WhatsApp Bot ID comes from: SendPulse -> Chatbots -> WhatsApp -> your connected number
+   TELEGRAM BOT API CONFIGURATION (100% FREE, NO APPROVAL NEEDED)
+   1. Message @BotFather on Telegram -> /newbot -> follow steps -> copy the token below.
+   2. Put your bot's @username below (without the @) for the deep link.
+   3. Add a "Chat with us on Telegram" link on your storefront pointing to:
+      https://t.me/YOUR_BOT_USERNAME?start=<firebase_user_id>
+      so that when a customer taps Start, their chat can be matched back to their account.
 ======================================================== */
-const SENDPULSE_CLIENT_ID = "YOUR_SENDPULSE_CLIENT_ID";
-const SENDPULSE_CLIENT_SECRET = "YOUR_SENDPULSE_CLIENT_SECRET";
-const SENDPULSE_WHATSAPP_BOT_ID = "YOUR_SENDPULSE_WHATSAPP_BOT_ID";
+const TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN";
+const TELEGRAM_BOT_USERNAME = "your_bot_username";
 
-let sendPulseTokenCache = { token: null, expiresAt: 0 };
+let telegramUpdateOffset = 0;
 
-window.saveTemplateName = (val) => {
-    localStorage.setItem("cartprime_sendpulse_template", val.trim());
-    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Template name updated!', showConfirmButton: false, timer: 1500 });
-};
-
-function getActiveTemplateName() {
-    return localStorage.getItem("cartprime_sendpulse_template") || document.getElementById('spTemplateInput')?.value.trim() || "cartprime_offer";
-}
+window.addEventListener('load', () => {
+    const label = document.getElementById('tgBotUsernameLabel');
+    const deepLinkPreview = document.getElementById('tgDeepLinkPreview');
+    if (label) label.innerText = "@" + TELEGRAM_BOT_USERNAME;
+    if (deepLinkPreview) deepLinkPreview.innerText = `https://t.me/${TELEGRAM_BOT_USERNAME}`;
+});
 
 async function checkAdminPasscode() {
     const isAuthenticated = localStorage.getItem("cartprime_admin_logged_in");
@@ -1937,11 +1945,6 @@ window.addEventListener('load', () => {
         Notification.requestPermission();
     }
     initWADefaultTemplate();
-
-    const savedTemplate = localStorage.getItem("cartprime_sendpulse_template");
-    if (savedTemplate && document.getElementById('spTemplateInput')) {
-        document.getElementById('spTemplateInput').value = savedTemplate;
-    }
 });
 
 const firebaseConfig = {
@@ -2244,7 +2247,7 @@ window.openTab = (tabId, element) => {
 
     const titles = {
         dashboard: "Overview Dashboard",
-        whatsappMarketing: "SendPulse Automated WhatsApp Hub",
+        whatsappMarketing: "Telegram Automated Offers Hub",
         orders: "Customer Order Management",
         addProduct: "Add New Product",
         manageProducts: "Catalog Inventory",
@@ -2417,176 +2420,182 @@ function updateEarningsChart(dailyEarningsMap) {
 }
 
 /* ========================================================
-   SENDPULSE WHATSAPP API SENDER ENGINE (BACKGROUND SEND)
-   Docs: https://sendpulse.com/integrations/api/whatsapp
+   TELEGRAM BOT API SENDER ENGINE (FREE, NO TEMPLATE APPROVAL)
+   Docs: https://core.telegram.org/bots/api#sendmessage
 ======================================================== */
-function cleanPhoneNumberWithCountryCode(phone) {
-    if (!phone) return "";
-    let clean = String(phone).replace(/[^0-9]/g, '');
-    if (clean.length === 10) clean = "91" + clean;
-    return clean;
-}
-
-async function getSendPulseAccessToken() {
-    const now = Date.now();
-    if (sendPulseTokenCache.token && sendPulseTokenCache.expiresAt > now + 30000) {
-        return sendPulseTokenCache.token;
+window.callTelegramApi = async (chatId, text) => {
+    if (!chatId) {
+        throw new Error("Missing recipient Telegram Chat ID");
+    }
+    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN") {
+        throw new Error("Telegram Bot Token is not configured yet. Get one for free from @BotFather.");
     }
 
-    const res = await fetch("https://api.sendpulse.com/oauth/access_token", {
+    const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            grant_type: "client_credentials",
-            client_id: SENDPULSE_CLIENT_ID,
-            client_secret: SENDPULSE_CLIENT_SECRET
+            chat_id: chatId,
+            text: text,
+            parse_mode: "Markdown",
+            disable_web_page_preview: false
         })
     });
 
     const data = await res.json();
-    if (!res.ok || !data.access_token) {
-        throw new Error(data.error_description || data.message || "Failed to authenticate with SendPulse");
-    }
-
-    sendPulseTokenCache = {
-        token: data.access_token,
-        expiresAt: now + ((data.expires_in || 3600) * 1000)
-    };
-    return data.access_token;
-}
-
-window.callSendPulseApi = async (destination, userName, templateName, templateParams = [], mediaUrl = "") => {
-    let cleanPhone = cleanPhoneNumberWithCountryCode(destination);
-    if (!cleanPhone || cleanPhone.length < 10) {
-        throw new Error("Invalid recipient phone number");
-    }
-
-    const token = await getSendPulseAccessToken();
-
-    const payload = {
-        bot_id: SENDPULSE_WHATSAPP_BOT_ID,
-        phone: cleanPhone,
-        message: {
-            type: "template",
-            template: {
-                name: templateName || getActiveTemplateName(),
-                language: { code: "en_US" },
-                components: [
-                    {
-                        type: "body",
-                        parameters: templateParams.map(p => ({ type: "text", text: String(p) }))
-                    },
-                    ...(mediaUrl ? [{
-                        type: "header",
-                        parameters: [{ type: "image", image: { link: mediaUrl } }]
-                    }] : [])
-                ]
-            }
-        }
-    };
-
-    const res = await fetch("https://api.sendpulse.com/whatsapp/contacts/sendByPhone", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-    return { ok: res.ok, status: res.status, data: data };
+    return { ok: res.ok && data.ok, status: res.status, data: data };
 };
 
-window.sendViaSendPulseAuto = async () => {
-    const phoneInput = document.getElementById('waRecipientPhone');
-    const nameInput = document.getElementById('waRecipientName');
-    const couponInput = document.getElementById('waCouponCode');
-    const prodKey = document.getElementById('waProductSelect')?.value;
-    const selectedProd = globalProductsCache[prodKey] || null;
-
-    let phone = phoneInput ? phoneInput.value.trim() : '';
-    let name = nameInput ? nameInput.value.trim() : 'Customer';
-    let coupon = couponInput ? couponInput.value.trim() : 'PRIME30';
-    let templateName = getActiveTemplateName();
-
-    if (!phone) {
-        Swal.fire('Phone Required', 'Please enter recipient mobile number to send automatically.', 'warning');
+/* Poll Telegram getUpdates once and auto-link any new "/start <firebase_uid>" 
+   deep-link openers to that user's record in Firebase (users/{uid}/telegramChatId). 
+   Call this whenever the admin panel is open — no server/webhook required. */
+window.syncTelegramSubscribers = async () => {
+    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN") {
+        Swal.fire('Not Configured', 'Add your Telegram Bot Token in the code first (see comment near TELEGRAM_BOT_TOKEN).', 'warning');
         return;
     }
 
-    const templateParams = [
-        name,
-        coupon,
-        selectedProd ? selectedProd.name : "Exclusive Offer",
-        `${window.location.origin}/index.html`
-    ];
+    Swal.fire({ title: 'Syncing Telegram subscribers...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    try {
+        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${telegramUpdateOffset}&timeout=0`);
+        const data = await res.json();
+
+        if (!data.ok) {
+            Swal.fire('Error', data.description || 'Could not fetch Telegram updates.', 'error');
+            return;
+        }
+
+        let linkedCount = 0;
+
+        for (const tgUpdate of (data.result || [])) {
+            telegramUpdateOffset = tgUpdate.update_id + 1;
+            const msg = tgUpdate.message;
+            if (!msg || !msg.text) continue;
+
+            const chatId = msg.chat.id;
+            const senderName = [msg.from?.first_name, msg.from?.last_name].filter(Boolean).join(' ') || msg.from?.username || 'Telegram User';
+
+            const startMatch = msg.text.match(/^\/start(?:\s+(\S+))?/);
+            if (startMatch) {
+                const payload = startMatch[1];
+
+                if (payload) {
+                    // Deep-linked from the storefront with a known Firebase user id
+                    await update(ref(db, `users/${payload}`), {
+                        telegramChatId: chatId,
+                        telegramName: senderName
+                    }).catch(() => {});
+                    linkedCount++;
+                } else {
+                    // Generic /start with no payload — store as an unlinked subscriber
+                    await set(ref(db, `telegram_subscribers/${chatId}`), {
+                        chatId: chatId,
+                        name: senderName,
+                        joinedAt: new Date().toISOString()
+                    }).catch(() => {});
+                    linkedCount++;
+                }
+            }
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Sync Complete',
+            text: linkedCount > 0 ? `${linkedCount} subscriber(s) synced.` : 'No new subscribers found.',
+            timer: 1800,
+            showConfirmButton: false
+        });
+    } catch (err) {
+        console.error("Telegram sync error:", err);
+        Swal.fire('Error', err.message || 'Could not sync Telegram subscribers.', 'error');
+    }
+};
+
+window.sendViaTelegramAuto = async () => {
+    const chatIdInput = document.getElementById('waRecipientPhone');
+    const nameInput = document.getElementById('waRecipientName');
+    const msgInput = document.getElementById('waMessageText');
+
+    let chatId = chatIdInput ? chatIdInput.value.trim() : '';
+    let name = nameInput ? nameInput.value.trim() : 'Customer';
+    let message = msgInput ? msgInput.value.trim() : '';
+
+    if (!chatId) {
+        Swal.fire('Chat ID Required', "Enter the recipient's Telegram Chat ID (pick one from the Registered Users list, or click \"Sync New Subscribers\" to fetch new ones).", 'warning');
+        return;
+    }
+    if (!message) {
+        Swal.fire('Message Empty', 'Please write or generate an offer message first.', 'warning');
+        return;
+    }
 
     Swal.fire({
-        title: 'Dispatching via SendPulse...',
-        text: `Sending automated WhatsApp to ${phone} without revealing your personal number...`,
+        title: 'Sending via Telegram...',
+        text: `Dispatching free automated message to ${name}...`,
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); }
     });
 
     try {
-        const result = await window.callSendPulseApi(phone, name, templateName, templateParams, selectedProd?.images?.[0] || "");
+        const result = await window.callTelegramApi(chatId, message);
 
-        if (result.ok && (result.data.success !== false)) {
+        if (result.ok) {
             Swal.fire({
                 icon: 'success',
-                title: 'Sent Automatically!',
-                html: `<p style="font-size:13px; color:#475569;">WhatsApp message has been dispatched successfully to <strong>${phone}</strong> via your verified CartPrime business account!</p>`,
-                confirmButtonColor: '#4f46e5'
+                title: 'Sent!',
+                html: `<p style="font-size:13px; color:#475569;">Message delivered instantly and for free via your Telegram bot.</p>`,
+                confirmButtonColor: '#29a9eb'
             });
         } else {
-            let errMsg = result.data.message || result.data.error || 'Failed to dispatch via SendPulse.';
+            let errMsg = result.data.description || 'Failed to send message via Telegram.';
             Swal.fire({
                 icon: 'warning',
-                title: 'SendPulse Response',
+                title: 'Telegram Response',
                 html: `<p style="font-size:13px; color:#ef4444;">${errMsg}</p>
-                       <p style="font-size:12px; color:#64748b; margin-top:8px;">Make sure template <strong>"${templateName}"</strong> is approved and your WhatsApp Bot ID is correctly set in SendPulse.</p>`,
+                       <p style="font-size:12px; color:#64748b; margin-top:8px;">This usually means the Chat ID is wrong, or that person has not pressed Start in your bot yet.</p>`,
                 confirmButtonColor: '#0f172a'
             });
         }
     } catch (err) {
-        console.error("SendPulse Send Error:", err);
+        console.error("Telegram Send Error:", err);
         Swal.fire({
             icon: 'error',
-            title: 'API Request Error',
-            text: err.message || 'Network issue communicating with SendPulse API.',
+            title: 'Request Error',
+            text: err.message || 'Network issue communicating with Telegram API.',
             confirmButtonColor: '#0f172a'
         });
     }
 };
 
-window.sendViaSendPulseDirect = async (userName, userPhone) => {
-    let templateName = getActiveTemplateName();
-    let coupon = document.getElementById('waCouponCode')?.value || 'PRIME30';
+window.sendViaTelegramDirect = async (userName, chatId) => {
+    if (!chatId) {
+        Swal.fire('Not Linked Yet', `${userName} hasn't started a chat with your Telegram bot yet, so there's no Chat ID to message.`, 'info');
+        return;
+    }
 
     const confirmRes = await Swal.fire({
         title: `Send Offer to ${userName}?`,
-        html: `<p style="font-size:13px; color:#64748b;">This will automatically send the active WhatsApp offer to <strong>${userPhone}</strong> via SendPulse without showing your number.</p>`,
+        html: `<p style="font-size:13px; color:#64748b;">This will instantly and freely send the active offer to <strong>${userName}</strong> via Telegram.</p>`,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Yes, Send Automatically',
-        confirmButtonColor: '#4f46e5'
+        confirmButtonText: 'Yes, Send',
+        confirmButtonColor: '#29a9eb'
     });
 
     if (!confirmRes.isConfirmed) return;
 
-    Swal.fire({
-        title: 'Sending...',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); }
-    });
+    Swal.fire({ title: 'Sending...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+    const msgInput = document.getElementById('waMessageText');
+    const message = msgInput ? msgInput.value.trim() : waTemplates[currentWATemplateKey]('flash_sale', null, document.getElementById('waCouponCode')?.value || 'PRIME30');
 
     try {
-        const result = await window.callSendPulseApi(userPhone, userName, templateName, [userName, coupon, `${window.location.origin}/index.html`]);
-        if (result.ok && result.data.success !== false) {
+        const result = await window.callTelegramApi(chatId, message);
+        if (result.ok) {
             Swal.fire({ icon: 'success', title: 'Sent!', text: `Offer sent to ${userName}!`, timer: 1800, showConfirmButton: false });
         } else {
-            Swal.fire('Notice', result.data.message || 'Check if SendPulse template is approved.', 'warning');
+            Swal.fire('Notice', result.data.description || 'Could not deliver the message.', 'warning');
         }
     } catch(err) {
         Swal.fire('Error', err.message, 'error');
@@ -2594,55 +2603,56 @@ window.sendViaSendPulseDirect = async (userName, userPhone) => {
 };
 
 window.broadcastOfferToAllUsers = async () => {
-    if (!globalUsersList || globalUsersList.length === 0) {
-        Swal.fire('No Users', 'No registered users found to broadcast.', 'info');
+    const subscribedUsers = globalUsersList.filter(u => u.chatId);
+
+    if (subscribedUsers.length === 0) {
+        Swal.fire('No Subscribers', 'No users have linked their Telegram account yet. Share your bot link and click "Sync New Subscribers" first.', 'info');
         return;
     }
 
     const { isConfirmed } = await Swal.fire({
-        title: 'Broadcast to All Users?',
-        html: `<p style="font-size:13.5px; color:#475569;">You are about to automatically broadcast WhatsApp offers to <strong>${globalUsersList.length} customers</strong> via SendPulse.</p>
-               <p style="font-size:12px; color:#ef4444; margin-top:6px;">Your personal number will remain hidden.</p>`,
+        title: 'Broadcast to All Subscribers?',
+        html: `<p style="font-size:13.5px; color:#475569;">You are about to automatically broadcast the current offer to <strong>${subscribedUsers.length} Telegram subscriber(s)</strong> for free.</p>`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: `Start Broadcast (${globalUsersList.length} Users)`,
-        confirmButtonColor: '#4f46e5'
+        confirmButtonText: `Start Broadcast (${subscribedUsers.length})`,
+        confirmButtonColor: '#29a9eb'
     });
 
     if (!isConfirmed) return;
 
     let successCount = 0;
     let failCount = 0;
-    let templateName = getActiveTemplateName();
-    let coupon = document.getElementById('waCouponCode')?.value || 'PRIME30';
+    const msgInput = document.getElementById('waMessageText');
+    const message = msgInput && msgInput.value.trim() ? msgInput.value.trim() : waTemplates.flash_sale('Customer', null, document.getElementById('waCouponCode')?.value || 'PRIME30');
 
     Swal.fire({
         title: 'Broadcasting Offers...',
-        html: `Sending 0 / ${globalUsersList.length}...`,
+        html: `Sending 0 / ${subscribedUsers.length}...`,
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); }
     });
 
-    for (let i = 0; i < globalUsersList.length; i++) {
-        const u = globalUsersList[i];
-        Swal.update({ html: `Sending ${i + 1} of ${globalUsersList.length} (${u.name})...` });
+    for (let i = 0; i < subscribedUsers.length; i++) {
+        const u = subscribedUsers[i];
+        Swal.update({ html: `Sending ${i + 1} of ${subscribedUsers.length} (${u.name})...` });
 
         try {
-            const res = await window.callSendPulseApi(u.phone, u.name, templateName, [u.name, coupon, `${window.location.origin}/index.html`]);
-            if (res.ok && res.data.success !== false) successCount++;
+            const res = await window.callTelegramApi(u.chatId, message.replace(/Customer/g, u.name));
+            if (res.ok) successCount++;
             else failCount++;
         } catch (e) {
             failCount++;
         }
 
-        await new Promise(r => setTimeout(r, 400));
+        await new Promise(r => setTimeout(r, 60));
     }
 
     Swal.fire({
         icon: 'success',
         title: 'Broadcast Finished!',
         html: `<p style="font-size:14px;"><strong>${successCount}</strong> messages sent successfully.<br><span style="color:#ef4444;">${failCount} failed.</span></p>`,
-        confirmButtonColor: '#4f46e5'
+        confirmButtonColor: '#29a9eb'
     });
 };
 
@@ -2708,7 +2718,7 @@ Complete your order right now and get a *Surprise 15% OFF*!
 🎟️ Voucher Code: *${coupon || 'COMEBACK15'}*
 👉 *Order Now:* ${window.location.origin}/index.html
 
-Need any help with placing your order? Reply directly to this WhatsApp chat! 😊`
+Need any help with placing your order? Reply directly to this Telegram chat! 😊`
 };
 
 let currentWATemplateKey = 'flash_sale';
@@ -2759,26 +2769,6 @@ window.updateWAPreview = () => {
     previewEl.innerHTML = formatted || 'Type an offer message to preview...';
 };
 
-window.sendToWhatsAppDirect = () => {
-    const phoneInput = document.getElementById('waRecipientPhone');
-    const msgInput = document.getElementById('waMessageText');
-
-    let phone = phoneInput ? phoneInput.value.trim() : '';
-    let msg = msgInput ? msgInput.value.trim() : '';
-
-    if (!msg) {
-        Swal.fire('Message Empty', 'Please write or generate an offer message first.', 'warning');
-        return;
-    }
-
-    let cleanPhone = cleanPhoneNumberWithCountryCode(phone);
-    let waUrl = cleanPhone 
-        ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`
-        : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
-
-    window.open(waUrl, '_blank');
-};
-
 window.copyWAMessage = () => {
     const msgInput = document.getElementById('waMessageText');
     if (!msgInput || !msgInput.value.trim()) return;
@@ -2788,20 +2778,20 @@ window.copyWAMessage = () => {
             toast: true,
             position: 'top-end',
             icon: 'success',
-            title: 'WhatsApp Offer Copied!',
+            title: 'Offer Message Copied!',
             showConfirmButton: false,
             timer: 1500
         });
     });
 };
 
-window.quickSendOfferToUser = (userName, userPhone) => {
+window.quickSendOfferToUser = (userName, chatId) => {
     openTab('whatsappMarketing');
     const nameField = document.getElementById('waRecipientName');
-    const phoneField = document.getElementById('waRecipientPhone');
+    const chatIdField = document.getElementById('waRecipientPhone');
 
     if (nameField) nameField.value = userName || 'Customer';
-    if (phoneField) phoneField.value = userPhone || '';
+    if (chatIdField) chatIdField.value = chatId || '';
 
     window.applyOfferTemplate('flash_sale');
 };
@@ -3033,7 +3023,7 @@ function renderOrderRow(container, o, path) {
     const statusClass = currentStatus.replace(/\s+/g, '');
     const fullOrderId = o.orderId || path.split('/').pop();
     const userPhone = o.phone || o.mobile || o.customerPhone || o.parentPhone || 'N/A';
-    const cleanPhone = cleanPhoneNumberWithCountryCode(userPhone);
+    const cleanPhone = String(userPhone).replace(/[^0-9]/g, '');
 
     container.innerHTML += `
     <tr>
@@ -3091,7 +3081,7 @@ window.viewFullOrderDetails = (path) => {
     const fullAddress = o.address || 'No Address Provided';
     const fullOrderId = o.orderId || path.split('/').pop();
     const userPhone = o.phone || o.mobile || o.customerPhone || o.parentPhone || 'N/A';
-    const cleanPhone = cleanPhoneNumberWithCountryCode(userPhone);
+    const cleanPhone = String(userPhone).replace(/[^0-9]/g, '');
 
     let productsListHtml = "";
     if (o.items && Array.isArray(o.items) && o.items.length > 0) {
@@ -3878,8 +3868,9 @@ onValue(ref(db, 'users'), snap => {
             const userData = u.val();
             const userName = userData.name || 'Customer'; 
             const phone = userData.phone || userData.email || u.key; 
+            const chatId = userData.telegramChatId || '';
 
-            globalUsersList.push({ name: userName, phone: phone, uid: u.key });
+            globalUsersList.push({ name: userName, phone: phone, chatId: chatId, uid: u.key });
 
             list.innerHTML += `
                 <tr>
@@ -3889,12 +3880,17 @@ onValue(ref(db, 'users'), snap => {
                     </td>
                     <td><span style="font-weight:600; color:#2563eb;"><i class="fa fa-phone" style="font-size:11px; margin-right:4px;"></i>${phone}</span></td>
                     <td>
+                        ${chatId
+                            ? `<span style="font-size:11px; padding:3px 8px; border-radius:6px; background:#dcfce7; color:#15803d; font-weight:800;"><i class="fa-brands fa-telegram"></i> Linked</span>`
+                            : `<span style="font-size:11px; padding:3px 8px; border-radius:6px; background:#f1f5f9; color:#94a3b8; font-weight:800;">Not Linked</span>`}
+                    </td>
+                    <td>
                         <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                            <button onclick="sendViaSendPulseDirect('${userName.replace(/'/g, "\\'")}', '${phone}')" class="btn-table-aisensy" title="Send Automatically without showing personal number">
-                                <i class="fa-solid fa-bolt"></i> Auto Send
+                            <button onclick="sendViaTelegramDirect('${userName.replace(/'/g, "\\'")}', '${chatId}')" class="btn-table-aisensy" title="Send instantly for free via Telegram" ${chatId ? '' : 'disabled style="opacity:0.5; cursor:not-allowed;"'}>
+                                <i class="fa-brands fa-telegram"></i> Auto Send
                             </button>
-                            <button onclick="quickSendOfferToUser('${userName.replace(/'/g, "\\'")}', '${phone}')" class="btn-table-wa" title="Open in WhatsApp">
-                                <i class="fa-brands fa-whatsapp"></i> Chat
+                            <button onclick="quickSendOfferToUser('${userName.replace(/'/g, "\\'")}', '${chatId}')" class="btn-table-wa" title="Open in Marketing Hub">
+                                <i class="fa-solid fa-pen"></i> Compose
                             </button>
                         </div>
                     </td>
@@ -4061,7 +4057,7 @@ function renderAllComplaints() {
         }
 
         renderedCount++;
-        const cleanPhone = cleanPhoneNumberWithCountryCode(customerPhone);
+        const cleanPhone = String(customerPhone).replace(/[^0-9]/g, '');
 
         container.innerHTML += `
         <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow-xs);">
