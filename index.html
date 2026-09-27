@@ -4,10 +4,14 @@
 <meta charset="UTF-8"> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 <title>CartPrime | Home </title> 
-<link rel="icon" type="image/x-icon" href="https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"> 
+
+<!-- Shopping Bag Favicon (SVG Data URI) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%230b0b0f'/><path d='M17 8h-1.5c0-1.93-1.57-3.5-3.5-3.5S8.5 6.07 8.5 8H7c-.83 0-1.5.67-1.5 1.5v8C5.5 18.33 6.17 19 7 19h10c.83 0 1.5-.67 1.5-1.5v-8C18.5 8.67 17.83 8 17 8zm-5-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm5 11.5H7v-8h10v8z' fill='%23f59e0b'/></svg>">
+<link rel="icon" type="image/png" sizes="96x96" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%230b0b0f'/><path d='M17 8h-1.5c0-1.93-1.57-3.5-3.5-3.5S8.5 6.07 8.5 8H7c-.83 0-1.5.67-1.5 1.5v8C5.5 18.33 6.17 19 7 19h10c.83 0 1.5-.67 1.5-1.5v-8C18.5 8.67 17.83 8 17 8zm-5-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm5 11.5H7v-8h10v8z' fill='%23f59e0b'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%230b0b0f'/><path d='M17 8h-1.5c0-1.93-1.57-3.5-3.5-3.5S8.5 6.07 8.5 8H7c-.83 0-1.5.67-1.5 1.5v8C5.5 18.33 6.17 19 7 19h10c.83 0 1.5-.67 1.5-1.5v-8C18.5 8.67 17.83 8 17 8zm-5-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm5 11.5H7v-8h10v8z' fill='%23f59e0b'/></svg>">
+
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
-<link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-09-20-b4b944f2-2047-4c3b-ace2-348521478b38.png" sizes="96x96" />
 
 <style> 
 /* --- Light Theme Variables (Orange + Black) --- */ 
@@ -348,7 +352,17 @@ nav {
 .dot.active { background: var(--accent); width: 20px; border-radius: 4px; } 
 
 .container { padding: 10px 6% 40px; flex: 1; } 
-.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; } 
+
+/* =============================================
+   PRODUCT GRID — Responsive Column Layout
+   Mobile  : 2 columns
+   Tablet  : 3 columns (≥ 600px)
+   Desktop : 4 columns (≥ 1024px)
+   ============================================= */
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+@media (min-width: 600px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
 .modal-form { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; } 
 .modal-input { padding: 13px 14px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-main); font-size: 0.92rem; width: 100%; } 
 .modal-btn-group { display: flex; gap: 10px; margin-top: 10px; } 
@@ -381,7 +395,7 @@ nav {
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } } 
 
-/* In-page fallback "system notification" banner (used when native Notification isn't available/permitted) */
+/* In-page fallback "system notification" banner */
 .otp-inpage-notif {
   position: fixed; top: 14px; right: 14px; z-index: 30000; max-width: 320px; width: calc(100% - 28px);
   background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
@@ -490,6 +504,10 @@ nav {
 }
 .contact-option:hover { border-color: var(--accent); transform: translateY(-2px); }
 .contact-option i { font-size: 1.4rem; }
+
+/* =============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================= */
 @media (max-width: 768px) { 
   nav { padding: 10px 4%; flex-wrap: wrap; justify-content: space-between; gap: 10px; } 
   .logo { font-size: 1.2rem; order: 1; } 
@@ -521,7 +539,6 @@ nav {
   .cookie-actions { width: 100%; } 
   .cookie-btn { width: 100%; min-height: 40px; } 
 
-  /* --- Login / OTP modal: phone-friendly layout --- */
   .modal-card { padding: 18px; border-radius: 20px; max-width: 100%; }
   .login-header-zone { margin-bottom: 12px; }
   .login-shield-badge { width: 40px; height: 40px; font-size: 1.15rem; border-radius: 12px; }
@@ -539,7 +556,6 @@ nav {
   .modal-btn-submit { font-size: 0.88rem; padding: 12px; }
   .otp-inpage-notif { top: 10px; right: 10px; left: 10px; max-width: none; width: auto; }
 
-  /* --- Top header: name/phone chip area --- */
   .nav-right { gap: 6px; }
   .notification-icon-btn { width: 34px; height: 34px; font-size: 0.95rem; }
   .notif-badge { min-width: 15px; height: 15px; font-size: 0.55rem; }
@@ -590,7 +606,7 @@ nav {
 <!-- Hidden Container for Firebase reCAPTCHA Invisible Verification -->
 <div id="recaptcha-container"></div>
 
-<!-- In-page fallback "system notification" banner for OTP (used when native browser Notification is unavailable/blocked) -->
+<!-- In-page fallback "system notification" banner for OTP -->
 <div id="otpInPageNotif" class="otp-inpage-notif">
   <div class="n-icon"><i class="fa-solid fa-shield-halved"></i></div>
   <div class="n-body">
@@ -860,7 +876,7 @@ nav {
   </div> 
 </div> 
 
-<!-- Bottom Navigation Bar with Contact Icon and Earn Badge -->
+<!-- Bottom Navigation Bar -->
 <div class="bottom-nav">
   <a href="/" class="bottom-nav-item active">
     <i class="fa-solid fa-house"></i>
@@ -940,18 +956,9 @@ nav {
   const auth = getAuth(app); 
   const db = getDatabase(app); 
 
-  // ========================================================
-  // ⚙️ FREE OTP PLATFORM INTEGRATION SYSTEM
-  // ========================================================
-  // 1. Google Firebase Phone Auth provides 10,000 FREE SMS/month.
-  // 2. OTP is delivered as a real device/system Notification (falls back
-  //    to an in-page banner + the bell icon if Notification permission
-  //    isn't available).
-  // ========================================================
-
-  let confirmationResult = null; // Holds Firebase Phone Auth confirmation session
+  let confirmationResult = null;
   let recaptchaVerifier = null;
-  let generatedFallbackOtp = ""; // Fallback OTP if SMS service is pending activation
+  let generatedFallbackOtp = "";
   let otpTimerInterval = null;
 
   function initRecaptcha() {
@@ -959,9 +966,7 @@ nav {
       try {
         recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
           size: 'invisible',
-          callback: (response) => {
-            // reCAPTCHA solved
-          },
+          callback: (response) => {},
           'expired-callback': () => {
             if (recaptchaVerifier) recaptchaVerifier.clear();
             recaptchaVerifier = null;
@@ -973,7 +978,6 @@ nav {
     }
   }
 
-  // 30-Second Countdown Timer for Resend
   function startOtpCountdown(duration = 30) {
     const timerDisplay = document.getElementById('otpTimerDisplay');
     const resendBtn = document.getElementById('resendOtpBtn');
@@ -996,13 +1000,6 @@ nav {
     }, 1000);
   }
 
-  // --- OTP delivery as a system-style notification ---
-  // Always shows the in-page banner (so it's visible on the page itself,
-  // on both desktop and mobile — a native OS notification on PC can be
-  // missed if it's system-tray-only, Focus Assist/DND is on, or the
-  // browser/OS has notifications muted). If native Notification permission
-  // is granted, it also fires a real OS notification as a bonus. Either
-  // way, it's mirrored into the bell icon's notification list too.
   function deliverOtpAsNotification(phoneNumber, otpCode) {
     const title = "CartPrime Security Code";
     const body = `Your OTP for +91 ${phoneNumber} is ${otpCode}. Valid for 5 minutes.`;
@@ -1051,12 +1048,6 @@ nav {
     }
   })();
 
-  // Core Free OTP Sender Function
-  // NOTE: Live Firebase Phone Auth SMS is intentionally not attempted here —
-  // it needs phone-auth billing/config enabled on the Firebase project, and
-  // when it isn't, signInWithPhoneNumber can resolve without an SMS ever
-  // actually arriving, which looked like "OTP never comes". The guaranteed
-  // in-app notification path below always fires instead.
   async function sendFreeOtpPlatform(phoneNumber) {
     generatedFallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
     console.log(`[CartPrime Free Security Gateway] Generated OTP: ${generatedFallbackOtp} for ${phoneNumber}`);
@@ -1067,12 +1058,10 @@ nav {
     return true;
   }
 
-  // Generates a unique token to enforce single-device active session per phone number
   function generateSessionToken() {
     return 'ST_' + Math.random().toString(36).substring(2) + Date.now();
   }
 
-  // Monitor single device login state real-time
   function monitorSingleDeviceSession() {
     const userPhone = localStorage.getItem('userPhone');
     const localToken = localStorage.getItem('sessionToken');
@@ -1105,7 +1094,6 @@ nav {
     return `CP-REF-${randomDigits}`;
   }
 
-  // Helper functions for animated modals
   function openModal(modalElement) {
     modalElement.style.display = 'flex';
     setTimeout(() => {
@@ -1146,7 +1134,6 @@ nav {
   const changePhoneBtn = document.getElementById('changePhoneBtn');
   const resendOtpBtn = document.getElementById('resendOtpBtn');
 
-  /* --- Notification Panel Modal Logic --- */
   const notifBtn = document.getElementById('notifBtn');
   const notifBadge = document.getElementById('notifBadge');
   const notifModal = document.getElementById('notifModal');
@@ -1282,7 +1269,7 @@ nav {
 
   listenNotifications();
 
-  let registrationStep = 1; // 1: Phone, 2: OTP, 3: Name
+  let registrationStep = 1;
   let pendingPhone = "";
   let pendingExistingName = "";
   let isNewUserSession = false;
@@ -1302,7 +1289,6 @@ nav {
     profileChip.addEventListener('click', () => {
       const userPhone = localStorage.getItem('userPhone');
       if (userPhone) {
-        // Edit Profile Mode
         userWelcomePhone.value = userPhone;
         userWelcomeName.value = localStorage.getItem('userName') || "";
         phoneInputGroup.style.display = 'block';
@@ -1317,7 +1303,6 @@ nav {
         if (logoutSection) logoutSection.style.display = "block";
         openModal(welcomeModal);
       } else {
-        // Not logged in -> Open Sign-in
         resetRegistrationForm();
         if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
         openModal(welcomeModal);
@@ -1402,7 +1387,6 @@ nav {
     welcomeForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      // STEP 1: Phone submission -> Send Free OTP
       if (registrationStep === 1) {
         const phone = userWelcomePhone.value.trim().replace(/[^0-9]/g, '');
         if (!phone || phone.length !== 10) {
@@ -1421,7 +1405,6 @@ nav {
         loadingText.textContent = "Verifying Mobile & Generating OTP...";
         verifyLoadingBox.style.display = 'flex';
 
-        // Check if user already exists in Firebase
         const userRef = ref(db, `users/${phone}`);
         get(userRef).then(async (snapshot) => {
           if (snapshot.exists()) {
@@ -1432,13 +1415,11 @@ nav {
             isNewUserSession = true;
           }
 
-          // Trigger Free OTP Gateway
           await sendFreeOtpPlatform(phone);
 
           verifyLoadingBox.style.display = 'none';
           welcomeForm.style.display = 'flex';
 
-          // Transition to Step 2: OTP Verification
           registrationStep = 2;
           phoneInputGroup.style.display = 'none';
           otpInputGroup.style.display = 'block';
@@ -1460,9 +1441,7 @@ nav {
           showCustomAlert("Connection Error", "Could not connect to security servers. Please try again.", false);
         });
 
-      } 
-      // STEP 2: OTP Verification
-      else if (registrationStep === 2) {
+      } else if (registrationStep === 2) {
         const otpVal = userWelcomeOtp.value.trim();
         if (!otpVal || otpVal.length !== 6) {
           showCustomAlert("Invalid Code", "Please enter the complete 6-digit OTP.", false);
@@ -1475,7 +1454,6 @@ nav {
 
         let isOtpValid = false;
 
-        // A. If Firebase Phone Auth Confirmation session exists
         if (confirmationResult) {
           try {
             const cred = await confirmationResult.confirm(otpVal);
@@ -1487,7 +1465,6 @@ nav {
           }
         }
 
-        // B. Fallback / Universal Check
         if (!isOtpValid) {
           if (otpVal === "146059" || otpVal === generatedFallbackOtp || otpVal === "959894") {
             isOtpValid = true;
@@ -1501,9 +1478,7 @@ nav {
           return;
         }
 
-        // OTP Verified successfully!
         if (isNewUserSession) {
-          // Proceed to Step 3: Name Entry for new customer
           verifyLoadingBox.style.display = 'none';
           welcomeForm.style.display = 'flex';
           registrationStep = 3;
@@ -1515,7 +1490,6 @@ nav {
           welcomeModalSub.textContent = "OTP Verified! What should we call you?";
           welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Complete Setup';
         } else {
-          // Existing user login
           const newSessionToken = generateSessionToken();
           localStorage.setItem('userName', pendingExistingName);
           localStorage.setItem('userPhone', pendingPhone);
@@ -1545,9 +1519,7 @@ nav {
             resetRegistrationForm();
           });
         }
-      } 
-      // STEP 3: Save Name (New User Signup or Profile Edit)
-      else if (registrationStep === 3) {
+      } else if (registrationStep === 3) {
         const name = userWelcomeName.value.trim();
         const phone = pendingPhone || localStorage.getItem('userPhone');
 
@@ -1663,7 +1635,6 @@ nav {
     });
   }
 
-  /* --- EARN PARTNER LOGIC --- */ 
   const earnModal = document.getElementById('earnModal'); 
   const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
   const closeEarnModal = document.getElementById('closeEarnModal'); 
