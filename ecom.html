@@ -2427,7 +2427,7 @@ window.callTelegramApi = async (chatId, text) => {
     if (!chatId) {
         throw new Error("Missing recipient Telegram Chat ID");
     }
-    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN") {
+    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "8619880264:AAHKbaud-GwQfu_Zs5v1EzTQgCcYXYtTOg0") {
         throw new Error("Telegram Bot Token is not configured yet. Get one for free from @BotFather.");
     }
 
@@ -2450,7 +2450,7 @@ window.callTelegramApi = async (chatId, text) => {
    deep-link openers to that user's record in Firebase (users/{uid}/telegramChatId). 
    Call this whenever the admin panel is open — no server/webhook required. */
 window.syncTelegramSubscribers = async () => {
-    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN") {
+    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "8619880264:AAHKbaud-GwQfu_Zs5v1EzTQgCcYXYtTOg0") {
         Swal.fire('Not Configured', 'Add your Telegram Bot Token in the code first (see comment near TELEGRAM_BOT_TOKEN).', 'warning');
         return;
     }
