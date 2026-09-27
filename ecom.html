@@ -1872,8 +1872,8 @@ const ADMIN_PASSCODE = "73569778";
       https://t.me/YOUR_BOT_USERNAME?start=<firebase_user_id>
       so that when a customer taps Start, their chat can be matched back to their account.
 ======================================================== */
-const TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN";
-const TELEGRAM_BOT_USERNAME = "your_bot_username";
+const TELEGRAM_BOT_TOKEN = "8619880264:AAHKbaud-GwQfu_Zs5v1EzTQgCcYXYtTOg0";
+const TELEGRAM_BOT_USERNAME = "CartPrime_bot.";
 
 let telegramUpdateOffset = 0;
 
@@ -2427,7 +2427,7 @@ window.callTelegramApi = async (chatId, text) => {
     if (!chatId) {
         throw new Error("Missing recipient Telegram Chat ID");
     }
-    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "8619880264:AAHKbaud-GwQfu_Zs5v1EzTQgCcYXYtTOg0") {
+    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN") {
         throw new Error("Telegram Bot Token is not configured yet. Get one for free from @BotFather.");
     }
 
@@ -2450,7 +2450,7 @@ window.callTelegramApi = async (chatId, text) => {
    deep-link openers to that user's record in Firebase (users/{uid}/telegramChatId). 
    Call this whenever the admin panel is open — no server/webhook required. */
 window.syncTelegramSubscribers = async () => {
-    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "8619880264:AAHKbaud-GwQfu_Zs5v1EzTQgCcYXYtTOg0") {
+    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN") {
         Swal.fire('Not Configured', 'Add your Telegram Bot Token in the code first (see comment near TELEGRAM_BOT_TOKEN).', 'warning');
         return;
     }
