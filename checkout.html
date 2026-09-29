@@ -248,7 +248,12 @@
                     <i class="fa-solid fa-location-dot text-amber-500"></i>
                     Delivery Address
                 </h2>
-                
+                <button type="button" onclick="getCurrentLocation()" class="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1.5 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-100 transition-colors">
+                    <i class="fa-solid fa-location-crosshairs"></i>
+                    <span id="locBtnText">Use Current Location</span>
+                </button>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label>
