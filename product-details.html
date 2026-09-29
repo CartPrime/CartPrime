@@ -92,7 +92,7 @@ header{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:bl
 .g-step i{color:#16a34a;margin-top:3px;width:16px;text-align:center}
 .g-step b{display:block}
 .g-step small{display:block;color:var(--text-muted);font-weight:500;margin-top:1px}
-.wa-help{display:flex;justify-content:center;align-items:center;gap:8px;background:#25d366;color:#fff;padding:10px;border-radius:10px;font-weight:700;font-size:.85rem;text-decoration:none;margin-top:4px}
+.email-help{display:flex;justify-content:center;align-items:center;gap:8px;background:var(--primary);color:#fff;padding:10px;border-radius:10px;font-weight:700;font-size:.85rem;text-decoration:none;margin-top:4px}
 
 .specs-box{margin-bottom:20px}
 .specs-box h4,.desc-box h4{font-size:.9rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;font-weight:800}
@@ -185,12 +185,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-/* ====== SETTINGS - ithu maattuka ====== */
-const WHATSAPP_NUMBER = "91XXXXXXXXXX";   // ninte real WhatsApp number (country code sahitham)
-const RETURN_DAYS = 7;                    // ninte real return period
+/* ====== SETTINGS - edit these ====== */
+const SUPPORT_EMAIL = "support@yourdomain.com";   // your real support email
+const RETURN_DAYS = 7;                    // your real return period
 /* ====================================== */
 
-// HTML escape - XSS thadayan
+// HTML escape - prevents XSS
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -218,7 +218,7 @@ const guestKey = localStorage.getItem('guestUserId') || 'guest_' + Math.random()
 localStorage.setItem('guestUserId', guestKey);
 const currentActiveUserId = userId || guestKey;
 
-// NOTE: ithu earn_partners full list client-il edukkunnu. Production-il Cloud Function-ilekku maattuka.
+// NOTE: this loads the full earn_partners list on the client. Move it to a Cloud Function in production.
 async function checkEarnerStatus() {
     if (!userPhone || !userName) return false;
     try {
@@ -280,7 +280,7 @@ async function initPage() {
                 const productData = productSnap.val();
                 renderProduct(productData, productData.reviews || null);
                 track6SecView(productId);
-                // wishlist state - render kazhinjittu mathram
+                // wishlist state - loaded after render
                 get(child(ref(db), `wishlist/${currentActiveUserId}/${productId}`)).then(snap => {
                     const h = document.getElementById('wishlistHeart');
                     if (snap.exists() && h) h.classList.add('active');
@@ -429,7 +429,7 @@ function renderProduct(p, reviews) {
     const cleanPrice = String(p.price).replace(/,/g, '').replace(/[^\d.]/g, '');
     const displayPrice = parseFloat(cleanPrice) || 0;
 
-    // Fake MRP illa: real MRP database-il undenkil mathram discount kaanikkum
+    // No fake MRP: discount is shown only when a real MRP exists in the database
     const baseMrp = p.mrp ? (parseFloat(String(p.mrp).replace(/,/g, '').replace(/[^\d.]/g, '')) || 0) : 0;
     const discountPct = baseMrp > displayPrice ? Math.round(((baseMrp - displayPrice) / baseMrp) * 100) : 0;
 
@@ -479,23 +479,24 @@ function renderProduct(p, reviews) {
         </div>` : '';
 
     // Buy with Confidence
-    const waText = encodeURIComponent('Hi, ee product-ne kurichu chodikkanam: ' + fullTitle);
+    const mailSubject = encodeURIComponent('Question about: ' + fullTitle);
+    const mailBody = encodeURIComponent('Hi,\n\nI have a question about this product:\n' + fullTitle + '\n' + window.location.href + '\n\n');
     const buyGuaranteeHTML = `
         <div class="guarantee-box">
             <h4><i class="fa-solid fa-circle-check"></i> Buy with Confidence</h4>
             <div class="g-step"><i class="fa-solid fa-box"></i>
-                <div><b>Order confirmation</b><small>Order confirm aayal udane update kittum</small></div></div>
+                <div><b>Order confirmation</b><small>You get an update as soon as your order is confirmed</small></div></div>
             <div class="g-step"><i class="fa-solid fa-location-dot"></i>
-                <div><b>Order Tracking</b><small>Order-inte status My Orders-il kaanam</small></div></div>
+                <div><b>Order Tracking</b><small>Check your order status in My Orders</small></div></div>
             <div class="g-step"><i class="fa-solid fa-rotate-left"></i>
-                <div><b>${returnStatus ? `${RETURN_DAYS} Days Return available` : 'Return illa - ariyichittu vangam'}</b>
-                <small>${returnStatus ? 'Problem undenkil return cheyyam' : 'Ee product-nu return policy illa'}</small></div></div>
+                <div><b>${returnStatus ? `${RETURN_DAYS} Days Return available` : 'No return on this item'}</b>
+                <small>${returnStatus ? 'Return it if there is any problem' : 'This product is not eligible for return'}</small></div></div>
             ${codStatus ? `<div class="g-step"><i class="fa-solid fa-wallet"></i>
-                <div><b>Cash on Delivery</b><small>Product kayyil kittiyittu pay cheyyam</small></div></div>` : ''}
+                <div><b>Cash on Delivery</b><small>Pay when the product reaches you</small></div></div>` : ''}
             <div class="g-step"><i class="fa-solid fa-headset"></i>
-                <div><b>Help venel contact cheyyam</b><small>Delivery-ku munpum shesham-um</small></div></div>
-            <a class="wa-help" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP_NUMBER}?text=${waText}">
-                <i class="fa-brands fa-whatsapp"></i> WhatsApp-il chodikkam
+                <div><b>Need help? Contact us</b><small>Before and after delivery</small></div></div>
+            <a class="email-help" href="mailto:${SUPPORT_EMAIL}?subject=${mailSubject}&body=${mailBody}">
+                <i class="fa-solid fa-envelope"></i> Email us your question
             </a>
         </div>`;
 
@@ -580,7 +581,7 @@ function renderProduct(p, reviews) {
             </div>
         </div>`;
 
-    // Event listeners (inline onclick-il title/size ittal break aakum, athu ozhivaakki)
+    // Event listeners (avoids inline onclick breaking on quotes in title/size)
     const buyBtn = document.getElementById('buyNowBtn');
     if (buyBtn && !isOut) {
         buyBtn.addEventListener('click', () => {
