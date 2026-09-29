@@ -3069,6 +3069,48 @@ window.copyAddressText = (text) => {
     });
 };
 
+/* ========================================================
+   ADDRESS PARSER: splits an order's address into
+   Street / City / State / Pincode
+======================================================== */
+const INDIAN_STATES = [
+    "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat",
+    "Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh",
+    "Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan",
+    "Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal",
+    "Andaman and Nicobar Islands","Chandigarh","Dadra and Nagar Haveli and Daman and Diu",
+    "Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry"
+];
+
+function parseOrderAddress(o) {
+    // 1) If the order already has separate fields, use them directly
+    const a = (o.address && typeof o.address === 'object') ? o.address : {};
+    let state   = a.state   || o.state   || o.customerState || '';
+    let pincode = a.pincode || o.pincode || o.pinCode || o.zip || o.postalCode || '';
+    let street  = a.street  || o.street  || o.streetAddress || o.addressLine1 || '';
+    let city    = a.city    || o.city    || o.district || '';
+
+    // 2) Otherwise split the single address text
+    const raw = typeof o.address === 'string' ? o.address : '';
+    if (raw) {
+        if (!pincode) {
+            const m = raw.match(/\b\d{6}\b/);
+            if (m) pincode = m[0];
+        }
+        if (!state) {
+            const found = INDIAN_STATES.find(s => new RegExp('\\b' + s + '\\b', 'i').test(raw));
+            if (found) state = found;
+        }
+        if (!street) {
+            let rest = raw;
+            if (pincode) rest = rest.replace(pincode, '');
+            if (state) rest = rest.replace(new RegExp('\\b' + state + '\\b', 'ig'), '');
+            street = rest.replace(/(\s*,\s*)+/g, ', ').replace(/^[,\s-]+|[,\s-]+$/g, '').trim();
+        }
+    }
+    return { street, city, state, pincode };
+}
+
 window.viewFullOrderDetails = (path) => {
     const o = globalOrdersCache[path];
     if (!o) return Swal.fire('Error', 'Order details not found', 'error');
@@ -3078,7 +3120,10 @@ window.viewFullOrderDetails = (path) => {
     const statusClass = currentStatus.replace(/\s+/g, '');
     const proofImg = o.paymentProof || ""; 
     const payMethod = o.paymentMethod || (o.transactionId ? "UPI Payment" : "Cash On Delivery");
-    const fullAddress = o.address || 'No Address Provided';
+    const fullAddress = (typeof o.address === 'object' && o.address)
+        ? Object.values(o.address).join(', ')
+        : (o.address || 'No Address Provided');
+    const addr = parseOrderAddress(o);
     const fullOrderId = o.orderId || path.split('/').pop();
     const userPhone = o.phone || o.mobile || o.customerPhone || o.parentPhone || 'N/A';
     const cleanPhone = String(userPhone).replace(/[^0-9]/g, '');
@@ -3140,7 +3185,16 @@ window.viewFullOrderDetails = (path) => {
 
             <div style="margin-top: 10px;">
                 <strong>Delivery Address:</strong>
-                <div class="address-box" id="addressTextVal">${fullAddress}</div>
+                <div class="address-box" style="display:flex; flex-direction:column; gap:6px;">
+                    <div><span style="color:var(--text-muted); font-weight:700;">Street:</span> <strong>${addr.street || 'N/A'}</strong></div>
+                    ${addr.city ? `<div><span style="color:var(--text-muted); font-weight:700;">City:</span> <strong>${addr.city}</strong></div>` : ''}
+                    <div><span style="color:var(--text-muted); font-weight:700;">State:</span> <strong>${addr.state || 'N/A'}</strong></div>
+                    <div><span style="color:var(--text-muted); font-weight:700;">Pincode:</span> <strong style="color:#2563eb;">${addr.pincode || 'N/A'}</strong></div>
+                </div>
+                <details style="margin-top:6px; font-size:11.5px; color:var(--text-muted);">
+                    <summary style="cursor:pointer;">Full address text</summary>
+                    <div class="address-box">${fullAddress}</div>
+                </details>
                 <button class="btn-copy-address" onclick="copyAddressText(\`${fullAddress.replace(/`/g, '')}\`)">
                     <i class="fa fa-copy"></i> Copy Address
                 </button>
