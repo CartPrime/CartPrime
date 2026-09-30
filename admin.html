@@ -1202,10 +1202,10 @@
             <div class="menu-category">Marketing & Offers</div>
             <button onclick="openTab('whatsappMarketing', this)" class="sidebar-btn" id="side-whatsappMarketing">
                 <div class="sidebar-btn-content">
-                    <i class="fa-brands fa-telegram" style="color:#29a9eb;"></i> 
-                    <span>Telegram Offers</span>
+                    <i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> 
+                    <span>WhatsApp Offers</span>
                 </div>
-                <span class="badge-new">Telegram</span>
+                <span class="badge-new" style="background:#25D366;">WhatsApp</span>
             </button>
             <button onclick="openTab('affiliates', this)" class="sidebar-btn" id="side-affiliates">
                 <div class="sidebar-btn-content"><i class="fa-solid fa-handshake"></i> <span>Earn Partners</span></div>
@@ -1263,7 +1263,7 @@
 
             <div class="top-right">
                 <button onclick="openTab('whatsappMarketing')" class="btn-top-action btn-top-whatsapp">
-                    <i class="fa-brands fa-telegram"></i>
+                    <i class="fa-brands fa-whatsapp"></i>
                     <span>Send Offer</span>
                 </button>
                 <a href="index.html" class="btn-top-action btn-top-store">
@@ -1372,43 +1372,78 @@
                 </div>
             </div>
 
-            <!-- TAB 2: OFFERS & MARKETING (TELEGRAM POWERED) -->
+            <!-- TAB 2: OFFERS & MARKETING (WHATSAPP CLOUD API) -->
             <div id="whatsappMarketing" class="tab-content">
                 <div class="section-header">
                     <div>
-                        <h2 class="tab-title"><i class="fa-brands fa-telegram" style="color:#29a9eb;"></i> Automated Telegram Marketing Hub</h2>
-                        <p class="tab-subtitle">Powered by the free Telegram Bot API — send unlimited offers automatically, no template approval and no per-message cost</p>
+                        <h2 class="tab-title"><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> Automated WhatsApp Marketing Hub</h2>
+                        <p class="tab-subtitle">Send WhatsApp messages through your Meta WhatsApp Cloud API connection</p>
                     </div>
                 </div>
 
-                <!-- Telegram Status Banner -->
-                <div class="aisensy-status-card">
+                <!-- WhatsApp API Status Banner -->
+                <div class="aisensy-status-card" style="background:linear-gradient(135deg,#075E54,#128C7E 55%,#25D366);">
                     <div class="aisensy-status-info">
-                        <div style="font-size:28px;"><i class="fa-brands fa-telegram"></i></div>
+                        <div style="font-size:28px;"><i class="fa-brands fa-whatsapp"></i></div>
                         <div>
-                            <div style="font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px;">
-                                <span>Telegram Bot API Active</span>
-                                <span class="aisensy-badge"><i class="fa fa-check-circle" style="color:#4ade80;"></i> Free & Unlimited</span>
+                            <div style="font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                <span>WhatsApp Cloud API</span>
+                                <span class="aisensy-badge"><i id="waApiStatusIcon" class="fa fa-circle-notch fa-spin"></i> <span id="waApiStatusLabel">Checking...</span></span>
                             </div>
-                            <div style="font-size:12px; opacity:0.85; margin-top:2px;">
-                                Bot: <strong id="tgBotUsernameLabel">@your_bot</strong> • No message templates or approval needed on Telegram.
+                            <div style="font-size:12px; opacity:0.9; margin-top:2px;">
+                                Phone Number ID: <strong id="waPhoneNumberIdLabel">Not configured</strong>
                             </div>
                         </div>
                     </div>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <button onclick="syncTelegramSubscribers()" class="btn-aisensy-send" style="padding:10px 16px; font-size:12px;">
-                            <i class="fa-solid fa-rotate"></i> Sync New Subscribers
+                        <button onclick="checkWhatsAppApiStatus(true)" class="btn-aisensy-send" style="padding:10px 16px; font-size:12px; background:#ffffff; color:#075E54;">
+                            <i class="fa-solid fa-rotate"></i> Check API
                         </button>
                     </div>
                 </div>
 
-                <div class="admin-card" style="background:#eff6ff; border-color:#bfdbfe;">
-                    <p style="font-size:12.5px; color:var(--text-secondary); line-height:1.6;">
-                        <i class="fa-solid fa-circle-info" style="color:#2563eb;"></i>
-                        Telegram bots can only message someone after that person has pressed <strong>Start</strong> in a chat with your bot — there's no way to message a phone number directly (this is a Telegram platform rule, not a limitation of this panel). Share your bot link
-                        <code id="tgDeepLinkPreview" style="background:#fff; padding:1px 6px; border-radius:4px;">https://t.me/your_bot</code>
-                        on your storefront so customers can opt in. Once they tap Start, click <strong>"Sync New Subscribers"</strong> above to pull their Chat ID into your Registered Users list automatically.
+                <div class="admin-card" style="background:#ecfdf5; border-color:#a7f3d0;">
+                    <p style="font-size:12.5px; color:#166534; line-height:1.6;">
+                        <i class="fa-solid fa-shield-halved" style="color:#15803d;"></i>
+                        <strong>Secure setup:</strong> the Meta access token stays on the server and is never placed in this HTML file.
+                        For normal text messages, the recipient generally needs an eligible active WhatsApp customer-service conversation.
+                        Marketing/outbound campaigns should use an approved WhatsApp template in Meta.
                     </p>
+                </div>
+
+                <div class="admin-card" style="background:#fff7ed; border-color:#fed7aa;">
+                    <div class="form-row">
+                        <div>
+                            <label>SERVER API KEY</label>
+                            <input type="password" id="waServerApiKey" placeholder="Enter your WHATSAPP_ADMIN_KEY">
+                        </div>
+                        <div>
+                            <label>SEND MODE</label>
+                            <select id="waSendMode" onchange="toggleWhatsAppSendMode()">
+                                <option value="text" selected>Text Message</option>
+                                <option value="template">Approved WhatsApp Template</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="waTemplateSettings" style="display:none;">
+                        <div class="form-row">
+                            <div>
+                                <label>APPROVED TEMPLATE NAME</label>
+                                <input type="text" id="waApprovedTemplateName" placeholder="e.g. cartprime_flash_sale">
+                            </div>
+                            <div>
+                                <label>LANGUAGE CODE</label>
+                                <input type="text" id="waApprovedTemplateLanguage" placeholder="e.g. en_US" value="en_US">
+                            </div>
+                        </div>
+                        <label>TEMPLATE BODY VARIABLES (OPTIONAL, COMMA SEPARATED)</label>
+                        <input type="text" id="waTemplateVariables" placeholder="e.g. {{name}}, PRIME30, {{store_url}}">
+                        <p style="font-size:11.5px; color:#9a3412; line-height:1.5;">
+                            The variable count/order must match the approved template in Meta.
+                            In broadcast mode, <code>{{name}}</code> is replaced with each customer's name.
+                        </p>
+                    </div>
                 </div>
 
                 <div class="whatsapp-hub-grid">
@@ -1440,8 +1475,8 @@
 
                         <div class="form-row">
                             <div>
-                                <label>RECIPIENT TELEGRAM CHAT ID</label>
-                                <input type="text" id="waRecipientPhone" placeholder="e.g. 5831234567 (from Registered Users list)" oninput="updateWAPreview()">
+                                <label>RECIPIENT WHATSAPP NUMBER</label>
+                                <input type="text" id="waRecipientPhone" placeholder="e.g. +91 9876543210" oninput="updateWAPreview()">
                             </div>
                             <div>
                                 <label>CUSTOMER NAME (OPTIONAL)</label>
@@ -1449,12 +1484,12 @@
                             </div>
                         </div>
 
-                        <label>OFFER MESSAGE TEXT / PREVIEW</label>
+                        <label>MESSAGE TEXT / PREVIEW</label>
                         <textarea id="waMessageText" rows="7" oninput="updateWAPreview()"></textarea>
 
                         <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
-                            <button onclick="sendViaTelegramAuto()" class="btn-aisensy-send" style="flex:1 1 240px;">
-                                <i class="fa-brands fa-telegram"></i> Send Auto via Telegram (Free)
+                            <button onclick="sendWhatsAppAuto()" class="btn-aisensy-send" style="flex:1 1 240px; background:linear-gradient(135deg,#128C7E,#25D366);">
+                                <i class="fa-brands fa-whatsapp"></i> Send via WhatsApp
                             </button>
                             <button onclick="copyWAMessage()" class="btn-copy-wa" title="Copy text">
                                 <i class="fa-solid fa-copy"></i>
@@ -1465,17 +1500,17 @@
                     <!-- Live Mobile Preview Right Card -->
                     <div>
                         <div class="wa-preview-mockup">
-                            <div class="wa-mockup-header">
+                            <div class="wa-mockup-header" style="background:#075E54;">
                                 <div class="wa-mockup-profile">
                                     <div class="wa-mockup-avatar"><i class="fa-solid fa-bag-shopping"></i></div>
                                     <div>
                                         <div style="font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:5px;">
-                                            CartPrime Official <i class="fa-solid fa-circle-check" style="color:#29a9eb; font-size:12px;"></i>
+                                            CartPrime Official <i class="fa-solid fa-circle-check" style="color:#25D366; font-size:12px;"></i>
                                         </div>
-                                        <div style="font-size:11px; color:#8696a0;">Official Telegram Bot</div>
+                                        <div style="font-size:11px; color:#c8d6d3;">Official WhatsApp Business</div>
                                     </div>
                                 </div>
-                                <div style="color:#8696a0; font-size:16px;">
+                                <div style="color:#c8d6d3; font-size:16px;">
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
                                 </div>
                             </div>
@@ -1488,7 +1523,7 @@
                                     <div id="waLiveBubbleContent">Your offer message preview will appear here in real time...</div>
                                     <div class="wa-bubble-time">
                                         <span id="waPreviewTime">10:30 AM</span>
-                                        <i class="fa-solid fa-check-double"></i>
+                                        <i class="fa-solid fa-check-double" style="color:#53bdeb;"></i>
                                     </div>
                                 </div>
                             </div>
@@ -1496,7 +1531,7 @@
                             <div class="wa-mockup-footer">
                                 <i class="fa-regular fa-face-smile" style="color:#8696a0; font-size:18px;"></i>
                                 <div class="wa-mockup-input">Type a message</div>
-                                <i class="fa-solid fa-paper-plane" style="color:#29a9eb; font-size:16px;"></i>
+                                <i class="fa-solid fa-microphone" style="color:#8696a0; font-size:16px;"></i>
                             </div>
                         </div>
                     </div>
@@ -1775,11 +1810,11 @@
                 <div class="section-header">
                     <div>
                         <h2 class="tab-title"><i class="fa-solid fa-users"></i> Registered Customers</h2>
-                        <p class="tab-subtitle">Customer base directory with 1-click free Telegram delivery</p>
+                        <p class="tab-subtitle">Customer directory with 1-click WhatsApp message delivery</p>
                     </div>
                     <div>
-                        <button onclick="broadcastOfferToAllUsers()" class="btn-aisensy-send" style="padding:10px 18px; font-size:12.5px;">
-                            <i class="fa-brands fa-telegram"></i> Broadcast Offer to All Telegram Subscribers
+                        <button onclick="broadcastOfferToAllUsers()" class="btn-aisensy-send" style="padding:10px 18px; font-size:12.5px; background:linear-gradient(135deg,#128C7E,#25D366);">
+                            <i class="fa-brands fa-whatsapp"></i> Broadcast Offer to All WhatsApp Numbers
                         </button>
                     </div>
                 </div>
@@ -1791,7 +1826,7 @@
                                 <tr>
                                     <th>Customer Name</th>
                                     <th>Mobile / Email Contact</th>
-                                    <th>Telegram</th>
+                                    <th>WhatsApp</th>
                                     <th>Send Offer</th>
                                 </tr>
                             </thead>
@@ -1847,8 +1882,8 @@
     <button onclick="openTab('orders', this)" class="tablinks" id="btn-orders" title="Orders">
         <i class="fa fa-shopping-bag"></i> <span>Orders</span>
     </button>
-    <button onclick="openTab('whatsappMarketing', this)" class="tablinks" id="btn-whatsappMarketing" title="Telegram Offers">
-        <i class="fa-brands fa-telegram" style="color:#29a9eb;"></i> <span>Offers</span>
+    <button onclick="openTab('whatsappMarketing', this)" class="tablinks" id="btn-whatsappMarketing" title="WhatsApp Offers">
+        <i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> <span>Offers</span>
     </button>
     <button onclick="openTab('addProduct', this)" class="tablinks" id="btn-addProduct" title="Add Product">
         <i class="fa fa-plus"></i> <span>Add</span>
@@ -1865,24 +1900,17 @@ import { getDatabase, ref, onValue, update, remove, push, set, get } from "https
 const ADMIN_PASSCODE = "73569778";
 
 /* ========================================================
-   TELEGRAM BOT API CONFIGURATION (100% FREE, NO APPROVAL NEEDED)
-   1. Message @BotFather on Telegram -> /newbot -> follow steps -> copy the token below.
-   2. Put your bot's @username below (without the @) for the deep link.
-   3. Add a "Chat with us on Telegram" link on your storefront pointing to:
-      https://t.me/YOUR_BOT_USERNAME?start=<firebase_user_id>
-      so that when a customer taps Start, their chat can be matched back to their account.
+   WHATSAPP CLOUD API CONFIGURATION
+   - The Meta access token NEVER belongs in this HTML file.
+   - Put WhatsApp credentials in the Node server environment:
+       WHATSAPP_ACCESS_TOKEN
+       WHATSAPP_PHONE_NUMBER_ID
+       WHATSAPP_GRAPH_VERSION
+       WHATSAPP_ADMIN_KEY
+   - The browser sends messages to /api/whatsapp/send.
 ======================================================== */
-const TELEGRAM_BOT_TOKEN = "8619880264:AAHKbaud-GwQfu_Zs5v1EzTQgCcYXYtTOg0";
-const TELEGRAM_BOT_USERNAME = "CartPrime_bot";
-
-let telegramUpdateOffset = 0;
-
-window.addEventListener('load', () => {
-    const label = document.getElementById('tgBotUsernameLabel');
-    const deepLinkPreview = document.getElementById('tgDeepLinkPreview');
-    if (label) label.innerText = "@" + TELEGRAM_BOT_USERNAME;
-    if (deepLinkPreview) deepLinkPreview.innerText = `https://t.me/${TELEGRAM_BOT_USERNAME}`;
-});
+const WHATSAPP_API_ENDPOINT = "/api/whatsapp/send";
+const WHATSAPP_STATUS_ENDPOINT = "/api/whatsapp/status";
 
 async function checkAdminPasscode() {
     const isAuthenticated = localStorage.getItem("cartprime_admin_logged_in");
@@ -1937,14 +1965,13 @@ window.toggleMobileSidebar = () => {
 };
 
 window.addEventListener('load', () => {
-    checkAdminPasscode();
-    setTimeout(() => {
-        if(window.checkAndCreditCommissions) window.checkAndCreditCommissions();
-    }, 3000);
-    if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
-    }
-    initWADefaultTemplate();
+    const keyField = document.getElementById('waServerApiKey');
+    const savedKey = sessionStorage.getItem('cartprime_wa_admin_key') || '';
+    if (keyField && savedKey) keyField.value = savedKey;
+    if (keyField) keyField.addEventListener('change', persistWhatsAppAdminKey);
+
+    toggleWhatsAppSendMode();
+    setTimeout(() => checkWhatsAppApiStatus(false), 250);
 });
 
 const firebaseConfig = {
@@ -2247,7 +2274,7 @@ window.openTab = (tabId, element) => {
 
     const titles = {
         dashboard: "Overview Dashboard",
-        whatsappMarketing: "Telegram Automated Offers Hub",
+        whatsappMarketing: "WhatsApp Automated Offers Hub",
         orders: "Customer Order Management",
         addProduct: "Add New Product",
         manageProducts: "Catalog Inventory",
@@ -2420,241 +2447,297 @@ function updateEarningsChart(dailyEarningsMap) {
 }
 
 /* ========================================================
-   TELEGRAM BOT API SENDER ENGINE (FREE, NO TEMPLATE APPROVAL)
-   Docs: https://core.telegram.org/bots/api#sendmessage
+   WHATSAPP CLOUD API SENDER ENGINE
+   Server-side endpoint keeps Meta credentials off the client.
 ======================================================== */
-window.callTelegramApi = async (chatId, text) => {
-    if (!chatId) {
-        throw new Error("Missing recipient Telegram Chat ID");
-    }
-    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN") {
-        throw new Error("Telegram Bot Token is not configured yet. Get one for free from @BotFather.");
-    }
+function getWhatsAppAdminKey() {
+    return (document.getElementById('waServerApiKey')?.value || sessionStorage.getItem('cartprime_wa_admin_key') || '').trim();
+}
 
-    const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            chat_id: chatId,
-            text: text,
-            parse_mode: "Markdown",
-            disable_web_page_preview: false
-        })
+function persistWhatsAppAdminKey() {
+    const key = getWhatsAppAdminKey();
+    if (key) sessionStorage.setItem('cartprime_wa_admin_key', key);
+}
+
+function getWhatsAppSendSettings() {
+    return {
+        mode: document.getElementById('waSendMode')?.value || 'text',
+        templateName: document.getElementById('waApprovedTemplateName')?.value.trim() || '',
+        templateLanguage: document.getElementById('waApprovedTemplateLanguage')?.value.trim() || 'en_US',
+        templateVariables: document.getElementById('waTemplateVariables')?.value.trim() || ''
+    };
+}
+
+function normalizeWhatsAppPhoneClient(value) {
+    let digits = String(value || '').replace(/[^\d]/g, '');
+    if (digits.startsWith('00')) digits = digits.slice(2);
+    if (digits.length === 10) digits = '91' + digits;
+    return digits;
+}
+
+function buildTemplateVariables(raw, name, phone) {
+    const coupon = document.getElementById('waCouponCode')?.value.trim() || 'PRIME30';
+    const storeUrl = `${window.location.origin}/index.html`;
+    const input = String(raw || '');
+    if (!input) return [];
+
+    return input
+        .split(',')
+        .map(v => v.trim()
+            .replace(/\{\{name\}\}/gi, name || 'Customer')
+            .replace(/\{\{coupon\}\}/gi, coupon)
+            .replace(/\{\{store_url\}\}/gi, storeUrl)
+            .replace(/\{\{phone\}\}/gi, phone || '')
+        )
+        .filter(Boolean);
+}
+
+async function postWhatsAppMessage(payload) {
+    const adminKey = getWhatsAppAdminKey();
+    if (!adminKey) throw new Error('Server API Key is required. Enter the WHATSAPP_ADMIN_KEY used by your server.');
+
+    persistWhatsAppAdminKey();
+
+    const res = await fetch(WHATSAPP_API_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Key': adminKey
+        },
+        body: JSON.stringify(payload)
     });
 
-    const data = await res.json();
-    return { ok: res.ok && data.ok, status: res.status, data: data };
-};
+    let data = {};
+    try { data = await res.json(); } catch (_) {}
 
-/* Poll Telegram getUpdates once and auto-link any new "/start <firebase_uid>" 
-   deep-link openers to that user's record in Firebase (users/{uid}/telegramChatId). 
-   Call this whenever the admin panel is open — no server/webhook required. */
-window.syncTelegramSubscribers = async () => {
-    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN") {
-        Swal.fire('Not Configured', 'Add your Telegram Bot Token in the code first (see comment near TELEGRAM_BOT_TOKEN).', 'warning');
+    return { ok: res.ok && data.ok !== false, status: res.status, data };
+}
+
+window.checkWhatsAppApiStatus = async (showPopup = false) => {
+    const adminKey = getWhatsAppAdminKey();
+    if (!adminKey) {
+        const label = document.getElementById('waApiStatusLabel');
+        const icon = document.getElementById('waApiStatusIcon');
+        if (label) label.innerText = 'API key required';
+        if (icon) icon.className = 'fa fa-key';
+        if (showPopup) Swal.fire('API Key Required', 'Enter your WHATSAPP_ADMIN_KEY in the WhatsApp settings box.', 'warning');
         return;
     }
 
-    Swal.fire({ title: 'Syncing Telegram subscribers...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    persistWhatsAppAdminKey();
 
     try {
-        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${telegramUpdateOffset}&timeout=0`);
+        const res = await fetch(WHATSAPP_STATUS_ENDPOINT, {
+            headers: { 'X-Admin-Key': adminKey }
+        });
         const data = await res.json();
 
-        if (!data.ok) {
-            Swal.fire('Error', data.description || 'Could not fetch Telegram updates.', 'error');
-            return;
+        const label = document.getElementById('waApiStatusLabel');
+        const icon = document.getElementById('waApiStatusIcon');
+        const phoneLabel = document.getElementById('waPhoneNumberIdLabel');
+
+        if (data.configured) {
+            if (label) label.innerText = 'Configured';
+            if (icon) icon.className = 'fa fa-check-circle';
+            if (phoneLabel) phoneLabel.innerText = data.phoneNumberIdMasked || 'Configured';
+            if (showPopup) Swal.fire({ icon:'success', title:'WhatsApp API Ready', text:'Server credentials are configured.', timer:1700, showConfirmButton:false });
+        } else {
+            if (label) label.innerText = 'Server not configured';
+            if (icon) icon.className = 'fa fa-triangle-exclamation';
+            if (phoneLabel) phoneLabel.innerText = 'Not configured';
+            if (showPopup) Swal.fire('Not Configured', data.message || 'Set the WhatsApp environment variables on the server.', 'warning');
         }
-
-        let linkedCount = 0;
-
-        for (const tgUpdate of (data.result || [])) {
-            telegramUpdateOffset = tgUpdate.update_id + 1;
-            const msg = tgUpdate.message;
-            if (!msg || !msg.text) continue;
-
-            const chatId = msg.chat.id;
-            const senderName = [msg.from?.first_name, msg.from?.last_name].filter(Boolean).join(' ') || msg.from?.username || 'Telegram User';
-
-            const startMatch = msg.text.match(/^\/start(?:\s+(\S+))?/);
-            if (startMatch) {
-                const payload = startMatch[1];
-
-                if (payload) {
-                    // Deep-linked from the storefront with a known Firebase user id
-                    await update(ref(db, `users/${payload}`), {
-                        telegramChatId: chatId,
-                        telegramName: senderName
-                    }).catch(() => {});
-                    linkedCount++;
-                } else {
-                    // Generic /start with no payload — store as an unlinked subscriber
-                    await set(ref(db, `telegram_subscribers/${chatId}`), {
-                        chatId: chatId,
-                        name: senderName,
-                        joinedAt: new Date().toISOString()
-                    }).catch(() => {});
-                    linkedCount++;
-                }
-            }
-        }
-
-        Swal.fire({
-            icon: 'success',
-            title: 'Sync Complete',
-            text: linkedCount > 0 ? `${linkedCount} subscriber(s) synced.` : 'No new subscribers found.',
-            timer: 1800,
-            showConfirmButton: false
-        });
     } catch (err) {
-        console.error("Telegram sync error:", err);
-        Swal.fire('Error', err.message || 'Could not sync Telegram subscribers.', 'error');
+        const label = document.getElementById('waApiStatusLabel');
+        const icon = document.getElementById('waApiStatusIcon');
+        if (label) label.innerText = 'Server offline';
+        if (icon) icon.className = 'fa fa-circle-xmark';
+        if (showPopup) Swal.fire('Connection Error', err.message || 'Could not reach the WhatsApp server.', 'error');
     }
 };
 
-window.sendViaTelegramAuto = async () => {
-    const chatIdInput = document.getElementById('waRecipientPhone');
-    const nameInput = document.getElementById('waRecipientName');
-    const msgInput = document.getElementById('waMessageText');
+window.toggleWhatsAppSendMode = () => {
+    const mode = document.getElementById('waSendMode')?.value || 'text';
+    const box = document.getElementById('waTemplateSettings');
+    if (box) box.style.display = mode === 'template' ? 'block' : 'none';
+};
 
-    let chatId = chatIdInput ? chatIdInput.value.trim() : '';
-    let name = nameInput ? nameInput.value.trim() : 'Customer';
-    let message = msgInput ? msgInput.value.trim() : '';
+window.sendWhatsAppAuto = async () => {
+    const phone = normalizeWhatsAppPhoneClient(document.getElementById('waRecipientPhone')?.value || '');
+    const name = document.getElementById('waRecipientName')?.value.trim() || 'Customer';
+    const message = document.getElementById('waMessageText')?.value.trim() || '';
+    const settings = getWhatsAppSendSettings();
 
-    if (!chatId) {
-        Swal.fire('Chat ID Required', "Enter the recipient's Telegram Chat ID (pick one from the Registered Users list, or click \"Sync New Subscribers\" to fetch new ones).", 'warning');
+    if (!phone) {
+        Swal.fire('WhatsApp Number Required', 'Enter the customer WhatsApp number. Example: +91 9876543210', 'warning');
         return;
     }
-    if (!message) {
+
+    if (settings.mode === 'text' && !message) {
         Swal.fire('Message Empty', 'Please write or generate an offer message first.', 'warning');
         return;
     }
 
+    if (settings.mode === 'template' && !settings.templateName) {
+        Swal.fire('Template Required', 'Enter the approved WhatsApp template name from Meta.', 'warning');
+        return;
+    }
+
     Swal.fire({
-        title: 'Sending via Telegram...',
-        text: `Dispatching free automated message to ${name}...`,
+        title: 'Sending via WhatsApp...',
+        text: `Dispatching message to ${name}...`,
         allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); }
+        didOpen: () => Swal.showLoading()
     });
 
     try {
-        const result = await window.callTelegramApi(chatId, message);
+        const payload = {
+            to: phone,
+            mode: settings.mode,
+            text: message.replace(/Customer/g, name),
+            templateName: settings.templateName,
+            templateLanguage: settings.templateLanguage,
+            templateVariables: buildTemplateVariables(settings.templateVariables, name, phone)
+        };
+
+        const result = await postWhatsAppMessage(payload);
 
         if (result.ok) {
             Swal.fire({
                 icon: 'success',
                 title: 'Sent!',
-                html: `<p style="font-size:13px; color:#475569;">Message delivered instantly and for free via your Telegram bot.</p>`,
-                confirmButtonColor: '#29a9eb'
+                html: `<p style="font-size:13px; color:#475569;">WhatsApp message request accepted by Meta.</p>`,
+                confirmButtonColor: '#128C7E'
             });
         } else {
-            let errMsg = result.data.description || 'Failed to send message via Telegram.';
+            const errMsg = result.data?.error || result.data?.message || 'Failed to send message via WhatsApp.';
             Swal.fire({
                 icon: 'warning',
-                title: 'Telegram Response',
-                html: `<p style="font-size:13px; color:#ef4444;">${errMsg}</p>
-                       <p style="font-size:12px; color:#64748b; margin-top:8px;">This usually means the Chat ID is wrong, or that person has not pressed Start in your bot yet.</p>`,
+                title: 'WhatsApp Response',
+                html: `<p style="font-size:13px; color:#ef4444;">${escapeHtml(errMsg)}</p>`,
                 confirmButtonColor: '#0f172a'
             });
         }
     } catch (err) {
-        console.error("Telegram Send Error:", err);
+        console.error('WhatsApp Send Error:', err);
         Swal.fire({
             icon: 'error',
             title: 'Request Error',
-            text: err.message || 'Network issue communicating with Telegram API.',
+            text: err.message || 'Network issue communicating with the WhatsApp server.',
             confirmButtonColor: '#0f172a'
         });
     }
 };
 
-window.sendViaTelegramDirect = async (userName, chatId) => {
-    if (!chatId) {
-        Swal.fire('Not Linked Yet', `${userName} hasn't started a chat with your Telegram bot yet, so there's no Chat ID to message.`, 'info');
+window.sendViaWhatsAppDirect = async (userName, phone) => {
+    const cleanPhone = normalizeWhatsAppPhoneClient(phone);
+    if (!cleanPhone) {
+        Swal.fire('No WhatsApp Number', `${userName || 'This customer'} does not have a usable mobile number.`, 'info');
         return;
     }
 
     const confirmRes = await Swal.fire({
         title: `Send Offer to ${userName}?`,
-        html: `<p style="font-size:13px; color:#64748b;">This will instantly and freely send the active offer to <strong>${userName}</strong> via Telegram.</p>`,
+        html: `<p style="font-size:13px; color:#64748b;">This will send the currently composed offer to <strong>${escapeHtml(userName || 'Customer')}</strong> on WhatsApp.</p>`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Yes, Send',
-        confirmButtonColor: '#29a9eb'
+        confirmButtonColor: '#128C7E'
     });
 
     if (!confirmRes.isConfirmed) return;
 
-    Swal.fire({ title: 'Sending...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+    const nameField = document.getElementById('waRecipientName');
+    const phoneField = document.getElementById('waRecipientPhone');
+    if (nameField) nameField.value = userName || 'Customer';
+    if (phoneField) phoneField.value = phone;
+    updateWAPreview();
 
-    const msgInput = document.getElementById('waMessageText');
-    const message = msgInput ? msgInput.value.trim() : waTemplates[currentWATemplateKey]('flash_sale', null, document.getElementById('waCouponCode')?.value || 'PRIME30');
-
-    try {
-        const result = await window.callTelegramApi(chatId, message);
-        if (result.ok) {
-            Swal.fire({ icon: 'success', title: 'Sent!', text: `Offer sent to ${userName}!`, timer: 1800, showConfirmButton: false });
-        } else {
-            Swal.fire('Notice', result.data.description || 'Could not deliver the message.', 'warning');
-        }
-    } catch(err) {
-        Swal.fire('Error', err.message, 'error');
-    }
+    await window.sendWhatsAppAuto();
 };
 
 window.broadcastOfferToAllUsers = async () => {
-    const subscribedUsers = globalUsersList.filter(u => u.chatId);
+    const recipients = globalUsersList
+        .map(u => ({ name: u.name || 'Customer', phone: normalizeWhatsAppPhoneClient(u.phone) }))
+        .filter(u => u.phone);
 
-    if (subscribedUsers.length === 0) {
-        Swal.fire('No Subscribers', 'No users have linked their Telegram account yet. Share your bot link and click "Sync New Subscribers" first.', 'info');
+    if (recipients.length === 0) {
+        Swal.fire('No WhatsApp Numbers', 'No registered customers have a usable mobile number.', 'info');
+        return;
+    }
+
+    const settings = getWhatsAppSendSettings();
+    if (settings.mode === 'template' && !settings.templateName) {
+        Swal.fire('Template Required', 'For an outbound campaign, enter your approved WhatsApp template name first.', 'warning');
         return;
     }
 
     const { isConfirmed } = await Swal.fire({
-        title: 'Broadcast to All Subscribers?',
-        html: `<p style="font-size:13.5px; color:#475569;">You are about to automatically broadcast the current offer to <strong>${subscribedUsers.length} Telegram subscriber(s)</strong> for free.</p>`,
+        title: 'Broadcast to All Customers?',
+        html: `<p style="font-size:13.5px; color:#475569;">You are about to send the current WhatsApp message to <strong>${recipients.length} customer(s)</strong>.</p>
+               <p style="font-size:11.5px; color:#9a3412; margin-top:8px;">Send only to customers who have provided the required WhatsApp consent for your campaign.</p>`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: `Start Broadcast (${subscribedUsers.length})`,
-        confirmButtonColor: '#29a9eb'
+        confirmButtonText: `Start Broadcast (${recipients.length})`,
+        confirmButtonColor: '#128C7E'
     });
 
     if (!isConfirmed) return;
 
     let successCount = 0;
     let failCount = 0;
-    const msgInput = document.getElementById('waMessageText');
-    const message = msgInput && msgInput.value.trim() ? msgInput.value.trim() : waTemplates.flash_sale('Customer', null, document.getElementById('waCouponCode')?.value || 'PRIME30');
+    const rawMessage = document.getElementById('waMessageText')?.value.trim() || '';
+    if (settings.mode === 'text' && !rawMessage) {
+        Swal.fire('Message Empty', 'Please write or generate the WhatsApp message first.', 'warning');
+        return;
+    }
 
     Swal.fire({
-        title: 'Broadcasting Offers...',
-        html: `Sending 0 / ${subscribedUsers.length}...`,
+        title: 'Broadcasting WhatsApp Messages...',
+        html: `Sending 0 / ${recipients.length}...`,
         allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); }
+        didOpen: () => Swal.showLoading()
     });
 
-    for (let i = 0; i < subscribedUsers.length; i++) {
-        const u = subscribedUsers[i];
-        Swal.update({ html: `Sending ${i + 1} of ${subscribedUsers.length} (${u.name})...` });
+    for (let i = 0; i < recipients.length; i++) {
+        const u = recipients[i];
+        Swal.update({ html: `Sending ${i + 1} of ${recipients.length} (${escapeHtml(u.name)})...` });
 
         try {
-            const res = await window.callTelegramApi(u.chatId, message.replace(/Customer/g, u.name));
-            if (res.ok) successCount++;
+            const result = await postWhatsAppMessage({
+                to: u.phone,
+                mode: settings.mode,
+                text: rawMessage.replace(/Customer/g, u.name),
+                templateName: settings.templateName,
+                templateLanguage: settings.templateLanguage,
+                templateVariables: buildTemplateVariables(settings.templateVariables, u.name, u.phone)
+            });
+
+            if (result.ok) successCount++;
             else failCount++;
         } catch (e) {
             failCount++;
         }
 
-        await new Promise(r => setTimeout(r, 60));
+        await new Promise(r => setTimeout(r, 150));
     }
 
     Swal.fire({
-        icon: 'success',
-        title: 'Broadcast Finished!',
-        html: `<p style="font-size:14px;"><strong>${successCount}</strong> messages sent successfully.<br><span style="color:#ef4444;">${failCount} failed.</span></p>`,
-        confirmButtonColor: '#29a9eb'
+        icon: failCount ? 'warning' : 'success',
+        title: 'Broadcast Finished',
+        html: `<p style="font-size:14px;"><strong>${successCount}</strong> request(s) accepted.<br><span style="color:#ef4444;">${failCount} failed.</span></p>`,
+        confirmButtonColor: '#128C7E'
     });
 };
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
 
 /* TEMPLATE TEXT & PREVIEW ENGINE */
 const waTemplates = {
@@ -2718,7 +2801,7 @@ Complete your order right now and get a *Surprise 15% OFF*!
 🎟️ Voucher Code: *${coupon || 'COMEBACK15'}*
 👉 *Order Now:* ${window.location.origin}/index.html
 
-Need any help with placing your order? Reply directly to this Telegram chat! 😊`
+Need any help with placing your order? Reply directly to this WhatsApp chat! 😊`
 };
 
 let currentWATemplateKey = 'flash_sale';
@@ -2761,12 +2844,13 @@ window.updateWAPreview = () => {
 
     if (!previewEl) return;
 
-    let formatted = rawMsg
+    let formatted = escapeHtml(rawMsg)
         .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
         .replace(/_(.*?)_/g, '<em>$1</em>')
-        .replace(/~(.*?)~/g, '<del>$1</del>');
+        .replace(/~(.*?)~/g, '<del>$1</del>')
+        .replace(/\n/g, '<br>');
 
-    previewEl.innerHTML = formatted || 'Type an offer message to preview...';
+    previewEl.innerHTML = formatted || 'Type a WhatsApp message to preview...';
 };
 
 window.copyWAMessage = () => {
@@ -2785,13 +2869,13 @@ window.copyWAMessage = () => {
     });
 };
 
-window.quickSendOfferToUser = (userName, chatId) => {
+window.quickSendOfferToUser = (userName, phone) => {
     openTab('whatsappMarketing');
     const nameField = document.getElementById('waRecipientName');
-    const chatIdField = document.getElementById('waRecipientPhone');
+    const phoneField = document.getElementById('waRecipientPhone');
 
     if (nameField) nameField.value = userName || 'Customer';
-    if (chatIdField) chatIdField.value = chatId || '';
+    if (phoneField) phoneField.value = phone || '';
 
     window.applyOfferTemplate('flash_sale');
 };
@@ -3915,40 +3999,47 @@ onValue(ref(db, 'users'), snap => {
 
     let totalUsersCount = 0;
     globalUsersList = [];
-    
-    if(snap.exists()) {
-        snap.forEach(u => { 
-            totalUsersCount++;
-            const userData = u.val();
-            const userName = userData.name || 'Customer'; 
-            const phone = userData.phone || userData.email || u.key; 
-            const chatId = userData.telegramChatId || '';
 
-            globalUsersList.push({ name: userName, phone: phone, chatId: chatId, uid: u.key });
+    if (snap.exists()) {
+        snap.forEach(u => {
+            totalUsersCount++;
+            const userData = u.val() || {};
+            const userName = userData.name || 'Customer';
+            const phone = userData.phone || userData.mobile || userData.whatsapp || userData.email || u.key;
+            const safeName = escapeHtml(userName);
+            const safePhone = escapeHtml(phone);
+
+            globalUsersList.push({
+                name: userName,
+                phone: phone,
+                uid: u.key
+            });
+
+            const whatsappReady = normalizeWhatsAppPhoneClient(phone).length >= 10;
 
             list.innerHTML += `
                 <tr>
                     <td>
-                        <strong style="color:var(--text-main); font-size:14px;">${userName}</strong>
-                        <div style="font-size:11px; color:var(--text-muted);">UID: ${u.key}</div>
+                        <strong style="color:var(--text-main); font-size:14px;">${safeName}</strong>
+                        <div style="font-size:11px; color:var(--text-muted);">UID: ${escapeHtml(u.key)}</div>
                     </td>
-                    <td><span style="font-weight:600; color:#2563eb;"><i class="fa fa-phone" style="font-size:11px; margin-right:4px;"></i>${phone}</span></td>
+                    <td><span style="font-weight:600; color:#2563eb;"><i class="fa fa-phone" style="font-size:11px; margin-right:4px;"></i>${safePhone}</span></td>
                     <td>
-                        ${chatId
-                            ? `<span style="font-size:11px; padding:3px 8px; border-radius:6px; background:#dcfce7; color:#15803d; font-weight:800;"><i class="fa-brands fa-telegram"></i> Linked</span>`
-                            : `<span style="font-size:11px; padding:3px 8px; border-radius:6px; background:#f1f5f9; color:#94a3b8; font-weight:800;">Not Linked</span>`}
+                        ${whatsappReady
+                            ? `<span style="font-size:11px; padding:3px 8px; border-radius:6px; background:#dcfce7; color:#15803d; font-weight:800;"><i class="fa-brands fa-whatsapp"></i> Number Ready</span>`
+                            : `<span style="font-size:11px; padding:3px 8px; border-radius:6px; background:#f1f5f9; color:#94a3b8; font-weight:800;">No Number</span>`}
                     </td>
                     <td>
                         <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                            <button onclick="sendViaTelegramDirect('${userName.replace(/'/g, "\\'")}', '${chatId}')" class="btn-table-aisensy" title="Send instantly for free via Telegram" ${chatId ? '' : 'disabled style="opacity:0.5; cursor:not-allowed;"'}>
-                                <i class="fa-brands fa-telegram"></i> Auto Send
+                            <button onclick='sendViaWhatsAppDirect(${JSON.stringify(String(userName))}, ${JSON.stringify(String(phone))})'" class="btn-table-wa" title="Send via WhatsApp" ${whatsappReady ? '' : 'disabled style="opacity:0.5; cursor:not-allowed;"'}>
+                                <i class="fa-brands fa-whatsapp"></i> Auto Send
                             </button>
-                            <button onclick="quickSendOfferToUser('${userName.replace(/'/g, "\\'")}', '${chatId}')" class="btn-table-wa" title="Open in Marketing Hub">
+                            <button onclick='quickSendOfferToUser(${JSON.stringify(String(userName))}, ${JSON.stringify(String(phone))})'" class="btn-table-aisensy" title="Open in WhatsApp Marketing Hub">
                                 <i class="fa-solid fa-pen"></i> Compose
                             </button>
                         </div>
                     </td>
-                </tr>`; 
+                </tr>`;
         });
     }
 
