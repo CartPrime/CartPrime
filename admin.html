@@ -1158,6 +1158,25 @@
                 display: none;
             }
         }
+    
+        /* ===== Add Product: checkbox + responsive fixes ===== */
+        input[type="checkbox"] { width: auto; margin: 0 6px 0 0; padding: 0; vertical-align: middle; accent-color: var(--accent); }
+        #addProduct .admin-card { max-width: 860px; margin: 0 auto 24px; }
+        .img-input-row, .spec-row { flex-wrap: wrap; }
+        .img-input-row .p-img-link { min-width: 0; }
+        @media (max-width: 600px) {
+            #addProduct .admin-card { padding: 16px; }
+            input, textarea, select { font-size: 16px; }
+            .form-row > * { flex: 1 1 100%; }
+            .spec-row input { flex: 1 1 100%; }
+            .img-input-row { flex-direction: column; align-items: stretch; gap: 6px; }
+            .img-input-row .p-img-link { flex: none; width: 100%; }
+            .btn-upload-inline { width: 100%; justify-content: center; height: 42px; }
+            .btn-add { width: 100%; }
+            .auto-fill-box button { align-self: stretch; justify-content: center; }
+            .tab-title { font-size: 20px; }
+        }
+
     </style>
 </head>
 <body>
@@ -2119,7 +2138,7 @@ window.fetchMeeshoDetails = async () => {
                 let val = parts.slice(1).join(':').trim();
 
                 if (key.length < 35 && val.length > 0) {
-                    specs[key] = val;
+                    specs[cleanKey(key)] = val;
                 }
             }
 
@@ -2158,8 +2177,8 @@ window.fetchMeeshoDetails = async () => {
             for (let [k, v] of Object.entries(specs)) {
                 specContainer.innerHTML += `
                     <div class="spec-row">
-                        <input type="text" class="spec-key" value="${k}">
-                        <input type="text" class="spec-val" value="${v}">
+                        <input type="text" class="spec-key" value="${esc(k)}">
+                        <input type="text" class="spec-val" value="${esc(v)}">
                     </div>`;
             }
         }
@@ -2170,7 +2189,7 @@ window.fetchMeeshoDetails = async () => {
             extractedImageUrls.forEach(imgUrl => {
                 imgContainer.innerHTML += `
                 <div class="img-input-row">
-                    <input type="text" class="p-img-link" value="${imgUrl}">
+                    <input type="text" class="p-img-link" value="${esc(imgUrl)}">
                     <button type="button" class="btn-upload-inline" onclick="triggerSingleUpload(this)">
                         <i class="fa fa-cloud-arrow-up"></i> Upload
                     </button>
@@ -2273,30 +2292,42 @@ window.openTab = (tabId, element) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-window.saveProduct = () => {
+const cleanKey = (k) => String(k).replace(/[.#$\[\]\/]/g, ' ').replace(/\s+/g, ' ').trim();
+const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+const withTimeout = (p, ms = 15000) => Promise.race([
+    p,
+    new Promise((_, rej) => setTimeout(() => rej(new Error('Server response vannilla. Internet / Firebase Rules (write permission) check cheyyuka.')), ms))
+]);
+
+window.saveProduct = async () => {
+    const saveBtn = document.getElementById('saveBtn');
     const key = document.getElementById('editKey').value;
+
     const specs = {};
-    document.querySelectorAll('.spec-row').forEach(row => {
-        const k = row.querySelector('.spec-key').value.trim();
+    document.querySelectorAll('#specInputs .spec-row').forEach(row => {
+        const k = cleanKey(row.querySelector('.spec-key').value);
         const v = row.querySelector('.spec-val').value.trim();
-        if(k && v) specs[k] = v;
+        if (k && v) specs[k] = v;
     });
 
     const selectedSizes = Array.from(document.querySelectorAll('.p-size:checked')).map(cb => cb.value);
-    const imageLinks = Array.from(document.querySelectorAll('.p-img-link')).map(input => input.value.trim()).filter(val => val !== "");
+    const imageLinks = Array.from(document.querySelectorAll('#imageInputs .p-img-link'))
+        .map(i => i.value.trim()).filter(Boolean);
 
     const pName = document.getElementById('pName').value.trim();
     const pPrice = document.getElementById('pPrice').value.trim();
     const pCategory = document.getElementById('pCategory').value;
-    const pShowOnHome = document.getElementById('pShowOnHome').value === "true"; 
-    const pCod = document.getElementById('pCod') ? document.getElementById('pCod').value === "true" : false;
 
-    if(!pName || !pPrice || !pCategory || imageLinks.length === 0) {
-        Swal.fire('Error', 'Please fill Name, Category, Price and provide at least 1 Image URL', 'error');
+    if (!pName || !pPrice || !pCategory || imageLinks.length === 0) {
+        Swal.fire('Error', 'Name, Category, Price, kurache oru Image URL venam', 'error');
+        return;
+    }
+    if (isNaN(Number(pPrice))) {
+        Swal.fire('Error', 'Selling Price number aayirikkanam', 'error');
         return;
     }
 
-    const data = {
+    let data = {
         name: pName,
         title: document.getElementById('pTitle').value.trim() || pName,
         category: pCategory,
@@ -2310,38 +2341,38 @@ window.saveProduct = () => {
         images: imageLinks,
         return: document.getElementById('pReturn').value === "true",
         outOfStock: false,
-        showOnHome: pShowOnHome,
-        cod: pCod
+        showOnHome: document.getElementById('pShowOnHome').value === "true",
+        cod: document.getElementById('pCod').value === "true"
     };
+    data = JSON.parse(JSON.stringify(data));
 
-    if(key) {
-        update(ref(db, 'products/' + key), data)
-            .then(() => { 
-                Swal.fire('Updated!', 'Product updated successfully', 'success'); 
-                resetForm(); 
-                openTab('manageProducts'); 
-            })
-            .catch(err => Swal.fire('Error', err.message, 'error'));
-    } else {
-        data.views = 0; 
-        const newRef = push(ref(db, 'products'));
-        const newProdKey = newRef.key;
+    saveBtn.disabled = true;
+    saveBtn.innerText = "SAVING...";
 
-        set(newRef, data)
-            .then(async () => { 
-                if (extractedFetchedReviews && extractedFetchedReviews.length > 0) {
-                    const reviewsRef = ref(db, `products/${newProdKey}/reviews`);
-                    for (let rev of extractedFetchedReviews) {
-                        await push(reviewsRef, rev);
-                    }
+    try {
+        if (key) {
+            await withTimeout(update(ref(db, 'products/' + key), data));
+            Swal.fire('Updated!', 'Product updated successfully', 'success');
+        } else {
+            data.views = 0;
+            const newRef = push(ref(db, 'products'));
+            await withTimeout(set(newRef, data));
+            if (extractedFetchedReviews && extractedFetchedReviews.length > 0) {
+                for (const rev of extractedFetchedReviews) {
+                    await push(ref(db, `products/${newRef.key}/reviews`), rev);
                 }
-
-                Swal.fire('Saved!', 'New product added!', 'success'); 
-                extractedFetchedReviews = [];
-                resetForm(); 
-                openTab('manageProducts'); 
-            })
-            .catch(err => Swal.fire('Error', err.message, 'error'));
+            }
+            Swal.fire('Saved!', 'New product added!', 'success');
+        }
+        extractedFetchedReviews = [];
+        resetForm();
+        openTab('manageProducts');
+    } catch (err) {
+        console.error("Save product error:", err);
+        Swal.fire('Save Failed', err.message || 'Product save cheyyan pattiyilla', 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerText = document.getElementById('editKey').value ? "UPDATE PRODUCT" : "SAVE PRODUCT";
     }
 };
 
@@ -3755,7 +3786,7 @@ window.editProduct = (key) => {
         if (sc) {
             sc.innerHTML = "";
             if(p.specs && Object.keys(p.specs).length > 0) {
-                for(let k in p.specs) sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${k}"><input type="text" class="spec-val" value="${p.specs[k]}"></div>`;
+                for(let k in p.specs) sc.innerHTML += `<div class="spec-row"><input type="text" class="spec-key" value="${esc(k)}"><input type="text" class="spec-val" value="${esc(p.specs[k])}"></div>`;
             } else {
                 sc.innerHTML = `<div class="spec-row"><input type="text" class="spec-key" placeholder="Key"><input type="text" class="spec-val" placeholder="Value"></div>`;
             }
@@ -3768,7 +3799,7 @@ window.editProduct = (key) => {
                 p.images.forEach(u => { 
                     ic.innerHTML += `
                     <div class="img-input-row">
-                        <input type="text" class="p-img-link" value="${u}">
+                        <input type="text" class="p-img-link" value="${esc(u)}">
                         <button type="button" class="btn-upload-inline" onclick="triggerSingleUpload(this)">
                             <i class="fa fa-cloud-arrow-up"></i> Upload
                         </button>
@@ -3829,7 +3860,7 @@ window.addSpecField = () => {
 };
 
 window.addImageField = () => {
-    const count = document.querySelectorAll('.img-input-row').length + 1;
+    const count = document.querySelectorAll('#imageInputs .img-input-row').length + 1;
     const div = document.createElement('div');
     div.className = 'img-input-row';
     div.innerHTML = `
