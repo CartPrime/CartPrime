@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CartPrime Admin Fixer</title>
+<style>
+  body{font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a;margin:0;padding:16px}
+  .wrap{max-width:900px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 4px}
+  p{color:#475569;font-size:13.5px;line-height:1.5}
+  textarea{width:100%;height:220px;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:10px;padding:10px;font-family:monospace;font-size:12px}
+  button{background:#0f172a;color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;margin:6px 6px 6px 0}
+  button.alt{background:#2563eb}
+  #log{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px;font-size:13px;white-space:pre-wrap;min-height:20px}
+  label{font-weight:700;font-size:12px;display:block;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CartPrime Admin Fixer</h1>
+  <p>1) Ninte original admin HTML muzhuvan ivide paste cheyyuka. 2) "Fix cheyyuka" click. 3) Download / Copy.</p>
+
+  <label>ORIGINAL HTML</label>
+  <textarea id="src" placeholder="Paste original admin HTML here..."></textarea>
+  <button onclick="runFix()">Fix cheyyuka</button>
+
+  <label>RESULT LOG</label>
+  <div id="log">-</div>
+
+  <label>FIXED HTML</label>
+  <textarea id="out" readonly></textarea>
+  <button class="alt" onclick="dl()">Download admin.html</button>
+  <button class="alt" onclick="cp()">Copy</button>
+</div>
+
+<script type="text/plain" id="newSave">
+const cleanKey = (k) => String(k).replace(/[.#$\[\]\/]/g, ' ').replace(/\s+/g, ' ').trim();
+const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+const withTimeout = (p, ms = 15000) => Promise.race([
+    p,
+    new Promise((_, rej) => setTimeout(() => rej(new Error('Server response vannilla. Internet / Firebase Rules (write permission) check cheyyuka.')), ms))
+]);
+
+window.saveProduct = async () => {
+    const saveBtn = document.getElementById('saveBtn');
+    const key = document.getElementById('editKey').value;
+
+    const specs = {};
+    document.querySelectorAll('#specInputs .spec-row').forEach(row => {
+        const k = cleanKey(row.querySelector('.spec-key').value);
+        const v = row.querySelector('.spec-val').value.trim();
+        if (k && v) specs[k] = v;
+    });
+
+    const selectedSizes = Array.from(document.querySelectorAll('.p-size:checked')).map(cb => cb.value);
+    const imageLinks = Array.from(document.querySelectorAll('#imageInputs .p-img-link'))
+        .map(i => i.value.trim()).filter(Boolean);
+
+    const pName = document.getElementById('pName').value.trim();
+    const pPrice = document.getElementById('pPrice').value.trim();
+    const pCategory = document.getElementById('pCategory').value;
+
+    if (!pName || !pPrice || !pCategory || imageLinks.length === 0) {
+        Swal.fire('Error', 'Name, Category, Price, kurache oru Image URL venam', 'error');
+        return;
+    }
+    if (isNaN(Number(pPrice))) {
+        Swal.fire('Error', 'Selling Price number aayirikkanam', 'error');
+        return;
+    }
+
+    let data = {
+        name: pName,
+        title: document.getElementById('pTitle').value.trim() || pName,
+        category: pCategory,
+        mrp: document.getElementById('pMrp').value.trim() || pPrice,
+        price: pPrice,
+        shippedFrom: document.getElementById('pShippedFrom').value.trim() || "CartPrime Warehouse",
+        deliveryDays: document.getElementById('pDeliveryDays').value || 7,
+        desc: document.getElementById('pDesc').value || "No description available.",
+        specs: specs,
+        sizes: selectedSizes,
+        images: imageLinks,
+        return: document.getElementById('pReturn').value === "true",
+        outOfStock: false,
+        showOnHome: document.getElementById('pShowOnHome').value === "true",
+        cod: document.getElementById('pCod').value === "true"
+    };
+    data = JSON.parse(JSON.stringify(data));
+
+    saveBtn.disabled = true;
+    saveBtn.innerText = "SAVING...";
+
+    try {
+        if (key) {
+            await withTimeout(update(ref(db, 'products/' + key), data));
+            Swal.fire('Updated!', 'Product updated successfully', 'success');
+        } else {
+            data.views = 0;
+            const newRef = push(ref(db, 'products'));
+            await withTimeout(set(newRef, data));
+            if (extractedFetchedReviews && extractedFetchedReviews.length > 0) {
+                for (const rev of extractedFetchedReviews) {
+                    await push(ref(db, `products/${newRef.key}/reviews`), rev);
+                }
+            }
+            Swal.fire('Saved!', 'New product added!', 'success');
+        }
+        extractedFetchedReviews = [];
+        resetForm();
+        openTab('manageProducts');
+    } catch (err) {
+        console.error("Save product error:", err);
+        Swal.fire('Save Failed', err.message || 'Product save cheyyan pattiyilla', 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerText = document.getElementById('editKey').value ? "UPDATE PRODUCT" : "SAVE PRODUCT";
+    }
+};
+
+</script>
+
+<script type="text/plain" id="newCss">
+        /* ===== Add Product: checkbox + responsive fixes ===== */
+        input[type="checkbox"] { width: auto; margin: 0 6px 0 0; padding: 0; vertical-align: middle; accent-color: var(--accent); }
+        #addProduct .admin-card { max-width: 860px; margin: 0 auto 24px; }
+        .img-input-row, .spec-row { flex-wrap: wrap; }
+        .img-input-row .p-img-link { min-width: 0; }
+        @media (max-width: 600px) {
+            #addProduct .admin-card { padding: 16px; }
+            input, textarea, select { font-size: 16px; }
+            .form-row > * { flex: 1 1 100%; }
+            .spec-row input { flex: 1 1 100%; }
+            .img-input-row { flex-direction: column; align-items: stretch; gap: 6px; }
+            .img-input-row .p-img-link { flex: none; width: 100%; }
+            .btn-upload-inline { width: 100%; justify-content: center; height: 42px; }
+            .btn-add { width: 100%; }
+            .auto-fill-box button { align-self: stretch; justify-content: center; }
+            .tab-title { font-size: 20px; }
+        }
+</script>
+
+<script>
+function runFix(){
+  let h = document.getElementById('src').value;
+  const log = [];
+  if(!h.trim()){ document.getElementById('log').innerText = 'Aadyam original HTML paste cheyyuka.'; return; }
+  if(h.includes('cleanKey')){ document.getElementById('log').innerText = 'Ee file already fix cheythittundu.'; return; }
+
+  // 1. replace saveProduct block
+  const s = h.indexOf('window.saveProduct = () => {');
+  const e = h.indexOf('window.saveBanner = ');
+  if(s > -1 && e > s){
+    h = h.slice(0, s) + document.getElementById('newSave').textContent.trim() + '\n\n' + h.slice(e);
+    log.push('OK  saveProduct replaced');
+  } else log.push('FAIL saveProduct kittiyilla');
+
+  // 2. scoped image count
+  const a = "document.querySelectorAll('.img-input-row').length + 1";
+  if(h.includes(a)){ h = h.split(a).join("document.querySelectorAll('#imageInputs .img-input-row').length + 1"); log.push('OK  addImageField fixed'); }
+  else log.push('FAIL addImageField kittiyilla');
+
+  // 3. clean spec keys in auto fill
+  const b = 'specs[key] = val;';
+  if(h.includes(b)){ h = h.split(b).join('specs[cleanKey(key)] = val;'); log.push('OK  auto-fill spec keys cleaned'); }
+  else log.push('FAIL auto-fill spec line kittiyilla');
+
+  // 4. escape attribute values
+  [['value="${k}"','value="${esc(k)}"'],
+   ['value="${v}"','value="${esc(v)}"'],
+   ['value="${imgUrl}"','value="${esc(imgUrl)}"'],
+   ['value="${p.specs[k]}"','value="${esc(p.specs[k])}"'],
+   ['value="${u}"','value="${esc(u)}"']].forEach(([x,y])=>{
+     const n = h.split(x).length - 1;
+     if(n){ h = h.split(x).join(y); log.push('OK  escaped ' + x + ' (' + n + ')'); }
+     else log.push('--  not found ' + x);
+   });
+
+  // 5. CSS
+  const c = h.indexOf('</style>');
+  if(c > -1){ h = h.slice(0, c) + document.getElementById('newCss').textContent + '\n    ' + h.slice(c); log.push('OK  responsive CSS added'); }
+  else log.push('FAIL </style> kittiyilla');
+
+  document.getElementById('out').value = h;
+  document.getElementById('log').innerText = log.join('\n');
+}
+function dl(){
+  const t = document.getElementById('out').value;
+  if(!t) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([t], {type:'text/html'}));
+  a.download = 'admin.html';
+  a.click();
+}
+function cp(){
+  const t = document.getElementById('out').value;
+  if(t) navigator.clipboard.writeText(t);
+}
+</script>
+</body>
+</html>
