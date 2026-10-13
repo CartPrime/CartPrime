@@ -574,6 +574,19 @@ nav {
   .profile-chip { max-width: 38vw; }
   .profile-name { max-width: 30vw; }
 }
+
+/* WhatsApp floating button */
+.wa-float{position:fixed;right:16px;bottom:85px;width:54px;height:54px;border-radius:50%;background:var(--whatsapp-color);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.9rem;text-decoration:none;z-index:9000;box-shadow:0 8px 20px rgba(37,211,102,.45);transition:transform .2s ease}
+.wa-float:hover{transform:scale(1.08)}
+/* App download banner */
+.app-download-section{padding:10px 6% 15px}
+.app-download-card{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--primary);color:var(--bg);border-radius:20px;padding:18px 20px;flex-wrap:wrap}
+.app-download-info{display:flex;align-items:center;gap:14px}
+.app-download-info>i{font-size:2rem;color:var(--accent)}
+.app-download-info h4{font-size:1rem;font-weight:800;margin-bottom:2px}
+.app-download-info p{font-size:.78rem;opacity:.75}
+.app-download-btn{background:var(--accent);color:#111;border:none;border-radius:12px;padding:12px 22px;font-weight:800;font-size:.88rem;cursor:pointer;display:inline-flex;align-items:center;gap:8px;min-height:44px}
+@media(max-width:768px){.app-download-section{padding:8px 4%}.app-download-btn{width:100%;justify-content:center}}
 </style> 
 
 <script>
@@ -849,6 +862,15 @@ nav {
     </div> 
   </div> 
 </div> 
+<div class="app-download-section">
+  <div class="app-download-card">
+    <div class="app-download-info">
+      <i class="fa-solid fa-mobile-screen-button"></i>
+      <div><h4>Download CartPrime App</h4><p>Faster shopping, exclusive offers & order updates</p></div>
+    </div>
+    <button type="button" id="downloadAppBtn" class="app-download-btn"><i class="fa-solid fa-download"></i> Download App</button>
+  </div>
+</div>
 <div class="category-bar" id="categoryBar"></div> 
 
 <div class="banner-section" id="bannerSection" style="display: none;"> 
@@ -875,6 +897,8 @@ nav {
     <button class="cookie-btn cookie-accept" id="acceptCookiesBtn">Accept Cookies</button> 
   </div> 
 </div> 
+
+<a href="https://wa.me/919744559527?text=Hi%20CartPrime%2C%20I%20need%20help" target="_blank" rel="noopener noreferrer" class="wa-float" title="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 
 <!-- Bottom Navigation Bar -->
 <div class="bottom-nav">
@@ -930,6 +954,26 @@ nav {
         });
       }
     }
+  });
+</script>
+
+<script>
+  let deferredInstallPrompt = null;
+  const APP_DOWNLOAD_URL = "https://cartprime.netlify.app/";
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; });
+  window.addEventListener('appinstalled', () => { const b = document.querySelector('.app-download-section'); if (b) b.style.display = 'none'; });
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('downloadAppBtn');
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt = null;
+      } else if (APP_DOWNLOAD_URL) {
+        window.open(APP_DOWNLOAD_URL, '_blank');
+      } else {
+        alert("Browser menu (⋮) il ninnu 'Add to Home Screen' / 'Install App' select cheyyuka.");
+      }
+    });
   });
 </script>
 
