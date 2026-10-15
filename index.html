@@ -832,6 +832,45 @@ nav {
   .budget-card-price { font-size: 0.82rem; }
   .budget-card-icon { width: 28px; height: 28px; font-size: 0.8rem; }
 }
+
+
+/* Seller registration CTA and modal additions */
+.seller-cta-section { padding: 8px 6% 14px; }
+.seller-cta-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  padding: 20px 22px; border: 1.5px solid rgba(245,158,11,.42); border-radius: 20px;
+  background: linear-gradient(125deg, var(--surface), var(--card-bg));
+  box-shadow: 0 8px 24px rgba(0,0,0,.05);
+}
+.seller-cta-copy { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1; }
+.seller-cta-icon {
+  width: 48px; height: 48px; flex-shrink: 0; border-radius: 15px; display: flex; align-items: center;
+  justify-content: center; font-size: 1.35rem; color: #111; background: linear-gradient(135deg,#fbbf24,#f59e0b);
+  box-shadow: 0 0 16px rgba(245,158,11,.25);
+}
+.seller-cta-copy h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; color: var(--text-main); }
+.seller-cta-copy p { font-size: .8rem; line-height: 1.5; color: var(--text-muted); }
+.seller-cta-button {
+  border: none; border-radius: 13px; padding: 12px 18px; font-weight: 800; font-size: .86rem; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: #111;
+  background: linear-gradient(135deg,#fbbf24,#f59e0b); box-shadow: 0 4px 14px rgba(245,158,11,.22); flex-shrink: 0;
+}
+.seller-cta-button:hover { filter: brightness(1.04); transform: translateY(-1px); }
+.seller-status-note {
+  padding: 10px 12px; margin: 2px 0 14px; border-radius: 11px; background: var(--surface);
+  border: 1px solid var(--border); color: var(--text-muted); font-size: .78rem; line-height: 1.45;
+}
+.seller-field-label { display:block; font-size:.75rem; font-weight:800; color:var(--text-muted); margin:0 0 6px; }
+.seller-readonly { opacity:.88; cursor:not-allowed; }
+@media (max-width: 600px) {
+  .seller-cta-section { padding-left:4%; padding-right:4%; }
+  .seller-cta-card { padding: 16px; gap: 14px; }
+  .seller-cta-copy { align-items:flex-start; }
+  .seller-cta-copy h3 { font-size:.95rem; }
+  .seller-cta-copy p { font-size:.75rem; }
+  .seller-cta-button { width:100%; }
+}
+
 </style> 
 
 <script>
@@ -1026,6 +1065,53 @@ nav {
   </div> 
 </div> 
 
+
+
+<!-- Seller Profile Modal -->
+<div id="sellerModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="sellerModalTitle">
+  <div class="modal-card">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+      <div class="seller-cta-icon"><i class="fa-solid fa-store"></i></div>
+      <div>
+        <h3 id="sellerModalTitle" style="margin:0 0 3px; font-size:1.15rem; font-weight:800;">Create Seller Profile</h3>
+        <p style="font-size:.78rem; color:var(--text-muted); margin:0;">Register your interest in listing products on CartPrime.</p>
+      </div>
+    </div>
+    <div id="sellerStatusNote" class="seller-status-note" role="status">Your account details will be filled in automatically.</div>
+    <form id="sellerForm" class="modal-form" autocomplete="on">
+      <label class="seller-field-label" for="sellerNameInput">YOUR NAME</label>
+      <input type="text" id="sellerNameInput" class="modal-input seller-readonly" placeholder="Sign in to load your name" autocomplete="name" readonly required>
+
+      <label class="seller-field-label" for="sellerPhoneInput">REGISTERED MOBILE NUMBER</label>
+      <input type="tel" id="sellerPhoneInput" class="modal-input seller-readonly" placeholder="Sign in to load your number" inputmode="numeric" readonly required>
+
+      <label class="seller-field-label" for="sellerStoreNameInput">SHOP / BUSINESS NAME</label>
+      <input type="text" id="sellerStoreNameInput" class="modal-input" placeholder="Your shop or business name" maxlength="100" required>
+
+      <label class="seller-field-label" for="sellerCategoryInput">PRODUCT CATEGORY</label>
+      <select id="sellerCategoryInput" class="modal-input" required>
+        <option value="">Select product category</option>
+        <option value="Electronics & Gadgets">Electronics & Gadgets</option>
+        <option value="Fashion & Clothing">Fashion & Clothing</option>
+        <option value="Watches & Accessories">Watches & Accessories</option>
+        <option value="Home & Kitchen">Home & Kitchen</option>
+        <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+        <option value="Toys & Baby Products">Toys & Baby Products</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label class="seller-field-label" for="sellerProductDetailsInput">WHAT PRODUCTS WOULD YOU LIKE TO ADD?</label>
+      <textarea id="sellerProductDetailsInput" class="modal-input" placeholder="Briefly describe your products, price range, etc." rows="3" maxlength="1500" style="resize:vertical; min-height:90px;" required></textarea>
+
+      <div class="modal-btn-group">
+        <button type="button" id="closeSellerModal" style="flex:1; padding:12px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button>
+        <button type="submit" class="modal-btn-submit" id="sellerSubmitBtn"><i class="fa-solid fa-floppy-disk"></i> Save Seller Profile</button>
+      </div>
+    </form>
+    <p style="font-size:.7rem; line-height:1.45; color:var(--text-muted); margin-top:12px;">Submitting this form saves your seller profile and product interest. Product listings are not published automatically; CartPrime may review the request first.</p>
+  </div>
+</div>
+
 <!-- Contact Us Modal -->
 <div id="contactModal" class="modal-overlay"> 
   <div class="modal-card"> 
@@ -1110,6 +1196,24 @@ nav {
     </div> 
   </div> 
 </div> 
+
+
+
+<!-- Seller Registration CTA -->
+<section class="seller-cta-section" aria-label="Sell on CartPrime">
+  <div class="seller-cta-card">
+    <div class="seller-cta-copy">
+      <div class="seller-cta-icon"><i class="fa-solid fa-store"></i></div>
+      <div>
+        <h3>Have products to sell? Join CartPrime</h3>
+        <p>Create your seller profile and tell us what products you would like to list. Your name and mobile number will be filled from your account.</p>
+      </div>
+    </div>
+    <button type="button" class="seller-cta-button" id="sellerCtaBtn">
+      <i class="fa-solid fa-user-plus"></i> Become a Seller <i class="fa-solid fa-arrow-right"></i>
+    </button>
+  </div>
+</section>
 
 <!-- Budget Deals Zone Box (Red, Green, Blue, Purple) -->
 <div class="budget-box-section">
@@ -2128,6 +2232,153 @@ nav {
   } 
 
   // =============================================
+
+
+  // =============================================
+  // SELLER PROFILE REGISTRATION
+  // Saves data at Realtime Database path: seller/{phone}
+  // =============================================
+  const sellerCtaBtn = document.getElementById('sellerCtaBtn');
+  const sellerModal = document.getElementById('sellerModal');
+  const sellerForm = document.getElementById('sellerForm');
+  const sellerNameInput = document.getElementById('sellerNameInput');
+  const sellerPhoneInput = document.getElementById('sellerPhoneInput');
+  const sellerStoreNameInput = document.getElementById('sellerStoreNameInput');
+  const sellerCategoryInput = document.getElementById('sellerCategoryInput');
+  const sellerProductDetailsInput = document.getElementById('sellerProductDetailsInput');
+  const sellerStatusNote = document.getElementById('sellerStatusNote');
+  const sellerSubmitBtn = document.getElementById('sellerSubmitBtn');
+  const closeSellerModalBtn = document.getElementById('closeSellerModal');
+  let sellerFormSaving = false;
+
+  function setSellerStatus(message) {
+    if (sellerStatusNote) sellerStatusNote.textContent = message;
+  }
+
+  async function openSellerRegistration() {
+    const phone = (localStorage.getItem('userPhone') || '').replace(/\D/g, '');
+    const name = (localStorage.getItem('userName') || '').trim();
+
+    if (phone.length !== 10 || !name) {
+      if (typeof resetRegistrationForm === 'function') resetRegistrationForm();
+      if (closeWelcomeModal) closeWelcomeModal.style.display = 'block';
+      openModal(welcomeModal);
+      showCustomAlert('Sign In Required', 'Please sign in to CartPrime first. Then choose “Become a Seller” again.', false);
+      return;
+    }
+
+    if (sellerForm) sellerForm.reset();
+    sellerNameInput.value = name;
+    sellerPhoneInput.value = phone;
+    sellerSubmitBtn.disabled = true;
+    sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading Profile...';
+    setSellerStatus('Checking whether you already have a seller profile...');
+    openModal(sellerModal);
+
+    try {
+      const sellerSnapshot = await get(ref(db, `seller/${phone}`));
+      if (sellerSnapshot.exists()) {
+        const savedSeller = sellerSnapshot.val() || {};
+        sellerStoreNameInput.value = savedSeller.storeName || '';
+        sellerCategoryInput.value = savedSeller.productCategory || '';
+        sellerProductDetailsInput.value = savedSeller.productDescription || '';
+        const status = savedSeller.status || 'Pending';
+        setSellerStatus(`Seller profile found. Current status: ${status}. You can update your shop and product details below.`);
+        sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Seller Profile';
+      } else {
+        setSellerStatus('Your name and mobile number were filled from your CartPrime account. Complete the details to create your seller profile.');
+        sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Seller Profile';
+      }
+    } catch (error) {
+      console.error('Could not read seller profile:', error);
+      setSellerStatus('Could not load an existing seller profile. You may still try to submit; if saving fails, check Firebase Realtime Database rules for the seller path.');
+      sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Seller Profile';
+    } finally {
+      sellerSubmitBtn.disabled = false;
+    }
+  }
+
+  if (sellerCtaBtn) sellerCtaBtn.addEventListener('click', openSellerRegistration);
+  if (closeSellerModalBtn) {
+    closeSellerModalBtn.addEventListener('click', () => {
+      closeModal(sellerModal);
+      if (sellerForm) sellerForm.reset();
+      setSellerStatus('Your account details will be filled in automatically.');
+    });
+  }
+
+  if (sellerForm) {
+    sellerForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (sellerFormSaving) return;
+
+      const phone = (localStorage.getItem('userPhone') || '').replace(/\D/g, '');
+      const name = (localStorage.getItem('userName') || '').trim();
+      const storeName = sellerStoreNameInput.value.trim();
+      const productCategory = sellerCategoryInput.value;
+      const productDescription = sellerProductDetailsInput.value.trim();
+
+      if (phone.length !== 10 || !name) {
+        showCustomAlert('Sign In Required', 'Please sign in to your CartPrime account before creating a seller profile.', false);
+        closeModal(sellerModal);
+        if (closeWelcomeModal) closeWelcomeModal.style.display = 'block';
+        openModal(welcomeModal);
+        return;
+      }
+      if (!storeName || !productCategory || !productDescription) {
+        showCustomAlert('Details Required', 'Please enter your shop name, product category, and product details.', false);
+        return;
+      }
+
+      sellerFormSaving = true;
+      sellerSubmitBtn.disabled = true;
+      sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      setSellerStatus('Saving seller profile to CartPrime...');
+
+      try {
+        const sellerRef = ref(db, `seller/${phone}`);
+        const oldSnapshot = await get(sellerRef);
+        const oldData = oldSnapshot.exists() ? (oldSnapshot.val() || {}) : {};
+        const now = Date.now();
+        const profileData = {
+          name,
+          phone,
+          storeName,
+          productCategory,
+          productDescription,
+          status: oldData.status || 'Pending',
+          createdAt: oldData.createdAt || now,
+          updatedAt: now,
+          source: 'CartPrime website seller registration'
+        };
+
+        if (oldSnapshot.exists()) {
+          await update(sellerRef, profileData);
+        } else {
+          await set(sellerRef, profileData);
+        }
+
+        const statusText = profileData.status;
+        closeModal(sellerModal);
+        showCustomAlert(
+          oldSnapshot.exists() ? 'Seller Profile Updated' : 'Seller Profile Created',
+          `Your seller details were saved successfully.\nStatus: ${statusText}\nDatabase path: seller/${phone}`,
+          true
+        );
+      } catch (error) {
+        console.error('Seller profile save failed:', error);
+        const details = error && error.message ? error.message : 'Unknown Firebase error';
+        setSellerStatus(`Could not save the seller profile: ${details}`);
+        showCustomAlert('Could Not Save Seller Profile', `Firebase could not save your seller profile. Check database access rules for seller/${phone}.\n\n${details}`, false);
+      } finally {
+        sellerFormSaving = false;
+        sellerSubmitBtn.disabled = false;
+        sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Seller Profile';
+      }
+    });
+  }
+
+
   // REUSABLE EARN AD BANNER TEMPLATE (Bilingual & High Converting)
   // =============================================
   function getEarnBannerHtml() {
