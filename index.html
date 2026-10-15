@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
 
 <style> 
-/* --- Light Theme Variables (Orange + Black + Ambient Glow) --- */ 
+/* --- Light Theme Variables (Orange + Black + Cyber Glow) --- */ 
 :root { 
   --primary: #0b0b0f; 
   --accent: #f59e0b; 
@@ -58,10 +58,10 @@ body {
   display: flex; flex-direction: column; padding-bottom: 75px; -webkit-tap-highlight-color: transparent; 
   transition: background-color 0.3s ease, color 0.3s ease; 
 } 
-button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notification-icon-btn { 
+button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notification-icon-btn, .budget-card { 
   touch-action: manipulation; user-select: none; -webkit-tap-highlight-color: transparent; 
 } 
-button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notification-icon-btn:active { transform: scale(0.96) !important; } 
+button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notification-icon-btn:active, .budget-card:active { transform: scale(0.96) !important; } 
 nav { 
   display: flex; justify-content: space-between; align-items: center; padding: 12px 6%; position: sticky; top: 0; 
   background: var(--nav-bg); backdrop-filter: blur(12px); z-index: 1000; border-bottom: 1px solid var(--border); gap: 15px; 
@@ -342,7 +342,7 @@ nav {
 .stat-info strong { font-size: 0.88rem; font-weight: 800; color: var(--text-main); } 
 .stat-info span { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; } 
 .stat-divider { width: 1px; height: 25px; background: var(--border); } 
-.trust-bar-section { padding: 10px 6% 15px 6%; } 
+.trust-bar-section { padding: 10px 6% 10px 6%; } 
 .trust-bar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: 18px; } 
 .trust-card { display: flex; align-items: center; gap: 12px; } 
 .trust-icon { 
@@ -354,10 +354,154 @@ nav {
 .trust-details p { font-size: 0.72rem; color: var(--text-muted); } 
 
 /* =============================================
-   CATEGORY BAR & GLOWING PRICE FILTER PILLS
+   SPECIAL GLOWING "BUDGET STORE" BOX SECTION
    ============================================= */
+.budget-box-section {
+  padding: 10px 6% 14px 6%;
+}
+.budget-deals-box {
+  background: var(--surface);
+  border: 1.5px solid var(--accent-border);
+  border-radius: 22px;
+  padding: 18px 20px;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.15), 0 10px 30px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.budget-deals-box:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 32px rgba(245, 158, 11, 0.22), 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+.budget-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.budget-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.budget-icon-glow {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  box-shadow: 0 0 16px var(--accent-glow-strong);
+}
+.budget-box-header h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.budget-box-header p {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.budget-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+.budget-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.budget-card {
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.budget-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 20px -3px rgba(0,0,0,0.1), 0 0 16px var(--accent-glow);
+}
+.budget-card.active {
+  background: linear-gradient(135deg, #f59e0b, #ea580c) !important;
+  border-color: #f59e0b !important;
+  color: #111111 !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.8), 0 8px 20px rgba(245, 158, 11, 0.4) !important;
+  transform: translateY(-3px) scale(1.02);
+}
+.budget-card.active .budget-card-icon {
+  background: #111111;
+  color: #f59e0b;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+.budget-card.active .budget-card-sub {
+  color: rgba(17, 17, 17, 0.82) !important;
+}
+.budget-card.active .budget-card-price {
+  color: #111111 !important;
+}
+.budget-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+.budget-card-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.budget-card-sub {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  line-height: 1.1;
+}
+.budget-card-price {
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+/* Category Bar */
 .category-bar { 
-  padding: 12px 6% 8px 6%; 
+  padding: 6px 6% 8px 6%; 
   display: flex; 
   gap: 10px; 
   overflow-x: auto; 
@@ -377,32 +521,6 @@ nav {
   border-color: var(--accent); 
   box-shadow: 0 0 16px var(--accent-glow), 0 4px 12px rgba(0,0,0,0.12); 
 } 
-
-/* Special Glowing Neon Price Filters (Under 99, 199, 350, 599) */
-.price-filter-btn {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.08));
-  border: 1.5px solid var(--accent-border);
-  color: var(--text-main);
-  font-weight: 700;
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.22);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  position: relative;
-}
-.price-filter-btn:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 20px var(--accent-glow-strong), 0 0 35px rgba(245, 158, 11, 0.3);
-  transform: translateY(-2px);
-}
-.price-filter-btn.active {
-  background: linear-gradient(135deg, #f59e0b, #ea580c) !important;
-  color: #111111 !important;
-  border-color: #f59e0b !important;
-  font-weight: 800;
-  box-shadow: 0 0 24px rgba(245, 158, 11, 0.85), 0 0 45px rgba(245, 158, 11, 0.45) !important;
-  transform: translateY(-2px);
-}
 
 .banner-section { padding: 15px 6% 10px 6%; position: relative; width: 100%; } 
 .banner-wrapper { position: relative; display: flex; align-items: center; } 
@@ -425,12 +543,7 @@ nav {
 
 .container { padding: 10px 6% 40px; flex: 1; } 
 
-/* =============================================
-   PRODUCT GRID — Responsive Column Layout
-   Mobile  : 2 columns
-   Tablet  : 3 columns (≥ 600px)
-   Desktop : 4 columns (≥ 1024px)
-   ============================================= */
+/* Product Grid */
 .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
 @media (min-width: 600px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
@@ -485,9 +598,7 @@ nav {
 .otp-inpage-notif .n-msg { font-size: 0.76rem; color: var(--text-muted); line-height: 1.35; }
 .otp-inpage-notif .n-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; padding: 2px; }
 
-/* =============================================
-   GLOWING PRODUCT CARD STYLING
-   ============================================= */
+/* Product Cards */
 .card { 
   background: var(--card-bg); border-radius: 22px; padding: 12px; position: relative; border: 1px solid var(--border); 
   box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; cursor: pointer; 
@@ -548,7 +659,7 @@ nav {
 .buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; } 
 .buy-btn:disabled i { color: var(--text-muted); }
 
-/* Empty state container when no products match price filter */
+/* Empty state container */
 .empty-state-box {
   grid-column: 1 / -1;
   text-align: center;
@@ -657,9 +768,19 @@ nav {
   .hero-text h1 { font-size: 1.7rem; } 
   .hero-text p { font-size: 0.82rem; } 
   .trust-stats { width: 100%; justify-content: space-around; padding: 10px; } 
-  .trust-bar-section { padding: 8px 4%; } 
+  .trust-bar-section { padding: 6px 4%; } 
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; } 
-  .category-bar { padding: 8px 4%; gap: 8px; } 
+
+  /* Mobile Glowing Budget Box */
+  .budget-box-section { padding: 6px 4% 10px 4%; } 
+  .budget-deals-box { padding: 14px; border-radius: 18px; }
+  .budget-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .budget-box-header h3 { font-size: 0.92rem; }
+  .budget-card { padding: 10px; border-radius: 12px; }
+  .budget-card-price { font-size: 0.85rem; }
+  .budget-card-icon { width: 30px; height: 30px; font-size: 0.85rem; }
+
+  .category-bar { padding: 4px 4% 6px 4%; gap: 6px; } 
   .category-btn { padding: 8px 16px; font-size: 0.78rem; min-height: 38px; } 
   .banner-section { padding: 8px 4%; } 
   .banner-item { flex: 0 0 100%; height: 160px; border-radius: 14px; } 
@@ -1003,7 +1124,56 @@ nav {
   </div> 
 </div> 
 
-<!-- Categories & Glowing Price Filter Bar -->
+<!-- =============================================
+     GLOWING "BUDGET DEALS" BOX CONTAINER
+     ============================================= -->
+<div class="budget-box-section">
+  <div class="budget-deals-box">
+    <div class="budget-box-header">
+      <div class="budget-title-wrap">
+        <div class="budget-icon-glow"><i class="fa-solid fa-bolt"></i></div>
+        <div>
+          <h3>Budget Deals Zone</h3>
+          <p>Handpicked finds under your budget</p>
+        </div>
+      </div>
+      <div class="budget-badge-pill"><i class="fa-solid fa-sparkles"></i> Best Prices</div>
+    </div>
+    
+    <div class="budget-grid" id="budgetGrid">
+      <div class="budget-card" data-cat="under_99">
+        <div class="budget-card-icon"><i class="fa-solid fa-fire"></i></div>
+        <div class="budget-card-info">
+          <span class="budget-card-sub">Starting from</span>
+          <strong class="budget-card-price">Under ₹99</strong>
+        </div>
+      </div>
+      <div class="budget-card" data-cat="under_199">
+        <div class="budget-card-icon"><i class="fa-solid fa-bolt"></i></div>
+        <div class="budget-card-info">
+          <span class="budget-card-sub">Top Value</span>
+          <strong class="budget-card-price">Under ₹199</strong>
+        </div>
+      </div>
+      <div class="budget-card" data-cat="under_350">
+        <div class="budget-card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div class="budget-card-info">
+          <span class="budget-card-sub">Trending</span>
+          <strong class="budget-card-price">Under ₹350</strong>
+        </div>
+      </div>
+      <div class="budget-card" data-cat="under_599">
+        <div class="budget-card-icon"><i class="fa-solid fa-gem"></i></div>
+        <div class="budget-card-info">
+          <span class="budget-card-sub">Premium Value</span>
+          <strong class="budget-card-price">Under ₹599</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Categories Bar -->
 <div class="category-bar" id="categoryBar"></div> 
 
 <div class="banner-section" id="bannerSection" style="display: none;"> 
@@ -1952,7 +2122,7 @@ nav {
   } 
 
   // =============================================
-  // PRODUCTS & DYNAMIC PRICE FILTER CATEGORIES
+  // PRODUCTS & DYNAMIC PRICE FILTER IN BOX
   // =============================================
   let allProducts = []; 
   let activeCategory = "All"; 
@@ -1960,12 +2130,11 @@ nav {
   let currentUser = null; 
   let userWishlistIds = {}; 
 
-  // The 4 requested price filter ranges with special icons and maximum prices
   const priceFilterOptions = [
-    { id: "under_99", label: "Under ₹99", maxPrice: 99, icon: "fa-bolt" },
-    { id: "under_199", label: "Under ₹199", maxPrice: 199, icon: "fa-fire" },
-    { id: "under_350", label: "Under ₹350", maxPrice: 350, icon: "fa-wand-magic-sparkles" },
-    { id: "under_599", label: "Under ₹599", maxPrice: 599, icon: "fa-gem" }
+    { id: "under_99", maxPrice: 99 },
+    { id: "under_199", maxPrice: 199 },
+    { id: "under_350", maxPrice: 350 },
+    { id: "under_599", maxPrice: 599 }
   ];
 
   showSkeletons(); 
@@ -2053,6 +2222,36 @@ nav {
 
     return allProducts.filter(p => p.category && p.category.trim().toLowerCase() === filterKey.toLowerCase());
   }
+
+  // Setup click listeners for the Budget Deals Box Cards
+  function setupBudgetBoxListeners() {
+    const cards = document.querySelectorAll('.budget-card');
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        const catKey = card.getAttribute('data-cat');
+        
+        // Toggle or set active
+        if (activeCategory === catKey) {
+          activeCategory = 'All';
+          card.classList.remove('active');
+        } else {
+          activeCategory = catKey;
+          cards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+        }
+
+        // Reset category bar active states
+        document.querySelectorAll('.category-btn').forEach(b => {
+          if (b.getAttribute('data-cat') === activeCategory) b.classList.add('active');
+          else b.classList.remove('active');
+        });
+
+        renderProducts(getFilteredProducts(activeCategory));
+      });
+    });
+  }
+
+  setupBudgetBoxListeners();
 
   function updateBadges(user) { 
     const bottomWishlistBadge = document.getElementById('bottomWishlistBadge'); 
@@ -2224,6 +2423,10 @@ nav {
               trackProductClickAndRedirect(bannerData.productId); 
             } else if (bannerData.category) { 
               activeCategory = bannerData.category; 
+              
+              // Clear budget cards active class
+              document.querySelectorAll('.budget-card').forEach(c => c.classList.remove('active'));
+
               renderProducts(getFilteredProducts(activeCategory)); 
               document.querySelectorAll('.category-btn').forEach(b => { 
                 if(b.getAttribute('data-cat').toLowerCase() === activeCategory.toLowerCase()) b.classList.add('active'); 
@@ -2294,7 +2497,7 @@ nav {
     slider.addEventListener('touchend', () => startAutoScroll()); 
   } 
 
-  // Render Category Bar with Glowing Price Filter Badges
+  // Render Main Categories Bar
   function renderCategoryBar() { 
     const catBar = document.getElementById('categoryBar'); 
     const categories = new Set(["Gadgets", "Fashion", "Watches", "Accessories"]); 
@@ -2304,18 +2507,8 @@ nav {
       } 
     }); 
 
-    let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All"><i class="fa-solid fa-layer-group" style="margin-right: 6px;"></i>All</div>`; 
-    
-    // Add Glowing Under 99, 199, 350, 599 buttons
-    priceFilterOptions.forEach(opt => {
-      barHtml += `
-        <div class="category-btn price-filter-btn ${activeCategory === opt.id ? 'active' : ''}" data-cat="${opt.id}">
-          <i class="fa-solid ${opt.icon}"></i> ${opt.label}
-        </div>
-      `;
-    });
+    let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All"><i class="fa-solid fa-layer-group" style="margin-right: 6px;"></i>All Products</div>`; 
 
-    // Add standard product categories
     categories.forEach(cat => { 
       barHtml += `<div class="category-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</div>`; 
     }); 
@@ -2328,6 +2521,9 @@ nav {
         catBar.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
         btn.classList.add('active'); 
         
+        // Remove active state from budget cards when a regular category is clicked
+        document.querySelectorAll('.budget-card').forEach(c => c.classList.remove('active'));
+
         const filtered = getFilteredProducts(activeCategory);
         renderProducts(filtered); 
       }); 
@@ -2338,7 +2534,7 @@ nav {
     const grid = document.getElementById('productGrid'); 
     grid.innerHTML = ""; 
 
-    // Handle Empty Search/Filter State
+    // Handle Empty State
     const visibleProducts = products.filter(p => p.showOnHome !== false);
     if (visibleProducts.length === 0) {
       grid.innerHTML = `
@@ -2357,6 +2553,7 @@ nav {
             if (b.getAttribute('data-cat') === 'All') b.classList.add('active');
             else b.classList.remove('active');
           });
+          document.querySelectorAll('.budget-card').forEach(c => c.classList.remove('active'));
           renderProducts(allProducts);
         });
       }
