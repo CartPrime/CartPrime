@@ -797,11 +797,11 @@ nav {
   .shelf-header { padding: 0 4% 10px 4%; }
   .shelf-title-wrap h3 { font-size: 1.05rem; }
   .shelf-scroll-container { padding: 4px 4% 14px 4%; gap: 10px; }
-  .shelf-card { flex: 0 0 160px; max-width: 160px; padding: 9px; border-radius: 16px; }
-  .shelf-card .image-box { height: 135px; }
-  .shelf-card .card-info h3 { font-size: 0.8rem; height: 2.1rem; }
-  .shelf-card .price { font-size: 0.98rem; }
-  .shelf-card .buy-btn { padding: 8px; font-size: 0.76rem; min-height: 35px; }
+  .shelf-card { flex: 0 0 155px; max-width: 155px; padding: 9px; border-radius: 16px; }
+  .shelf-card .image-box { height: 130px; }
+  .shelf-card .card-info h3 { font-size: 0.78rem; height: 2.1rem; }
+  .shelf-card .price { font-size: 0.95rem; }
+  .shelf-card .buy-btn { padding: 8px; font-size: 0.74rem; min-height: 35px; }
 
   .grid { padding: 0 4% 10px 4%; gap: 10px; }
   .card { padding: 9px; border-radius: 16px; }
@@ -826,13 +826,12 @@ nav {
 } 
 
 @media (max-width: 360px) {
-  .shelf-card { flex: 0 0 145px; max-width: 145px; padding: 8px; }
-  .shelf-card .image-box { height: 125px; }
+  .shelf-card { flex: 0 0 140px; max-width: 140px; padding: 8px; }
+  .shelf-card .image-box { height: 120px; }
   .budget-card { padding: 8px; gap: 6px; }
   .budget-card-price { font-size: 0.82rem; }
   .budget-card-icon { width: 28px; height: 28px; font-size: 0.8rem; }
 }
-
 
 /* Seller registration CTA and modal additions */
 .seller-cta-section { padding: 8px 6% 14px; }
@@ -870,7 +869,6 @@ nav {
   .seller-cta-copy p { font-size:.75rem; }
   .seller-cta-button { width:100%; }
 }
-
 </style> 
 
 <script>
@@ -1065,8 +1063,6 @@ nav {
   </div> 
 </div> 
 
-
-
 <!-- Seller Profile Modal -->
 <div id="sellerModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="sellerModalTitle">
   <div class="modal-card">
@@ -1196,8 +1192,6 @@ nav {
     </div> 
   </div> 
 </div> 
-
-
 
 <!-- Seller Registration CTA -->
 <section class="seller-cta-section" aria-label="Sell on CartPrime">
@@ -2232,11 +2226,7 @@ nav {
   } 
 
   // =============================================
-
-
-  // =============================================
   // SELLER PROFILE REGISTRATION
-  // Saves data at Realtime Database path: seller/{phone}
   // =============================================
   const sellerCtaBtn = document.getElementById('sellerCtaBtn');
   const sellerModal = document.getElementById('sellerModal');
@@ -2291,7 +2281,7 @@ nav {
       }
     } catch (error) {
       console.error('Could not read seller profile:', error);
-      setSellerStatus('Could not load an existing seller profile. You may still try to submit; if saving fails, check Firebase Realtime Database rules for the seller path.');
+      setSellerStatus('Could not load an existing seller profile. You may still try to submit.');
       sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Seller Profile';
     } finally {
       sellerSubmitBtn.disabled = false;
@@ -2362,14 +2352,14 @@ nav {
         closeModal(sellerModal);
         showCustomAlert(
           oldSnapshot.exists() ? 'Seller Profile Updated' : 'Seller Profile Created',
-          `Your seller details were saved successfully.\nStatus: ${statusText}\nDatabase path: seller/${phone}`,
+          `Your seller details were saved successfully.\nStatus: ${statusText}`,
           true
         );
       } catch (error) {
         console.error('Seller profile save failed:', error);
-        const details = error && error.message ? error.message : 'Unknown Firebase error';
+        const details = error && error.message ? error.message : 'Unknown error';
         setSellerStatus(`Could not save the seller profile: ${details}`);
-        showCustomAlert('Could Not Save Seller Profile', `Firebase could not save your seller profile. Check database access rules for seller/${phone}.\n\n${details}`, false);
+        showCustomAlert('Could Not Save Seller Profile', `Could not save your seller profile.\n\n${details}`, false);
       } finally {
         sellerFormSaving = false;
         sellerSubmitBtn.disabled = false;
@@ -2378,9 +2368,7 @@ nav {
     });
   }
 
-
-  // REUSABLE EARN AD BANNER TEMPLATE (Bilingual & High Converting)
-  // =============================================
+  // REUSABLE EARN AD BANNER TEMPLATE
   function getEarnBannerHtml() {
     return `
       <div class="earn-ad-section">
@@ -2402,7 +2390,7 @@ nav {
               You Earn at Home <span>₹30,000+</span> Earn
             </h2>
             <p class="earn-ad-desc">
-              Share PartPrime Prodacts on WhatsApp and Social Media without a single sign. Get a higher cash commission on each order!
+              Share CartPrime Products on WhatsApp and Social Media easily. Get a higher cash commission on each order!
             </p>
 
             <div class="earn-features-grid">
@@ -2441,9 +2429,6 @@ nav {
     `;
   }
 
-  // =============================================
-  // PRODUCTS, CATEGORY HEADINGS & HORIZONTAL SHELVES
-  // =============================================
   let allProducts = []; 
   let activeCategory = "All"; 
   let autoScrollInterval = null; 
@@ -2534,7 +2519,6 @@ nav {
     }); 
   }
 
-  // Filter Helper Function
   function getFilteredProducts(filterKey) {
     if (!filterKey || filterKey === "All") {
       return allProducts.filter(p => p.showOnHome !== false);
@@ -2556,7 +2540,6 @@ nav {
     });
   }
 
-  // Setup click listeners for the Budget Deals Box Cards
   function setupBudgetBoxListeners() {
     const cards = document.querySelectorAll('.budget-card');
     cards.forEach(card => {
@@ -2572,7 +2555,6 @@ nav {
           card.classList.add('active');
         }
 
-        // Sync category bar active states
         document.querySelectorAll('.category-btn').forEach(b => {
           if (b.getAttribute('data-cat') === activeCategory) b.classList.add('active');
           else b.classList.remove('active');
@@ -2580,7 +2562,6 @@ nav {
 
         renderProducts(getFilteredProducts(activeCategory));
 
-        // Smooth scroll to product shelves on selection
         const container = document.getElementById('mainProductsContainer');
         if (container) {
           container.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2699,7 +2680,6 @@ nav {
     }
   } 
 
-  // Smart Wishlist UI update without tearing down the entire DOM/slider positions!
   function updateWishlistUIAndBadge() { 
     const bottomWishlistBadge = document.getElementById('bottomWishlistBadge');
     const count = Object.keys(userWishlistIds).length; 
@@ -2712,7 +2692,6 @@ nav {
       if(bottomWishlistBadge) bottomWishlistBadge.style.display = 'none';
     } 
 
-    // Synchronize all existing wishlist heart icons dynamically
     document.querySelectorAll('.card-wishlist-btn').forEach(btn => {
       const pid = btn.getAttribute('data-id');
       const isW = !!userWishlistIds[pid];
@@ -2839,7 +2818,6 @@ nav {
     slider.addEventListener('touchend', () => startAutoScroll()); 
   } 
 
-  // Render Main Categories Bar
   function renderCategoryBar() { 
     const catBar = document.getElementById('categoryBar'); 
     if (!catBar) return;
@@ -2877,7 +2855,6 @@ nav {
     }); 
   } 
 
-  // Category Icon Resolver
   function getCategoryIconData(catName) {
     const lower = (catName || "").toLowerCase();
     if (lower.includes("gadget") || lower.includes("electronic") || lower.includes("tech") || lower.includes("phone")) {
@@ -2901,7 +2878,6 @@ nav {
     return { icon: "fa-bag-shopping", color: "#f59e0b" };
   }
 
-  // Create Product Card HTML Element (Supports both Shelf and Grid mode)
   function createProductCardElement(p, idx, isShelf = true) {
     const isOut = p.outOfStock === true; 
     const pr = parseFloat(p.price ? p.price.toString().replace(/,/g, '') : 0); 
@@ -2977,7 +2953,6 @@ nav {
     return card;
   }
 
-  // Create Horizontal Shelf Section with Heading and Scroll Controls
   function createShelfElement(shelfId, title, iconClass, iconColor, productsList, categoryFilterKey) {
     const shelf = document.createElement('div');
     shelf.className = 'product-shelf-section';
@@ -3036,9 +3011,6 @@ nav {
     window.filterByCategory('All');
   };
 
-  // =============================================
-  // MAIN RENDER FUNCTION: CATEGORIZED HORIZONTAL SHELVES & IN-BETWEEN EARN AD
-  // =============================================
   function renderProducts(products) { 
     const container = document.getElementById('mainProductsContainer'); 
     if (!container) return;
@@ -3046,7 +3018,6 @@ nav {
 
     const visibleProducts = products.filter(p => p.showOnHome !== false);
     
-    // Empty State Handling
     if (visibleProducts.length === 0) {
       container.innerHTML = `
         <div class="empty-state-box">
@@ -3071,7 +3042,6 @@ nav {
       return;
     }
 
-    // A. Single Category or Budget Filter Focused Mode (Grid view with Show All button)
     if (activeCategory !== 'All') {
       let title = activeCategory;
       if (activeCategory.startsWith('under_')) {
@@ -3104,7 +3074,6 @@ nav {
       return;
     }
 
-    // B. Multi-Shelf Home View with Horizontal Side-Scroll & In-Between Earn Banner
     const categoriesMap = {};
     visibleProducts.forEach(p => {
       const cat = (p.category && p.category.trim()) ? p.category.trim() : "Deals";
@@ -3115,7 +3084,6 @@ nav {
     const categoryNames = Object.keys(categoriesMap);
     let shelfCounter = 0;
 
-    // Shelf 1: 🔥 Trending & Top Offers
     const trendingProducts = visibleProducts.filter(p => {
       const pr = parseFloat(p.price?.toString().replace(/,/g, '') || 0);
       const mr = parseFloat(p.mrp?.toString().replace(/,/g, '') || pr);
@@ -3134,7 +3102,6 @@ nav {
     container.appendChild(trendingShelf);
     shelfCounter++;
 
-    // Shelves 2+: Category Shelves with EARN AD BANNER INSERTED IN BETWEEN!
     let earnBannerInserted = false;
 
     categoryNames.forEach((catName, cIdx) => {
@@ -3152,7 +3119,6 @@ nav {
       container.appendChild(catShelf);
       shelfCounter++;
 
-      // Insert Earn Ad Banner right after the 2nd shelf
       if (!earnBannerInserted && shelfCounter >= 2) {
         const bannerContainer = document.createElement('div');
         bannerContainer.className = 'in-between-earn-ad-wrap';
@@ -3162,7 +3128,6 @@ nav {
       }
     });
 
-    // Fallback: If not inserted yet (e.g. only 1 category exists)
     if (!earnBannerInserted) {
       const bannerContainer = document.createElement('div');
       bannerContainer.className = 'in-between-earn-ad-wrap';
@@ -3170,7 +3135,6 @@ nav {
       container.appendChild(bannerContainer);
     }
 
-    // Shelf Final: 🌟 Explore All Products Grid
     const exploreSection = document.createElement('div');
     exploreSection.style.width = '100%';
     exploreSection.innerHTML = `
@@ -3191,7 +3155,6 @@ nav {
     });
   } 
 
-  // Search Input Autocomplete
   const searchInput = document.getElementById('searchInput'); 
   const suggestionsBox = document.getElementById('searchSuggestions'); 
 
