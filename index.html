@@ -58,10 +58,10 @@ body {
   display: flex; flex-direction: column; padding-bottom: 75px; -webkit-tap-highlight-color: transparent; 
   transition: background-color 0.3s ease, color 0.3s ease; 
 } 
-button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notification-icon-btn, .budget-card { 
+button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notification-icon-btn, .budget-card, .shelf-card { 
   touch-action: manipulation; user-select: none; -webkit-tap-highlight-color: transparent; 
 } 
-button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notification-icon-btn:active, .budget-card:active { transform: scale(0.96) !important; } 
+button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notification-icon-btn:active, .budget-card:active, .shelf-card:active { transform: scale(0.96) !important; } 
 nav { 
   display: flex; justify-content: space-between; align-items: center; padding: 12px 6%; position: sticky; top: 0; 
   background: var(--nav-bg); backdrop-filter: blur(12px); z-index: 1000; border-bottom: 1px solid var(--border); gap: 15px; 
@@ -121,6 +121,8 @@ nav {
 .profile-name { font-size: 0.78rem; font-weight: 700; color: var(--text-main); line-height: 1.1; }
 .profile-phone { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; }
 .edit-profile-btn { color: var(--text-main); font-size: 0.78rem; margin-left: 4px; }
+
+/* Bottom Nav */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--nav-bg); backdrop-filter: blur(16px);
   border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 9999;
@@ -144,7 +146,7 @@ nav {
 .spinner { width: 36px; height: 36px; border: 4px solid var(--border); border-top: 4px solid #f59e0b; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* --- Modal Overlays --- */
+/* --- Modals --- */
 .modal-overlay { 
   display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); 
   backdrop-filter: blur(6px); z-index: 10000; align-items: center; justify-content: center; padding: 15px; 
@@ -158,130 +160,37 @@ nav {
 } 
 .modal-overlay.active .modal-card { transform: translateY(0) scale(1); }
 
-/* --- TRUSTED HIGH-SECURITY LOGIN MODAL STYLES --- */
-.login-header-zone {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
+.login-header-zone { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
 .login-shield-badge {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05));
-  border: 1px solid var(--accent-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent);
-  font-size: 1.4rem;
-  box-shadow: 0 0 15px var(--accent-glow);
+  width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05));
+  border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; color: var(--accent);
+  font-size: 1.4rem; box-shadow: 0 0 15px var(--accent-glow);
 }
 .ssl-security-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(34, 197, 94, 0.1);
-  color: #16a34a;
-  border: 1px solid rgba(34, 197, 94, 0.25);
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.7rem;
-  font-weight: 700;
+  display: inline-flex; align-items: center; gap: 5px; background: rgba(34, 197, 94, 0.1); color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.25); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
 }
 .trust-phone-wrap {
-  display: flex;
-  align-items: center;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-  transition: all 0.25s ease;
+  display: flex; align-items: center; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px;
+  overflow: hidden; transition: all 0.25s ease;
 }
-.trust-phone-wrap:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 16px var(--accent-glow);
-  background: var(--card-bg);
-}
+.trust-phone-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 16px var(--accent-glow); background: var(--card-bg); }
 .country-prefix {
-  padding: 12px 14px;
-  background: rgba(0, 0, 0, 0.03);
-  border-right: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: var(--text-main);
-  user-select: none;
+  padding: 12px 14px; background: rgba(0, 0, 0, 0.03); border-right: 1px solid var(--border); display: flex;
+  align-items: center; gap: 6px; font-size: 0.9rem; font-weight: 800; color: var(--text-main); user-select: none;
 }
-.country-prefix img {
-  width: 18px;
-  height: 12px;
-  object-fit: cover;
-  border-radius: 2px;
-}
-.trust-phone-input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  padding: 13px 14px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
+.country-prefix img { width: 18px; height: 12px; object-fit: cover; border-radius: 2px; }
+.trust-phone-input { flex: 1; border: none; background: transparent; padding: 13px 14px; font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
 .otp-secure-field {
-  width: 100%;
-  padding: 14px;
-  background: var(--surface);
-  border: 2px dashed var(--accent-border);
-  border-radius: 14px;
-  font-size: 1.6rem;
-  font-weight: 800;
-  letter-spacing: 12px;
-  text-align: center;
-  color: var(--text-main);
-  transition: all 0.25s ease;
+  width: 100%; padding: 14px; background: var(--surface); border: 2px dashed var(--accent-border); border-radius: 14px;
+  font-size: 1.6rem; font-weight: 800; letter-spacing: 12px; text-align: center; color: var(--text-main); transition: all 0.25s ease;
 }
-.otp-secure-field:focus {
-  border-color: var(--accent);
-  background: var(--card-bg);
-  box-shadow: 0 0 20px var(--accent-glow);
-}
-
-.otp-sub-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-.otp-timer-count {
-  font-weight: 700;
-  color: var(--accent);
-}
-.btn-resend-link {
-  background: none;
-  border: none;
-  color: var(--text-main);
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 2px 4px;
-}
-.btn-resend-link:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  text-decoration: none;
-}
-
-.welcome-benefits {
-  display: flex; flex-direction: column; gap: 8px; margin: 16px 0; background: var(--surface); padding: 12px 14px;
-  border-radius: 14px; border: 1px solid var(--border);
-}
+.otp-secure-field:focus { border-color: var(--accent); background: var(--card-bg); box-shadow: 0 0 20px var(--accent-glow); }
+.otp-sub-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.78rem; color: var(--text-muted); }
+.otp-timer-count { font-weight: 700; color: var(--accent); }
+.btn-resend-link { background: none; border: none; color: var(--text-main); font-weight: 700; cursor: pointer; text-decoration: underline; padding: 2px 4px; }
+.btn-resend-link:disabled { opacity: 0.4; cursor: not-allowed; text-decoration: none; }
+.welcome-benefits { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; background: var(--surface); padding: 12px 14px; border-radius: 14px; border: 1px solid var(--border); }
 .welcome-benefit-item { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; font-weight: 600; color: var(--text-main); }
 .welcome-benefit-item i { color: #22c55e; font-size: 0.9rem; }
 
@@ -289,32 +198,18 @@ nav {
 .notif-modal-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 15px; }
 .notif-modal-header h3 { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
 .notif-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; max-height: 55vh; padding-right: 4px; }
-.notif-item {
-  display: flex; align-items: flex-start; gap: 12px; background: var(--surface); border: 1px solid var(--border);
-  padding: 14px; border-radius: 14px; transition: all 0.2s ease; position: relative;
-}
+.notif-item { display: flex; align-items: flex-start; gap: 12px; background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: 14px; transition: all 0.2s ease; position: relative; }
 .notif-item.unread { background: rgba(245, 158, 11, 0.06); border-color: var(--accent-border); box-shadow: 0 0 10px rgba(245, 158, 11, 0.15); }
-.notif-icon {
-  width: 38px; height: 38px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: flex;
-  align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
-  box-shadow: 0 0 10px var(--accent-glow);
-}
+.notif-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; box-shadow: 0 0 10px var(--accent-glow); }
 .notif-content { flex: 1; }
 .notif-title { font-size: 0.88rem; font-weight: 700; color: var(--text-main); margin-bottom: 3px; }
 .notif-message { font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; margin-bottom: 6px; }
 .notif-time { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; }
-.mark-read-btn {
-  border: none; color: #b45309; font-size: 0.72rem; font-weight: 700; cursor: pointer; padding: 4px 8px;
-  border-radius: 6px; background: var(--accent-soft); margin-top: 4px;
-}
+.mark-read-btn { border: none; color: #b45309; font-size: 0.72rem; font-weight: 700; cursor: pointer; padding: 4px 8px; border-radius: 6px; background: var(--accent-soft); margin-top: 4px; }
 .no-notif { text-align: center; padding: 30px 10px; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
 
 .earn-modal-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.earn-modal-icon {
-  width: 44px; height: 44px; background: var(--accent-soft); color: var(--accent); border-radius: 12px; display: flex;
-  align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
-  box-shadow: 0 0 12px var(--accent-glow);
-}
+.earn-modal-icon { width: 44px; height: 44px; background: var(--accent-soft); color: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; box-shadow: 0 0 12px var(--accent-glow); }
 .earn-benefits { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
 .earn-benefit-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 600; color: var(--text-main); }
 .earn-benefit-item i { color: #22c55e; font-size: 0.85rem; }
@@ -331,9 +226,7 @@ nav {
 .suggestion-item p { font-size: 0.75rem; color: #d97706; font-weight: 700; margin: 0; } 
 .hero { padding: 30px 6% 10px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; } 
 .hero-text h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; color: var(--text-main); } 
-.hero-text h1 span, .hero-text h1:nth-child(2) {
-  text-shadow: 0 0 24px var(--accent-glow);
-}
+.hero-text h1 span, .hero-text h1:nth-child(2) { text-shadow: 0 0 24px var(--accent-glow); }
 .hero-text p { color: var(--text-muted); margin-top: 8px; font-size: 0.95rem; } 
 .trust-stats { display: flex; align-items: center; gap: 20px; background: var(--surface); padding: 12px 20px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); } 
 .stat-item { display: flex; align-items: center; gap: 10px; } 
@@ -347,184 +240,356 @@ nav {
 .trust-card { display: flex; align-items: center; gap: 12px; } 
 .trust-icon { 
   width: 40px; height: 40px; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); display: flex; 
-  align-items: center; justify-content: center; font-size: 1.1rem; color: var(--accent); flex-shrink: 0; 
-  box-shadow: 0 0 10px var(--accent-soft);
+  align-items: center; justify-content: center; font-size: 1.1rem; color: var(--accent); flex-shrink: 0; box-shadow: 0 0 10px var(--accent-soft);
 } 
 .trust-details h4 { font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 2px; } 
 .trust-details p { font-size: 0.72rem; color: var(--text-muted); } 
 
-/* =============================================
-   BUDGET DEALS BOX SECTION WITH MULTI-COLOR NEON CARDS
-   ============================================= */
-.budget-box-section {
-  padding: 10px 6% 12px 6%;
-}
+/* Budget Deals Box */
+.budget-box-section { padding: 10px 6% 12px 6%; }
 .budget-deals-box {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 22px;
-  padding: 18px 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 22px; padding: 18px 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05); position: relative; overflow: hidden; transition: all 0.3s ease;
 }
-.budget-box-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-.budget-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+.budget-box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.budget-title-wrap { display: flex; align-items: center; gap: 12px; }
 .budget-icon-glow {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #f59e0b, #ea580c);
-  color: #111;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.15rem;
-  box-shadow: 0 0 16px var(--accent-glow-strong);
+  width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #ea580c); color: #111;
+  display: flex; align-items: center; justify-content: center; font-size: 1.15rem; box-shadow: 0 0 16px var(--accent-glow-strong);
 }
-.budget-box-header h3 {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--text-main);
-  letter-spacing: -0.3px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.budget-box-header p {
-  font-size: 0.74rem;
-  color: var(--text-muted);
-  font-weight: 600;
-}
+.budget-box-header h3 { font-size: 1.05rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.3px; display: flex; align-items: center; gap: 6px; }
+.budget-box-header p { font-size: 0.74rem; color: var(--text-muted); font-weight: 600; }
 .budget-badge-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: var(--card-bg);
-  color: var(--text-main);
-  border: 1px solid var(--border);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 800;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: inline-flex; align-items: center; gap: 5px; background: var(--card-bg); color: var(--text-main);
+  border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
-.budget-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
+.budget-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .budget-card {
-  background: var(--card-bg);
-  border: 1.5px solid var(--border);
-  border-radius: 16px;
-  padding: 13px 14px;
+  background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 16px; padding: 13px 14px; display: flex;
+  align-items: center; gap: 10px; cursor: pointer; transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
+  user-select: none; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.budget-card-info { display: flex; flex-direction: column; min-width: 0; }
+.budget-card-sub { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; line-height: 1.1; }
+.budget-card-price { font-size: 0.98rem; font-weight: 800; white-space: nowrap; }
+.budget-card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; transition: all 0.25s ease; }
+
+/* 4 Budget Card Themes */
+.budget-card.theme-red { border-color: rgba(239, 68, 68, 0.35); background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), var(--card-bg)); box-shadow: 0 0 14px rgba(239, 68, 68, 0.16); }
+.budget-card.theme-red .budget-card-icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.budget-card.theme-red .budget-card-price { color: #ef4444; }
+.budget-card.theme-red.active { background: linear-gradient(135deg, #ef4444, #dc2626) !important; border-color: #ef4444 !important; box-shadow: 0 0 28px rgba(239, 68, 68, 0.85) !important; color: #fff !important; }
+.budget-card.theme-red.active .budget-card-icon { background: #fff; color: #ef4444; }
+.budget-card.theme-red.active .budget-card-sub, .budget-card.theme-red.active .budget-card-price { color: #ffffff !important; }
+
+.budget-card.theme-green { border-color: rgba(34, 197, 94, 0.35); background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), var(--card-bg)); box-shadow: 0 0 14px rgba(34, 197, 94, 0.16); }
+.budget-card.theme-green .budget-card-icon { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+.budget-card.theme-green .budget-card-price { color: #16a34a; }
+.budget-card.theme-green.active { background: linear-gradient(135deg, #22c55e, #16a34a) !important; border-color: #22c55e !important; box-shadow: 0 0 28px rgba(34, 197, 94, 0.85) !important; color: #fff !important; }
+.budget-card.theme-green.active .budget-card-icon { background: #fff; color: #16a34a; }
+.budget-card.theme-green.active .budget-card-sub, .budget-card.theme-green.active .budget-card-price { color: #ffffff !important; }
+
+.budget-card.theme-blue { border-color: rgba(6, 182, 212, 0.35); background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), var(--card-bg)); box-shadow: 0 0 14px rgba(6, 182, 212, 0.16); }
+.budget-card.theme-blue .budget-card-icon { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
+.budget-card.theme-blue .budget-card-price { color: #0284c7; }
+.budget-card.theme-blue.active { background: linear-gradient(135deg, #06b6d4, #0284c7) !important; border-color: #06b6d4 !important; box-shadow: 0 0 28px rgba(6, 182, 212, 0.85) !important; color: #fff !important; }
+.budget-card.theme-blue.active .budget-card-icon { background: #fff; color: #0284c7; }
+.budget-card.theme-blue.active .budget-card-sub, .budget-card.theme-blue.active .budget-card-price { color: #ffffff !important; }
+
+.budget-card.theme-purple { border-color: rgba(168, 85, 247, 0.35); background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), var(--card-bg)); box-shadow: 0 0 14px rgba(168, 85, 247, 0.16); }
+.budget-card.theme-purple .budget-card-icon { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+.budget-card.theme-purple .budget-card-price { color: #9333ea; }
+.budget-card.theme-purple.active { background: linear-gradient(135deg, #a855f7, #7c3aed) !important; border-color: #a855f7 !important; box-shadow: 0 0 28px rgba(168, 85, 247, 0.85) !important; color: #fff !important; }
+.budget-card.theme-purple.active .budget-card-icon { background: #fff; color: #7c3aed; }
+.budget-card.theme-purple.active .budget-card-sub, .budget-card.theme-purple.active .budget-card-price { color: #ffffff !important; }
+
+/* Category Bar */
+.category-bar { 
+  padding: 6px 6% 12px 6%; display: flex; gap: 10px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; -webkit-overflow-scrolling: touch; 
+} 
+.category-bar::-webkit-scrollbar { display: none; } 
+.category-btn { 
+  background: var(--surface); color: var(--text-main); padding: 10px 22px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; 
+  cursor: pointer; border: 1px solid var(--border); transition: all 0.25s ease; text-transform: capitalize; user-select: none; 
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; min-height: 42px; 
+} 
+.category-btn:hover, .category-btn.active { 
+  background: var(--primary); color: var(--bg); border-color: var(--accent); box-shadow: 0 0 16px var(--accent-glow), 0 4px 12px rgba(0,0,0,0.12); 
+} 
+
+/* Banner Slider */
+.banner-section { padding: 10px 6% 12px 6%; position: relative; width: 100%; } 
+.banner-wrapper { position: relative; display: flex; align-items: center; } 
+.banner-slider { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth; align-items: center; width: 100%; } 
+.banner-slider::-webkit-scrollbar { display: none; } 
+.banner-item { 
+  flex: 0 0 calc(50% - 8px); scroll-snap-align: start; border-radius: 20px; overflow: hidden; height: 190px; background: var(--surface); 
+  display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.06); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid var(--border);
+} 
+.banner-item:hover { transform: scale(1.005); box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2); border-color: var(--accent); } 
+.banner-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; } 
+.banner-dots { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; } 
+.dot { width: 8px; height: 8px; background: var(--border); border-radius: 50%; transition: all 0.3s ease; cursor: pointer; } 
+.dot.active { background: var(--accent); width: 20px; border-radius: 4px; box-shadow: 0 0 8px var(--accent-glow); } 
+
+/* =============================================
+   🔥 HORIZONTAL PRODUCT SHELVES WITH HEADINGS
+   ============================================= */
+.main-products-container {
+  padding: 10px 0 30px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.product-shelf-section {
+  position: relative;
+  width: 100%;
+}
+
+.shelf-header {
+  padding: 0 6% 12px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shelf-title-wrap {
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  user-select: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
-.budget-card-info {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.budget-card-sub {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  line-height: 1.1;
-}
-.budget-card-price {
-  font-size: 0.98rem;
-  font-weight: 800;
-  white-space: nowrap;
-}
-.budget-card-icon {
+
+.shelf-icon-badge {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
+  font-size: 1.05rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.shelf-title-wrap h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.4px;
+}
+
+.shelf-view-all-btn {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   transition: all 0.25s ease;
+  user-select: none;
 }
 
-/* Red */
-.budget-card.theme-red {
-  border-color: rgba(239, 68, 68, 0.35);
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), var(--card-bg));
-  box-shadow: 0 0 14px rgba(239, 68, 68, 0.16);
+.shelf-view-all-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 14px var(--accent-glow);
 }
-.budget-card.theme-red .budget-card-icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
-.budget-card.theme-red .budget-card-price { color: #ef4444; }
-.budget-card.theme-red:hover { border-color: #ef4444; box-shadow: 0 8px 24px -3px rgba(239, 68, 68, 0.3), 0 0 20px rgba(239, 68, 68, 0.6); transform: translateY(-3px); }
-.budget-card.theme-red.active { background: linear-gradient(135deg, #ef4444, #dc2626) !important; border-color: #ef4444 !important; box-shadow: 0 0 28px rgba(239, 68, 68, 0.85), 0 8px 20px rgba(239, 68, 68, 0.4) !important; transform: translateY(-3px) scale(1.02); }
-.budget-card.theme-red.active .budget-card-icon { background: #ffffff; color: #ef4444; }
-.budget-card.theme-red.active .budget-card-sub, .budget-card.theme-red.active .budget-card-price { color: #ffffff !important; }
 
-/* Green */
-.budget-card.theme-green {
-  border-color: rgba(34, 197, 94, 0.35);
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), var(--card-bg));
-  box-shadow: 0 0 14px rgba(34, 197, 94, 0.16);
+/* Horizontal Scroll Wrapper & Arrows */
+.shelf-scroll-wrapper {
+  position: relative;
+  width: 100%;
 }
-.budget-card.theme-green .budget-card-icon { background: rgba(34, 197, 94, 0.15); color: #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
-.budget-card.theme-green .budget-card-price { color: #16a34a; }
-.budget-card.theme-green:hover { border-color: #22c55e; box-shadow: 0 8px 24px -3px rgba(34, 197, 94, 0.3), 0 0 20px rgba(34, 197, 94, 0.6); transform: translateY(-3px); }
-.budget-card.theme-green.active { background: linear-gradient(135deg, #22c55e, #16a34a) !important; border-color: #22c55e !important; box-shadow: 0 0 28px rgba(34, 197, 94, 0.85), 0 8px 20px rgba(34, 197, 94, 0.4) !important; transform: translateY(-3px) scale(1.02); }
-.budget-card.theme-green.active .budget-card-icon { background: #ffffff; color: #16a34a; }
-.budget-card.theme-green.active .budget-card-sub, .budget-card.theme-green.active .budget-card-price { color: #ffffff !important; }
 
-/* Cyan */
-.budget-card.theme-blue {
-  border-color: rgba(6, 182, 212, 0.35);
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), var(--card-bg));
-  box-shadow: 0 0 14px rgba(6, 182, 212, 0.16);
+.shelf-scroll-container {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 4px 6% 16px 6%;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
-.budget-card.theme-blue .budget-card-icon { background: rgba(6, 182, 212, 0.15); color: #06b6d4; box-shadow: 0 0 10px rgba(6, 182, 212, 0.4); }
-.budget-card.theme-blue .budget-card-price { color: #0284c7; }
-.budget-card.theme-blue:hover { border-color: #06b6d4; box-shadow: 0 8px 24px -3px rgba(6, 182, 212, 0.3), 0 0 20px rgba(6, 182, 212, 0.6); transform: translateY(-3px); }
-.budget-card.theme-blue.active { background: linear-gradient(135deg, #06b6d4, #0284c7) !important; border-color: #06b6d4 !important; box-shadow: 0 0 28px rgba(6, 182, 212, 0.85), 0 8px 20px rgba(6, 182, 212, 0.4) !important; transform: translateY(-3px) scale(1.02); }
-.budget-card.theme-blue.active .budget-card-icon { background: #ffffff; color: #0284c7; }
-.budget-card.theme-blue.active .budget-card-sub, .budget-card.theme-blue.active .budget-card-price { color: #ffffff !important; }
 
-/* Purple */
-.budget-card.theme-purple {
-  border-color: rgba(168, 85, 247, 0.35);
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), var(--card-bg));
-  box-shadow: 0 0 14px rgba(168, 85, 247, 0.16);
+.shelf-scroll-container::-webkit-scrollbar {
+  display: none;
 }
-.budget-card.theme-purple .budget-card-icon { background: rgba(168, 85, 247, 0.15); color: #a855f7; box-shadow: 0 0 10px rgba(168, 85, 247, 0.4); }
-.budget-card.theme-purple .budget-card-price { color: #9333ea; }
-.budget-card.theme-purple:hover { border-color: #a855f7; box-shadow: 0 8px 24px -3px rgba(168, 85, 247, 0.3), 0 0 20px rgba(168, 85, 247, 0.6); transform: translateY(-3px); }
-.budget-card.theme-purple.active { background: linear-gradient(135deg, #a855f7, #7c3aed) !important; border-color: #a855f7 !important; box-shadow: 0 0 28px rgba(168, 85, 247, 0.85), 0 8px 20px rgba(168, 85, 247, 0.4) !important; transform: translateY(-3px) scale(1.02); }
-.budget-card.theme-purple.active .budget-card-icon { background: #ffffff; color: #7c3aed; }
-.budget-card.theme-purple.active .budget-card-sub, .budget-card.theme-purple.active .budget-card-price { color: #ffffff !important; }
+
+.shelf-arrow {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(11, 11, 15, 0.88);
+  color: var(--accent);
+  border: 1.5px solid var(--accent-border);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 14px var(--accent-glow);
+  cursor: pointer;
+  z-index: 25;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.shelf-arrow:hover {
+  background: var(--accent);
+  color: #111;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 20px var(--accent-glow-strong);
+}
+
+.shelf-arrow.left { left: 18px; }
+.shelf-arrow.right { right: 18px; }
+
+@media (min-width: 992px) {
+  .shelf-scroll-wrapper:hover .shelf-arrow {
+    display: flex;
+  }
+}
+
+/* Shelf Card (Horizontal) */
+.shelf-card {
+  flex: 0 0 180px;
+  max-width: 180px;
+  scroll-snap-align: start;
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 11px;
+  border: 1.5px solid var(--border);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+@media (min-width: 768px) {
+  .shelf-card {
+    flex: 0 0 215px;
+    max-width: 215px;
+    padding: 12px;
+  }
+}
+
+.shelf-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08), 0 0 20px var(--accent-glow);
+}
+
+.shelf-card .image-box {
+  width: 100%;
+  height: 155px;
+  border-radius: 14px;
+  background: var(--surface);
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .shelf-card .image-box {
+    height: 175px;
+  }
+}
+
+.shelf-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+  transition: transform 0.4s ease;
+}
+
+.shelf-card:hover img {
+  transform: scale(1.08);
+}
+
+/* Standard Grid (For Focused / Explore All View) */
+.grid { 
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 0 6% 10px 6%;
+}
+@media (min-width: 600px) { .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; } }
+@media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 18px; } }
+
+.card { 
+  background: var(--card-bg); border-radius: 20px; padding: 12px; position: relative; border: 1.5px solid var(--border); 
+  box-shadow: 0 6px 20px rgba(0,0,0,0.03); display: flex; flex-direction: column; cursor: pointer; 
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease; 
+} 
+.card:hover { 
+  transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 14px 30px rgba(0,0,0,0.08), 0 0 22px var(--accent-glow); 
+} 
+.card .image-box { width: 100%; height: 165px; border-radius: 14px; overflow: hidden; background: var(--surface); margin-bottom: 10px; position: relative; } 
+.card img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.4s ease; padding: 6px; } 
+.card:hover img { transform: scale(1.06); }
+
+/* Badges & Actions for Product Cards */
+.stock-badge { position: absolute; top: 8px; left: 8px; background: #000; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.62rem; font-weight: 700; z-index: 10; } 
+.discount-badge { 
+  position: absolute; top: 8px; left: 8px; background: linear-gradient(135deg, #f59e0b, #ea580c); 
+  color: #111111; padding: 4px 8px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; z-index: 10; box-shadow: 0 0 10px var(--accent-glow);
+} 
+.verified-tag { 
+  position: absolute; bottom: 6px; left: 6px; background: rgba(255, 255, 255, 0.95); color: #0f172a; padding: 4px 8px; 
+  border-radius: 8px; font-size: 0.62rem; font-weight: 800; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); backdrop-filter: blur(4px);
+} 
+.verified-tag i { color: #f59e0b; } 
+.card-wishlist-btn { 
+  position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; background: rgba(255, 255, 255, 0.95); 
+  border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+  cursor: pointer; z-index: 12; color: #0f172a; font-size: 0.85rem; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.08); 
+} 
+.card-wishlist-btn:hover { transform: scale(1.1); color: #ef4444; } 
+.card-wishlist-btn.active { color: #ef4444; background: #fff; box-shadow: 0 0 12px rgba(239, 68, 68, 0.45); } 
+.card-info { flex-grow: 1; display: flex; flex-direction: column; } 
+.card-info h3 { 
+  font-size: 0.88rem; font-weight: 700; margin-bottom: 6px; color: var(--text-main); display: -webkit-box; 
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.3rem; line-height: 1.3;
+} 
+.price-container { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; margin-top: auto; } 
+.price { font-weight: 800; font-size: 1.1rem; color: var(--text-main); } 
+.mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.78rem; } 
+.buy-btn { 
+  width: 100%; padding: 9px 12px; background: var(--primary); color: var(--bg); border: none; border-radius: 12px; 
+  font-weight: 700; cursor: pointer; transition: 0.2s ease; font-size: 0.82rem; min-height: 38px; 
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+} 
+.buy-btn i { color: #f59e0b; }
+.buy-btn:hover:not(:disabled) { 
+  background: var(--accent); color: #111111; box-shadow: 0 0 18px var(--accent-glow-strong);
+}
+.buy-btn:hover:not(:disabled) i { color: #111111; }
+.buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; } 
 
 /* =============================================
-   HIGH-CONVERTING "EARN MONEY" ADVERTISEMENT BANNER
+   🔥 IN-BETWEEN "EARN MONEY" AD BANNER
    ============================================= */
+.in-between-earn-ad-wrap {
+  width: 100%;
+  padding: 8px 0;
+}
 .earn-ad-section {
-  padding: 6px 6% 14px 6%;
+  padding: 0 6%;
 }
 .earn-ad-banner {
   background: linear-gradient(135deg, #0b0b0f 0%, #151922 55%, #1e293b 100%);
@@ -542,512 +607,129 @@ nav {
   box-shadow: 0 18px 40px -5px rgba(0, 0, 0, 0.45), 0 0 32px rgba(245, 158, 11, 0.28);
 }
 .earn-ad-watermark {
-  position: absolute;
-  right: -15px;
-  bottom: -25px;
-  font-size: 8rem;
-  color: rgba(245, 158, 11, 0.06);
-  pointer-events: none;
-  line-height: 1;
+  position: absolute; right: -15px; bottom: -25px; font-size: 8rem; color: rgba(245, 158, 11, 0.06);
+  pointer-events: none; line-height: 1;
 }
 .earn-ad-watermark-secondary {
-  position: absolute;
-  right: 140px;
-  top: -20px;
-  font-size: 5rem;
-  color: rgba(245, 158, 11, 0.04);
+  position: absolute; right: 140px; top: -20px; font-size: 5rem; color: rgba(245, 158, 11, 0.04);
   pointer-events: none;
 }
 .earn-ad-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
 }
 .earn-ad-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(245, 158, 11, 0.16);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  padding: 5px 12px;
-  border-radius: 30px;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+  display: inline-flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.16); color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4); padding: 5px 12px; border-radius: 30px; font-size: 0.72rem; font-weight: 800;
+  text-transform: uppercase; box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
 }
-.earn-ad-free-tag {
-  color: #4ade80;
-  font-size: 0.75rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.earn-ad-title {
-  color: #ffffff;
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  line-height: 1.25;
-  margin-bottom: 6px;
-}
-.earn-ad-title span {
-  color: var(--accent);
-  text-shadow: 0 0 16px var(--accent-glow);
-}
-.earn-ad-desc {
-  color: #94a3b8;
-  font-size: 0.84rem;
-  line-height: 1.5;
-  max-width: 650px;
-  margin-bottom: 16px;
-}
-.earn-features-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-bottom: 18px;
-}
+.earn-ad-free-tag { color: #4ade80; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+.earn-ad-title { color: #ffffff; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 6px; }
+.earn-ad-title span { color: var(--accent); text-shadow: 0 0 16px var(--accent-glow); }
+.earn-ad-desc { color: #94a3b8; font-size: 0.84rem; line-height: 1.5; max-width: 650px; margin-bottom: 16px; }
+.earn-features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
 .earn-feature-card {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(51, 65, 85, 0.7);
-  border-radius: 14px;
-  padding: 10px 12px;
-  text-align: center;
-  backdrop-filter: blur(6px);
-  transition: all 0.2s ease;
+  background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(51, 65, 85, 0.7); border-radius: 14px; padding: 10px 12px;
+  text-align: center; backdrop-filter: blur(6px);
 }
-.earn-feature-card:hover {
-  border-color: rgba(245, 158, 11, 0.4);
-  background: rgba(245, 158, 11, 0.05);
-}
-.earn-feature-card strong {
-  display: block;
-  font-size: 0.86rem;
-  font-weight: 800;
-  margin-bottom: 2px;
-}
-.earn-feature-card span {
-  display: block;
-  font-size: 0.68rem;
-  color: #94a3b8;
-  font-weight: 600;
-}
-.earn-ad-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+.earn-feature-card strong { display: block; font-size: 0.86rem; font-weight: 800; margin-bottom: 2px; }
+.earn-feature-card span { display: block; font-size: 0.68rem; color: #94a3b8; font-weight: 600; }
+.earn-ad-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .earn-ad-cta-btn {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #0b0b0f;
-  padding: 12px 24px;
-  border-radius: 14px;
-  font-size: 0.88rem;
-  font-weight: 800;
-  border: none;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
-  transition: all 0.25s ease;
-  user-select: none;
+  background: linear-gradient(135deg, #f59e0b, #d97706); color: #0b0b0f; padding: 12px 24px; border-radius: 14px;
+  font-size: 0.88rem; font-weight: 800; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); transition: all 0.25s ease;
 }
-.earn-ad-cta-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 28px rgba(245, 158, 11, 0.65);
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-}
+.earn-ad-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(245, 158, 11, 0.65); background: linear-gradient(135deg, #fbbf24, #f59e0b); }
 .earn-ad-info-btn {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(71, 85, 105, 0.6);
-  color: #e2e8f0;
-  padding: 12px 18px;
-  border-radius: 14px;
-  font-size: 0.84rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s ease;
+  background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(71, 85, 105, 0.6); color: #e2e8f0; padding: 12px 18px;
+  border-radius: 14px; font-size: 0.84rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
 }
-.earn-ad-info-btn:hover {
-  background: #334155;
-  color: #ffffff;
-}
+.earn-ad-info-btn:hover { background: #334155; color: #ffffff; }
 
-/* Category Bar */
-.category-bar { 
-  padding: 6px 6% 8px 6%; 
-  display: flex; 
-  gap: 10px; 
-  overflow-x: auto; 
-  white-space: nowrap; 
-  scrollbar-width: none; 
-  -webkit-overflow-scrolling: touch; 
-} 
-.category-bar::-webkit-scrollbar { display: none; } 
-.category-btn { 
-  background: var(--surface); color: var(--text-main); padding: 10px 22px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; 
-  cursor: pointer; border: 1px solid var(--border); transition: all 0.25s ease; text-transform: capitalize; user-select: none; 
-  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; min-height: 42px; 
-} 
-.category-btn:hover, .category-btn.active { 
-  background: var(--primary); 
-  color: var(--bg); 
-  border-color: var(--accent); 
-  box-shadow: 0 0 16px var(--accent-glow), 0 4px 12px rgba(0,0,0,0.12); 
-} 
-
-.banner-section { padding: 15px 6% 10px 6%; position: relative; width: 100%; } 
-.banner-wrapper { position: relative; display: flex; align-items: center; } 
-.banner-slider { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth; align-items: center; width: 100%; } 
-.banner-slider::-webkit-scrollbar { display: none; } 
-.banner-item { 
-  flex: 0 0 calc(50% - 8px); scroll-snap-align: start; border-radius: 20px; overflow: hidden; height: 200px; background: var(--surface); 
-  display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.06); 
-  transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid var(--border);
-} 
-.banner-item:hover { 
-  transform: scale(1.005); 
-  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2); 
-  border-color: var(--accent);
-} 
-.banner-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; image-rendering: -webkit-optimize-contrast; } 
-.banner-dots { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 12px; } 
-.dot { width: 8px; height: 8px; background: var(--border); border-radius: 50%; transition: all 0.3s ease; cursor: pointer; } 
-.dot.active { background: var(--accent); width: 20px; border-radius: 4px; box-shadow: 0 0 8px var(--accent-glow); } 
-
-.container { padding: 10px 6% 40px; flex: 1; } 
-
-/* Product Grid */
-.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-@media (min-width: 600px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-
-.modal-form { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; } 
-.modal-input { padding: 13px 14px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-main); font-size: 0.92rem; width: 100%; } 
-.modal-input:focus { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
-.modal-btn-group { display: flex; gap: 10px; margin-top: 10px; } 
-.modal-btn-submit { 
-  flex: 1; padding: 13px; border-radius: 12px; border: none; background: #f59e0b; color: #111111; font-weight: 800; 
-  cursor: pointer; min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  font-size: 0.95rem; box-shadow: 0 4px 18px rgba(245, 158, 11, 0.4), 0 0 15px rgba(245, 158, 11, 0.25); transition: all 0.2s ease;
-} 
-.modal-btn-submit:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(245, 158, 11, 0.6), 0 0 25px rgba(245, 158, 11, 0.4); }
-
-.custom-toast-overlay {
-  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(8px); z-index: 20000; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.3s ease;
-}
-.custom-toast-card {
-  background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 30px 24px; width: 100%; max-width: 380px;
-  text-align: center; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 0 25px var(--accent-glow); display: flex; flex-direction: column; align-items: center;
-  gap: 16px; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.toast-icon-wrap { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
-.toast-icon-wrap.success { background: rgba(34, 197, 94, 0.12); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
-.toast-icon-wrap.error { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
-.custom-toast-card h4 { font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 0; }
-.custom-toast-card p { font-size: 0.88rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
-.toast-close-btn {
-  width: 100%; padding: 12px; background: var(--primary); color: var(--bg); border: none; border-radius: 12px;
-  font-weight: 700; font-size: 0.9rem; cursor: pointer; margin-top: 8px; transition: all 0.2s ease;
-}
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes slideUpFade { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } } 
-
-.otp-inpage-notif {
-  position: fixed; top: 14px; right: 14px; z-index: 30000; max-width: 320px; width: calc(100% - 28px);
-  background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2), 0 0 15px var(--accent-glow);
-  padding: 14px; display: flex; gap: 12px; align-items: flex-start; transform: translateY(-20px); opacity: 0;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;
-}
-.otp-inpage-notif.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
-.otp-inpage-notif .n-icon {
-  width: 36px; height: 36px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center; font-size: 1rem;
-  box-shadow: 0 0 10px var(--accent-glow);
-}
-.otp-inpage-notif .n-body { flex: 1; }
-.otp-inpage-notif .n-title { font-size: 0.82rem; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
-.otp-inpage-notif .n-msg { font-size: 0.76rem; color: var(--text-muted); line-height: 1.35; }
-.otp-inpage-notif .n-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; padding: 2px; }
-
-/* Product Cards */
-.card { 
-  background: var(--card-bg); border-radius: 22px; padding: 12px; position: relative; border: 1px solid var(--border); 
-  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; cursor: pointer; 
-  animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; 
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease; 
-} 
-.card:hover { 
-  transform: translateY(-6px); 
-  border-color: var(--accent); 
-  box-shadow: 0 16px 35px -5px rgba(0,0,0,0.12), 0 0 24px var(--accent-glow); 
-} 
-.image-box { width: 100%; height: 180px; border-radius: 16px; overflow: hidden; background: var(--surface); margin-bottom: 12px; position: relative; } 
-.card img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.5s ease; } 
-.card:hover img { transform: scale(1.06); }
-.stock-badge { position: absolute; top: 10px; left: 10px; background: #000; color: white; padding: 4px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: 700; z-index: 10; } 
-.discount-badge { 
-  position: absolute; top: 10px; left: 10px; right: auto; 
-  background: linear-gradient(135deg, #f59e0b, #d97706); 
-  color: #111111; padding: 5px 12px; 
-  border-radius: 10px; font-size: 0.68rem; font-weight: 800; z-index: 10; 
-  box-shadow: 0 0 12px var(--accent-glow);
-} 
-.verified-tag { 
-  position: absolute; bottom: 8px; left: 8px; background: rgba(255, 255, 255, 0.95); color: #0f172a; padding: 5px 10px; 
-  border-radius: 10px; font-size: 0.65rem; font-weight: 800; display: flex; align-items: center; gap: 5px; 
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08); backdrop-filter: blur(4px);
-} 
-.verified-tag i { color: #f59e0b; filter: drop-shadow(0 0 4px var(--accent-glow)); } 
-.card-wishlist-btn { 
-  position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; background: rgba(255, 255, 255, 0.95); 
-  border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-  cursor: pointer; z-index: 12; color: #0f172a; font-size: 0.88rem; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
-} 
-.card-wishlist-btn:hover { transform: scale(1.12); color: #ef4444; box-shadow: 0 0 12px rgba(239, 68, 68, 0.4); } 
-.card-wishlist-btn.active { color: #ef4444; background: #fff; box-shadow: 0 0 14px rgba(239, 68, 68, 0.5); } 
-.discount-badge.with-wishlist { left: 10px; right: auto; } 
-.card-info { flex-grow: 1; display: flex; flex-direction: column; } 
-.card h3 { 
-  font-size: 0.98rem; font-weight: 700; margin-bottom: 6px; color: var(--text-main); display: -webkit-box; 
-  -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; 
-} 
-.price-container { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; } 
-.price { font-weight: 800; font-size: 1.15rem; color: var(--text-main); } 
-.mrp { text-decoration: line-through; color: var(--text-muted); font-size: 0.8rem; } 
-.buy-btn { 
-  width: 100%; padding: 10px 12px; background: var(--primary); color: var(--bg); border: none; border-radius: 14px; 
-  font-weight: 700; cursor: pointer; transition: 0.25s ease; font-size: 0.85rem; margin-top: auto; min-height: 44px; 
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-} 
-.buy-btn i { color: #f59e0b; transition: color 0.2s; }
-.buy-btn:hover:not(:disabled) { 
-  background: var(--accent); 
-  color: #111111; 
-  box-shadow: 0 0 20px var(--accent-glow-strong), 0 4px 12px rgba(245, 158, 11, 0.3);
-  transform: translateY(-1px);
-}
-.buy-btn:hover:not(:disabled) i { color: #111111; }
-.buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; } 
-.buy-btn:disabled i { color: var(--text-muted); }
-
-/* Empty state container */
+/* Empty state */
 .empty-state-box {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 50px 20px;
-  background: var(--surface);
-  border-radius: 20px;
-  border: 1px dashed var(--accent-border);
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.08);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  margin: 10px 6%; text-align: center; padding: 50px 20px; background: var(--surface); border-radius: 20px;
+  border: 1px dashed var(--accent-border); box-shadow: 0 0 20px rgba(245, 158, 11, 0.08); display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 10px;
 }
-.empty-state-box i {
-  font-size: 2.8rem;
-  color: var(--accent);
-  filter: drop-shadow(0 0 12px var(--accent-glow));
-  margin-bottom: 5px;
-}
-.empty-state-box h4 {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--text-main);
-}
-.empty-state-box p {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  max-width: 320px;
-}
+.empty-state-box i { font-size: 2.8rem; color: var(--accent); margin-bottom: 5px; }
+.empty-state-box h4 { font-size: 1.15rem; font-weight: 800; color: var(--text-main); }
+.empty-state-box p { font-size: 0.85rem; color: var(--text-muted); max-width: 320px; }
 .reset-filter-btn {
-  margin-top: 10px;
-  padding: 10px 22px;
-  border-radius: 12px;
-  background: var(--accent);
-  color: #111;
-  font-weight: 800;
-  border: none;
-  cursor: pointer;
-  font-size: 0.85rem;
-  box-shadow: 0 0 16px var(--accent-glow);
-  transition: all 0.2s ease;
-}
-.reset-filter-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 25px var(--accent-glow-strong);
+  margin-top: 10px; padding: 10px 22px; border-radius: 12px; background: var(--accent); color: #111;
+  font-weight: 800; border: none; cursor: pointer; font-size: 0.85rem; box-shadow: 0 0 16px var(--accent-glow);
 }
 
-.badge { 
-  position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 0.6rem; font-weight: 800; 
-  border-radius: 50%; min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; 
-  padding: 2px; border: 2px solid var(--card-bg); 
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
-} 
-.skeleton-card { background: var(--card-bg); border-radius: 20px; padding: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; height: 300px; } 
-.skeleton-img { 
-  width: 100%; height: 180px; border-radius: 14px; 
-  background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%); 
-  background-size: 200% 100%; animation: skeletonLoading 1.5s infinite; margin-bottom: 10px; 
-} 
-.skeleton-line { 
-  height: 12px; background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%); 
-  background-size: 200% 100%; animation: skeletonLoading 1.5s infinite; border-radius: 6px; 
-} 
+.badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 0.6rem; font-weight: 800; border-radius: 50%; min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; padding: 2px; border: 2px solid var(--card-bg); } 
+.skeleton-card { background: var(--card-bg); border-radius: 20px; padding: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; height: 280px; } 
+.skeleton-img { width: 100%; height: 160px; border-radius: 14px; background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%); background-size: 200% 100%; animation: skeletonLoading 1.5s infinite; margin-bottom: 10px; } 
+.skeleton-line { height: 12px; background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-mid) 50%, var(--skeleton-start) 75%); background-size: 200% 100%; animation: skeletonLoading 1.5s infinite; border-radius: 6px; } 
 @keyframes skeletonLoading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } } 
-.safe-checkout-box { 
-  margin: 20px 6% 40px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; 
-  text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; 
-  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-} 
+
+.safe-checkout-box { margin: 20px 6% 35px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; } 
 .safe-checkout-box h3 { font-size: 0.95rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; } 
-.safe-checkout-box h3 i { color: #22c55e; filter: drop-shadow(0 0 5px rgba(34, 197, 94, 0.4)); } 
+.safe-checkout-box h3 i { color: #22c55e; } 
 .payment-badges { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); } 
 .payment-badges span { display: flex; align-items: center; gap: 6px; background: var(--card-bg); padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border); } 
-.cookie-banner { 
-  position: fixed; bottom: 80px; left: 20px; right: 20px; max-width: 450px; background: var(--card-bg); border: 1px solid var(--border); 
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15), 0 0 20px var(--accent-soft); border-radius: 18px; padding: 18px 20px; z-index: 9999; display: flex; 
-  flex-direction: column; gap: 12px; transition: all 0.3s ease; 
-} 
-.cookie-banner p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; } 
-.cookie-banner p strong { color: var(--text-main); } 
-.cookie-actions { display: flex; gap: 10px; justify-content: flex-end; } 
-.cookie-btn { 
-  padding: 10px 20px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: none; transition: 0.2s; 
-  min-height: 38px; display: inline-flex; align-items: center; justify-content: center; 
-} 
-.cookie-accept { background: var(--primary); color: var(--bg); } 
-.cookie-accept:hover { opacity: 0.9; box-shadow: 0 0 12px var(--accent-glow); } 
-.contact-option {
-  display: flex; align-items: center; gap: 15px; padding: 14px; border: 1px solid var(--border); border-radius: 14px;
-  background: var(--surface); text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 0.9rem;
-  transition: all 0.2s ease; cursor: pointer;
-}
-.contact-option:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 15px var(--accent-glow); }
-.contact-option i { font-size: 1.4rem; }
 
-/* Responsive Adjustments */
+.cookie-banner { position: fixed; bottom: 80px; left: 20px; right: 20px; max-width: 450px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 18px 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; } 
+.cookie-banner p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; } 
+.cookie-actions { display: flex; gap: 10px; justify-content: flex-end; } 
+.cookie-btn { padding: 10px 20px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: none; } 
+.cookie-accept { background: var(--primary); color: var(--bg); } 
+
+.contact-option { display: flex; align-items: center; gap: 15px; padding: 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 0.9rem; transition: all 0.2s ease; cursor: pointer; }
+.contact-option:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+/* Responsive adjustments */
 @media (max-width: 768px) { 
   nav { padding: 10px 4%; flex-wrap: wrap; justify-content: space-between; gap: 10px; } 
   .logo { font-size: 1.2rem; order: 1; } 
   .nav-right { order: 2; gap: 8px; flex-shrink: 0; } 
   .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin: 4px 0 2px 0; } 
   .search-container input { padding: 10px 12px 10px 38px; font-size: 0.85rem; border-radius: 14px; } 
-  .search-container i { left: 14px; } 
   .hero { padding: 16px 4% 5px; flex-direction: column; align-items: flex-start; gap: 12px; } 
   .hero-text h1 { font-size: 1.7rem; } 
-  .hero-text p { font-size: 0.82rem; } 
   .trust-stats { width: 100%; justify-content: space-around; padding: 10px; } 
   .trust-bar-section { padding: 6px 4%; } 
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; } 
 
-  /* Mobile Glowing Budget Box */
   .budget-box-section { padding: 6px 4% 10px 4%; } 
   .budget-deals-box { padding: 14px; border-radius: 18px; }
   .budget-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .budget-box-header h3 { font-size: 0.92rem; }
   .budget-card { padding: 10px; border-radius: 12px; gap: 8px; }
   .budget-card-price { font-size: 0.86rem; }
   .budget-card-sub { font-size: 0.6rem; }
-  .budget-card-icon { width: 30px; height: 30px; font-size: 0.85rem; border-radius: 8px; }
 
-  /* Mobile Earn Ad Banner */
-  .earn-ad-section { padding: 4px 4% 12px 4%; }
+  .shelf-header { padding: 0 4% 10px 4%; }
+  .shelf-title-wrap h3 { font-size: 1.05rem; }
+  .shelf-scroll-container { padding: 4px 4% 14px 4%; gap: 10px; }
+  .shelf-card { flex: 0 0 160px; max-width: 160px; padding: 9px; }
+  .shelf-card .image-box { height: 135px; }
+  .card-info h3 { font-size: 0.8rem; height: 2.1rem; }
+  .price { font-size: 0.98rem; }
+  .buy-btn { padding: 8px; font-size: 0.76rem; min-height: 35px; }
+
+  .grid { padding: 0 4% 10px 4%; gap: 10px; }
+  .earn-ad-section { padding: 0 4%; }
   .earn-ad-banner { padding: 16px; border-radius: 18px; }
   .earn-ad-title { font-size: 1.15rem; }
   .earn-ad-desc { font-size: 0.76rem; margin-bottom: 12px; }
   .earn-features-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
-  .earn-feature-card { padding: 8px 10px; }
-  .earn-feature-card strong { font-size: 0.78rem; }
-  .earn-feature-card span { font-size: 0.62rem; }
   .earn-ad-actions { gap: 8px; width: 100%; }
-  .earn-ad-cta-btn { width: 100%; justify-content: center; padding: 11px; font-size: 0.84rem; }
-  .earn-ad-info-btn { width: 100%; justify-content: center; padding: 10px; font-size: 0.8rem; }
+  .earn-ad-cta-btn, .earn-ad-info-btn { width: 100%; justify-content: center; padding: 11px; }
 
   .category-bar { padding: 4px 4% 6px 4%; gap: 6px; } 
   .category-btn { padding: 8px 16px; font-size: 0.78rem; min-height: 38px; } 
   .banner-section { padding: 8px 4%; } 
-  .banner-item { flex: 0 0 100%; height: 160px; border-radius: 14px; } 
-  .banner-item img { border-radius: 14px; } 
-  .dot { width: 6px; height: 6px; } 
-  .dot.active { width: 14px; } 
-  .container { padding: 8px 4% 20px; } 
-  .image-box { height: 140px; } 
-  .stock-badge, .discount-badge { padding: 3px 8px; font-size: 0.58rem; top: 6px; } 
-  .stock-badge { left: 6px; } 
-  .discount-badge, .discount-badge.with-wishlist { left: 6px; right: auto; } 
-  .card-wishlist-btn { width: 28px; height: 28px; font-size: 0.75rem; top: 6px; right: 6px; } 
-  .safe-checkout-box { margin: 10px 4% 25px; padding: 15px; } 
-  .cookie-banner { left: 10px; right: 10px; bottom: 75px; padding: 14px; width: auto; max-width: 100%; } 
-  .cookie-actions { width: 100%; } 
-  .cookie-btn { width: 100%; min-height: 40px; } 
-
-  .modal-card { padding: 18px; border-radius: 20px; max-width: 100%; }
-  .login-header-zone { margin-bottom: 12px; }
-  .login-shield-badge { width: 40px; height: 40px; font-size: 1.15rem; border-radius: 12px; }
-  .ssl-security-pill { font-size: 0.62rem; padding: 3px 8px; }
-  #welcomeModalTitle { font-size: 1.08rem !important; }
-  #welcomeModalSub { font-size: 0.75rem !important; }
-  .welcome-benefits { padding: 10px 12px; gap: 6px; }
-  .welcome-benefit-item { font-size: 0.74rem; gap: 8px; }
-  .trust-phone-wrap { border-radius: 12px; }
-  .country-prefix { padding: 10px 10px; font-size: 0.85rem; }
-  .country-prefix img { width: 16px; height: 11px; }
-  .trust-phone-input { padding: 11px 10px; font-size: 0.9rem; }
-  .otp-secure-field { font-size: 1.3rem; letter-spacing: 8px; padding: 12px; }
-  .otp-sub-bar { flex-wrap: wrap; gap: 6px; font-size: 0.72rem; }
-  .modal-btn-submit { font-size: 0.88rem; padding: 12px; }
-  .otp-inpage-notif { top: 10px; right: 10px; left: 10px; max-width: none; width: auto; }
-
-  .nav-right { gap: 6px; }
-  .notification-icon-btn { width: 34px; height: 34px; font-size: 0.95rem; }
-  .notif-badge { min-width: 15px; height: 15px; font-size: 0.55rem; }
-  .profile-chip { gap: 6px; padding: 4px 8px 4px 4px; max-width: 46vw; }
-  .profile-avatar { width: 26px; height: 26px; font-size: 0.75rem; flex-shrink: 0; }
-  .profile-info { min-width: 0; }
-  .profile-name {
-    font-size: 0.68rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 26vw;
-  }
-  .profile-name .edit-profile-btn { display: none; }
-  .profile-phone { font-size: 0.6rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 26vw; }
+  .banner-item { flex: 0 0 100%; height: 160px; } 
 } 
 
-@media (max-width: 380px) {
-  .profile-phone { display: none; }
-  .profile-chip { max-width: 38vw; }
-  .profile-name { max-width: 30vw; }
-}
-
-/* WhatsApp Floating Button */
 .wa-float {
   position: fixed; right: 16px; bottom: 85px; width: 54px; height: 54px; border-radius: 50%; 
   background: var(--whatsapp-color); color: #fff; display: flex; align-items: center; justify-content: center; 
-  font-size: 1.9rem; text-decoration: none; z-index: 9000; 
-  box-shadow: 0 8px 24px rgba(37,211,102,.5), 0 0 16px rgba(37,211,102,.35); 
-  transition: transform .2s ease, box-shadow .2s ease;
+  font-size: 1.9rem; text-decoration: none; z-index: 9000; box-shadow: 0 8px 24px rgba(37,211,102,.5); 
 }
-.wa-float:hover { 
-  transform: scale(1.08); 
-  box-shadow: 0 10px 30px rgba(37,211,102,.65), 0 0 24px rgba(37,211,102,.5); 
-}
-
-@media(max-width:768px){.app-download-section{padding:8px 4%}.app-download-btn{width:100%;justify-content:center}}
 </style> 
 
 <script>
@@ -1073,7 +755,6 @@ nav {
     }
   })();
 </script>
-
 </head> 
 <body> 
 
@@ -1090,6 +771,7 @@ nav {
   <button type="button" class="n-close" id="otpInPageNotifClose"><i class="fa-solid fa-xmark"></i></button>
 </div>
 
+<!-- Navigation Bar -->
 <nav> 
   <div id="navLogo" class="logo"><i class="fa-solid fa-cart-shopping"></i><div>CART<span>PRIME</span></div></div> 
   <div class="search-container"> 
@@ -1267,6 +949,7 @@ nav {
   </div> 
 </div>
 
+<!-- Hero Section -->
 <header class="hero"> 
   <div class="hero-text"> 
     <h1>Welcome To <br> CartPrime </h1> 
@@ -1292,6 +975,7 @@ nav {
   </div> 
 </header> 
 
+<!-- Trust Bar -->
 <div class="trust-bar-section"> 
   <div class="trust-bar-grid"> 
     <div class="trust-card"> 
@@ -1325,10 +1009,7 @@ nav {
   </div> 
 </div> 
 
-<!-- =============================================
-     BUDGET DEALS BOX WITH COLORFUL GLOWING CARDS
-     (Red, Green, Blue, Purple)
-     ============================================= -->
+<!-- Budget Deals Zone Box (Red, Green, Blue, Purple) -->
 <div class="budget-box-section">
   <div class="budget-deals-box">
     <div class="budget-box-header">
@@ -1343,7 +1024,6 @@ nav {
     </div>
     
     <div class="budget-grid" id="budgetGrid">
-      <!-- 1. NEON RED -->
       <div class="budget-card theme-red" data-cat="under_99">
         <div class="budget-card-icon"><i class="fa-solid fa-fire"></i></div>
         <div class="budget-card-info">
@@ -1352,7 +1032,6 @@ nav {
         </div>
       </div>
 
-      <!-- 2. NEON GREEN -->
       <div class="budget-card theme-green" data-cat="under_199">
         <div class="budget-card-icon"><i class="fa-solid fa-bolt"></i></div>
         <div class="budget-card-info">
@@ -1361,7 +1040,6 @@ nav {
         </div>
       </div>
 
-      <!-- 3. NEON CYAN / BLUE -->
       <div class="budget-card theme-blue" data-cat="under_350">
         <div class="budget-card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
         <div class="budget-card-info">
@@ -1370,7 +1048,6 @@ nav {
         </div>
       </div>
 
-      <!-- 4. NEON PURPLE -->
       <div class="budget-card theme-purple" data-cat="under_599">
         <div class="budget-card-icon"><i class="fa-solid fa-gem"></i></div>
         <div class="budget-card-info">
@@ -1382,70 +1059,10 @@ nav {
   </div>
 </div>
 
-<!-- =============================================
-     🔥 HIGH-CONVERTING "EARN MONEY" ADVERTISEMENT BANNER
-     (CartPrime Partner Zone)
-     ============================================= -->
-<div class="earn-ad-section">
-  <div class="earn-ad-banner">
-    <!-- Watermark Icons -->
-    <i class="fa-solid fa-sack-dollar earn-ad-watermark"></i>
-    <i class="fa-solid fa-coins earn-ad-watermark-secondary"></i>
-
-    <div style="position: relative; z-index: 2;">
-      <div class="earn-ad-header">
-        <div class="earn-ad-badge">
-          <i class="fa-solid fa-fire"></i> CartPrime Partner Program
-        </div>
-        <div class="earn-ad-free-tag">
-          <i class="fa-solid fa-circle-check"></i> 100% Free • No Investment
-        </div>
-      </div>
-
-      <h2 class="earn-ad-title">
-        You can earning at home! <span>₹30,000+</span> Earnings
-      </h2>
-      <p class="earn-ad-desc">
-         Best Quality Products at CartPrime Share on WhatsApp and Social Media without a single sign. Own a high cash commission from each order!
-      </p>
-
-      <div class="earn-features-grid">
-        <div class="earn-feature-card">
-          <strong style="color: #fbbf24;">₹0 Investment</strong>
-          <span>Zero Investment</span>
-        </div>
-        <div class="earn-feature-card">
-          <strong style="color: #4ade80;">Up to 25%</strong>
-          <span>High Commission</span>
-        </div>
-        <div class="earn-feature-card">
-          <strong style="color: #38bdf8;">Weekly Payout</strong>
-          <span>Directly UPI / Bank</span>
-        </div>
-        <div class="earn-feature-card">
-          <strong style="color: #c084fc;">COD Delivery</strong>
-          <span>Customer Cash on Delivery</span>
-        </div>
-      </div>
-
-      <div class="earn-ad-actions">
-        <button type="button" class="earn-ad-cta-btn" id="heroEarnAdBtn">
-          <i class="fa-solid fa-hand-holding-dollar"></i>
-          <span>Start Earning Now / Register Now</span>
-          <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
-        </button>
-        <button type="button" class="earn-ad-info-btn" id="earnHowItWorksBtn">
-          <i class="fa-solid fa-circle-question" style="color: #fbbf24;"></i>
-          <span>How It Works</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- Categories Bar -->
 <div class="category-bar" id="categoryBar"></div> 
 
+<!-- Promo Banner Slider Section -->
 <div class="banner-section" id="bannerSection" style="display: none;"> 
   <div class="banner-wrapper"> 
     <div class="banner-slider" id="bannerSlider"></div> 
@@ -1453,10 +1070,12 @@ nav {
   <div class="banner-dots" id="bannerDots"></div> 
 </div> 
 
-<div class="container"> 
-  <div class="grid" id="productGrid"></div> 
-</div> 
+<!-- =============================================
+     MAIN PRODUCTS CONTAINER (WITH HEADINGS, SIDE-SCROLL & IN-BETWEEN EARN AD)
+     ============================================= -->
+<div class="main-products-container" id="mainProductsContainer"></div> 
 
+<!-- Safe Checkout Box -->
 <div class="safe-checkout-box"> 
   <h3><i class="fa-solid fa-lock"></i> 100% Safe & Secure Shopping Guarantee</h3> 
   <div class="payment-badges"> 
@@ -1466,6 +1085,7 @@ nav {
   </div> 
 </div> 
 
+<!-- Cookie Banner -->
 <div class="cookie-banner" id="cookieBanner" style="display: none;"> 
   <p><strong>We use cookies!</strong> We use cookies to enhance your shopping experience and analyze our website traffic.</p> 
   <div class="cookie-actions"> 
@@ -1473,6 +1093,7 @@ nav {
   </div> 
 </div> 
 
+<!-- WhatsApp Floating Button -->
 <a href="https://wa.me/919744559527?text=Hi%20CartPrime%2C%20I%20need%20help" target="_blank" rel="noopener noreferrer" class="wa-float" title="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 
 <!-- Bottom Navigation Bar -->
@@ -1502,7 +1123,7 @@ nav {
   </div>
 </div>
 
-<!-- Premium Custom Toast Notification Modal -->
+<!-- Custom Toast Notification Modal -->
 <div id="customToast" class="custom-toast-overlay">
   <div class="custom-toast-card">
     <div id="toastIcon" class="toast-icon-wrap success">
@@ -1514,7 +1135,6 @@ nav {
   </div>
 </div>
 
-<!-- Notification Permission Script -->
 <script>
   window.addEventListener('load', () => {
     if ("Notification" in window) {
@@ -1530,9 +1150,7 @@ nav {
       }
     }
   });
-</script>
 
-<script>
   let deferredInstallPrompt = null;
   const APP_DOWNLOAD_URL = "https://cartprime.netlify.app/";
   window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; });
@@ -1550,6 +1168,14 @@ nav {
       }
     });
   });
+
+  // Global Scroll Shelf Handler (for Left/Right desktop buttons)
+  window.scrollShelf = (containerId, distance) => {
+    const container = document.getElementById(containerId);
+    if (container) {
+      container.scrollBy({ left: distance, behavior: 'smooth' });
+    }
+  };
 </script>
 
 <script type="module"> 
@@ -2338,22 +1964,19 @@ nav {
     bottomEarnBtn.addEventListener('click', handleEarnClick); 
   } 
 
-  // Earn Banner CTA Button Event Listeners
-  const heroEarnAdBtn = document.getElementById('heroEarnAdBtn');
-  if (heroEarnAdBtn) {
-    heroEarnAdBtn.addEventListener('click', handleEarnClick);
-  }
-
-  const earnHowItWorksBtn = document.getElementById('earnHowItWorksBtn');
-  if (earnHowItWorksBtn) {
-    earnHowItWorksBtn.addEventListener('click', () => {
+  // Global Click Delegation for Dynamic Earn Banner Buttons
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#heroEarnAdBtn') || e.target.closest('.earn-ad-cta-btn')) {
+      handleEarnClick();
+    }
+    if (e.target.closest('#earnHowItWorksBtn') || e.target.closest('.earn-ad-info-btn')) {
       showCustomAlert(
         "CartPrime Partner Program",
-        "1. Pick any trending product from CartPrime.\n2. Share product photos or your link on WhatsApp Status & Groups.\n3. When someone buys, our team delivers COD & your cash commission is sent directly to your UPI/Bank!",
+        "1. Pick any trending product from CartPrime.\n2. Share product photos or link on WhatsApp Status & Groups.\n3. When someone buys, our team delivers COD & your cash commission is sent directly to your UPI/Bank!",
         true
       );
-    });
-  }
+    }
+  });
 
   if (closeEarnModal) { 
     closeEarnModal.addEventListener('click', () => { 
@@ -2411,7 +2034,70 @@ nav {
   } 
 
   // =============================================
-  // PRODUCTS & MULTI-COLOR BUDGET PRICE FILTERS
+  // REUSABLE EARN AD BANNER TEMPLATE
+  // =============================================
+  function getEarnBannerHtml() {
+    return `
+      <div class="earn-ad-section">
+        <div class="earn-ad-banner">
+          <i class="fa-solid fa-sack-dollar earn-ad-watermark"></i>
+          <i class="fa-solid fa-coins earn-ad-watermark-secondary"></i>
+
+          <div style="position: relative; z-index: 2;">
+            <div class="earn-ad-header">
+              <div class="earn-ad-badge">
+                <i class="fa-solid fa-fire"></i> CartPrime Partner Program
+              </div>
+              <div class="earn-ad-free-tag">
+                <i class="fa-solid fa-circle-check"></i> 100% Free • No Investment
+              </div>
+            </div>
+
+            <h2 class="earn-ad-title">
+              വീട്ടിലിരുന്ന് മാസം <span>₹30,000+</span> സമ്പാദിക്കാം!
+            </h2>
+            <p class="earn-ad-desc">
+              ഒരു രൂപ പോലും മുടക്കില്ലാതെ CartPrime-ലെ ബെസ്റ്റ് ക്വാളിറ്റി പ്രോഡക്റ്റുകൾ WhatsApp-ലും സോഷ്യൽ മീഡിയയിലും ഷെയർ ചെയ്യൂ. ഓരോ ഓർഡറുകളിൽ നിന്നും ഉയർന്ന ക്യാഷ് കമ്മീഷൻ സ്വന്തമാക്കൂ!
+            </p>
+
+            <div class="earn-features-grid">
+              <div class="earn-feature-card">
+                <strong style="color: #fbbf24;">₹0 Investment</strong>
+                <span>പണം മുടക്കേണ്ടതില്ല</span>
+              </div>
+              <div class="earn-feature-card">
+                <strong style="color: #4ade80;">Up to 25%</strong>
+                <span>ഉയർന്ന കമ്മീഷൻ</span>
+              </div>
+              <div class="earn-feature-card">
+                <strong style="color: #38bdf8;">Weekly Payout</strong>
+                <span>നേരിട്ട് UPI / ബാങ്കിലേക്ക്</span>
+              </div>
+              <div class="earn-feature-card">
+                <strong style="color: #c084fc;">COD Delivery</strong>
+                <span>കസ്റ്റമർക്ക് ക്യാഷ് ഓൺ ഡെലിവറി</span>
+              </div>
+            </div>
+
+            <div class="earn-ad-actions">
+              <button type="button" class="earn-ad-cta-btn" id="heroEarnAdBtn">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+                <span>Start Earning Now / രജിസ്റ്റർ ചെയ്യൂ</span>
+                <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
+              </button>
+              <button type="button" class="earn-ad-info-btn" id="earnHowItWorksBtn">
+                <i class="fa-solid fa-circle-question" style="color: #fbbf24;"></i>
+                <span>How It Works</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // =============================================
+  // PRODUCTS, CATEGORY HEADINGS & HORIZONTAL SHELVES
   // =============================================
   let allProducts = []; 
   let activeCategory = "All"; 
@@ -2429,21 +2115,28 @@ nav {
   showSkeletons(); 
 
   function showSkeletons() { 
-    const grid = document.getElementById('productGrid'); 
-    grid.innerHTML = ""; 
-    for (let i = 0; i < 8; i++) { 
-      grid.innerHTML += ` 
-        <div class="skeleton-card"> 
-          <div class="skeleton-img"></div> 
-          <div class="skeleton-info"> 
-            <div class="skeleton-line" style="width: 80%;"></div> 
-            <div class="skeleton-line" style="width: 40%; margin-top: 6px;"></div> 
-            <div class="skeleton-line" style="width: 60%; margin-top: auto;"></div> 
-            <div class="skeleton-line" style="height: 38px; border-radius: 12px; margin-top: 8px;"></div> 
-          </div> 
-        </div> 
-      `; 
-    } 
+    const container = document.getElementById('mainProductsContainer'); 
+    if (!container) return;
+    container.innerHTML = `
+      <div class="product-shelf-section">
+        <div class="shelf-header">
+          <div class="shelf-title-wrap">
+            <div class="skeleton-line" style="width: 140px; height: 20px; border-radius: 6px;"></div>
+          </div>
+        </div>
+        <div class="shelf-scroll-container">
+          ${[1,2,3,4,5].map(() => `
+            <div class="shelf-card" style="height: 270px;">
+              <div class="skeleton-img" style="height: 140px;"></div>
+              <div class="skeleton-line" style="width: 80%; margin-top: 8px;"></div>
+              <div class="skeleton-line" style="width: 45%; margin-top: 6px;"></div>
+              <div class="skeleton-line" style="width: 60%; margin-top: auto;"></div>
+              <div class="skeleton-line" style="height: 34px; border-radius: 10px; margin-top: 8px;"></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `; 
   } 
 
   function trackProductClickAndRedirect(productId) { 
@@ -2710,16 +2403,7 @@ nav {
             } else if (bannerData.productId) { 
               trackProductClickAndRedirect(bannerData.productId); 
             } else if (bannerData.category) { 
-              activeCategory = bannerData.category; 
-              
-              // Clear budget cards active class
-              document.querySelectorAll('.budget-card').forEach(c => c.classList.remove('active'));
-
-              renderProducts(getFilteredProducts(activeCategory)); 
-              document.querySelectorAll('.category-btn').forEach(b => { 
-                if(b.getAttribute('data-cat').toLowerCase() === activeCategory.toLowerCase()) b.classList.add('active'); 
-                else b.classList.remove('active'); 
-              }); 
+              filterByCategory(bannerData.category);
             } 
           }); 
           bannerSlider.appendChild(item); 
@@ -2809,7 +2493,6 @@ nav {
         catBar.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
         btn.classList.add('active'); 
         
-        // Remove active state from budget cards when a regular category is clicked
         document.querySelectorAll('.budget-card').forEach(c => c.classList.remove('active'));
 
         const filtered = getFilteredProducts(activeCategory);
@@ -2818,18 +2501,191 @@ nav {
     }); 
   } 
 
-  function renderProducts(products) { 
-    const grid = document.getElementById('productGrid'); 
-    grid.innerHTML = ""; 
+  // Category Icon Resolver
+  function getCategoryIconData(catName) {
+    const lower = (catName || "").toLowerCase();
+    if (lower.includes("gadget") || lower.includes("electronic") || lower.includes("tech") || lower.includes("phone")) {
+      return { icon: "fa-bolt", color: "#f59e0b" };
+    }
+    if (lower.includes("watch") || lower.includes("time")) {
+      return { icon: "fa-clock", color: "#06b6d4" };
+    }
+    if (lower.includes("fashion") || lower.includes("cloth") || lower.includes("dress") || lower.includes("wear")) {
+      return { icon: "fa-shirt", color: "#ec4899" };
+    }
+    if (lower.includes("shoe") || lower.includes("footwear")) {
+      return { icon: "fa-shoe-prints", color: "#8b5cf6" };
+    }
+    if (lower.includes("jewel") || lower.includes("access")) {
+      return { icon: "fa-gem", color: "#a855f7" };
+    }
+    if (lower.includes("home") || lower.includes("kitchen")) {
+      return { icon: "fa-house-chimney", color: "#10b981" };
+    }
+    return { icon: "fa-bag-shopping", color: "#f59e0b" };
+  }
 
-    // Handle Empty State
+  // Create Product Card HTML Element (Supports both Shelf and Grid mode)
+  function createProductCardElement(p, idx, isShelf = true) {
+    const isOut = p.outOfStock === true; 
+    const pr = parseFloat(p.price.toString().replace(/,/g, '')); 
+    const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr); 
+    let discTag = ""; 
+    let hasDisc = false; 
+    if(mr > pr) { 
+      const disc = Math.round(((mr - pr) / mr) * 100); 
+      hasDisc = true; 
+      discTag = `<div class="discount-badge">${disc}% OFF</div>`; 
+    } 
+    const isWishlisted = userWishlistIds[p.id] ? true : false; 
+    
+    const card = document.createElement('div'); 
+    card.className = isShelf ? 'shelf-card' : 'card'; 
+    const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150'; 
+    
+    card.innerHTML = ` 
+      ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''} 
+      ${!isOut ? discTag : ''} 
+      <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist" data-id="${p.id}"> 
+        <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
+      </button> 
+      <div class="image-box"> 
+        <img src="${productMainImg}" alt="${p.name || 'Product'}" loading="lazy" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}"> 
+        <div class="verified-tag"><i class="fa-solid fa-shield-check"></i> Quality Assured</div> 
+      </div> 
+      <div class="card-info"> 
+        <h3>${p.name || 'No Title'}</h3> 
+        <div class="price-container"> 
+          <span class="price">₹${p.price}</span> 
+          ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''} 
+        </div> 
+        <button class="buy-btn" ${isOut ? 'disabled' : ''}> 
+          <i class="fa-solid fa-cart-shopping"></i> ${isOut ? 'Unavailable' : 'View Product'} 
+        </button> 
+      </div> 
+    `; 
+
+    const wishlistBtn = card.querySelector('.card-wishlist-btn'); 
+    wishlistBtn.addEventListener('click', (e) => { 
+      e.stopPropagation(); 
+      const prodId = wishlistBtn.getAttribute('data-id'); 
+      if (currentUser) { 
+        const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`); 
+        if (userWishlistIds[prodId]) { 
+          remove(wishRef).then(() => { 
+            delete userWishlistIds[prodId]; 
+            wishlistBtn.classList.remove('active'); 
+            wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
+            updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+          }); 
+        } else { 
+          set(wishRef, true).then(() => { 
+            userWishlistIds[prodId] = true; 
+            wishlistBtn.classList.add('active'); 
+            wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
+            updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+          }); 
+        } 
+      } else { 
+        let guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
+        if (guestWishlist[prodId]) { 
+          delete guestWishlist[prodId]; 
+          wishlistBtn.classList.remove('active'); 
+          wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
+        } else { 
+          guestWishlist[prodId] = true; 
+          wishlistBtn.classList.add('active'); 
+          wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
+        } 
+        localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist)); 
+        userWishlistIds = guestWishlist; 
+        updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
+      } 
+    }); 
+
+    card.addEventListener('click', (e) => { 
+      if(isOut || e.target.closest('.card-wishlist-btn')) return; 
+      trackProductClickAndRedirect(p.id); 
+    }); 
+
+    return card;
+  }
+
+  // Create Horizontal Shelf Section with Heading and Scroll Controls
+  function createShelfElement(shelfId, title, iconClass, iconColor, productsList, categoryFilterKey) {
+    const shelf = document.createElement('div');
+    shelf.className = 'product-shelf-section';
+    shelf.innerHTML = `
+      <div class="shelf-header">
+        <div class="shelf-title-wrap">
+          <div class="shelf-icon-badge">
+            <i class="fa-solid ${iconClass}" style="color: ${iconColor};"></i>
+          </div>
+          <h3>${title}</h3>
+        </div>
+        <button class="shelf-view-all-btn" onclick="filterByCategory('${categoryFilterKey}')">
+          <span>View All</span>
+          <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+        </button>
+      </div>
+      
+      <div class="shelf-scroll-wrapper">
+        <button class="shelf-arrow left" onclick="scrollShelf('${shelfId}', -280)" title="Scroll Left">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <div class="shelf-scroll-container" id="${shelfId}"></div>
+
+        <button class="shelf-arrow right" onclick="scrollShelf('${shelfId}', 280)" title="Scroll Right">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    `;
+
+    const scrollContainer = shelf.querySelector(`#${shelfId}`);
+    productsList.forEach((p, idx) => {
+      const card = createProductCardElement(p, idx, true);
+      scrollContainer.appendChild(card);
+    });
+
+    return shelf;
+  }
+
+  window.filterByCategory = (catKey) => {
+    activeCategory = catKey;
+    document.querySelectorAll('.category-btn').forEach(b => {
+      if (b.getAttribute('data-cat').toLowerCase() === catKey.toLowerCase()) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+    document.querySelectorAll('.budget-card').forEach(c => c.classList.remove('active'));
+    renderProducts(getFilteredProducts(activeCategory));
+
+    const container = document.getElementById('mainProductsContainer');
+    if (container) {
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  window.resetToAll = () => {
+    window.filterByCategory('All');
+  };
+
+  // =============================================
+  // MAIN RENDER FUNCTION: CATEGORIZED HORIZONTAL SHELVES & IN-BETWEEN EARN AD
+  // =============================================
+  function renderProducts(products) { 
+    const container = document.getElementById('mainProductsContainer'); 
+    container.innerHTML = ""; 
+
     const visibleProducts = products.filter(p => p.showOnHome !== false);
+    
+    // Empty State Handling
     if (visibleProducts.length === 0) {
-      grid.innerHTML = `
+      container.innerHTML = `
         <div class="empty-state-box">
           <i class="fa-solid fa-tags"></i>
-          <h4>No Products In This Category</h4>
-          <p>No products were found matching your current price or category selection.</p>
+          <h4>No Products Found</h4>
+          <p>No products were found matching your current selection.</p>
           <button class="reset-filter-btn" id="resetCategoryBtn"><i class="fa-solid fa-arrows-rotate"></i> View All Products</button>
         </div>
       `;
@@ -2848,93 +2704,127 @@ nav {
       return;
     }
 
-    let animationDelayIndex = 0; 
-    visibleProducts.forEach((p) => { 
-      const isOut = p.outOfStock === true; 
-      const pr = parseFloat(p.price.toString().replace(/,/g, '')); 
-      const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr); 
-      let discTag = ""; 
-      let hasDisc = false; 
-      if(mr > pr) { 
-        const disc = Math.round(((mr - pr) / mr) * 100); 
-        hasDisc = true; 
-        discTag = `<div class="discount-badge ${hasDisc ? 'with-wishlist' : ''}">${disc}% OFF</div>`; 
-      } 
-      const isWishlisted = userWishlistIds[p.id] ? true : false; 
-      const card = document.createElement('div'); 
-      card.className = 'card'; 
-      card.style.animationDelay = `${animationDelayIndex * 0.08}s`; 
-      animationDelayIndex++; 
-      const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150'; 
-      card.innerHTML = ` 
-        ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''} 
-        ${!isOut ? discTag : ''} 
-        <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist" data-id="${p.id}"> 
-          <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
-        </button> 
-        <div class="image-box"> 
-          <img src="${productMainImg}" alt="${p.name || 'Product'}" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}"> 
-          <div class="verified-tag"><i class="fa-solid fa-shield-check"></i> Quality Assured</div> 
-        </div> 
-        <div class="card-info"> 
-          <h3>${p.name || 'No Title'}</h3> 
-          <div class="price-container"> 
-            <span class="price">₹${p.price}</span> 
-            ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''} 
-          </div> 
-          <button class="buy-btn" ${isOut ? 'disabled' : ''}> 
-            <i class="fa-solid fa-cart-shopping"></i> ${isOut ? 'Unavailable' : 'View Product'} 
-          </button> 
-        </div> 
-      `; 
+    // A. Single Category or Budget Filter Focused Mode
+    if (activeCategory !== 'All') {
+      let title = activeCategory;
+      if (activeCategory.startsWith('under_')) {
+        const pLimit = activeCategory.replace('under_', '');
+        title = `Budget Deals Under ₹${pLimit}`;
+      }
 
-      const wishlistBtn = card.querySelector('.card-wishlist-btn'); 
-      wishlistBtn.addEventListener('click', (e) => { 
-        e.stopPropagation(); 
-        const prodId = wishlistBtn.getAttribute('data-id'); 
-        if (currentUser) { 
-          const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`); 
-          if (userWishlistIds[prodId]) { 
-            remove(wishRef).then(() => { 
-              delete userWishlistIds[prodId]; 
-              wishlistBtn.classList.remove('active'); 
-              wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
-              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
-            }); 
-          } else { 
-            set(wishRef, true).then(() => { 
-              userWishlistIds[prodId] = true; 
-              wishlistBtn.classList.add('active'); 
-              wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
-              updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
-            }); 
-          } 
-        } else { 
-          let guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
-          if (guestWishlist[prodId]) { 
-            delete guestWishlist[prodId]; 
-            wishlistBtn.classList.remove('active'); 
-            wishlistBtn.querySelector('i').className = 'fa-regular fa-heart'; 
-          } else { 
-            guestWishlist[prodId] = true; 
-            wishlistBtn.classList.add('active'); 
-            wishlistBtn.querySelector('i').className = 'fa-solid fa-heart'; 
-          } 
-          localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist)); 
-          userWishlistIds = guestWishlist; 
-          updateWishlistUIAndBadge(document.getElementById('bottomWishlistBadge')); 
-        } 
-      }); 
+      const focusedSection = document.createElement('div');
+      focusedSection.style.width = '100%';
+      focusedSection.innerHTML = `
+        <div class="shelf-header">
+          <div class="shelf-title-wrap">
+            <div class="shelf-icon-badge"><i class="fa-solid fa-bolt" style="color: var(--accent);"></i></div>
+            <h3>${title}</h3>
+          </div>
+          <button class="shelf-view-all-btn" onclick="resetToAll()">
+            <i class="fa-solid fa-rotate-left" style="margin-right: 4px;"></i> Show All
+          </button>
+        </div>
+        <div class="grid" id="focusedProductGrid"></div>
+        <div style="margin-top: 25px;">${getEarnBannerHtml()}</div>
+      `;
 
-      card.addEventListener('click', () => { 
-        if(isOut) return; 
-        trackProductClickAndRedirect(p.id); 
-      }); 
+      container.appendChild(focusedSection);
+      const gridEl = focusedSection.querySelector('#focusedProductGrid');
+      visibleProducts.forEach((p, idx) => {
+        const card = createProductCardElement(p, idx, false);
+        gridEl.appendChild(card);
+      });
+      return;
+    }
 
-      grid.appendChild(card); 
-    }); 
+    // B. Multi-Shelf Home View with Horizontal Side-Scroll & In-Between Earn Banner
+    const categoriesMap = {};
+    visibleProducts.forEach(p => {
+      const cat = (p.category && p.category.trim()) ? p.category.trim() : "Deals";
+      if (!categoriesMap[cat]) categoriesMap[cat] = [];
+      categoriesMap[cat].push(p);
+    });
+
+    const categoryNames = Object.keys(categoriesMap);
+    let shelfCounter = 0;
+
+    // Shelf 1: 🔥 Trending & Top Offers
+    const trendingProducts = visibleProducts.filter(p => {
+      const pr = parseFloat(p.price?.toString().replace(/,/g, '') || 0);
+      const mr = parseFloat(p.mrp?.toString().replace(/,/g, '') || pr);
+      return mr > pr;
+    });
+    const topOffers = trendingProducts.length >= 2 ? trendingProducts : visibleProducts.slice(0, 8);
+
+    const trendingShelf = createShelfElement(
+      "shelf-trending", 
+      "🔥 Trending & Top Offers", 
+      "fa-fire", 
+      "#ef4444", 
+      topOffers, 
+      "All"
+    );
+    container.appendChild(trendingShelf);
+    shelfCounter++;
+
+    // Shelves 2+: Category Shelves with EARN AD BANNER INSERTED IN BETWEEN!
+    let earnBannerInserted = false;
+
+    categoryNames.forEach((catName, cIdx) => {
+      const catProducts = categoriesMap[catName];
+      const iconData = getCategoryIconData(catName);
+
+      const catShelf = createShelfElement(
+        `shelf-cat-${cIdx}`,
+        `${catName}`,
+        iconData.icon,
+        iconData.color,
+        catProducts,
+        catName
+      );
+      container.appendChild(catShelf);
+      shelfCounter++;
+
+      // INSERT EARN BANNER RIGHT IN THE MIDDLE (between shelf 2 & 3)!
+      if (!earnBannerInserted && shelfCounter >= 2) {
+        const bannerContainer = document.createElement('div');
+        bannerContainer.className = 'in-between-earn-ad-wrap';
+        bannerContainer.innerHTML = getEarnBannerHtml();
+        container.appendChild(bannerContainer);
+        earnBannerInserted = true;
+      }
+    });
+
+    // Fallback: If not inserted yet (e.g. only 1 category exists)
+    if (!earnBannerInserted) {
+      const bannerContainer = document.createElement('div');
+      bannerContainer.className = 'in-between-earn-ad-wrap';
+      bannerContainer.innerHTML = getEarnBannerHtml();
+      container.appendChild(bannerContainer);
+    }
+
+    // Shelf Final: 🌟 Explore All Products Grid
+    const exploreSection = document.createElement('div');
+    exploreSection.style.width = '100%';
+    exploreSection.innerHTML = `
+      <div class="shelf-header" style="margin-top: 15px;">
+        <div class="shelf-title-wrap">
+          <div class="shelf-icon-badge"><i class="fa-solid fa-sparkles" style="color: var(--accent);"></i></div>
+          <h3>Explore All Products</h3>
+        </div>
+        <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">${visibleProducts.length} Products</span>
+      </div>
+      <div class="grid" id="exploreAllGrid"></div>
+    `;
+    container.appendChild(exploreSection);
+    const exploreGrid = exploreSection.querySelector('#exploreAllGrid');
+    visibleProducts.forEach((p, idx) => {
+      const card = createProductCardElement(p, idx, false);
+      exploreGrid.appendChild(card);
+    });
   } 
 
+  // Search Input Autocomplete
   const searchInput = document.getElementById('searchInput'); 
   const suggestionsBox = document.getElementById('searchSuggestions'); 
 
