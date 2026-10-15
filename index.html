@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
 
 <style> 
-/* --- Light Theme Variables (Orange + Black + Cyber Glow) --- */ 
+/* --- Light Theme Variables --- */ 
 :root { 
   --primary: #0b0b0f; 
   --accent: #f59e0b; 
@@ -354,24 +354,20 @@ nav {
 .trust-details p { font-size: 0.72rem; color: var(--text-muted); } 
 
 /* =============================================
-   SPECIAL GLOWING "BUDGET STORE" BOX SECTION
+   BUDGET DEALS BOX SECTION WITH MULTI-COLOR NEON CARDS
    ============================================= */
 .budget-box-section {
   padding: 10px 6% 14px 6%;
 }
 .budget-deals-box {
   background: var(--surface);
-  border: 1.5px solid var(--accent-border);
+  border: 1.5px solid var(--border);
   border-radius: 22px;
   padding: 18px 20px;
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.15), 0 10px 30px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
-}
-.budget-deals-box:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 32px rgba(245, 158, 11, 0.22), 0 12px 35px rgba(0, 0, 0, 0.08);
 }
 .budget-box-header {
   display: flex;
@@ -414,14 +410,14 @@ nav {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  border: 1px solid var(--accent-border);
+  background: var(--card-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border);
   padding: 5px 12px;
   border-radius: 20px;
   font-size: 0.72rem;
   font-weight: 800;
-  box-shadow: 0 0 10px var(--accent-glow);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 .budget-grid {
   display: grid;
@@ -442,43 +438,6 @@ nav {
   user-select: none;
   box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
-.budget-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--accent);
-  box-shadow: 0 8px 20px -3px rgba(0,0,0,0.1), 0 0 16px var(--accent-glow);
-}
-.budget-card.active {
-  background: linear-gradient(135deg, #f59e0b, #ea580c) !important;
-  border-color: #f59e0b !important;
-  color: #111111 !important;
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.8), 0 8px 20px rgba(245, 158, 11, 0.4) !important;
-  transform: translateY(-3px) scale(1.02);
-}
-.budget-card.active .budget-card-icon {
-  background: #111111;
-  color: #f59e0b;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
-.budget-card.active .budget-card-sub {
-  color: rgba(17, 17, 17, 0.82) !important;
-}
-.budget-card.active .budget-card-price {
-  color: #111111 !important;
-}
-.budget-card-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
-  transition: all 0.25s ease;
-  box-shadow: 0 0 8px var(--accent-glow);
-}
 .budget-card-info {
   display: flex;
   flex-direction: column;
@@ -493,10 +452,168 @@ nav {
   line-height: 1.1;
 }
 .budget-card-price {
-  font-size: 0.96rem;
+  font-size: 0.98rem;
   font-weight: 800;
-  color: var(--text-main);
   white-space: nowrap;
+}
+.budget-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+/* =============================================
+   COLOR 1: NEON RED (Under ₹99)
+   ============================================= */
+.budget-card.theme-red {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), var(--card-bg));
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.16);
+}
+.budget-card.theme-red .budget-card-icon {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+.budget-card.theme-red .budget-card-price {
+  color: #ef4444;
+}
+.budget-card.theme-red:hover {
+  border-color: #ef4444;
+  box-shadow: 0 8px 24px -3px rgba(239, 68, 68, 0.3), 0 0 20px rgba(239, 68, 68, 0.6);
+  transform: translateY(-3px);
+}
+.budget-card.theme-red.active {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 28px rgba(239, 68, 68, 0.85), 0 8px 20px rgba(239, 68, 68, 0.4) !important;
+  transform: translateY(-3px) scale(1.02);
+}
+.budget-card.theme-red.active .budget-card-icon {
+  background: #ffffff;
+  color: #ef4444;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+.budget-card.theme-red.active .budget-card-sub,
+.budget-card.theme-red.active .budget-card-price {
+  color: #ffffff !important;
+}
+
+/* =============================================
+   COLOR 2: NEON GREEN (Under ₹199)
+   ============================================= */
+.budget-card.theme-green {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), var(--card-bg));
+  box-shadow: 0 0 14px rgba(34, 197, 94, 0.16);
+}
+.budget-card.theme-green .budget-card-icon {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+}
+.budget-card.theme-green .budget-card-price {
+  color: #16a34a;
+}
+.budget-card.theme-green:hover {
+  border-color: #22c55e;
+  box-shadow: 0 8px 24px -3px rgba(34, 197, 94, 0.3), 0 0 20px rgba(34, 197, 94, 0.6);
+  transform: translateY(-3px);
+}
+.budget-card.theme-green.active {
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  border-color: #22c55e !important;
+  box-shadow: 0 0 28px rgba(34, 197, 94, 0.85), 0 8px 20px rgba(34, 197, 94, 0.4) !important;
+  transform: translateY(-3px) scale(1.02);
+}
+.budget-card.theme-green.active .budget-card-icon {
+  background: #ffffff;
+  color: #16a34a;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+.budget-card.theme-green.active .budget-card-sub,
+.budget-card.theme-green.active .budget-card-price {
+  color: #ffffff !important;
+}
+
+/* =============================================
+   COLOR 3: NEON BLUE / CYAN (Under ₹350)
+   ============================================= */
+.budget-card.theme-blue {
+  border-color: rgba(6, 182, 212, 0.35);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), var(--card-bg));
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.16);
+}
+.budget-card.theme-blue .budget-card-icon {
+  background: rgba(6, 182, 212, 0.15);
+  color: #06b6d4;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+}
+.budget-card.theme-blue .budget-card-price {
+  color: #0284c7;
+}
+.budget-card.theme-blue:hover {
+  border-color: #06b6d4;
+  box-shadow: 0 8px 24px -3px rgba(6, 182, 212, 0.3), 0 0 20px rgba(6, 182, 212, 0.6);
+  transform: translateY(-3px);
+}
+.budget-card.theme-blue.active {
+  background: linear-gradient(135deg, #06b6d4, #0284c7) !important;
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 28px rgba(6, 182, 212, 0.85), 0 8px 20px rgba(6, 182, 212, 0.4) !important;
+  transform: translateY(-3px) scale(1.02);
+}
+.budget-card.theme-blue.active .budget-card-icon {
+  background: #ffffff;
+  color: #0284c7;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+.budget-card.theme-blue.active .budget-card-sub,
+.budget-card.theme-blue.active .budget-card-price {
+  color: #ffffff !important;
+}
+
+/* =============================================
+   COLOR 4: NEON PURPLE (Under ₹599)
+   ============================================= */
+.budget-card.theme-purple {
+  border-color: rgba(168, 85, 247, 0.35);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), var(--card-bg));
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.16);
+}
+.budget-card.theme-purple .budget-card-icon {
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+}
+.budget-card.theme-purple .budget-card-price {
+  color: #9333ea;
+}
+.budget-card.theme-purple:hover {
+  border-color: #a855f7;
+  box-shadow: 0 8px 24px -3px rgba(168, 85, 247, 0.3), 0 0 20px rgba(168, 85, 247, 0.6);
+  transform: translateY(-3px);
+}
+.budget-card.theme-purple.active {
+  background: linear-gradient(135deg, #a855f7, #7c3aed) !important;
+  border-color: #a855f7 !important;
+  box-shadow: 0 0 28px rgba(168, 85, 247, 0.85), 0 8px 20px rgba(168, 85, 247, 0.4) !important;
+  transform: translateY(-3px) scale(1.02);
+}
+.budget-card.theme-purple.active .budget-card-icon {
+  background: #ffffff;
+  color: #7c3aed;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+.budget-card.theme-purple.active .budget-card-sub,
+.budget-card.theme-purple.active .budget-card-price {
+  color: #ffffff !important;
 }
 
 /* Category Bar */
@@ -776,9 +893,10 @@ nav {
   .budget-deals-box { padding: 14px; border-radius: 18px; }
   .budget-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .budget-box-header h3 { font-size: 0.92rem; }
-  .budget-card { padding: 10px; border-radius: 12px; }
-  .budget-card-price { font-size: 0.85rem; }
-  .budget-card-icon { width: 30px; height: 30px; font-size: 0.85rem; }
+  .budget-card { padding: 10px; border-radius: 12px; gap: 8px; }
+  .budget-card-price { font-size: 0.86rem; }
+  .budget-card-sub { font-size: 0.6rem; }
+  .budget-card-icon { width: 30px; height: 30px; font-size: 0.85rem; border-radius: 8px; }
 
   .category-bar { padding: 4px 4% 6px 4%; gap: 6px; } 
   .category-btn { padding: 8px 16px; font-size: 0.78rem; min-height: 38px; } 
@@ -834,7 +952,7 @@ nav {
   .profile-name { max-width: 30vw; }
 }
 
-/* WhatsApp Floating Button with Neon Glow */
+/* WhatsApp Floating Button */
 .wa-float {
   position: fixed; right: 16px; bottom: 85px; width: 54px; height: 54px; border-radius: 50%; 
   background: var(--whatsapp-color); color: #fff; display: flex; align-items: center; justify-content: center; 
@@ -1125,7 +1243,8 @@ nav {
 </div> 
 
 <!-- =============================================
-     GLOWING "BUDGET DEALS" BOX CONTAINER
+     BUDGET DEALS BOX WITH COLORFUL GLOWING CARDS
+     (Red, Green, Blue, Purple)
      ============================================= -->
 <div class="budget-box-section">
   <div class="budget-deals-box">
@@ -1137,35 +1256,42 @@ nav {
           <p>Handpicked finds under your budget</p>
         </div>
       </div>
-      <div class="budget-badge-pill"><i class="fa-solid fa-sparkles"></i> Best Prices</div>
+      <div class="budget-badge-pill"><i class="fa-solid fa-tags" style="color: #ef4444;"></i> Best Offers</div>
     </div>
     
     <div class="budget-grid" id="budgetGrid">
-      <div class="budget-card" data-cat="under_99">
+      <!-- 1. NEON RED -->
+      <div class="budget-card theme-red" data-cat="under_99">
         <div class="budget-card-icon"><i class="fa-solid fa-fire"></i></div>
         <div class="budget-card-info">
-          <span class="budget-card-sub">Starting from</span>
+          <span class="budget-card-sub">Hot Deal</span>
           <strong class="budget-card-price">Under ₹99</strong>
         </div>
       </div>
-      <div class="budget-card" data-cat="under_199">
+
+      <!-- 2. NEON GREEN -->
+      <div class="budget-card theme-green" data-cat="under_199">
         <div class="budget-card-icon"><i class="fa-solid fa-bolt"></i></div>
         <div class="budget-card-info">
-          <span class="budget-card-sub">Top Value</span>
+          <span class="budget-card-sub">Best Value</span>
           <strong class="budget-card-price">Under ₹199</strong>
         </div>
       </div>
-      <div class="budget-card" data-cat="under_350">
+
+      <!-- 3. NEON CYAN / BLUE -->
+      <div class="budget-card theme-blue" data-cat="under_350">
         <div class="budget-card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
         <div class="budget-card-info">
           <span class="budget-card-sub">Trending</span>
           <strong class="budget-card-price">Under ₹350</strong>
         </div>
       </div>
-      <div class="budget-card" data-cat="under_599">
+
+      <!-- 4. NEON PURPLE -->
+      <div class="budget-card theme-purple" data-cat="under_599">
         <div class="budget-card-icon"><i class="fa-solid fa-gem"></i></div>
         <div class="budget-card-info">
-          <span class="budget-card-sub">Premium Value</span>
+          <span class="budget-card-sub">Premium</span>
           <strong class="budget-card-price">Under ₹599</strong>
         </div>
       </div>
@@ -2122,7 +2248,7 @@ nav {
   } 
 
   // =============================================
-  // PRODUCTS & DYNAMIC PRICE FILTER IN BOX
+  // PRODUCTS & MULTI-COLOR BUDGET PRICE FILTERS
   // =============================================
   let allProducts = []; 
   let activeCategory = "All"; 
@@ -2204,7 +2330,7 @@ nav {
     window.location.href = "/"; 
   }); 
 
-  // Products Filter Helper
+  // Filter Helper Function
   function getFilteredProducts(filterKey) {
     if (!filterKey || filterKey === "All") {
       return allProducts;
@@ -2230,7 +2356,6 @@ nav {
       card.addEventListener('click', () => {
         const catKey = card.getAttribute('data-cat');
         
-        // Toggle or set active
         if (activeCategory === catKey) {
           activeCategory = 'All';
           card.classList.remove('active');
