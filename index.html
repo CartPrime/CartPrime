@@ -69,11 +69,12 @@ button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, 
   transform: scale(0.96) !important; 
 } 
 
-/* Sticky Top Navigation */
+/* Sticky Top Navigation & Fully Responsive Header */
 nav { 
   display: flex; justify-content: space-between; align-items: center; padding: 12px 6%; position: sticky; top: 0; 
   background: var(--nav-bg); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); z-index: 1000; 
-  border-bottom: 1px solid var(--border); gap: 15px; transition: background 0.3s ease, border-color 0.3s ease; 
+  border-bottom: 1px solid var(--border); gap: 12px; transition: background 0.3s ease, border-color 0.3s ease; 
+  flex-wrap: wrap;
 } 
 .logo { 
   font-weight: 800; font-size: 1.35rem; letter-spacing: -0.8px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; 
@@ -83,22 +84,22 @@ nav {
   color: var(--accent); font-size: 1.25rem; filter: drop-shadow(0 0 8px var(--accent-glow));
 } 
 .logo span { color: var(--accent); font-weight: 800; } 
-.search-container { flex: 1; max-width: 500px; position: relative; } 
+.search-container { flex: 1; max-width: 500px; position: relative; min-width: 200px; } 
 .search-container input { 
-  width: 100%; padding: 12px 15px 12px 42px; border-radius: 16px; border: 1.5px solid var(--border); background: var(--surface); 
-  color: var(--text-main); outline: none; transition: 0.25s ease; font-size: 0.9rem; 
+  width: 100%; padding: 10px 15px 10px 40px; border-radius: 16px; border: 1.5px solid var(--border); background: var(--surface); 
+  color: var(--text-main); outline: none; transition: 0.25s ease; font-size: 0.88rem; 
 } 
 .search-container input:focus { 
   border-color: var(--accent); background: var(--card-bg); 
   box-shadow: 0 0 16px var(--accent-glow), 0 4px 12px rgba(245,158,11,0.15) !important; 
 } 
-.search-container i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.9rem; } 
-.nav-right { display: flex; align-items: center; gap: 12px; position: relative; flex-shrink: 0; } 
+.search-container i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.9rem; } 
+.nav-right { display: flex; align-items: center; gap: 10px; position: relative; flex-shrink: 0; } 
 
 .notification-icon-btn {
-  width: 40px; height: 40px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border);
+  width: 38px; height: 38px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer;
-  color: var(--text-main); font-size: 1.1rem; transition: all 0.2s ease;
+  color: var(--text-main); font-size: 1rem; transition: all 0.2s ease; flex-shrink: 0;
 }
 .notification-icon-btn:hover { 
   border-color: var(--accent); color: var(--accent); box-shadow: 0 0 12px var(--accent-glow);
@@ -110,19 +111,24 @@ nav {
 }
 
 .profile-chip {
-  display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border);
-  padding: 5px 12px 5px 6px; border-radius: 30px; cursor: pointer; transition: all 0.2s ease;
+  display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border);
+  padding: 4px 10px 4px 5px; border-radius: 30px; cursor: pointer; transition: all 0.2s ease; max-width: 170px;
 }
 .profile-chip:hover { 
   border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow);
 }
 .profile-avatar {
-  width: 32px; height: 32px; border-radius: 50%; background: #0b0b0f; color: #ffffff; display: flex;
-  align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; text-transform: uppercase;
+  width: 30px; height: 30px; border-radius: 50%; background: #0b0b0f; color: #ffffff; display: flex;
+  align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; flex-shrink: 0;
 }
-.profile-info { display: flex; flex-direction: column; }
-.profile-name { font-size: 0.78rem; font-weight: 700; color: var(--text-main); line-height: 1.1; display: flex; align-items: center; gap: 4px; }
-.profile-phone { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; }
+.profile-info { display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.profile-name { 
+  font-size: 0.75rem; font-weight: 700; color: var(--text-main); line-height: 1.1; display: flex; align-items: center; gap: 4px; 
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.profile-phone { 
+  font-size: 0.65rem; color: var(--text-muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .edit-profile-btn { color: var(--text-muted); font-size: 0.72rem; }
 
 /* Bottom Nav */
@@ -307,9 +313,7 @@ nav {
 .trust-details h4 { font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 2px; } 
 .trust-details p { font-size: 0.72rem; color: var(--text-muted); } 
 
-/* =============================================
-   🔥 BUDGET DEALS ZONE BOX (Red, Green, Blue, Purple)
-   ============================================= */
+/* Budget Deals Zone Box */
 .budget-box-section { padding: 8px 6% 12px 6%; }
 .budget-deals-box {
   background: var(--surface); border: 1.5px solid var(--border); border-radius: 22px; padding: 18px 20px;
@@ -338,7 +342,6 @@ nav {
 .budget-card-price { font-size: 0.96rem; font-weight: 800; white-space: nowrap; }
 .budget-card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; transition: all 0.25s ease; }
 
-/* 4 Budget Card Themes */
 .budget-card.theme-red { border-color: rgba(239, 68, 68, 0.35); background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), var(--card-bg)); box-shadow: 0 0 14px rgba(239, 68, 68, 0.16); }
 .budget-card.theme-red .budget-card-icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 .budget-card.theme-red .budget-card-price { color: #ef4444; }
@@ -397,213 +400,53 @@ nav {
 .dot { width: 8px; height: 8px; background: var(--border); border-radius: 50%; transition: all 0.3s ease; cursor: pointer; } 
 .dot.active { background: var(--accent); width: 20px; border-radius: 4px; box-shadow: 0 0 8px var(--accent-glow); } 
 
-/* =============================================
-   🔥 HORIZONTAL PRODUCT SHELVES WITH HEADINGS
-   ============================================= */
-.main-products-container {
-  padding: 10px 0 25px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.product-shelf-section {
-  position: relative;
-  width: 100%;
-}
-
-.shelf-header {
-  padding: 0 6% 12px 6%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.shelf-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
+/* Horizontal Product Shelves */
+.main-products-container { padding: 10px 0 25px 0; display: flex; flex-direction: column; gap: 22px; }
+.product-shelf-section { position: relative; width: 100%; }
+.shelf-header { padding: 0 6% 12px 6%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.shelf-title-wrap { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .shelf-icon-badge {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.05rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  flex-shrink: 0;
+  width: 36px; height: 36px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; font-size: 1.05rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); flex-shrink: 0;
 }
-
-.shelf-title-wrap h3 {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--text-main);
-  letter-spacing: -0.3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
+.shelf-title-wrap h3 { font-size: 1.15rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .shelf-view-all-btn {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--accent);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 6px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.25s ease;
-  user-select: none;
-  flex-shrink: 0;
+  font-size: 0.78rem; font-weight: 700; color: var(--accent); background: var(--surface); border: 1px solid var(--border);
+  padding: 6px 14px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.25s ease; user-select: none; flex-shrink: 0;
 }
+.shelf-view-all-btn:hover { background: var(--primary); color: #fff; border-color: var(--accent); box-shadow: 0 0 14px var(--accent-glow); }
 
-.shelf-view-all-btn:hover {
-  background: var(--primary);
-  color: #fff;
-  border-color: var(--accent);
-  box-shadow: 0 0 14px var(--accent-glow);
-}
-
-/* Horizontal Scroll Wrapper & Desktop Arrows */
-.shelf-scroll-wrapper {
-  position: relative;
-  width: 100%;
-}
-
+.shelf-scroll-wrapper { position: relative; width: 100%; }
 .shelf-scroll-container {
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 4px 6% 16px 6%;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
+  display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 6% 16px 6%;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-behavior: smooth;
 }
-
-.shelf-scroll-container::-webkit-scrollbar {
-  display: none;
-}
-
+.shelf-scroll-container::-webkit-scrollbar { display: none; }
 .shelf-arrow {
-  display: none;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: rgba(11, 11, 15, 0.88);
-  color: var(--accent);
-  border: 1.5px solid var(--accent-border);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), 0 0 14px var(--accent-glow);
-  cursor: pointer;
-  z-index: 25;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  pointer-events: auto;
+  display: none; position: absolute; top: 50%; transform: translateY(-50%); width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(11, 11, 15, 0.88); color: var(--accent); border: 1.5px solid var(--accent-border);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), 0 0 14px var(--accent-glow); cursor: pointer; z-index: 25;
+  align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s ease; backdrop-filter: blur(8px);
 }
-
-.shelf-arrow:hover {
-  background: var(--accent);
-  color: #111;
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 0 20px var(--accent-glow-strong);
-}
-
+.shelf-arrow:hover { background: var(--accent); color: #111; transform: translateY(-50%) scale(1.1); box-shadow: 0 0 20px var(--accent-glow-strong); }
 .shelf-arrow.left { left: 18px; }
 .shelf-arrow.right { right: 18px; }
+@media (min-width: 992px) { .shelf-scroll-wrapper:hover .shelf-arrow { display: flex; } }
 
-@media (min-width: 992px) {
-  .shelf-scroll-wrapper:hover .shelf-arrow {
-    display: flex;
-  }
-}
-
-/* Shelf Card (Horizontal) */
 .shelf-card {
-  flex: 0 0 185px;
-  max-width: 185px;
-  min-width: 0;
-  scroll-snap-align: start;
-  background: var(--card-bg);
-  border-radius: 20px;
-  padding: 11px;
-  border: 1.5px solid var(--border);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-  box-sizing: border-box;
+  flex: 0 0 185px; max-width: 185px; min-width: 0; scroll-snap-align: start; background: var(--card-bg);
+  border-radius: 20px; padding: 11px; border: 1.5px solid var(--border); position: relative; display: flex;
+  flex-direction: column; transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  cursor: pointer; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); box-sizing: border-box;
 }
+@media (min-width: 768px) { .shelf-card { flex: 0 0 215px; max-width: 215px; padding: 12px; } }
+.shelf-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08), 0 0 20px var(--accent-glow); }
+.shelf-card .image-box { width: 100%; height: 155px; border-radius: 14px; background: var(--surface); margin-bottom: 10px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+@media (min-width: 768px) { .shelf-card .image-box { height: 175px; } }
+.shelf-card img { width: 100%; height: 100%; object-fit: contain; padding: 6px; transition: transform 0.4s ease; }
+.shelf-card:hover img { transform: scale(1.08); }
 
-@media (min-width: 768px) {
-  .shelf-card {
-    flex: 0 0 215px;
-    max-width: 215px;
-    padding: 12px;
-  }
-}
-
-.shelf-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08), 0 0 20px var(--accent-glow);
-}
-
-.shelf-card .image-box {
-  width: 100%;
-  height: 155px;
-  border-radius: 14px;
-  background: var(--surface);
-  margin-bottom: 10px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@media (min-width: 768px) {
-  .shelf-card .image-box {
-    height: 175px;
-  }
-}
-
-.shelf-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 6px;
-  transition: transform 0.4s ease;
-}
-
-.shelf-card:hover img {
-  transform: scale(1.08);
-}
-
-/* Standard Grid (For Focused & Explore All View) */
-.grid { 
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 0 6% 10px 6%;
-}
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 0 6% 10px 6%; }
 @media (min-width: 640px) { .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; } }
 @media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 18px; } }
 
@@ -613,14 +456,11 @@ nav {
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease; 
   min-width: 0; box-sizing: border-box;
 } 
-.card:hover { 
-  transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 14px 30px rgba(0,0,0,0.08), 0 0 22px var(--accent-glow); 
-} 
+.card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 14px 30px rgba(0,0,0,0.08), 0 0 22px var(--accent-glow); } 
 .card .image-box { width: 100%; height: 165px; border-radius: 14px; overflow: hidden; background: var(--surface); margin-bottom: 10px; position: relative; } 
 .card img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.4s ease; padding: 6px; } 
 .card:hover img { transform: scale(1.06); }
 
-/* Badges & Actions for Product Cards */
 .stock-badge { position: absolute; top: 8px; left: 8px; background: #000; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.62rem; font-weight: 700; z-index: 10; } 
 .discount-badge { 
   position: absolute; top: 8px; left: 8px; background: linear-gradient(135deg, #f59e0b, #ea580c); 
@@ -654,48 +494,22 @@ nav {
   display: flex; align-items: center; justify-content: center; gap: 8px;
 } 
 .buy-btn i { color: #f59e0b; }
-.buy-btn:hover:not(:disabled) { 
-  background: var(--accent); color: #111111; box-shadow: 0 0 18px var(--accent-glow-strong);
-}
+.buy-btn:hover:not(:disabled) { background: var(--accent); color: #111111; box-shadow: 0 0 18px var(--accent-glow-strong); }
 .buy-btn:hover:not(:disabled) i { color: #111111; }
 .buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; } 
 
-/* =============================================
-   🔥 IN-BETWEEN "EARN MONEY" AD BANNER
-   ============================================= */
-.in-between-earn-ad-wrap {
-  width: 100%;
-  padding: 6px 0;
-}
-.earn-ad-section {
-  padding: 0 6%;
-}
+/* Earn Money Ad Banner */
+.in-between-earn-ad-wrap { width: 100%; padding: 6px 0; }
+.earn-ad-section { padding: 0 6%; }
 .earn-ad-banner {
   background: linear-gradient(135deg, #0b0b0f 0%, #151922 55%, #1e293b 100%);
-  border: 1.5px solid rgba(245, 158, 11, 0.45);
-  border-radius: 22px;
-  padding: 22px 24px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 14px 35px -5px rgba(0, 0, 0, 0.35), 0 0 25px rgba(245, 158, 11, 0.16);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1.5px solid rgba(245, 158, 11, 0.45); border-radius: 22px; padding: 22px 24px; position: relative; overflow: hidden;
+  box-shadow: 0 14px 35px -5px rgba(0, 0, 0, 0.35), 0 0 25px rgba(245, 158, 11, 0.16); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.earn-ad-banner:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent);
-  box-shadow: 0 18px 40px -5px rgba(0, 0, 0, 0.45), 0 0 32px rgba(245, 158, 11, 0.28);
-}
-.earn-ad-watermark {
-  position: absolute; right: -15px; bottom: -25px; font-size: 8rem; color: rgba(245, 158, 11, 0.06);
-  pointer-events: none; line-height: 1;
-}
-.earn-ad-watermark-secondary {
-  position: absolute; right: 140px; top: -20px; font-size: 5rem; color: rgba(245, 158, 11, 0.04);
-  pointer-events: none;
-}
-.earn-ad-header {
-  display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
-}
+.earn-ad-banner:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 18px 40px -5px rgba(0, 0, 0, 0.45), 0 0 32px rgba(245, 158, 11, 0.28); }
+.earn-ad-watermark { position: absolute; right: -15px; bottom: -25px; font-size: 8rem; color: rgba(245, 158, 11, 0.06); pointer-events: none; line-height: 1; }
+.earn-ad-watermark-secondary { position: absolute; right: 140px; top: -20px; font-size: 5rem; color: rgba(245, 158, 11, 0.04); pointer-events: none; }
+.earn-ad-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
 .earn-ad-badge {
   display: inline-flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.16); color: #fbbf24;
   border: 1px solid rgba(245, 158, 11, 0.4); padding: 5px 12px; border-radius: 30px; font-size: 0.72rem; font-weight: 800;
@@ -725,7 +539,6 @@ nav {
 }
 .earn-ad-info-btn:hover { background: #334155; color: #ffffff; }
 
-/* Empty state */
 .empty-state-box {
   margin: 10px 6%; text-align: center; padding: 45px 20px; background: var(--surface); border-radius: 20px;
   border: 1px dashed var(--accent-border); box-shadow: 0 0 20px rgba(245, 158, 11, 0.08); display: flex;
@@ -769,15 +582,15 @@ nav {
 }
 .wa-float:active { transform: scale(0.92); }
 
-/* =============================================
-   📱 ULTRA RESPONSIVE OPTIMIZATIONS (MOBILE)
-   ============================================= */
+/* --- Mobile Responsive Optimizations for Header & Profile --- */
 @media (max-width: 768px) { 
-  nav { padding: 10px 4%; flex-wrap: wrap; justify-content: space-between; gap: 10px; } 
-  .logo { font-size: 1.2rem; order: 1; } 
-  .nav-right { order: 2; gap: 8px; flex-shrink: 0; } 
-  .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin: 2px 0 0 0; } 
-  .search-container input { padding: 10px 12px 10px 38px; font-size: 0.85rem; border-radius: 14px; } 
+  nav { padding: 10px 4%; flex-wrap: wrap; justify-content: space-between; gap: 8px; } 
+  .logo { font-size: 1.15rem; order: 1; } 
+  .nav-right { order: 2; gap: 6px; flex-shrink: 0; } 
+  .profile-chip { padding: 4px 8px 4px 4px; max-width: 130px; }
+  .profile-phone { display: none; }
+  .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin-top: 4px; } 
+  .search-container input { padding: 9px 12px 9px 36px; font-size: 0.84rem; border-radius: 12px; } 
   
   .hero { padding: 16px 4% 5px; flex-direction: column; align-items: flex-start; gap: 12px; } 
   .hero-text h1 { font-size: 1.7rem; } 
@@ -825,7 +638,9 @@ nav {
   .safe-checkout-box { margin: 15px 4% 25px; padding: 16px; }
 } 
 
-@media (max-width: 360px) {
+@media (max-width: 380px) {
+  .logo div { font-size: 1rem; }
+  .profile-chip { max-width: 100px; }
   .shelf-card { flex: 0 0 140px; max-width: 140px; padding: 8px; }
   .shelf-card .image-box { height: 120px; }
   .budget-card { padding: 8px; gap: 6px; }
@@ -876,17 +691,14 @@ nav {
     try {
       const params = new URLSearchParams(window.location.search);
       const productId = params.get("product");
-
       if (productId) {
         const productUrl = new URL("/product-details", window.location.origin);
         productUrl.searchParams.set("id", productId);
-
         ["ref", "aff", "name", "phone", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]
           .forEach((key) => {
             const value = params.get(key);
             if (value) productUrl.searchParams.set(key, value);
           });
-
         window.location.replace(productUrl.toString());
       }
     } catch (e) {
@@ -900,7 +712,7 @@ nav {
 <!-- Hidden Container for Firebase reCAPTCHA Invisible Verification -->
 <div id="recaptcha-container"></div>
 
-<!-- In-page fallback "system notification" banner for OTP -->
+<!-- In-page fallback system notification banner for OTP -->
 <div id="otpInPageNotif" class="otp-inpage-notif">
   <div class="n-icon"><i class="fa-solid fa-shield-halved"></i></div>
   <div class="n-body">
@@ -913,11 +725,6 @@ nav {
 <!-- Navigation Bar -->
 <nav> 
   <div id="navLogo" class="logo"><i class="fa-solid fa-cart-shopping"></i><div>CART<span>PRIME</span></div></div> 
-  <div class="search-container"> 
-    <i class="fa fa-search"></i> 
-    <input type="text" id="searchInput" placeholder="Search verified products..." autocomplete="off"> 
-    <div id="searchSuggestions" class="search-suggestions-box"></div> 
-  </div> 
   <div class="nav-right"> 
     <div class="notification-icon-btn" id="notifBtn" title="Notifications">
       <i class="fa-regular fa-bell"></i>
@@ -931,6 +738,12 @@ nav {
         <span class="profile-phone" id="navProfilePhone">Not set</span>
       </div>
     </div>
+  </div> 
+
+  <div class="search-container"> 
+    <i class="fa fa-search"></i> 
+    <input type="text" id="searchInput" placeholder="Search verified products..." autocomplete="off"> 
+    <div id="searchSuggestions" class="search-suggestions-box"></div> 
   </div> 
 </nav> 
 
@@ -950,14 +763,9 @@ nav {
 <!-- TRUSTED 100% SECURE USER LOGIN & REGISTRATION MODAL -->
 <div id="userWelcomeModal" class="modal-overlay"> 
   <div class="modal-card"> 
-    
     <div class="login-header-zone">
-      <div class="login-shield-badge">
-        <i class="fa-solid fa-shield-halved"></i>
-      </div>
-      <div class="ssl-security-pill">
-        <i class="fa-solid fa-lock"></i> 256-Bit SSL Encrypted
-      </div>
+      <div class="login-shield-badge"><i class="fa-solid fa-shield-halved"></i></div>
+      <div class="ssl-security-pill"><i class="fa-solid fa-lock"></i> 256-Bit SSL Encrypted</div>
     </div>
 
     <div>
@@ -972,8 +780,6 @@ nav {
     </div>
     
     <form id="userWelcomeForm" class="modal-form" style="margin-top: 10px;"> 
-      
-      <!-- Step 1: Mobile Input -->
       <div id="phoneInputGroup">
         <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">REGISTERED MOBILE NUMBER</label>
         <div class="trust-phone-wrap">
@@ -985,7 +791,6 @@ nav {
         </div>
       </div>
 
-      <!-- Step 2: 6-Digit OTP Input -->
       <div id="otpInputGroup" style="display: none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted);">6-DIGIT VERIFICATION CODE</label>
@@ -1001,7 +806,6 @@ nav {
         </div>
       </div>
 
-      <!-- Step 3: New User Name Setup -->
       <div id="nameInputGroup" style="display: none;">
         <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">YOUR FULL NAME</label>
         <input type="text" id="userWelcomeName" class="modal-input" placeholder="e.g. Rahul Sharma" autocomplete="name">
@@ -1015,7 +819,6 @@ nav {
       </div> 
     </form> 
 
-    <!-- Logout Option inside Edit Profile Modal -->
     <div id="logoutSection" style="display: none; margin-top: 14px;">
       <button type="button" id="logoutBtn" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ef4444; background: rgba(239, 68, 68, 0.08); color: #ef4444; font-weight: 700; cursor: pointer;">
         <i class="fa-solid fa-right-from-bracket"></i> Logout of CartPrime
@@ -1209,7 +1012,7 @@ nav {
   </div>
 </section>
 
-<!-- Budget Deals Zone Box (Red, Green, Blue, Purple) -->
+<!-- Budget Deals Zone Box -->
 <div class="budget-box-section">
   <div class="budget-deals-box">
     <div class="budget-box-header">
@@ -1270,9 +1073,7 @@ nav {
   <div class="banner-dots" id="bannerDots"></div> 
 </div> 
 
-<!-- =============================================
-     MAIN PRODUCTS CONTAINER (WITH HEADINGS, SIDE-SCROLL & IN-BETWEEN EARN AD)
-     ============================================= -->
+<!-- Main Products Container -->
 <div class="main-products-container" id="mainProductsContainer"></div> 
 
 <!-- Safe Checkout Box -->
@@ -1352,11 +1153,9 @@ nav {
   });
 
   let deferredInstallPrompt = null;
-  const APP_DOWNLOAD_URL = "https://cartprime.netlify.app/";
   window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; });
   window.addEventListener('appinstalled', () => { const b = document.querySelector('.app-download-section'); if (b) b.style.display = 'none'; });
   
-  // Global Scroll Shelf Handler (for Left/Right desktop buttons)
   window.scrollShelf = (containerId, distance) => {
     const container = document.getElementById(containerId);
     if (container) {
@@ -1435,7 +1234,6 @@ nav {
   function deliverOtpAsNotification(phoneNumber, otpCode) {
     const title = "CartPrime Security Code";
     const body = `Your OTP for +91 ${phoneNumber} is ${otpCode}. Valid for 5 minutes.`;
-
     showInPageNotifBanner(title, body);
 
     if ("Notification" in window && Notification.permission === "granted") {
@@ -1448,7 +1246,6 @@ nav {
         console.warn("Native notification note:", err);
       }
     }
-
     addLocalNotification(title, body, 'fa-shield-halved');
   }
 
@@ -1482,8 +1279,6 @@ nav {
 
   async function sendFreeOtpPlatform(phoneNumber) {
     generatedFallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log(`[CartPrime Free Security Gateway] OTP: ${generatedFallbackOtp} for ${phoneNumber}`);
-
     deliverOtpAsNotification(phoneNumber, generatedFallbackOtp);
     showCustomAlert("OTP Sent", `A 6-digit code has been sent to your notifications for +91 ${phoneNumber}.`, true);
     return true;
@@ -1509,9 +1304,7 @@ nav {
             localStorage.removeItem('partnerName');
             localStorage.removeItem('partnerId');
             showCustomAlert("Session Expired", "You have been logged in from another device. Please log in again.", false);
-            setTimeout(() => {
-              window.location.reload();
-            }, 1800);
+            setTimeout(() => { window.location.reload(); }, 1800);
           }
         }
       });
@@ -1528,17 +1321,13 @@ nav {
   function openModal(modalElement) {
     if (!modalElement) return;
     modalElement.style.display = 'flex';
-    setTimeout(() => {
-      modalElement.classList.add('active');
-    }, 10);
+    setTimeout(() => { modalElement.classList.add('active'); }, 10);
   }
 
   function closeModal(modalElement) {
     if (!modalElement) return;
     modalElement.classList.remove('active');
-    setTimeout(() => {
-      modalElement.style.display = 'none';
-    }, 300);
+    setTimeout(() => { modalElement.style.display = 'none'; }, 300);
   }
 
   const profileChip = document.getElementById('profileChip');
@@ -1651,9 +1440,7 @@ nav {
 
       html += `
         <div class="notif-item ${isUnread ? 'unread' : ''}">
-          <div class="notif-icon">
-            <i class="fa-solid ${iconClass}"></i>
-          </div>
+          <div class="notif-icon"><i class="fa-solid ${iconClass}"></i></div>
           <div class="notif-content">
             <div class="notif-title">${item.title || 'Notification'}</div>
             <div class="notif-message">${item.message || ''}</div>
@@ -1695,9 +1482,7 @@ nav {
   }
 
   if (closeNotifModal) {
-    closeNotifModal.addEventListener('click', () => {
-      closeModal(notifModal);
-    });
+    closeNotifModal.addEventListener('click', () => { closeModal(notifModal); });
   }
 
   listenNotifications();
@@ -1710,7 +1495,6 @@ nav {
   function updateHeaderProfileUI() {
     const name = localStorage.getItem('userName') || "User";
     const phone = localStorage.getItem('userPhone') || "";
-    
     if (navProfileAvatar) navProfileAvatar.textContent = name.charAt(0).toUpperCase();
     if (navProfileName) navProfileName.innerHTML = `${name} <i class="fa-solid fa-pen edit-profile-btn"></i>`;
     if (navProfilePhone) navProfilePhone.textContent = phone ? `+91 ${phone}` : "Tap to sign in";
@@ -1787,9 +1571,7 @@ nav {
       closeModal(welcomeModal);
       updateHeaderProfileUI();
       showCustomAlert("Logged Out", "You have been logged out securely.", true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      setTimeout(() => { window.location.reload(); }, 1000);
     });
   }
 
@@ -1819,7 +1601,6 @@ nav {
   if (welcomeForm) {
     welcomeForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
       if (registrationStep === 1) {
         const phone = userWelcomePhone.value.trim().replace(/[^0-9]/g, '');
         if (!phone || phone.length !== 10) {
@@ -1867,7 +1648,6 @@ nav {
           if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
 
           startOtpCountdown(30);
-
         }).catch((err) => {
           verifyLoadingBox.style.display = 'none';
           welcomeForm.style.display = 'flex';
@@ -1886,16 +1666,11 @@ nav {
         loadingText.textContent = "Validating Security Token...";
 
         let isOtpValid = false;
-
         if (confirmationResult) {
           try {
             const cred = await confirmationResult.confirm(otpVal);
-            if (cred && cred.user) {
-              isOtpValid = true;
-            }
-          } catch (fbOtpErr) {
-            console.warn("Firebase Phone Auth confirmation notice:", fbOtpErr);
-          }
+            if (cred && cred.user) { isOtpValid = true; }
+          } catch (fbOtpErr) { console.warn("Firebase Phone Auth confirmation notice:", fbOtpErr); }
         }
 
         if (!isOtpValid) {
@@ -2008,12 +1783,10 @@ nav {
     const toastMessage = document.getElementById('toastMessage');
     const toastIcon = document.getElementById('toastIcon');
     const toastCloseBtn = document.getElementById('toastCloseBtn');
-
     if (!toastModal) return;
 
     toastTitle.textContent = title;
     toastMessage.textContent = message;
-
     if (isSuccess) {
       toastIcon.className = 'toast-icon-wrap success';
       toastIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
@@ -2021,28 +1794,20 @@ nav {
       toastIcon.className = 'toast-icon-wrap error';
       toastIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
     }
-
     toastModal.style.display = 'flex';
-
-    toastCloseBtn.onclick = () => {
-      toastModal.style.display = 'none';
-    };
+    toastCloseBtn.onclick = () => { toastModal.style.display = 'none'; };
   }
 
   (function handleAffiliateTracking() { 
     const urlParams = new URLSearchParams(window.location.search); 
     const affId = urlParams.get('ref') || urlParams.get('aff'); 
-    if (affId) { 
-      localStorage.setItem('cartPrime_affiliateId', affId); 
-    } 
+    if (affId) { localStorage.setItem('cartPrime_affiliateId', affId); } 
   })(); 
 
   const cookieBanner = document.getElementById('cookieBanner'); 
   const acceptCookiesBtn = document.getElementById('acceptCookiesBtn'); 
   if (cookieBanner && acceptCookiesBtn) {
-    if (!localStorage.getItem('cookiesAccepted')) { 
-      cookieBanner.style.display = 'flex'; 
-    } 
+    if (!localStorage.getItem('cookiesAccepted')) { cookieBanner.style.display = 'flex'; } 
     acceptCookiesBtn.addEventListener('click', () => { 
       localStorage.setItem('cookiesAccepted', 'true'); 
       cookieBanner.style.display = 'none'; 
@@ -2054,23 +1819,9 @@ nav {
   const closeContactModal = document.getElementById('closeContactModal');
   const customerCareBtn = document.getElementById('customerCareBtn');
 
-  if (bottomContactBtn) {
-    bottomContactBtn.addEventListener('click', () => {
-      openModal(contactModal);
-    });
-  }
-
-  if (closeContactModal) {
-    closeContactModal.addEventListener('click', () => {
-      closeModal(contactModal);
-    });
-  }
-
-  if (customerCareBtn) {
-    customerCareBtn.addEventListener('click', () => {
-      window.location.href = '/Complaint.html';
-    });
-  }
+  if (bottomContactBtn) { bottomContactBtn.addEventListener('click', () => { openModal(contactModal); }); }
+  if (closeContactModal) { closeContactModal.addEventListener('click', () => { closeModal(contactModal); }); }
+  if (customerCareBtn) { customerCareBtn.addEventListener('click', () => { window.location.href = '/Complaint.html'; }); }
 
   const earnModal = document.getElementById('earnModal'); 
   const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
@@ -2106,7 +1857,6 @@ nav {
       if (snapshot.exists()) {
         const partnerData = snapshot.val();
         const status = (partnerData.status || "").toLowerCase();
-
         localStorage.setItem('partnerPhone', phone);
         if (partnerData.name) localStorage.setItem('partnerName', partnerData.name);
         if (partnerData.partnerId) localStorage.setItem('partnerId', partnerData.partnerId);
@@ -2117,17 +1867,9 @@ nav {
         if (status === 'approved' || status === 'active') {
           window.location.href = '/wallet.html';
         } else if (status === 'pending') {
-          showCustomAlert(
-            "Under Verification", 
-            `Your Partner Account is currently under review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access once approved.`, 
-            true
-          );
+          showCustomAlert("Under Verification", `Your Partner Account is currently under review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access once approved.`, true);
         } else {
-          showCustomAlert(
-            "Application Status", 
-            `Status: ${partnerData.status || 'Pending'}. Please contact support if you need assistance.`, 
-            false
-          );
+          showCustomAlert("Application Status", `Status: ${partnerData.status || 'Pending'}. Please contact support if you need assistance.`, false);
         }
       } else {
         earnStep = 2;
@@ -2138,69 +1880,41 @@ nav {
         if (earnSubText) earnSubText.textContent = "You are eligible! Complete your profile details to register.";
         openModal(earnModal);
       }
-    }).catch(() => {
-      openEarnRegistrationModal();
-    });
+    }).catch(() => { openEarnRegistrationModal(); });
   }
 
   function handleEarnClick() {
     const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-    if (!phone) {
-      openEarnRegistrationModal();
-    } else {
-      checkEarnPartnerStatus(phone);
-    }
+    if (!phone) { openEarnRegistrationModal(); } else { checkEarnPartnerStatus(phone); }
   }
   
-  if (bottomEarnBtn) { 
-    bottomEarnBtn.addEventListener('click', handleEarnClick); 
-  } 
+  if (bottomEarnBtn) { bottomEarnBtn.addEventListener('click', handleEarnClick); } 
 
-  // Global Click Delegation for Dynamic Earn Banner Buttons
   document.addEventListener('click', (e) => {
-    if (e.target.closest('#heroEarnAdBtn') || e.target.closest('.earn-ad-cta-btn')) {
-      handleEarnClick();
-    }
+    if (e.target.closest('#heroEarnAdBtn') || e.target.closest('.earn-ad-cta-btn')) { handleEarnClick(); }
     if (e.target.closest('#earnHowItWorksBtn') || e.target.closest('.earn-ad-info-btn')) {
-      showCustomAlert(
-        "CartPrime Partner Program",
-        "1. Pick any trending product from CartPrime.\n2. Share product photos or link on WhatsApp Status & Groups.\n3. When someone buys, our team delivers COD & your cash commission is sent directly to your UPI / Bank!",
-        true
-      );
+      showCustomAlert("CartPrime Partner Program", "1. Pick any trending product from CartPrime.\n2. Share product photos or link on WhatsApp Status & Groups.\n3. When someone buys, our team delivers COD & your cash commission is sent directly to your UPI / Bank!", true);
     }
   });
 
   if (closeEarnModal) { 
-    closeEarnModal.addEventListener('click', () => { 
-      closeModal(earnModal); 
-      resetEarnForm();
-    }); 
+    closeEarnModal.addEventListener('click', () => { closeModal(earnModal); resetEarnForm(); }); 
   } 
 
   if (earnForm) { 
     earnForm.addEventListener('submit', (e) => { 
       e.preventDefault(); 
       const phone = partnerPhone.value.trim();
-
       if (earnStep === 1) {
-        if (phone) {
-          checkEarnPartnerStatus(phone);
-        }
+        if (phone) { checkEarnPartnerStatus(phone); }
       } else if (earnStep === 2) {
         const name = partnerName.value.trim(); 
         const upi = partnerUpi.value.trim(); 
-
         if (name && phone && upi) { 
           const partnerRef = ref(db, `earn_partners/${phone}`); 
           const uniquePartnerId = generateUniquePartnerId();
-
           set(partnerRef, { 
-            partnerId: uniquePartnerId,
-            name: name, 
-            phone: phone, 
-            upi: upi, 
-            status: "Pending", 
-            timestamp: Date.now() 
+            partnerId: uniquePartnerId, name: name, phone: phone, upi: upi, status: "Pending", timestamp: Date.now() 
           }).then(() => { 
             localStorage.setItem('partnerPhone', phone);
             localStorage.setItem('partnerName', name);
@@ -2208,26 +1922,16 @@ nav {
             closeModal(earnModal); 
             resetEarnForm();
             listenNotifications();
-            showCustomAlert(
-              "Application Submitted!", 
-              `Your partner application was received successfully!\nPartner ID: ${uniquePartnerId}.\nAccess will be granted after verification.`, 
-              true
-            ); 
+            showCustomAlert("Application Submitted!", `Your partner application was received successfully!\nPartner ID: ${uniquePartnerId}.\nAccess will be granted after verification.`, true); 
           }).catch((err) => { 
-            showCustomAlert(
-              "Submission Failed", 
-              "Error submitting request: " + err.message, 
-              false
-            ); 
+            showCustomAlert("Submission Failed", "Error submitting request: " + err.message, false); 
           }); 
         } 
       }
     }); 
   } 
 
-  // =============================================
-  // SELLER PROFILE REGISTRATION
-  // =============================================
+  // Seller Profile Registration
   const sellerCtaBtn = document.getElementById('sellerCtaBtn');
   const sellerModal = document.getElementById('sellerModal');
   const sellerForm = document.getElementById('sellerForm');
@@ -2241,9 +1945,7 @@ nav {
   const closeSellerModalBtn = document.getElementById('closeSellerModal');
   let sellerFormSaving = false;
 
-  function setSellerStatus(message) {
-    if (sellerStatusNote) sellerStatusNote.textContent = message;
-  }
+  function setSellerStatus(message) { if (sellerStatusNote) sellerStatusNote.textContent = message; }
 
   async function openSellerRegistration() {
     const phone = (localStorage.getItem('userPhone') || '').replace(/\D/g, '');
@@ -2331,30 +2033,19 @@ nav {
         const oldData = oldSnapshot.exists() ? (oldSnapshot.val() || {}) : {};
         const now = Date.now();
         const profileData = {
-          name,
-          phone,
-          storeName,
-          productCategory,
-          productDescription,
+          name, phone, storeName, productCategory, productDescription,
           status: oldData.status || 'Pending',
           createdAt: oldData.createdAt || now,
           updatedAt: now,
           source: 'CartPrime website seller registration'
         };
 
-        if (oldSnapshot.exists()) {
-          await update(sellerRef, profileData);
-        } else {
-          await set(sellerRef, profileData);
-        }
+        if (oldSnapshot.exists()) { await update(sellerRef, profileData); } 
+        else { await set(sellerRef, profileData); }
 
         const statusText = profileData.status;
         closeModal(sellerModal);
-        showCustomAlert(
-          oldSnapshot.exists() ? 'Seller Profile Updated' : 'Seller Profile Created',
-          `Your seller details were saved successfully.\nStatus: ${statusText}`,
-          true
-        );
+        showCustomAlert(oldSnapshot.exists() ? 'Seller Profile Updated' : 'Seller Profile Created', `Your seller details were saved successfully.\nStatus: ${statusText}`, true);
       } catch (error) {
         console.error('Seller profile save failed:', error);
         const details = error && error.message ? error.message : 'Unknown error';
@@ -2368,59 +2059,31 @@ nav {
     });
   }
 
-  // REUSABLE EARN AD BANNER TEMPLATE
   function getEarnBannerHtml() {
     return `
       <div class="earn-ad-section">
         <div class="earn-ad-banner">
           <i class="fa-solid fa-sack-dollar earn-ad-watermark"></i>
           <i class="fa-solid fa-coins earn-ad-watermark-secondary"></i>
-
           <div style="position: relative; z-index: 2;">
             <div class="earn-ad-header">
-              <div class="earn-ad-badge">
-                <i class="fa-solid fa-fire"></i> CartPrime Partner Program
-              </div>
-              <div class="earn-ad-free-tag">
-                <i class="fa-solid fa-circle-check"></i> 100% Free • ₹0 Investment
-              </div>
+              <div class="earn-ad-badge"><i class="fa-solid fa-fire"></i> CartPrime Partner Program</div>
+              <div class="earn-ad-free-tag"><i class="fa-solid fa-circle-check"></i> 100% Free • ₹0 Investment</div>
             </div>
-
-            <h2 class="earn-ad-title">
-              You Earn at Home <span>₹30,000+</span> Earn
-            </h2>
-            <p class="earn-ad-desc">
-              Share CartPrime Products on WhatsApp and Social Media easily. Get a higher cash commission on each order!
-            </p>
-
+            <h2 class="earn-ad-title">You Earn at Home <span>₹30,000+</span> Earn</h2>
+            <p class="earn-ad-desc">Share CartPrime Products on WhatsApp and Social Media easily. Get a higher cash commission on each order!</p>
             <div class="earn-features-grid">
-              <div class="earn-feature-card">
-                <strong style="color: #fbbf24;">₹0 Investment</strong>
-                <span>Without Investment</span>
-              </div>
-              <div class="earn-feature-card">
-                <strong style="color: #4ade80;">Up to 25%</strong>
-                <span>High Commission</span>
-              </div>
-              <div class="earn-feature-card">
-                <strong style="color: #38bdf8;">Weekly Payout</strong>
-                <span>Direct UPI / Bank</span>
-              </div>
-              <div class="earn-feature-card">
-                <strong style="color: #c084fc;">COD Delivery</strong>
-                <span>Free delivery</span>
-              </div>
+              <div class="earn-feature-card"><strong style="color: #fbbf24;">₹0 Investment</strong><span>Without Investment</span></div>
+              <div class="earn-feature-card"><strong style="color: #4ade80;">Up to 25%</strong><span>High Commission</span></div>
+              <div class="earn-feature-card"><strong style="color: #38bdf8;">Weekly Payout</strong><span>Direct UPI / Bank</span></div>
+              <div class="earn-feature-card"><strong style="color: #c084fc;">COD Delivery</strong><span>Free delivery</span></div>
             </div>
-
             <div class="earn-ad-actions">
               <button type="button" class="earn-ad-cta-btn" id="heroEarnAdBtn">
-                <i class="fa-solid fa-hand-holding-dollar"></i>
-                <span>Register now / Start Earning</span>
-                <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
+                <i class="fa-solid fa-hand-holding-dollar"></i><span>Register now / Start Earning</span><i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
               </button>
               <button type="button" class="earn-ad-info-btn" id="earnHowItWorksBtn">
-                <i class="fa-solid fa-circle-question" style="color: #fbbf24;"></i>
-                <span>How It Works</span>
+                <i class="fa-solid fa-circle-question" style="color: #fbbf24;"></i><span>How It Works</span>
               </button>
             </div>
           </div>
@@ -2450,9 +2113,7 @@ nav {
     container.innerHTML = `
       <div class="product-shelf-section">
         <div class="shelf-header">
-          <div class="shelf-title-wrap">
-            <div class="skeleton-line" style="width: 140px; height: 20px; border-radius: 6px;"></div>
-          </div>
+          <div class="shelf-title-wrap"><div class="skeleton-line" style="width: 140px; height: 20px; border-radius: 6px;"></div></div>
         </div>
         <div class="shelf-scroll-container">
           ${[1,2,3,4,5].map(() => `
@@ -2495,12 +2156,8 @@ nav {
         set(visitsRef, currentVisits + 1).then(() => { 
           localStorage.setItem('visitCounted', 'true'); 
           window.location.href = finalUrl; 
-        }).catch(() => { 
-          window.location.href = finalUrl; 
-        }); 
-      }).catch(() => { 
-        window.location.href = finalUrl; 
-      }); 
+        }).catch(() => { window.location.href = finalUrl; }); 
+      }).catch(() => { window.location.href = finalUrl; }); 
     } else { 
       window.location.href = finalUrl; 
     } 
@@ -2513,17 +2170,12 @@ nav {
   } 
 
   const navLogo = document.getElementById('navLogo');
-  if (navLogo) {
-    navLogo.addEventListener('click', () => { 
-      window.location.href = "/"; 
-    }); 
-  }
+  if (navLogo) { navLogo.addEventListener('click', () => { window.location.href = "/"; }); }
 
   function getFilteredProducts(filterKey) {
     if (!filterKey || filterKey === "All") {
       return allProducts.filter(p => p.showOnHome !== false);
     }
-
     const priceRule = priceFilterOptions.find(opt => opt.id === filterKey);
     if (priceRule) {
       return allProducts.filter(p => {
@@ -2533,7 +2185,6 @@ nav {
         return !isNaN(pr) && pr <= priceRule.maxPrice;
       });
     }
-
     return allProducts.filter(p => {
       if (p.showOnHome === false) return false;
       return p.category && p.category.trim().toLowerCase() === filterKey.toLowerCase();
@@ -2545,7 +2196,6 @@ nav {
     cards.forEach(card => {
       card.addEventListener('click', () => {
         const catKey = card.getAttribute('data-cat');
-        
         if (activeCategory === catKey) {
           activeCategory = 'All';
           card.classList.remove('active');
@@ -2561,11 +2211,8 @@ nav {
         });
 
         renderProducts(getFilteredProducts(activeCategory));
-
         const container = document.getElementById('mainProductsContainer');
-        if (container) {
-          container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        if (container) { container.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
       });
     });
   }
@@ -2579,16 +2226,11 @@ nav {
 
     if (user) { 
       onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => { 
-        if (snapshot.exists()) { 
-          userWishlistIds = snapshot.val(); 
-        } else { 
-          userWishlistIds = {}; 
-        } 
+        userWishlistIds = snapshot.exists() ? snapshot.val() : {}; 
         updateWishlistUIAndBadge(); 
       }); 
     } else { 
-      let localWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
-      userWishlistIds = localWishlist; 
+      userWishlistIds = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
       updateWishlistUIAndBadge(); 
     } 
 
@@ -2602,17 +2244,15 @@ nav {
     if (targetPhone) { 
       onValue(ref(db, `orders/${targetPhone}`), (snapshot) => { 
         const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0; 
-        if (count > 0) { 
-          if(bottomOrdersBadge) {
-            bottomOrdersBadge.textContent = count;
-            bottomOrdersBadge.style.display = 'flex';
-          }
-        } else { 
-          if(bottomOrdersBadge) bottomOrdersBadge.style.display = 'none';
+        if (count > 0 && bottomOrdersBadge) {
+          bottomOrdersBadge.textContent = count;
+          bottomOrdersBadge.style.display = 'flex';
+        } else if (bottomOrdersBadge) { 
+          bottomOrdersBadge.style.display = 'none';
         } 
       }); 
-    } else { 
-      if(bottomOrdersBadge) bottomOrdersBadge.style.display = 'none';
+    } else if (bottomOrdersBadge) { 
+      bottomOrdersBadge.style.display = 'none';
     } 
 
     const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
@@ -2620,16 +2260,12 @@ nav {
 
     if (partnerPhone || partnerId) {
       const directRefPath = partnerPhone ? ref(db, `ReferralOrders/${partnerPhone}`) : null;
-
       if (directRefPath) {
         onValue(directRefPath, (snapshot) => {
           let directCount = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
-
-          if (directCount > 0) {
-            if (bottomEarnBadge) {
-              bottomEarnBadge.textContent = directCount;
-              bottomEarnBadge.style.display = 'flex';
-            }
+          if (directCount > 0 && bottomEarnBadge) {
+            bottomEarnBadge.textContent = directCount;
+            bottomEarnBadge.style.display = 'flex';
           } else {
             onValue(ref(db, 'ReferralOrders'), (allRefOrdersSnap) => {
               let totalCount = 0;
@@ -2643,9 +2279,7 @@ nav {
                   ) {
                     if (typeof val === 'object' && !val.orderId && !val.price) {
                       totalCount += Object.keys(val).length;
-                    } else {
-                      totalCount++;
-                    }
+                    } else { totalCount++; }
                   }
                 });
               }
@@ -2659,37 +2293,28 @@ nav {
                   onValue(ref(db, `wallet/${partnerPhone}/orders`), (walletSnap) => {
                     let walletCount = walletSnap.exists() ? Object.keys(walletSnap.val()).length : 0;
                     let finalEarnCount = Math.max(earnOrdersCount, walletCount);
-
                     if (finalEarnCount > 0 && bottomEarnBadge) {
                       bottomEarnBadge.textContent = finalEarnCount;
                       bottomEarnBadge.style.display = 'flex';
-                    } else if (bottomEarnBadge) {
-                      bottomEarnBadge.style.display = 'none';
-                    }
+                    } else if (bottomEarnBadge) { bottomEarnBadge.style.display = 'none'; }
                   });
                 });
               }
             });
           }
         });
-      } else {
-        if (bottomEarnBadge) bottomEarnBadge.style.display = 'none';
-      }
-    } else {
-      if (bottomEarnBadge) bottomEarnBadge.style.display = 'none';
-    }
+      } else if (bottomEarnBadge) { bottomEarnBadge.style.display = 'none'; }
+    } else if (bottomEarnBadge) { bottomEarnBadge.style.display = 'none'; }
   } 
 
   function updateWishlistUIAndBadge() { 
     const bottomWishlistBadge = document.getElementById('bottomWishlistBadge');
     const count = Object.keys(userWishlistIds).length; 
-    if (count > 0) { 
-      if(bottomWishlistBadge) {
-        bottomWishlistBadge.textContent = count;
-        bottomWishlistBadge.style.display = 'flex';
-      }
-    } else { 
-      if(bottomWishlistBadge) bottomWishlistBadge.style.display = 'none';
+    if (count > 0 && bottomWishlistBadge) { 
+      bottomWishlistBadge.textContent = count;
+      bottomWishlistBadge.style.display = 'flex';
+    } else if (bottomWishlistBadge) { 
+      bottomWishlistBadge.style.display = 'none';
     } 
 
     document.querySelectorAll('.card-wishlist-btn').forEach(btn => {
@@ -2744,11 +2369,8 @@ nav {
           item.addEventListener('click', () => { 
             if (targetLink && targetLink.toString().trim() !== "") { 
               let linkStr = targetLink.toString().trim(); 
-              if (linkStr.startsWith('http://') || linkStr.startsWith('https://')) { 
-                window.location.href = linkStr; 
-              } else { 
-                window.location.href = linkStr.startsWith('/') ? linkStr : `/${linkStr}`; 
-              } 
+              if (linkStr.startsWith('http://') || linkStr.startsWith('https://')) { window.location.href = linkStr; } 
+              else { window.location.href = linkStr.startsWith('/') ? linkStr : `/${linkStr}`; } 
             } else if (bannerData.productId) { 
               trackProductClickAndRedirect(bannerData.productId); 
             } else if (bannerData.category) { 
@@ -2763,15 +2385,9 @@ nav {
           index++; 
         } 
       }); 
-      if (index > 0) { 
-        bannerSection.style.display = 'block'; 
-        initializeSliderScroll(); 
-      } else { 
-        bannerSection.style.display = 'none'; 
-      } 
-    } else { 
-      bannerSection.style.display = 'none'; 
-    } 
+      if (index > 0) { bannerSection.style.display = 'block'; initializeSliderScroll(); } 
+      else { bannerSection.style.display = 'none'; } 
+    } else { bannerSection.style.display = 'none'; } 
   }); 
 
   function initializeSliderScroll() { 
@@ -2786,9 +2402,7 @@ nav {
         const width = slider.clientWidth; 
         const currentScroll = slider.scrollLeft; 
         let nextIndex = Math.round(currentScroll / width) + 1; 
-        if (nextIndex >= totalBanners) { 
-          nextIndex = 0; 
-        } 
+        if (nextIndex >= totalBanners) { nextIndex = 0; } 
         slider.scrollTo({ left: nextIndex * width, behavior: 'smooth' }); 
       }, 3500); 
     }; 
@@ -2829,11 +2443,9 @@ nav {
     }); 
 
     let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All"><i class="fa-solid fa-layer-group" style="margin-right: 6px;"></i>All Products</div>`; 
-
     categories.forEach(cat => { 
       barHtml += `<div class="category-btn ${activeCategory.toLowerCase() === cat.toLowerCase() ? 'active' : ''}" data-cat="${cat}">${cat}</div>`; 
     }); 
-
     catBar.innerHTML = barHtml; 
 
     catBar.querySelectorAll('.category-btn').forEach(btn => { 
@@ -2841,16 +2453,10 @@ nav {
         activeCategory = btn.getAttribute('data-cat'); 
         catBar.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
         btn.classList.add('active'); 
-        
         document.querySelectorAll('.budget-card').forEach(c => c.classList.remove('active'));
-
-        const filtered = getFilteredProducts(activeCategory);
-        renderProducts(filtered); 
-
+        renderProducts(getFilteredProducts(activeCategory)); 
         const container = document.getElementById('mainProductsContainer');
-        if (container) {
-          container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        if (container) { container.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
       }); 
     }); 
   } 
@@ -2860,21 +2466,11 @@ nav {
     if (lower.includes("gadget") || lower.includes("electronic") || lower.includes("tech") || lower.includes("phone")) {
       return { icon: "fa-bolt", color: "#f59e0b" };
     }
-    if (lower.includes("watch") || lower.includes("time")) {
-      return { icon: "fa-clock", color: "#06b6d4" };
-    }
-    if (lower.includes("fashion") || lower.includes("cloth") || lower.includes("dress") || lower.includes("wear")) {
-      return { icon: "fa-shirt", color: "#ec4899" };
-    }
-    if (lower.includes("shoe") || lower.includes("footwear")) {
-      return { icon: "fa-shoe-prints", color: "#8b5cf6" };
-    }
-    if (lower.includes("jewel") || lower.includes("access")) {
-      return { icon: "fa-gem", color: "#a855f7" };
-    }
-    if (lower.includes("home") || lower.includes("kitchen")) {
-      return { icon: "fa-house-chimney", color: "#10b981" };
-    }
+    if (lower.includes("watch") || lower.includes("time")) { return { icon: "fa-clock", color: "#06b6d4" }; }
+    if (lower.includes("fashion") || lower.includes("cloth") || lower.includes("dress") || lower.includes("wear")) { return { icon: "fa-shirt", color: "#ec4899" }; }
+    if (lower.includes("shoe") || lower.includes("footwear")) { return { icon: "fa-shoe-prints", color: "#8b5cf6" }; }
+    if (lower.includes("jewel") || lower.includes("access")) { return { icon: "fa-gem", color: "#a855f7" }; }
+    if (lower.includes("home") || lower.includes("kitchen")) { return { icon: "fa-house-chimney", color: "#10b981" }; }
     return { icon: "fa-bag-shopping", color: "#f59e0b" };
   }
 
@@ -2888,7 +2484,6 @@ nav {
       discTag = `<div class="discount-badge">${disc}% OFF</div>`; 
     } 
     const isWishlisted = !!userWishlistIds[p.id]; 
-    
     const card = document.createElement('div'); 
     card.className = isShelf ? 'shelf-card' : 'card'; 
     const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150'; 
@@ -2922,23 +2517,14 @@ nav {
       if (currentUser) { 
         const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`); 
         if (userWishlistIds[prodId]) { 
-          remove(wishRef).then(() => { 
-            delete userWishlistIds[prodId]; 
-            updateWishlistUIAndBadge(); 
-          }); 
+          remove(wishRef).then(() => { delete userWishlistIds[prodId]; updateWishlistUIAndBadge(); }); 
         } else { 
-          set(wishRef, true).then(() => { 
-            userWishlistIds[prodId] = true; 
-            updateWishlistUIAndBadge(); 
-          }); 
+          set(wishRef, true).then(() => { userWishlistIds[prodId] = true; updateWishlistUIAndBadge(); }); 
         } 
       } else { 
         let guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
-        if (guestWishlist[prodId]) { 
-          delete guestWishlist[prodId]; 
-        } else { 
-          guestWishlist[prodId] = true; 
-        } 
+        if (guestWishlist[prodId]) { delete guestWishlist[prodId]; } 
+        else { guestWishlist[prodId] = true; } 
         localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist)); 
         userWishlistIds = guestWishlist; 
         updateWishlistUIAndBadge(); 
@@ -2949,7 +2535,6 @@ nav {
       if(isOut || e.target.closest('.card-wishlist-btn')) return; 
       trackProductClickAndRedirect(p.id); 
     }); 
-
     return card;
   }
 
@@ -2959,27 +2544,17 @@ nav {
     shelf.innerHTML = `
       <div class="shelf-header">
         <div class="shelf-title-wrap">
-          <div class="shelf-icon-badge">
-            <i class="fa-solid ${iconClass}" style="color: ${iconColor};"></i>
-          </div>
+          <div class="shelf-icon-badge"><i class="fa-solid ${iconClass}" style="color: ${iconColor};"></i></div>
           <h3>${title}</h3>
         </div>
         <button class="shelf-view-all-btn" onclick="window.filterByCategory('${categoryFilterKey}')">
-          <span>View All</span>
-          <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+          <span>View All</span><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
         </button>
       </div>
-      
       <div class="shelf-scroll-wrapper">
-        <button class="shelf-arrow left" onclick="window.scrollShelf('${shelfId}', -280)" title="Scroll Left">
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-
+        <button class="shelf-arrow left" onclick="window.scrollShelf('${shelfId}', -280)" title="Scroll Left"><i class="fa-solid fa-chevron-left"></i></button>
         <div class="shelf-scroll-container" id="${shelfId}"></div>
-
-        <button class="shelf-arrow right" onclick="window.scrollShelf('${shelfId}', 280)" title="Scroll Right">
-          <i class="fa-solid fa-chevron-right"></i>
-        </button>
+        <button class="shelf-arrow right" onclick="window.scrollShelf('${shelfId}', 280)" title="Scroll Right"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
     `;
 
@@ -2988,7 +2563,6 @@ nav {
       const card = createProductCardElement(p, idx, true);
       scrollContainer.appendChild(card);
     });
-
     return shelf;
   }
 
@@ -3002,14 +2576,10 @@ nav {
     renderProducts(getFilteredProducts(activeCategory));
 
     const container = document.getElementById('mainProductsContainer');
-    if (container) {
-      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (container) { container.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   };
 
-  window.resetToAll = () => {
-    window.filterByCategory('All');
-  };
+  window.resetToAll = () => { window.filterByCategory('All'); };
 
   function renderProducts(products) { 
     const container = document.getElementById('mainProductsContainer'); 
@@ -3017,7 +2587,6 @@ nav {
     container.innerHTML = ""; 
 
     const visibleProducts = products.filter(p => p.showOnHome !== false);
-    
     if (visibleProducts.length === 0) {
       container.innerHTML = `
         <div class="empty-state-box">
@@ -3057,9 +2626,7 @@ nav {
             <div class="shelf-icon-badge"><i class="fa-solid fa-bolt" style="color: var(--accent);"></i></div>
             <h3>${title}</h3>
           </div>
-          <button class="shelf-view-all-btn" onclick="window.resetToAll()">
-            <i class="fa-solid fa-rotate-left" style="margin-right: 4px;"></i> Show All
-          </button>
+          <button class="shelf-view-all-btn" onclick="window.resetToAll()"><i class="fa-solid fa-rotate-left" style="margin-right: 4px;"></i> Show All</button>
         </div>
         <div class="grid" id="focusedProductGrid"></div>
         <div style="margin-top: 25px;">${getEarnBannerHtml()}</div>
@@ -3091,14 +2658,7 @@ nav {
     });
     const topOffers = trendingProducts.length >= 2 ? trendingProducts : visibleProducts.slice(0, 8);
 
-    const trendingShelf = createShelfElement(
-      "shelf-trending", 
-      "🔥 Trending & Top Offers", 
-      "fa-fire", 
-      "#ef4444", 
-      topOffers, 
-      "All"
-    );
+    const trendingShelf = createShelfElement("shelf-trending", "🔥 Trending & Top Offers", "fa-fire", "#ef4444", topOffers, "All");
     container.appendChild(trendingShelf);
     shelfCounter++;
 
@@ -3107,15 +2667,7 @@ nav {
     categoryNames.forEach((catName, cIdx) => {
       const catProducts = categoriesMap[catName];
       const iconData = getCategoryIconData(catName);
-
-      const catShelf = createShelfElement(
-        `shelf-cat-${cIdx}`,
-        `${catName}`,
-        iconData.icon,
-        iconData.color,
-        catProducts,
-        catName
-      );
+      const catShelf = createShelfElement(`shelf-cat-${cIdx}`, `${catName}`, iconData.icon, iconData.color, catProducts, catName);
       container.appendChild(catShelf);
       shelfCounter++;
 
@@ -3162,10 +2714,7 @@ nav {
     searchInput.addEventListener('input', (e) => { 
       const val = e.target.value.toLowerCase().trim(); 
       suggestionsBox.innerHTML = ""; 
-      if (val.length < 1) { 
-        suggestionsBox.style.display = 'none'; 
-        return; 
-      } 
+      if (val.length < 1) { suggestionsBox.style.display = 'none'; return; } 
       const searchWords = val.split(/\s+/).filter(word => word); 
       let matchedProducts = allProducts.filter(p => { 
         if (p.showOnHome === false) return false;
@@ -3188,33 +2737,22 @@ nav {
               <p>₹${p.price || '0'}</p> 
             </div> 
           `; 
-          div.addEventListener('click', () => { 
-            trackProductClickAndRedirect(p.id); 
-          }); 
+          div.addEventListener('click', () => { trackProductClickAndRedirect(p.id); }); 
           suggestionsBox.appendChild(div); 
         }); 
-      } else { 
-        suggestionsBox.style.display = 'none'; 
-      } 
+      } else { suggestionsBox.style.display = 'none'; } 
     }); 
 
     searchInput.addEventListener('keydown', (e) => { 
       if (e.key === 'Enter') { 
         const searchVal = searchInput.value.trim(); 
-        if (searchVal.toLowerCase() === "cartecom@com") { 
-          window.location.href = "/admin"; 
-          return; 
-        } 
-        if (searchVal.length >= 1) { 
-          window.location.href = `/search?q=${encodeURIComponent(searchVal)}`; 
-        } 
+        if (searchVal.toLowerCase() === "cartecom@com") { window.location.href = "/admin"; return; } 
+        if (searchVal.length >= 1) { window.location.href = `/search?q=${encodeURIComponent(searchVal)}`; } 
       } 
     }); 
 
     document.addEventListener('click', (e) => { 
-      if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { 
-        suggestionsBox.style.display = 'none'; 
-      } 
+      if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { suggestionsBox.style.display = 'none'; } 
     }); 
   }
 </script> 
