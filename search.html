@@ -16,7 +16,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%230b0b0f'/><path d='M17 8h-1.5c0-1.93-1.57-3.5-3.5-3.5S8.5 6.07 8.5 8H7c-.83 0-1.5.67-1.5 1.5v8C5.5 18.33 6.17 19 7 19h10c.83 0 1.5-.67 1.5-1.5v-8C18.5 8.67 17.83 8 17 8zm-5-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm5 11.5H7v-8h10v8z' fill='%23f59e0b'/></svg>">
 
     <style>
-        /* --- CartPrime Amber & Cyber Black Theme --- */
+        /* --- CartPrime Signature Amber & Cyber Black Theme --- */
         :root {
             --primary: #0b0b0f;
             --accent: #f59e0b;
@@ -232,6 +232,73 @@
             font-weight: 600;
         }
 
+        .controls-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* High-Converting Price Adjust Button */
+        .price-adjust-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: #ffffff;
+            background: var(--primary);
+            border: 1.5px solid var(--primary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 3px 12px rgba(11, 11, 15, 0.15);
+            position: relative;
+            user-select: none;
+        }
+
+        .price-adjust-btn i {
+            color: var(--accent);
+            font-size: 0.95rem;
+            transition: transform 0.25s ease;
+        }
+
+        .price-adjust-btn:hover {
+            background: #1e293b;
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 18px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .price-adjust-btn:hover i {
+            transform: rotate(90deg);
+        }
+
+        .price-adjust-btn.has-filter {
+            border-color: var(--accent);
+            background: #11141c;
+            color: var(--accent);
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+
+        .active-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent);
+            display: inline-block;
+            animation: pulseDot 1.8s infinite;
+        }
+
+        @keyframes pulseDot {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px var(--accent); }
+            100% { transform: scale(0.9); opacity: 0.8; }
+        }
+
         .sort-dropdown {
             padding: 9px 16px;
             font-size: 0.85rem;
@@ -298,6 +365,20 @@
 
         .filter-pill.active i {
             color: var(--accent);
+        }
+
+        /* Custom active filter tag */
+        .custom-filter-tag {
+            background: #fffbeb !important;
+            border-color: var(--accent) !important;
+            color: #b45309 !important;
+            box-shadow: 0 0 10px var(--accent-soft);
+        }
+
+        .custom-filter-tag i.fa-xmark {
+            margin-left: 4px;
+            font-size: 0.75rem;
+            color: #b45309;
         }
 
         /* --- Main Layout Container --- */
@@ -523,7 +604,7 @@
             cursor: not-allowed;
         }
 
-        /* --- No Results Empty State --- */
+        /* --- Empty Results State --- */
         .no-results {
             grid-column: 1 / -1;
             text-align: center;
@@ -622,7 +703,505 @@
             100% { background-position: -200% 0; }
         }
 
-        /* Responsive Controls */
+        /* ==========================================================================
+           ULTRA-PREMIUM PRICE ADJUSTMENT WINDOW (MODAL & BOTTOM SHEET)
+           ========================================================================== */
+        .price-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(11, 11, 15, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+        }
+
+        .price-modal-backdrop.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .price-modal-window {
+            background: #ffffff;
+            width: 100%;
+            max-width: 470px;
+            border-radius: 26px;
+            border: 1.5px solid rgba(245, 158, 11, 0.35);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25), 0 0 35px rgba(245, 158, 11, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            transform: scale(0.92) translateY(24px);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .price-modal-backdrop.open .price-modal-window {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Mobile Drag Pill */
+        .modal-drag-bar {
+            display: none;
+            width: 42px;
+            height: 5px;
+            background: #cbd5e1;
+            border-radius: 10px;
+            margin: 12px auto 4px auto;
+        }
+
+        /* Modal Header */
+        .modal-header {
+            padding: 20px 24px 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+        }
+
+        .modal-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-icon-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--primary);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 0 14px var(--accent-glow);
+        }
+
+        .modal-header h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
+        }
+
+        .modal-header p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .modal-close-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close-btn:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+            transform: rotate(90deg);
+        }
+
+        /* Modal Content Body */
+        .modal-body {
+            padding: 20px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            scrollbar-width: thin;
+        }
+
+        .filter-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .section-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-label {
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-label i {
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        /* Live Price Slider Styling */
+        .slider-badge {
+            background: var(--primary);
+            color: var(--accent);
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.88rem;
+            font-weight: 800;
+            box-shadow: 0 0 12px var(--accent-glow);
+            letter-spacing: 0.5px;
+        }
+
+        .range-slider-box {
+            padding: 10px 4px 4px 4px;
+        }
+
+        .neon-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 6px;
+            background: #e2e8f0;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .neon-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 3.5px solid #ffffff;
+            box-shadow: 0 0 14px var(--accent-glow-strong), 0 3px 8px rgba(0,0,0,0.25);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .neon-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.18);
+            box-shadow: 0 0 20px var(--accent-glow-strong);
+        }
+
+        .neon-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 3.5px solid #ffffff;
+            box-shadow: 0 0 14px var(--accent-glow-strong), 0 3px 8px rgba(0,0,0,0.25);
+            cursor: pointer;
+        }
+
+        .slider-ticks {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Min & Max Inputs Row */
+        .price-inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .price-input-box {
+            background: #f8fafc;
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .price-input-box:focus-within {
+            border-color: var(--accent);
+            background: #fff;
+            box-shadow: 0 0 14px var(--accent-soft);
+        }
+
+        .currency-symbol {
+            font-weight: 800;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .price-input-box input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .price-range-arrow {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Multi-Color Glowing Deal Presets */
+        .budget-presets-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .preset-chip {
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: #ffffff;
+            border: 1.5px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+
+        .preset-chip:hover {
+            transform: translateY(-2px);
+        }
+
+        .chip-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .chip-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+        }
+
+        .chip-text strong {
+            font-size: 0.84rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .chip-text small {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Neon Color Themes for Presets */
+        .preset-red:hover, .preset-red.active {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.06);
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.3);
+        }
+        .preset-red.active .chip-text strong { color: #dc2626; }
+
+        .preset-green:hover, .preset-green.active {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.06);
+            box-shadow: 0 0 14px rgba(34, 197, 94, 0.3);
+        }
+        .preset-green.active .chip-text strong { color: #16a34a; }
+
+        .preset-blue:hover, .preset-blue.active {
+            border-color: #06b6d4;
+            background: rgba(6, 182, 212, 0.06);
+            box-shadow: 0 0 14px rgba(6, 182, 212, 0.3);
+        }
+        .preset-blue.active .chip-text strong { color: #0891b2; }
+
+        .preset-purple:hover, .preset-purple.active {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.06);
+            box-shadow: 0 0 14px rgba(168, 85, 247, 0.3);
+        }
+        .preset-purple.active .chip-text strong { color: #9333ea; }
+
+        .preset-amber:hover, .preset-amber.active {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.06);
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.3);
+        }
+        .preset-amber.active .chip-text strong { color: #b45309; }
+
+        .preset-all:hover, .preset-all.active {
+            border-color: var(--primary);
+            background: #0b0b0f;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+        }
+        .preset-all.active .chip-text strong { color: #ffffff; }
+        .preset-all.active .chip-text small { color: #94a3b8; }
+
+        /* In-Stock Toggle Row */
+        .toggle-box {
+            background: #f8fafc;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .toggle-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .toggle-text strong {
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-text small {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+        }
+
+        /* iOS / Cyber Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-switch {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider-switch:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider-switch {
+            background-color: var(--accent);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        input:checked + .slider-switch:before {
+            transform: translateX(22px);
+        }
+
+        /* Modal Footer Action Buttons */
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #ffffff;
+        }
+
+        .modal-reset-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 14px;
+            background: #f1f5f9;
+            border: 1.5px solid var(--border);
+            color: var(--text-main);
+            font-size: 0.86rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .modal-reset-btn:hover {
+            background: #e2e8f0;
+            color: #000;
+        }
+
+        .modal-apply-btn {
+            flex: 2;
+            padding: 12px 18px;
+            border-radius: 14px;
+            background: var(--primary);
+            border: none;
+            color: #ffffff;
+            font-size: 0.88rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(11, 11, 15, 0.25);
+        }
+
+        .modal-apply-btn i {
+            color: var(--accent);
+        }
+
+        .modal-apply-btn:hover {
+            background: var(--accent);
+            color: #111;
+            box-shadow: 0 0 20px var(--accent-glow-strong);
+        }
+
+        .modal-apply-btn:hover i {
+            color: #111;
+        }
+
+        /* Responsive Mobile Layout */
         @media (max-width: 600px) {
             .navbar {
                 padding: 10px 4%;
@@ -649,6 +1228,28 @@
             .card-info h3 { font-size: 0.82rem; height: 2.2rem; }
             .price { font-size: 1rem; }
             .buy-btn { padding: 9px; font-size: 0.78rem; }
+
+            /* Mobile Bottom Sheet Drawer Style */
+            .price-modal-backdrop {
+                align-items: flex-end;
+                padding: 0;
+            }
+            .price-modal-window {
+                max-width: 100%;
+                border-radius: 26px 26px 0 0;
+                transform: translateY(100%);
+                max-height: 86vh;
+                border-bottom: none;
+            }
+            .price-modal-backdrop.open .price-modal-window {
+                transform: translateY(0);
+            }
+            .modal-drag-bar {
+                display: block;
+            }
+            .budget-presets-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 </head>
@@ -684,20 +1285,32 @@
             <h2 id="searchPageTitle" class="search-query-title">Results for "<span></span>"</h2>
             <div id="resultsCount" class="results-count">Searching verified products...</div>
         </div>
-        <select id="sortSelect" class="sort-dropdown">
-            <option value="relevance">Sort by: Relevance</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
-        </select>
+
+        <div class="controls-right">
+            <!-- Modern Price Adjust Window Trigger Button -->
+            <button id="openPriceModalBtn" class="price-adjust-btn" title="Adjust Price & Filter Window">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Adjust Price</span>
+                <span id="activeFilterDot" class="active-dot" style="display: none;"></span>
+            </button>
+
+            <!-- Sort Selection Dropdown -->
+            <select id="sortSelect" class="sort-dropdown">
+                <option value="relevance">Sort by: Relevance</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+            </select>
+        </div>
     </div>
 
     <!-- Quick Filter Pills -->
     <div class="filter-pills-bar" id="filterPillsBar">
         <div class="filter-pill active" data-filter="all"><i class="fa-solid fa-layer-group"></i> All Matches</div>
-        <div class="filter-pill" data-filter="under_199"><i class="fa-solid fa-bolt"></i> Under ₹199</div>
-        <div class="filter-pill" data-filter="under_350"><i class="fa-solid fa-wand-magic-sparkles"></i> Under ₹350</div>
-        <div class="filter-pill" data-filter="under_599"><i class="fa-solid fa-gem"></i> Under ₹599</div>
-        <div class="filter-pill" data-filter="in_stock"><i class="fa-solid fa-circle-check"></i> In Stock Only</div>
+        <div class="filter-pill" data-filter="under_99"><i class="fa-solid fa-fire" style="color:#ef4444;"></i> Under ₹99</div>
+        <div class="filter-pill" data-filter="under_199"><i class="fa-solid fa-bolt" style="color:#22c55e;"></i> Under ₹199</div>
+        <div class="filter-pill" data-filter="under_350"><i class="fa-solid fa-wand-magic-sparkles" style="color:#06b6d4;"></i> Under ₹350</div>
+        <div class="filter-pill" data-filter="under_599"><i class="fa-solid fa-gem" style="color:#a855f7;"></i> Under ₹599</div>
+        <div class="filter-pill" data-filter="in_stock"><i class="fa-solid fa-circle-check" style="color:#16a34a;"></i> In Stock Only</div>
     </div>
 
     <!-- Main Results Grid -->
@@ -705,6 +1318,139 @@
         <div id="productGrid" class="product-grid"></div>
     </div>
 
+    <!-- ==========================================================================
+         PRICE ADJUSTMENT WINDOW (MODAL & BOTTOM SHEET)
+         ========================================================================== -->
+    <div id="priceModalBackdrop" class="price-modal-backdrop">
+        <div class="price-modal-window" id="priceModalWindow">
+            <div class="modal-drag-bar"></div>
+
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-icon-badge">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <div>
+                        <h3>Adjust Price & Filter</h3>
+                        <p>Set budget limits and deals for your search</p>
+                    </div>
+                </div>
+                <button class="modal-close-btn" id="closePriceModalBtn" title="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- 1. Interactive Slider Section -->
+                <div class="filter-section">
+                    <div class="section-label-row">
+                        <label class="section-label"><i class="fa-solid fa-gauge-high"></i> Max Price Budget</label>
+                        <div class="slider-badge" id="sliderBadge">₹<span id="sliderBadgeVal">1500</span></div>
+                    </div>
+                    <div class="range-slider-box">
+                        <input type="range" id="priceSliderInput" min="50" max="5000" step="25" value="1500" class="neon-slider">
+                        <div class="slider-ticks">
+                            <span>₹50</span>
+                            <span>₹1,500</span>
+                            <span>₹3,000</span>
+                            <span>₹5,000+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Min & Max Custom Price Inputs -->
+                <div class="filter-section">
+                    <label class="section-label"><i class="fa-solid fa-tag"></i> Custom Price Range</label>
+                    <div class="price-inputs-grid">
+                        <div class="price-input-box">
+                            <span class="currency-symbol">₹</span>
+                            <input type="number" id="minPriceInput" placeholder="0" min="0" value="0">
+                        </div>
+                        <div class="price-range-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="price-input-box">
+                            <span class="currency-symbol">₹</span>
+                            <input type="number" id="maxPriceInput" placeholder="1500" min="0" value="1500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Multi-Color Glowing Deal Presets -->
+                <div class="filter-section">
+                    <label class="section-label"><i class="fa-solid fa-bolt-lightning"></i> Quick Budget Deals</label>
+                    <div class="budget-presets-grid">
+                        <div class="preset-chip preset-red" data-min="0" data-max="99">
+                            <span class="chip-icon">🔥</span>
+                            <div class="chip-text">
+                                <strong>Under ₹99</strong>
+                                <small>Super Saver</small>
+                            </div>
+                        </div>
+                        <div class="preset-chip preset-green" data-min="0" data-max="199">
+                            <span class="chip-icon">⚡</span>
+                            <div class="chip-text">
+                                <strong>Under ₹199</strong>
+                                <small>Best Value</small>
+                            </div>
+                        </div>
+                        <div class="preset-chip preset-blue" data-min="0" data-max="350">
+                            <span class="chip-icon">✨</span>
+                            <div class="chip-text">
+                                <strong>Under ₹350</strong>
+                                <small>Trending Deals</small>
+                            </div>
+                        </div>
+                        <div class="preset-chip preset-purple" data-min="0" data-max="599">
+                            <span class="chip-icon">💎</span>
+                            <div class="chip-text">
+                                <strong>Under ₹599</strong>
+                                <small>Premium Picks</small>
+                            </div>
+                        </div>
+                        <div class="preset-chip preset-amber" data-min="0" data-max="999">
+                            <span class="chip-icon">🚀</span>
+                            <div class="chip-text">
+                                <strong>Under ₹999</strong>
+                                <small>Mega Deals</small>
+                            </div>
+                        </div>
+                        <div class="preset-chip preset-all active" data-min="0" data-max="100000">
+                            <span class="chip-icon">🌟</span>
+                            <div class="chip-text">
+                                <strong>All Prices</strong>
+                                <small>No Limits</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. In Stock Only Switch -->
+                <div class="toggle-box">
+                    <div class="toggle-text">
+                        <strong><i class="fa-solid fa-boxes-stacked" style="color:var(--accent);"></i> In-Stock Items Only</strong>
+                        <small>Hide items currently out of stock</small>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="modalInStockToggle">
+                        <span class="slider-switch"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Modal Action Footer -->
+            <div class="modal-footer">
+                <button type="button" class="modal-reset-btn" id="modalResetBtn">
+                    <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+                <button type="button" class="modal-apply-btn" id="modalApplyBtn">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Apply Filter</span>
+                    <span id="modalPreviewCountBadge" style="opacity: 0.85; font-size: 0.8rem;">(0 Items)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript ES Module -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
@@ -724,7 +1470,13 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         let currentQuery = urlParams.get('q') ? urlParams.get('q').toLowerCase().trim() : "";
+        
+        // Active Filter States
         let activePriceFilter = "all";
+        let customMinPrice = 0;
+        let customMaxPrice = 5000;
+        let isPriceFilterActive = false;
+        let onlyInStock = false;
 
         let matchingProducts = [];
         let rawAllProducts = [];
@@ -830,8 +1582,7 @@
 
         /* ========================================================
            FIXED HIGH-PRECISION E-COMMERCE SEARCH ALGORITHM
-           Matches strictly by Title, Category, or Brand
-           No random products or unwanted dumps!
+           Matches strictly by Title or Category
            ======================================================== */
         function processSearch(allProducts, searchVal) {
             if (!searchVal || searchVal.trim().length === 0) {
@@ -841,34 +1592,32 @@
             }
 
             const cleanSearch = searchVal.toLowerCase().trim();
-            // Split into distinct words, ignoring empty tokens
             const searchWords = cleanSearch.split(/\s+/).filter(w => w.length > 0);
 
-            // Filter out disabled products
+            // Filter out hidden products
             const activeStoreProducts = allProducts.filter(p => p.showOnHome !== false);
 
             matchingProducts = activeStoreProducts.filter(p => {
                 const productName = (p.name || p.title || "").toLowerCase();
                 const productCat = (p.category || "").toLowerCase();
 
-                // 1. Direct whole-phrase match in name or category
+                // 1. Direct whole-phrase match
                 if (productName.includes(cleanSearch) || productCat.includes(cleanSearch)) {
                     return true;
                 }
 
-                // 2. All search words must be present in the title or category
+                // 2. All search words match
                 const combined = `${productName} ${productCat}`;
                 const allWordsMatch = searchWords.every(word => combined.includes(word));
                 if (allWordsMatch) {
                     return true;
                 }
 
-                // 3. If multi-word search, match if title contains at least main keywords (ignoring small stop words)
+                // 3. Meaningful words match (70% threshold)
                 if (searchWords.length > 1) {
                     const meaningfulWords = searchWords.filter(w => w.length > 2 && w !== "for" && w !== "and" && w !== "the");
                     if (meaningfulWords.length > 0) {
                         const countMatched = meaningfulWords.filter(w => productName.includes(w) || productCat.includes(w)).length;
-                        // Requires at least 70% of meaningful words to match
                         if (countMatched >= Math.ceil(meaningfulWords.length * 0.7)) {
                             return true;
                         }
@@ -878,43 +1627,75 @@
                 return false;
             });
 
+            updateModalPreviewCount();
             applySortAndRender();
         }
 
-        // Apply Price / Filter Rules
-        function filterByChipRule(list) {
-            if (activePriceFilter === 'all') return list;
-            const parsePrice = (p) => parseFloat((p.price || 0).toString().replace(/[^\d.]/g, ''));
+        // Parse price safely
+        function parseProductPrice(p) {
+            return parseFloat((p.price || 0).toString().replace(/[^\d.]/g, ''));
+        }
 
+        // Apply Price / Filter Rules
+        function filterProducts(list) {
+            let result = [...list];
+
+            // In Stock Filter
+            if (onlyInStock) {
+                result = result.filter(p => p.outOfStock !== true);
+            }
+
+            // Quick Pill Mode
+            if (activePriceFilter === 'under_99') {
+                return result.filter(p => parseProductPrice(p) <= 99);
+            }
             if (activePriceFilter === 'under_199') {
-                return list.filter(p => parsePrice(p) <= 199);
+                return result.filter(p => parseProductPrice(p) <= 199);
             }
             if (activePriceFilter === 'under_350') {
-                return list.filter(p => parsePrice(p) <= 350);
+                return result.filter(p => parseProductPrice(p) <= 350);
             }
             if (activePriceFilter === 'under_599') {
-                return list.filter(p => parsePrice(p) <= 599);
+                return result.filter(p => parseProductPrice(p) <= 599);
             }
             if (activePriceFilter === 'in_stock') {
-                return list.filter(p => p.outOfStock !== true);
+                return result.filter(p => p.outOfStock !== true);
             }
-            return list;
+
+            // Custom Price Window Mode
+            if (isPriceFilterActive) {
+                result = result.filter(p => {
+                    const price = parseProductPrice(p);
+                    return price >= customMinPrice && price <= customMaxPrice;
+                });
+            }
+
+            return result;
         }
 
         function applySortAndRender() {
             const sortType = document.getElementById('sortSelect').value;
-            const parsePrice = (p) => parseFloat((p.price || 0).toString().replace(/[^\d.]/g, ''));
-
-            let filteredList = filterByChipRule([...matchingProducts]);
+            let filteredList = filterProducts(matchingProducts);
 
             if (sortType === 'price-low') {
-                filteredList.sort((a, b) => parsePrice(a) - parsePrice(b));
+                filteredList.sort((a, b) => parseProductPrice(a) - parseProductPrice(b));
             } else if (sortType === 'price-high') {
-                filteredList.sort((a, b) => parsePrice(b) - parsePrice(a));
+                filteredList.sort((a, b) => parseProductPrice(b) - parseProductPrice(a));
             }
 
             const totalCount = filteredList.length;
             document.getElementById('resultsCount').innerText = `${totalCount} verified product${totalCount !== 1 ? 's' : ''} found`;
+
+            // Update Active Indicators
+            const adjustBtn = document.getElementById('openPriceModalBtn');
+            const activeDot = document.getElementById('activeFilterDot');
+            if (isPriceFilterActive || onlyInStock || activePriceFilter !== 'all') {
+                adjustBtn.classList.add('has-filter');
+                activeDot.style.display = 'inline-block';
+            } else {
+                adjustBtn.classList.remove('has-filter');
+                activeDot.style.display = 'none';
+            }
 
             renderSearchGrid(filteredList);
         }
@@ -928,8 +1709,8 @@
                     <div class="no-results">
                         <i class="fa-solid fa-magnifying-glass-arrow-right empty-icon"></i>
                         <h3>No products found for "${esc(currentQuery)}"</h3>
-                        <p>We couldn't find any products matching your search term. Check your spelling or browse all store products.</p>
-                        <button class="no-results-btn" onclick="window.location.href='/'"><i class="fa-solid fa-house" style="margin-right:6px;"></i> Browse Store</button>
+                        <p>No products match your selected price range or filter. Try adjusting your price limit or clearing filters.</p>
+                        <button class="no-results-btn" onclick="resetAllFilters()"><i class="fa-solid fa-rotate-left" style="margin-right:6px;"></i> Clear All Filters</button>
                     </div>`;
                 return;
             }
@@ -938,8 +1719,8 @@
 
             products.forEach(p => {
                 const isOut = p.outOfStock === true;
-                const pr = parseFloat(p.price.toString().replace(/,/g, ''));
-                const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr);
+                const pr = parseProductPrice(p);
+                const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/[^\d.]/g, '') : pr);
                 let discTag = "";
                 if (mr > pr) {
                     const disc = Math.round(((mr - pr) / mr) * 100);
@@ -1005,12 +1786,192 @@
             });
         }
 
-        // Filter Pills Event Listeners
+        /* ==========================================================================
+           PRICE ADJUSTMENT MODAL CONTROLS & EVENT LISTENERS
+           ========================================================================== */
+        const priceModalBackdrop = document.getElementById('priceModalBackdrop');
+        const openPriceModalBtn = document.getElementById('openPriceModalBtn');
+        const closePriceModalBtn = document.getElementById('closePriceModalBtn');
+        const sliderInput = document.getElementById('priceSliderInput');
+        const sliderBadgeVal = document.getElementById('sliderBadgeVal');
+        const minPriceInput = document.getElementById('minPriceInput');
+        const maxPriceInput = document.getElementById('maxPriceInput');
+        const modalInStockToggle = document.getElementById('modalInStockToggle');
+        const modalApplyBtn = document.getElementById('modalApplyBtn');
+        const modalResetBtn = document.getElementById('modalResetBtn');
+        const previewBadge = document.getElementById('modalPreviewCountBadge');
+
+        function openModal() {
+            priceModalBackdrop.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            updateModalPreviewCount();
+        }
+
+        function closeModal() {
+            priceModalBackdrop.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        openPriceModalBtn.addEventListener('click', openModal);
+        closePriceModalBtn.addEventListener('click', closeModal);
+
+        priceModalBackdrop.addEventListener('click', (e) => {
+            if (e.target === priceModalBackdrop) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && priceModalBackdrop.classList.contains('open')) {
+                closeModal();
+            }
+        });
+
+        // Range Slider Input Event
+        sliderInput.addEventListener('input', () => {
+            const val = parseInt(sliderInput.value);
+            sliderBadgeVal.innerText = val >= 5000 ? '5,000+' : val.toLocaleString('en-IN');
+            maxPriceInput.value = val;
+            updatePresetActiveState(parseInt(minPriceInput.value || 0), val);
+            updateModalPreviewCount();
+        });
+
+        // Min & Max Input Events
+        minPriceInput.addEventListener('input', () => {
+            const minVal = parseInt(minPriceInput.value) || 0;
+            const maxVal = parseInt(maxPriceInput.value) || 5000;
+            updatePresetActiveState(minVal, maxVal);
+            updateModalPreviewCount();
+        });
+
+        maxPriceInput.addEventListener('input', () => {
+            const maxVal = parseInt(maxPriceInput.value) || 5000;
+            const minVal = parseInt(minPriceInput.value) || 0;
+            sliderInput.value = Math.min(Math.max(maxVal, 50), 5000);
+            sliderBadgeVal.innerText = maxVal >= 5000 ? '5,000+' : maxVal.toLocaleString('en-IN');
+            updatePresetActiveState(minVal, maxVal);
+            updateModalPreviewCount();
+        });
+
+        modalInStockToggle.addEventListener('change', () => {
+            updateModalPreviewCount();
+        });
+
+        // Presets Click Event
+        document.querySelectorAll('.preset-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const min = parseInt(chip.getAttribute('data-min'));
+                const max = parseInt(chip.getAttribute('data-max'));
+
+                minPriceInput.value = min;
+                maxPriceInput.value = max > 10000 ? 5000 : max;
+                sliderInput.value = Math.min(max, 5000);
+                sliderBadgeVal.innerText = max > 10000 ? '5,000+' : max.toLocaleString('en-IN');
+
+                document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+
+                updateModalPreviewCount();
+            });
+        });
+
+        function updatePresetActiveState(min, max) {
+            document.querySelectorAll('.preset-chip').forEach(chip => {
+                const cMin = parseInt(chip.getAttribute('data-min'));
+                const cMax = parseInt(chip.getAttribute('data-max'));
+                if (cMin === min && (cMax === max || (cMax > 10000 && max >= 5000))) {
+                    chip.classList.add('active');
+                } else {
+                    chip.classList.remove('active');
+                }
+            });
+        }
+
+        // Live calculation of preview count inside modal
+        function updateModalPreviewCount() {
+            const min = parseInt(minPriceInput.value) || 0;
+            const max = parseInt(maxPriceInput.value) || 999999;
+            const inStockOnly = modalInStockToggle.checked;
+
+            let count = matchingProducts.filter(p => {
+                const pr = parseProductPrice(p);
+                if (inStockOnly && p.outOfStock === true) return false;
+                return pr >= min && pr <= max;
+            }).length;
+
+            if (previewBadge) {
+                previewBadge.innerText = `(${count} Item${count !== 1 ? 's' : ''})`;
+            }
+        }
+
+        // Apply Button
+        modalApplyBtn.addEventListener('click', () => {
+            customMinPrice = parseInt(minPriceInput.value) || 0;
+            customMaxPrice = parseInt(maxPriceInput.value) || 999999;
+            onlyInStock = modalInStockToggle.checked;
+            isPriceFilterActive = (customMinPrice > 0 || customMaxPrice < 5000);
+
+            // Deselect horizontal filter pills and mark active
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            if (!isPriceFilterActive && !onlyInStock) {
+                document.querySelector('.filter-pill[data-filter="all"]')?.classList.add('active');
+            }
+
+            closeModal();
+            applySortAndRender();
+        });
+
+        // Reset Button inside Modal
+        modalResetBtn.addEventListener('click', () => {
+            resetAllFilters();
+            closeModal();
+        });
+
+        window.resetAllFilters = () => {
+            customMinPrice = 0;
+            customMaxPrice = 5000;
+            isPriceFilterActive = false;
+            onlyInStock = false;
+            activePriceFilter = "all";
+
+            minPriceInput.value = 0;
+            maxPriceInput.value = 5000;
+            sliderInput.value = 5000;
+            sliderBadgeVal.innerText = '5,000+';
+            modalInStockToggle.checked = false;
+
+            document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+            document.querySelector('.preset-chip.preset-all')?.classList.add('active');
+
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            document.querySelector('.filter-pill[data-filter="all"]')?.classList.add('active');
+
+            applySortAndRender();
+        };
+
+        // Filter Pills Event Listeners (Syncs with Window)
         document.querySelectorAll('.filter-pill').forEach(pill => {
             pill.addEventListener('click', () => {
                 document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
                 pill.classList.add('active');
                 activePriceFilter = pill.getAttribute('data-filter');
+                isPriceFilterActive = false;
+
+                if (activePriceFilter === 'under_99') {
+                    minPriceInput.value = 0; maxPriceInput.value = 99; sliderInput.value = 99; sliderBadgeVal.innerText = "99";
+                } else if (activePriceFilter === 'under_199') {
+                    minPriceInput.value = 0; maxPriceInput.value = 199; sliderInput.value = 199; sliderBadgeVal.innerText = "199";
+                } else if (activePriceFilter === 'under_350') {
+                    minPriceInput.value = 0; maxPriceInput.value = 350; sliderInput.value = 350; sliderBadgeVal.innerText = "350";
+                } else if (activePriceFilter === 'under_599') {
+                    minPriceInput.value = 0; maxPriceInput.value = 599; sliderInput.value = 599; sliderBadgeVal.innerText = "599";
+                } else if (activePriceFilter === 'in_stock') {
+                    modalInStockToggle.checked = true;
+                } else {
+                    minPriceInput.value = 0; maxPriceInput.value = 5000; sliderInput.value = 5000; sliderBadgeVal.innerText = "5,000+";
+                    modalInStockToggle.checked = false;
+                }
+
                 applySortAndRender();
             });
         });
