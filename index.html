@@ -581,66 +581,70 @@ nav {
 .buy-btn:hover:not(:disabled) i { color: #111111; }
 .buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; } 
 
-<!-- =============================================
-     🔥 HIGH-CONVERTING "EARN MONEY" ADVERTISEMENT BANNER
-     (CartPrime Partner Zone)
-     ============================================= -->
-<div class="earn-ad-section">
-  <div class="earn-ad-banner">
-    <!-- Watermark Icons -->
-    <i class="fa-solid fa-sack-dollar earn-ad-watermark"></i>
-    <i class="fa-solid fa-coins earn-ad-watermark-secondary"></i>
-
-    <div style="position: relative; z-index: 2;">
-      <div class="earn-ad-header">
-        <div class="earn-ad-badge">
-          <i class="fa-solid fa-fire"></i> CartPrime Partner Program
-        </div>
-        <div class="earn-ad-free-tag">
-          <i class="fa-solid fa-circle-check"></i> 100% Free • No Investment
-        </div>
-      </div>
-
-      <h2 class="earn-ad-title">
-        You can earning at home! <span>₹30,000+</span> Earnings
-      </h2>
-      <p class="earn-ad-desc">
-         Best Quality Products at CartPrime Share on WhatsApp and Social Media without a single sign. Own a high cash commission from each order!
-      </p>
-
-      <div class="earn-features-grid">
-        <div class="earn-feature-card">
-          <strong style="color: #fbbf24;">₹0 Investment</strong>
-          <span>Zero Investment</span>
-        </div>
-        <div class="earn-feature-card">
-          <strong style="color: #4ade80;">Up to 25%</strong>
-          <span>High Commission</span>
-        </div>
-        <div class="earn-feature-card">
-          <strong style="color: #38bdf8;">Weekly Payout</strong>
-          <span>Directly UPI / Bank</span>
-        </div>
-        <div class="earn-feature-card">
-          <strong style="color: #c084fc;">COD Delivery</strong>
-          <span>Customer Cash on Delivery</span>
-        </div>
-      </div>
-
-      <div class="earn-ad-actions">
-        <button type="button" class="earn-ad-cta-btn" id="heroEarnAdBtn">
-          <i class="fa-solid fa-hand-holding-dollar"></i>
-          <span>Start Earning Now / Register Now</span>
-          <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
-        </button>
-        <button type="button" class="earn-ad-info-btn" id="earnHowItWorksBtn">
-          <i class="fa-solid fa-circle-question" style="color: #fbbf24;"></i>
-          <span>How It Works</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+/* =============================================
+   🔥 IN-BETWEEN "EARN MONEY" AD BANNER
+   ============================================= */
+.in-between-earn-ad-wrap {
+  width: 100%;
+  padding: 8px 0;
+}
+.earn-ad-section {
+  padding: 0 6%;
+}
+.earn-ad-banner {
+  background: linear-gradient(135deg, #0b0b0f 0%, #151922 55%, #1e293b 100%);
+  border: 1.5px solid rgba(245, 158, 11, 0.45);
+  border-radius: 22px;
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 14px 35px -5px rgba(0, 0, 0, 0.35), 0 0 25px rgba(245, 158, 11, 0.16);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.earn-ad-banner:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 18px 40px -5px rgba(0, 0, 0, 0.45), 0 0 32px rgba(245, 158, 11, 0.28);
+}
+.earn-ad-watermark {
+  position: absolute; right: -15px; bottom: -25px; font-size: 8rem; color: rgba(245, 158, 11, 0.06);
+  pointer-events: none; line-height: 1;
+}
+.earn-ad-watermark-secondary {
+  position: absolute; right: 140px; top: -20px; font-size: 5rem; color: rgba(245, 158, 11, 0.04);
+  pointer-events: none;
+}
+.earn-ad-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
+}
+.earn-ad-badge {
+  display: inline-flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.16); color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4); padding: 5px 12px; border-radius: 30px; font-size: 0.72rem; font-weight: 800;
+  text-transform: uppercase; box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+}
+.earn-ad-free-tag { color: #4ade80; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+.earn-ad-title { color: #ffffff; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 6px; }
+.earn-ad-title span { color: var(--accent); text-shadow: 0 0 16px var(--accent-glow); }
+.earn-ad-desc { color: #94a3b8; font-size: 0.84rem; line-height: 1.5; max-width: 650px; margin-bottom: 16px; }
+.earn-features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+.earn-feature-card {
+  background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(51, 65, 85, 0.7); border-radius: 14px; padding: 10px 12px;
+  text-align: center; backdrop-filter: blur(6px);
+}
+.earn-feature-card strong { display: block; font-size: 0.86rem; font-weight: 800; margin-bottom: 2px; }
+.earn-feature-card span { display: block; font-size: 0.68rem; color: #94a3b8; font-weight: 600; }
+.earn-ad-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.earn-ad-cta-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706); color: #0b0b0f; padding: 12px 24px; border-radius: 14px;
+  font-size: 0.88rem; font-weight: 800; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); transition: all 0.25s ease;
+}
+.earn-ad-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(245, 158, 11, 0.65); background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+.earn-ad-info-btn {
+  background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(71, 85, 105, 0.6); color: #e2e8f0; padding: 12px 18px;
+  border-radius: 14px; font-size: 0.84rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+}
+.earn-ad-info-btn:hover { background: #334155; color: #ffffff; }
 
 /* Empty state */
 .empty-state-box {
@@ -2050,35 +2054,35 @@ nav {
             </div>
 
             <h2 class="earn-ad-title">
-              വീട്ടിലിരുന്ന് മാസം <span>₹30,000+</span> സമ്പാദിക്കാം!
+             Earning at Home <span>₹30,000+</span> Earn
             </h2>
             <p class="earn-ad-desc">
-              ഒരു രൂപ പോലും മുടക്കില്ലാതെ CartPrime-ലെ ബെസ്റ്റ് ക്വാളിറ്റി പ്രോഡക്റ്റുകൾ WhatsApp-ലും സോഷ്യൽ മീഡിയയിലും ഷെയർ ചെയ്യൂ. ഓരോ ഓർഡറുകളിൽ നിന്നും ഉയർന്ന ക്യാഷ് കമ്മീഷൻ സ്വന്തമാക്കൂ!
+             Best Quality Products at CartPrime Share on WhatsApp and Social Media without a Single Sign. Own a High cash Commission from each Order!
             </p>
 
             <div class="earn-features-grid">
               <div class="earn-feature-card">
                 <strong style="color: #fbbf24;">₹0 Investment</strong>
-                <span>പണം മുടക്കേണ്ടതില്ല</span>
+                <span>Without Investment</span>
               </div>
               <div class="earn-feature-card">
                 <strong style="color: #4ade80;">Up to 25%</strong>
-                <span>ഉയർന്ന കമ്മീഷൻ</span>
+                <span>High Commission</span>
               </div>
               <div class="earn-feature-card">
                 <strong style="color: #38bdf8;">Weekly Payout</strong>
-                <span>നേരിട്ട് UPI / ബാങ്കിലേക്ക്</span>
+                <span>Directly UPI / Bank</span>
               </div>
               <div class="earn-feature-card">
                 <strong style="color: #c084fc;">COD Delivery</strong>
-                <span>കസ്റ്റമർക്ക് ക്യാഷ് ഓൺ ഡെലിവറി</span>
+                <span>Customer Cash on Delivery</span>
               </div>
             </div>
 
             <div class="earn-ad-actions">
               <button type="button" class="earn-ad-cta-btn" id="heroEarnAdBtn">
                 <i class="fa-solid fa-hand-holding-dollar"></i>
-                <span>Start Earning Now / രജിസ്റ്റർ ചെയ്യൂ</span>
+                <span>Start Earning Now / Register Now</span>
                 <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
               </button>
               <button type="button" class="earn-ad-info-btn" id="earnHowItWorksBtn">
