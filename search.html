@@ -194,7 +194,7 @@
             box-shadow: 0 0 12px var(--accent-glow);
         }
 
-        /* --- Header Controls Bar --- */
+        /* --- Controls Bar --- */
         .controls-bar {
             max-width: 1280px;
             margin: 0 auto;
@@ -523,27 +523,6 @@
             cursor: not-allowed;
         }
 
-        /* --- Section Heading Divider --- */
-        .section-separator-heading {
-            grid-column: 1 / -1;
-            width: 100%;
-            margin: 36px 0 18px 0;
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: var(--text-main);
-            border-top: 1.5px solid var(--border);
-            padding-top: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: slideUpFade 0.4s ease forwards;
-        }
-
-        .section-separator-heading i {
-            color: var(--accent);
-            font-size: 1.1rem;
-        }
-
         /* --- No Results Empty State --- */
         .no-results {
             grid-column: 1 / -1;
@@ -714,7 +693,7 @@
 
     <!-- Quick Filter Pills -->
     <div class="filter-pills-bar" id="filterPillsBar">
-        <div class="filter-pill active" data-filter="all"><i class="fa-solid fa-layer-group"></i> All Items</div>
+        <div class="filter-pill active" data-filter="all"><i class="fa-solid fa-layer-group"></i> All Matches</div>
         <div class="filter-pill" data-filter="under_199"><i class="fa-solid fa-bolt"></i> Under ₹199</div>
         <div class="filter-pill" data-filter="under_350"><i class="fa-solid fa-wand-magic-sparkles"></i> Under ₹350</div>
         <div class="filter-pill" data-filter="under_599"><i class="fa-solid fa-gem"></i> Under ₹599</div>
@@ -747,8 +726,7 @@
         let currentQuery = urlParams.get('q') ? urlParams.get('q').toLowerCase().trim() : "";
         let activePriceFilter = "all";
 
-        let directMatches = [];
-        let similarMatches = [];
+        let matchingProducts = [];
         let rawAllProducts = [];
 
         showSkeletons();
@@ -850,37 +828,54 @@
             });
         }
 
+        /* ========================================================
+           FIXED HIGH-PRECISION E-COMMERCE SEARCH ALGORITHM
+           Matches strictly by Title, Category, or Brand
+           No random products or unwanted dumps!
+           ======================================================== */
         function processSearch(allProducts, searchVal) {
-            const searchWords = searchVal.split(' ').filter(word => word.length > 1);
+            if (!searchVal || searchVal.trim().length === 0) {
+                matchingProducts = [];
+                applySortAndRender();
+                return;
+            }
 
-            directMatches = allProducts.filter(p => {
-                if (p.showOnHome === false) return false;
-                const productName = (p.name || "").toLowerCase();
+            const cleanSearch = searchVal.toLowerCase().trim();
+            // Split into distinct words, ignoring empty tokens
+            const searchWords = cleanSearch.split(/\s+/).filter(w => w.length > 0);
+
+            // Filter out disabled products
+            const activeStoreProducts = allProducts.filter(p => p.showOnHome !== false);
+
+            matchingProducts = activeStoreProducts.filter(p => {
+                const productName = (p.name || p.title || "").toLowerCase();
                 const productCat = (p.category || "").toLowerCase();
-                const productDesc = (p.desc || p.description || "").toLowerCase();
-                return productName.includes(searchVal) || productCat.includes(searchVal) || productDesc.includes(searchVal);
-            });
 
-            const keyWordsFromDirectMatches = new Set();
-            directMatches.forEach(p => {
-                const words = (p.name || "").toLowerCase().split(/[\s,.-]+/);
-                words.forEach(w => {
-                    if (w.length > 2 && !searchWords.includes(w) && w !== "with" && w !== "for" && w !== "and") {
-                        keyWordsFromDirectMatches.add(w);
+                // 1. Direct whole-phrase match in name or category
+                if (productName.includes(cleanSearch) || productCat.includes(cleanSearch)) {
+                    return true;
+                }
+
+                // 2. All search words must be present in the title or category
+                const combined = `${productName} ${productCat}`;
+                const allWordsMatch = searchWords.every(word => combined.includes(word));
+                if (allWordsMatch) {
+                    return true;
+                }
+
+                // 3. If multi-word search, match if title contains at least main keywords (ignoring small stop words)
+                if (searchWords.length > 1) {
+                    const meaningfulWords = searchWords.filter(w => w.length > 2 && w !== "for" && w !== "and" && w !== "the");
+                    if (meaningfulWords.length > 0) {
+                        const countMatched = meaningfulWords.filter(w => productName.includes(w) || productCat.includes(w)).length;
+                        // Requires at least 70% of meaningful words to match
+                        if (countMatched >= Math.ceil(meaningfulWords.length * 0.7)) {
+                            return true;
+                        }
                     }
-                });
-            });
+                }
 
-            similarMatches = allProducts.filter(p => {
-                if (p.showOnHome === false) return false;
-                if (directMatches.some(dm => dm.id === p.id)) return false;
-
-                const productName = (p.name || "").toLowerCase();
-                const productCat = (p.category || "").toLowerCase();
-                const hasSearchWord = searchWords.some(word => productName.includes(word) || productCat.includes(word));
-                const hasRelatedWord = Array.from(keyWordsFromDirectMatches).some(word => productName.includes(word));
-
-                return hasSearchWord || hasRelatedWord;
+                return false;
             });
 
             applySortAndRender();
@@ -910,33 +905,30 @@
             const sortType = document.getElementById('sortSelect').value;
             const parsePrice = (p) => parseFloat((p.price || 0).toString().replace(/[^\d.]/g, ''));
 
-            let filteredDirect = filterByChipRule([...directMatches]);
-            let filteredSimilar = filterByChipRule([...similarMatches]);
+            let filteredList = filterByChipRule([...matchingProducts]);
 
             if (sortType === 'price-low') {
-                filteredDirect.sort((a, b) => parsePrice(a) - parsePrice(b));
-                filteredSimilar.sort((a, b) => parsePrice(a) - parsePrice(b));
+                filteredList.sort((a, b) => parsePrice(a) - parsePrice(b));
             } else if (sortType === 'price-high') {
-                filteredDirect.sort((a, b) => parsePrice(b) - parsePrice(a));
-                filteredSimilar.sort((a, b) => parsePrice(b) - parsePrice(a));
+                filteredList.sort((a, b) => parsePrice(b) - parsePrice(a));
             }
 
-            const totalCount = filteredDirect.length + filteredSimilar.length;
-            document.getElementById('resultsCount').innerText = `${totalCount} verified products found`;
+            const totalCount = filteredList.length;
+            document.getElementById('resultsCount').innerText = `${totalCount} verified product${totalCount !== 1 ? 's' : ''} found`;
 
-            renderSearchGrid(filteredDirect, filteredSimilar);
+            renderSearchGrid(filteredList);
         }
 
-        function renderSearchGrid(products, similarProducts) {
+        function renderSearchGrid(products) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = "";
 
-            if (products.length === 0 && similarProducts.length === 0) {
+            if (products.length === 0) {
                 grid.innerHTML = `
                     <div class="no-results">
                         <i class="fa-solid fa-magnifying-glass-arrow-right empty-icon"></i>
-                        <h3>No products found</h3>
-                        <p>We couldn't find any products matching your search criteria. Try checking spelling or view all products.</p>
+                        <h3>No products found for "${esc(currentQuery)}"</h3>
+                        <p>We couldn't find any products matching your search term. Check your spelling or browse all store products.</p>
                         <button class="no-results-btn" onclick="window.location.href='/'"><i class="fa-solid fa-house" style="margin-right:6px;"></i> Browse Store</button>
                     </div>`;
                 return;
@@ -944,7 +936,7 @@
 
             let animationDelayIndex = 0;
 
-            function createCard(p) {
+            products.forEach(p => {
                 const isOut = p.outOfStock === true;
                 const pr = parseFloat(p.price.toString().replace(/,/g, ''));
                 const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr);
@@ -956,10 +948,10 @@
 
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.style.animationDelay = `${animationDelayIndex * 0.06}s`;
+                card.style.animationDelay = `${animationDelayIndex * 0.05}s`;
                 animationDelayIndex++;
 
-                // Real-time Reviews listener
+                // Real-time Reviews Listener
                 const reviewRef = ref(db, `reviews/${p.id}`);
                 get(reviewRef).then((snapshot) => {
                     if (snapshot.exists()) {
@@ -1009,25 +1001,8 @@
                     trackProductClickAndRedirect(p.id);
                 });
 
-                return card;
-            }
-
-            products.forEach(p => {
-                const el = createCard(p);
-                if (el) grid.appendChild(el);
+                grid.appendChild(card);
             });
-
-            if (similarProducts.length > 0) {
-                const heading = document.createElement('h2');
-                heading.className = 'section-separator-heading';
-                heading.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Similar Products You May Like`;
-                grid.appendChild(heading);
-
-                similarProducts.forEach(p => {
-                    const el = createCard(p);
-                    if (el) grid.appendChild(el);
-                });
-            }
         }
 
         // Filter Pills Event Listeners
