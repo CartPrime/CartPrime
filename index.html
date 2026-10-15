@@ -648,13 +648,14 @@ nav {
   .budget-card-icon { width: 28px; height: 28px; font-size: 0.8rem; }
 }
 
-/* Seller registration CTA and modal additions */
-.seller-cta-section { padding: 8px 6% 14px; }
+/* Seller registration CTA and fully responsive modal additions */
+.seller-cta-section { padding: 8px 6% 14px; width: 100%; }
 .seller-cta-card {
   display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
   padding: 20px 22px; border: 1.5px solid rgba(245,158,11,.42); border-radius: 20px;
   background: linear-gradient(125deg, var(--surface), var(--card-bg));
   box-shadow: 0 8px 24px rgba(0,0,0,.05);
+  width: 100%;
 }
 .seller-cta-copy { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1; }
 .seller-cta-icon {
@@ -676,13 +677,31 @@ nav {
 }
 .seller-field-label { display:block; font-size:.75rem; font-weight:800; color:var(--text-muted); margin:0 0 6px; }
 .seller-readonly { opacity:.88; cursor:not-allowed; }
+
+/* Fully responsive Seller Modal styling for mobile devices */
+#sellerModal .modal-card {
+  max-width: 480px;
+  width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px;
+}
 @media (max-width: 600px) {
-  .seller-cta-section { padding-left:4%; padding-right:4%; }
+  .seller-cta-section { padding-left: 4%; padding-right: 4%; }
   .seller-cta-card { padding: 16px; gap: 14px; }
-  .seller-cta-copy { align-items:flex-start; }
-  .seller-cta-copy h3 { font-size:.95rem; }
-  .seller-cta-copy p { font-size:.75rem; }
-  .seller-cta-button { width:100%; }
+  .seller-cta-copy { align-items: flex-start; }
+  .seller-cta-copy h3 { font-size: .95rem; }
+  .seller-cta-copy p { font-size: .75rem; }
+  .seller-cta-button { width: 100%; }
+  
+  #sellerModal .modal-card {
+    width: 95%;
+    max-height: 88vh;
+    padding: 16px;
+    border-radius: 18px;
+    margin: 10px;
+  }
 }
 </style> 
 
