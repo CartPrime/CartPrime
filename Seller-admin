@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard - CartPrime</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen pb-12">
+
+    <!-- Loading Overlay -->
+    <div id="loader" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
+        <div class="flex flex-col items-center gap-3">
+            <i class="fa-solid fa-spinner fa-spin text-3xl text-amber-500"></i>
+            <span class="text-sm font-semibold text-slate-600">Verifying Seller Status...</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-store text-amber-500 text-xl"></i>
+                <h1 class="text-base font-bold text-slate-900" id="storeTitle">Seller Dashboard</h1>
+            </div>
+            <a href="index.html" class="text-xs font-bold text-slate-600 hover:text-amber-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i> Back to Store
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 pt-6 space-y-6">
+
+        <!-- Status Banner -->
+        <div id="statusBanner" class="hidden p-4 rounded-2xl border text-sm font-semibold flex items-center gap-3"></div>
+
+        <!-- Dashboard Tabs -->
+        <div class="flex gap-2 border-b border-slate-200 pb-2">
+            <button onclick="switchTab('orders')" id="tabOrdersBtn" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white transition-all">
+                <i class="fa-solid fa-bag-shopping mr-1"></i> Customer Orders
+            </button>
+            <button onclick="switchTab('products')" id="tabProductsBtn" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 transition-all">
+                <i class="fa-solid fa-box mr-1"></i> My Products
+            </button>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="ordersSection" class="space-y-4">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Orders for Your Products</h2>
+            <div id="sellerOrdersList" class="space-y-3">
+                <!-- Orders will load here -->
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div id="productsSection" class="hidden space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Products Added by You</h2>
+                <button onclick="openAddProductModal()" class="text-xs font-bold text-black bg-amber-500 hover:bg-amber-600 px-3.5 py-2 rounded-xl shadow-sm transition-all">
+                    <i class="fa-solid fa-plus mr-1"></i> Add New Product
+                </button>
+            </div>
+            <div id="sellerProductsList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Products will load here -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="productModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <h3 id="modalTitle" class="text-base font-extrabold text-slate-900 mb-4">Add Product</h3>
+            <form id="productForm" class="space-y-3">
+                <input type="hidden" id="editProductId">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Product Name *</label>
+                    <input type="text" id="prodName" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-medium">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Price (₹) *</label>
+                        <input type="text" id="prodPrice" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">MRP (₹)</label>
+                        <input type="text" id="prodMrp" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-medium">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Category *</label>
+                    <input type="text" id="prodCategory" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-medium" placeholder="e.g. Gadgets, Fashion">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Image URL *</label>
+                    <input type="url" id="prodImage" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-medium" placeholder="https://...">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Description</label>
+                    <textarea id="prodDesc" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-medium"></textarea>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeProductModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl text-xs">Cancel</button>
+                    <button type="submit" class="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold py-2.5 rounded-xl text-xs shadow-md">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, get, set, update, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
+            authDomain: "cartprime-shopping.firebaseapp.com",
+            projectId: "cartprime-shopping",
+            storageBucket: "cartprime-shopping.firebasestorage.app",
+            messagingSenderId: "570068438689",
+            appId: "1:570068438689:web:17b25f49f2b561fd29eae0",
+            measurementId: "G-9GREWHMEYL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const userPhone = localStorage.getItem('userPhone') || '';
+        const loader = document.getElementById('loader');
+        const statusBanner = document.getElementById('statusBanner');
+
+        if (!userPhone) {
+            window.location.href = 'index.html';
+        }
+
+        // സെല്ലറുടെ സ്റ്റാറ്റസ് പരിശോധിക്കുന്നു
+        async function checkSellerVerification() {
+            try {
+                const snap = await get(ref(db, `seller/${userPhone}`));
+                if (!snap.exists()) {
+                    loader.style.display = 'none';
+                    statusBanner.className = "p-4 rounded-2xl border bg-amber-50 border-amber-200 text-amber-900 text-sm font-bold flex items-center gap-3";
+                    statusBanner.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-500 text-xl"></i><div>You have not registered as a seller yet. <a href="index.html" class="underline text-black">Go back and register</a></div>`;
+                    statusBanner.classList.remove('hidden');
+                    return;
+                }
+
+                const sellerData = snap.val();
+                const status = sellerData.status || "Pending";
+
+                document.getElementById('storeTitle').textContent = `${sellerData.storeName || 'My Shop'} (Dashboard)`;
+
+                if (status.toLowerCase() !== 'approved') {
+                    loader.style.display = 'none';
+                    statusBanner.className = "p-4 rounded-2xl border bg-amber-50 border-amber-200 text-amber-900 text-sm font-semibold flex items-center gap-3";
+                    statusBanner.innerHTML = `<i class="fa-solid fa-clock text-amber-500 text-xl"></i><div><b>Status: Pending Approval.</b> Your seller account is currently under review by the admin. You will be able to manage products and view orders once approved.</div>`;
+                    statusBanner.classList.remove('hidden');
+                    document.querySelector('main').innerHTML += `<div class="text-center py-12 text-slate-400 font-bold text-sm">Dashboard is locked until approved.</div>`;
+                    return;
+                }
+
+                // അപ്രൂവ് ആയിട്ടുണ്ടെങ്കിൽ ഡാഷ്‌ബോർഡ് ലോഡ് ചെയ്യുന്നു
+                statusBanner.className = "p-4 rounded-2xl border bg-emerald-50 border-emerald-200 text-emerald-900 text-sm font-semibold flex items-center gap-3";
+                statusBanner.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i><div><b>Seller Verified & Active.</b> You can now add products and view your customer orders.</div>`;
+                statusBanner.classList.remove('hidden');
+
+                loader.style.display = 'none';
+                loadSellerOrders();
+                loadSellerProducts();
+
+            } catch (err) {
+                loader.style.display = 'none';
+                Swal.fire('Error', 'Could not verify seller status.', 'error');
+            }
+        }
+
+        checkSellerVerification();
+
+        // ടാബ് മാറുന്നതിനുള്ള ഫങ്ഷൻ
+        window.switchTab = (tab) => {
+            const ordersBtn = document.getElementById('tabOrdersBtn');
+            const productsBtn = document.getElementById('tabProductsBtn');
+            const ordersSec = document.getElementById('ordersSection');
+            const productsSec = document.getElementById('productsSection');
+
+            if (tab === 'orders') {
+                ordersBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white transition-all";
+                productsBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 transition-all";
+                ordersSec.classList.remove('hidden');
+                productsSec.classList.add('hidden');
+            } else {
+                productsBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white transition-all";
+                ordersBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 transition-all";
+                productsSec.classList.remove('hidden');
+                ordersSec.classList.add('hidden');
+            }
+        };
+
+        // സെല്ലറുടെ പ്രൊഡക്റ്റുകൾ ലോഡ് ചെയ്യുന്നു
+        function loadSellerProducts() {
+            get(ref(db, 'products')).then((snapshot) => {
+                const listEl = document.getElementById('sellerProductsList');
+                listEl.innerHTML = "";
+                if (!snapshot.exists()) {
+                    listEl.innerHTML = `<p class="text-xs text-slate-400 col-span-2 text-center py-6">No products found.</p>`;
+                    return;
+                }
+
+                let html = "";
+                snapshot.forEach((child) => {
+                    const p = child.val();
+                    const pId = child.key;
+
+                    // ഈ സെല്ലർ ആഡ് ചെയ്ത പ്രൊഡക്റ്റുകൾ മാത്രം കാണിക്കുന്നു (sellerPhone വെച്ച് ഫിൽട്ടർ ചെയ്യുന്നു)
+                    if (p.sellerPhone === userPhone) {
+                        html += `
+                        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 flex gap-3 items-center shadow-sm">
+                            <img src="${p.images ? p.images[0] : p.image}" class="w-16 h-16 object-cover rounded-xl border border-slate-100 shrink-0">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-xs font-bold text-slate-900 truncate">${p.name}</h4>
+                                <p class="text-xs font-extrabold text-amber-600 mt-0.5">₹${p.price}</p>
+                                <span class="inline-block px-2 py-0.5 mt-1 bg-slate-100 text-slate-600 text-[10px] font-bold rounded">${p.category || 'General'}</span>
+                            </div>
+                            <button onclick="deleteProduct('${pId}')" class="text-rose-500 hover:text-rose-700 p-2 text-sm"><i class="fa-solid fa-trash"></i></button>
+                        </div>`;
+                    }
+                });
+
+                listEl.innerHTML = html || `<p class="text-xs text-slate-400 col-span-2 text-center py-6">You haven't added any products yet.</p>`;
+            });
+        }
+
+        // സെല്ലറുടെ പ്രൊഡക്റ്റുകൾക്കുള്ള ഓർഡറുകൾ മാത്രം ലോഡ് ചെയ്യുന്നു
+        function loadSellerOrders() {
+            get(ref(db, 'orders')).then((snapshot) => {
+                const listEl = document.getElementById('sellerOrdersList');
+                listEl.innerHTML = "";
+                if (!snapshot.exists()) {
+                    listEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">No orders received yet.</p>`;
+                    return;
+                }
+
+                let ordersFound = false;
+                let html = "";
+
+                snapshot.forEach((custSnap) => {
+                    custSnap.forEach((orderSnap) => {
+                        const order = orderSnap.val();
+                        // ഈ സെല്ലറുടെ പ്രൊഡക്റ്റ് ഓർഡർ ചെയ്തത് മാത്രമോ അല്ലെങ്കിൽ sellerPhone മാച്ച് ചെയ്യുന്നതോ ആയ ഓർഡറുകൾ എടുക്കുന്നു
+                        if (order.sellerPhone === userPhone) {
+                            ordersFound = true;
+                            html += `
+                            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                                <div class="flex justify-between items-center text-xs border-b border-slate-100 pb-2">
+                                    <span class="font-bold text-slate-500">Order ID: #${order.orderId || 'N/A'}</span>
+                                    <span class="px-2.5 py-1 bg-amber-50 text-amber-800 font-bold rounded-lg">${order.status || 'Order Confirmed'}</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-extrabold text-slate-900">${order.productName}</p>
+                                    <p class="text-xs text-slate-600 mt-1"><i class="fa-solid fa-user text-amber-500 mr-1"></i> ${order.customerName} (${order.customerPhone})</p>
+                                    <p class="text-xs text-slate-600 mt-0.5"><i class="fa-solid fa-location-dot text-amber-500 mr-1"></i> ${order.address}</p>
+                                </div>
+                                <div class="flex justify-between items-center pt-2 border-t border-slate-100 text-xs font-bold">
+                                    <span class="text-slate-500">Amount: ₹${order.price} (${order.paymentMethod || 'COD'})</span>
+                                    <span class="text-slate-400 font-medium">${order.date || ''}</span>
+                                </div>
+                            </div>`;
+                        }
+                    });
+                });
+
+                listEl.innerHTML = ordersFound ? html : `<p class="text-xs text-slate-400 text-center py-6">No orders found for your products.</p>`;
+            });
+        }
+
+        window.openAddProductModal = () => {
+            document.getElementById('productForm').reset();
+            document.getElementById('editProductId').value = "";
+            document.getElementById('modalTitle').textContent = "Add New Product";
+            document.getElementById('productModal').classList.remove('hidden');
+        };
+
+        window.closeProductModal = () => {
+            document.getElementById('productModal').classList.add('hidden');
+        };
+
+        // പ്രൊഡക്റ്റ് സേവ് ചെയ്യുമ്പോൾ അതിൽ സെല്ലറുടെ നമ്പറും (sellerPhone) ഓട്ടോമാറ്റിക്കായി ಸೇവ് ചെയ്യും
+        document.getElementById('productForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const prodId = Date.now();
+            const prodData = {
+                name: document.getElementById('prodName').value.trim(),
+                price: document.getElementById('prodPrice').value.trim(),
+                mrp: document.getElementById('prodMrp').value.trim(),
+                category: document.getElementById('prodCategory').value.trim(),
+                images: [document.getElementById('prodImage').value.trim()],
+                description: document.getElementById('prodDesc').value.trim(),
+                sellerPhone: userPhone, // സെല്ലറുടെ ഫോൺ നമ്പർ ഇവിടെ ബന്ധിപ്പിച്ചിരിക്കുന്നു
+                showOnHome: true,
+                createdAt: new Date().toISOString()
+            };
+
+            set(ref(db, `products/${prodId}`), prodData).then(() => {
+                closeProductModal();
+                Swal.fire('Success', 'Product added successfully!', 'success');
+                loadSellerProducts();
+            }).catch((err) => {
+                Swal.fire('Error', 'Failed to add product.', 'error');
+            });
+        });
+
+        window.deleteProduct = (pId) => {
+            Swal.fire({
+                title: 'Delete Product?',
+                text: "Are you sure you want to delete this product?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Delete'
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    remove(ref(db, `products/${pId}`)).then(() => {
+                        Swal.fire('Deleted', 'Product has been deleted.', 'success');
+                        loadSellerProducts();
+                    });
+                }
+            });
+        };
+    </script>
+</body>
+</html>
