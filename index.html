@@ -2325,16 +2325,45 @@ nav {
 
   updateBadges(null); 
 
-  onValue(ref(db, 'products'), (snapshot) => { 
-    allProducts = []; 
-    snapshot.forEach(child => { 
-      const data = child.val(); 
-      data.id = child.key; 
-      allProducts.push(data); 
-    }); 
-    renderCategoryBar(); 
-    renderProducts(getFilteredProducts(activeCategory)); 
-  }); 
+  // --- MERGE BOTH 'products' AND 'seller-products' FOLDERS ---
+  function loadAllProductsFromBothFolders() {
+    let productsLoaded = false;
+    let sellerProductsLoaded = false;
+    let standardProductsList = [];
+    let sellerProductsList = [];
+
+    function processAndRender() {
+      if (!productsLoaded || !sellerProductsLoaded) return;
+      allProducts = [...standardProductsList, ...sellerProductsList];
+      renderCategoryBar(); 
+      renderProducts(getFilteredProducts(activeCategory));
+    }
+
+    onValue(ref(db, 'products'), (snapshot) => { 
+      standardProductsList = []; 
+      snapshot.forEach(child => { 
+        const data = child.val(); 
+        data.id = child.key; 
+        standardProductsList.push(data); 
+      }); 
+      productsLoaded = true;
+      processAndRender();
+    });
+
+    onValue(ref(db, 'seller-products'), (snapshot) => { 
+      sellerProductsList = []; 
+      snapshot.forEach(child => { 
+        const data = child.val(); 
+        data.id = child.key; 
+        sellerProductsList.push(data); 
+      }); 
+      sellerProductsLoaded = true;
+      processAndRender();
+    });
+  }
+
+  loadAllProductsFromBothFolders();
+  // -----------------------------------------------------------
 
   const bannerSection = document.getElementById('bannerSection'); 
   const bannerSlider = document.getElementById('bannerSlider'); 
