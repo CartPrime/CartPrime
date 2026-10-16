@@ -564,8 +564,8 @@
                     const now = new Date();
                     const deliveryDate = getDeliveryDateStr();
 
-                    // സെല്ലറുടെ ഫോൺ നമ്പർ (addedByPhone) ഇവിടെ പ്രൊഡക്റ്റിൽ നിന്ന് എടുക്കുന്നു
-                    let sellerPhone = orderInfo.addedByPhone || orderInfo.sellerPhone || "Admin";
+                    // സെല്ലറുടെ ഫോൺ നമ്പർ/ഐഡി എടുക്കുന്നു (പ്രൊഡക്റ്റിൽ ഉള്ളത്)
+                    let sellerPhone = orderInfo.addedByPhone || orderInfo.sellerPhone || orderInfo.addedBy || "Admin";
 
                     let finalOrder = { 
                         customerName: fields.name, 
@@ -579,7 +579,7 @@
                         paymentStatus: "COD",
                         paymentMethod: "COD",
                         orderId: orderId,
-                        sellerPhone: sellerPhone, // ഇതാണ് പ്രധാനമായും സെല്ലറുടെ അഡ്മിൻ പേജിൽ മാത്രം കാണാൻ സഹായിക്കുന്നത്
+                        sellerPhone: sellerPhone, // വെണ്ടർ അല്ലെങ്കിൽ സെല്ലർ തിരിച്ചറിയാൻ ഇത് സഹായിക്കുന്നു
                         deliveryDate: deliveryDate
                     };
 
@@ -605,7 +605,7 @@
                         finalOrder.price = (unitPrice * q).toLocaleString('en-IN');
                     }
 
-                    // ഫയർബേസിലെ 'orders' നോഡിലേക്ക് കസ്റ്റമറുടെ നമ്പറിൽ സേവ് ചെയ്യുന്നു, ഒപ്പം sellerPhone ഉം ഉൾപ്പെടുത്തിയിട്ടുണ്ട്.
+                    // ഫയർബേസിലെ 'orders' നോഡിൽ കസ്റ്റമറുടെ നമ്പറിൽ ഓർഡർ സേവ് ചെയ്യുന്നു
                     set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder).then(() => {
                         if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
                         localStorage.removeItem('pendingOrder');
