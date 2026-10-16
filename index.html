@@ -663,6 +663,22 @@ nav {
 /* Keep every popup scrollable on short screens */
 .modal-card { max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
+/* Header layout: logo left | search centered | notifications + profile at the end */
+@media (min-width: 900px) {
+  nav {
+    display: grid; grid-template-columns: 1fr minmax(260px, 540px) 1fr; align-items: center;
+    column-gap: 16px; flex-wrap: nowrap;
+  }
+  nav .logo { grid-column: 1; grid-row: 1; justify-self: start; }
+  nav .search-container { grid-column: 2; grid-row: 1; width: 100%; max-width: none; min-width: 0; justify-self: center; }
+  nav .nav-right { grid-column: 3; grid-row: 1; justify-self: end; }
+}
+@media (min-width: 769px) and (max-width: 899px) {
+  nav .logo { order: 1; }
+  nav .nav-right { order: 2; margin-left: auto; }
+  nav .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin-top: 4px; }
+}
+
 /* Seller registration CTA and fully responsive modal additions */
 .seller-cta-section { padding: 8px 6% 14px; width: 100%; }
 .seller-cta-card {
