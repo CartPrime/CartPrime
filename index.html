@@ -869,6 +869,13 @@ nav {
       </div> 
     </form> 
 
+    <!-- Profile Modal içindeki My Shop ബട്ടൺ (പ്രൊഫൈൽ തുറക്കുമ്പോൾ കാണാൻ) -->
+    <div id="myShopSection" style="display: none; margin-top: 10px;">
+      <a href="seller-admin.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; border-radius: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0b0b0f; font-weight: 800; font-size: 0.9rem; text-decoration: none; box-shadow: 0 4px 14px rgba(245,158,11,.3);">
+        <i class="fa-solid fa-store"></i> My Shop Dashboard
+      </a>
+    </div>
+
     <div id="logoutSection" style="display: none; margin-top: 14px;">
       <button type="button" id="logoutBtn" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ef4444; background: rgba(239, 68, 68, 0.08); color: #ef4444; font-weight: 700; cursor: pointer;">
         <i class="fa-solid fa-right-from-bracket"></i> Logout of CartPrime
@@ -1049,7 +1056,7 @@ nav {
   </div> 
 </div> 
 
-<!-- Seller Registration CTA (അപ്രൂവ് ആയാൽ ഈ സെക്ഷൻ ഓട്ടോമാറ്റിക്കായി ഹൈഡ് ആകും) -->
+<!-- Seller Registration CTA (Approved ആയാൽ ഹൈഡ് ചെയ്യപ്പെടും) -->
 <section class="seller-cta-section" id="sellerCtaSection" aria-label="Sell on CartPrime">
   <div class="seller-cta-card">
     <div class="seller-cta-copy">
@@ -1245,32 +1252,6 @@ nav {
   let generatedFallbackOtp = "";
   let otpTimerInterval = null;
 
-  // സെല്ലർ അപ്രൂവ്ഡ് ആണോ എന്ന് പരിശോധിച്ച് "Become a Seller" ഹൈഡ് ചെയ്യാനും പ്രൊഫൈൽ ഭാഗത്ത് "My Shop" കാണിക്കാനും ഉള്ള ഫങ്ഷൻ
-  function checkSellerApprovalStatus() {
-    const userPhone = localStorage.getItem('userPhone');
-    const sellerCtaSection = document.getElementById('sellerCtaSection');
-    const profilePhoneEl = document.getElementById('navProfilePhone');
-
-    if (!userPhone) return;
-
-    onValue(ref(db, `seller/${userPhone}`), (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const status = (data.status || "").toLowerCase();
-
-        if (status === 'approved') {
-          // 1. Become a Seller സെക്ഷൻ ഹോം പേജിൽ നിന്ന് ഒഴിവാക്കുന്നു
-          if (sellerCtaSection) sellerCtaSection.style.display = 'none';
-
-          // 2. പ്രൊഫൈൽ ഭാഗത്ത് 'My Shop' ബട്ടൺ കാണിക്കുന്നു
-          if (profilePhoneEl) {
-            profilePhoneEl.innerHTML = `<a href="seller-admin.html" style="color: #f59e0b; font-weight: 800; text-decoration: underline;"><i class="fa-solid fa-store mr-1"></i> My Shop</a>`;
-          }
-        }
-      }
-    });
-  }
-
   function initRecaptcha() {
     if (!recaptchaVerifier) {
       try {
@@ -1428,6 +1409,7 @@ nav {
   const welcomeBenefitsBox = document.getElementById('welcomeBenefitsBox');
   const logoutSection = document.getElementById('logoutSection');
   const logoutBtn = document.getElementById('logoutBtn');
+  const myShopSection = document.getElementById('myShopSection');
 
   const phoneInputGroup = document.getElementById('phoneInputGroup');
   const otpInputGroup = document.getElementById('otpInputGroup');
@@ -1443,6 +1425,38 @@ nav {
 
   let notificationsData = {}; 
   let localNotifications = {}; 
+
+  // സെല്ലർ അപ്രൂവ്ഡ് ആണോ എന്ന് പരിശോധിക്കാനും ഹോം പേജിലെ 'Become a Seller' ഹൈഡ് ചെയ്യാനും 'My Shop' കാണിക്കാനും ഉള്ള കോഡ്
+  function checkUserSellerStatus() {
+    const userPhone = localStorage.getItem('userPhone');
+    const sellerCtaSection = document.getElementById('sellerCtaSection');
+    if (!userPhone) {
+      if (sellerCtaSection) sellerCtaSection.style.display = 'block';
+      if (myShopSection) myShopSection.style.display = 'none';
+      return;
+    }
+
+    onValue(ref(db, `seller/${userPhone}`), (snapshot) => {
+      if (snapshot.exists()) {
+        const sellerData = snapshot.val();
+        const status = (sellerData.status || "").toLowerCase();
+        if (status === 'approved') {
+          // അപ്രൂവ് ആയിക്കഴിഞ്ഞാൽ ഹോം പേജിലെ 'Become a Seller' സെക്ഷൻ മാറ്റുന്നു
+          if (sellerCtaSection) sellerCtaSection.style.display = 'none';
+          // പ്രൊഫൈൽ മോഡലിൽ 'My Shop' കാണിക്കുന്നു
+          if (myShopSection) myShopSection.style.display = 'block';
+        } else {
+          if (sellerCtaSection) sellerCtaSection.style.display = 'block';
+          if (myShopSection) myShopSection.style.display = 'none';
+        }
+      } else {
+        if (sellerCtaSection) sellerCtaSection.style.display = 'block';
+        if (myShopSection) myShopSection.style.display = 'none';
+      }
+    });
+  }
+
+  checkUserSellerStatus();
 
   function isNotificationUnread(item) {
     if (!item) return false;
@@ -1598,9 +1612,6 @@ nav {
       }
     }
     if (navProfilePhone) navProfilePhone.textContent = signedIn ? `+91 ${phone}` : 'Tap to sign in';
-    
-    // പ്രൊഫൈൽ അപ്ഡേറ്റ് ചെയ്യുമ്പോൾ സെല്ലർ സ്റ്റാറ്റസ് കൂടി പരിശോധിക്കുന്നു
-    checkSellerApprovalStatus();
   }
 
   updateHeaderProfileUI();
@@ -1609,6 +1620,7 @@ nav {
     profileChip.addEventListener('click', () => {
       const userPhone = localStorage.getItem('userPhone');
       if (userPhone) {
+        checkUserSellerStatus();
         userWelcomePhone.value = userPhone;
         userWelcomePhone.readOnly = true;
         userWelcomeName.value = localStorage.getItem('userName') || "";
@@ -1690,6 +1702,7 @@ nav {
     nameInputGroup.style.display = 'none';
     if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'flex';
     if (logoutSection) logoutSection.style.display = 'none';
+    if (myShopSection) myShopSection.style.display = 'none';
     welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Continue Securely';
     welcomeModalTitle.textContent = "Secure Sign-In";
     welcomeModalSub.textContent = "Quick passwordless sign-in with instant OTP";
@@ -1699,6 +1712,7 @@ nav {
   if (!storedUserPhone) {
     if (closeWelcomeModal) closeWelcomeModal.style.display = "none";
     if (logoutSection) logoutSection.style.display = "none";
+    if (myShopSection) myShopSection.style.display = 'none';
     resetRegistrationForm();
     openModal(welcomeModal);
   }
@@ -1817,6 +1831,7 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
+            checkUserSellerStatus();
             monitorSingleDeviceSession();
             showCustomAlert("Welcome Back!", `Signed in successfully as ${pendingExistingName}`, true);
             updateBadges(auth.currentUser);
@@ -1827,6 +1842,7 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
+            checkUserSellerStatus();
             showCustomAlert("Welcome Back!", `Signed in successfully as ${pendingExistingName}`, true);
             updateBadges(auth.currentUser);
             resetRegistrationForm();
@@ -1863,6 +1879,7 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
+            checkUserSellerStatus();
             monitorSingleDeviceSession();
             showCustomAlert("Profile Created!", `Welcome to CartPrime, ${name}!`, true);
             updateBadges(auth.currentUser);
@@ -1873,6 +1890,7 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
+            checkUserSellerStatus();
             showCustomAlert("Profile Saved!", `Welcome to CartPrime, ${name}!`, true);
             updateBadges(auth.currentUser);
             resetRegistrationForm();
@@ -1902,139 +1920,6 @@ nav {
     toastModal.style.display = 'flex';
     toastCloseBtn.onclick = () => { toastModal.style.display = 'none'; };
   }
-
-  (function handleAffiliateTracking() { 
-    const urlParams = new URLSearchParams(window.location.search); 
-    const affId = urlParams.get('ref') || urlParams.get('aff'); 
-    if (affId) { localStorage.setItem('cartPrime_affiliateId', affId); } 
-  })(); 
-
-  const cookieBanner = document.getElementById('cookieBanner'); 
-  const acceptCookiesBtn = document.getElementById('acceptCookiesBtn'); 
-  if (cookieBanner && acceptCookiesBtn) {
-    if (!localStorage.getItem('cookiesAccepted')) { cookieBanner.style.display = 'flex'; } 
-    acceptCookiesBtn.addEventListener('click', () => { 
-      localStorage.setItem('cookiesAccepted', 'true'); 
-      cookieBanner.style.display = 'none'; 
-    }); 
-  }
-
-  const contactModal = document.getElementById('contactModal');
-  const bottomContactBtn = document.getElementById('bottomContactBtn');
-  const closeContactModal = document.getElementById('closeContactModal');
-  const customerCareBtn = document.getElementById('customerCareBtn');
-
-  if (bottomContactBtn) { bottomContactBtn.addEventListener('click', () => { openModal(contactModal); }); }
-  if (closeContactModal) { closeContactModal.addEventListener('click', () => { closeModal(contactModal); }); }
-  if (customerCareBtn) { customerCareBtn.addEventListener('click', () => { window.location.href = '/Complaint.html'; }); }
-
-  const earnModal = document.getElementById('earnModal'); 
-  const bottomEarnBtn = document.getElementById('bottomEarnBtn'); 
-  const closeEarnModal = document.getElementById('closeEarnModal'); 
-  const earnForm = document.getElementById('earnForm'); 
-  const partnerPhone = document.getElementById('partnerPhone');
-  const partnerName = document.getElementById('partnerName');
-  const partnerUpi = document.getElementById('partnerUpi');
-  const earnSubmitBtn = document.getElementById('earnSubmitBtn');
-  const earnSubText = document.getElementById('earnSubText');
-
-  let earnStep = 1;
-
-  function resetEarnForm() {
-    earnStep = 1;
-    if (partnerPhone) partnerPhone.style.display = 'block';
-    if (partnerName) partnerName.style.display = 'none';
-    if (partnerUpi) partnerUpi.style.display = 'none';
-    if (earnSubmitBtn) earnSubmitBtn.textContent = "Check Eligibility";
-    if (earnSubText) earnSubText.textContent = "Enter your WhatsApp or mobile number to check your partnership eligibility status.";
-    if (earnForm) earnForm.reset();
-  }
-
-  function openEarnRegistrationModal() {
-    resetEarnForm();
-    if (partnerPhone) partnerPhone.value = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone') || "";
-    openModal(earnModal);
-  }
-
-  function checkEarnPartnerStatus(phone) {
-    const partnerRef = ref(db, `earn_partners/${phone}`);
-    get(partnerRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        const partnerData = snapshot.val();
-        const status = (partnerData.status || "").toLowerCase();
-        localStorage.setItem('partnerPhone', phone);
-        if (partnerData.name) localStorage.setItem('partnerName', partnerData.name);
-        if (partnerData.partnerId) localStorage.setItem('partnerId', partnerData.partnerId);
-
-        closeModal(earnModal);
-        resetEarnForm();
-
-        if (status === 'approved' || status === 'active') {
-          window.location.href = '/wallet.html';
-        } else if (status === 'pending') {
-          showCustomAlert("Under Verification", `Your Partner Account is currently under review. Partner ID: ${partnerData.partnerId || 'N/A'}. You will get access once approved.`, true);
-        } else {
-          showCustomAlert("Application Status", `Status: ${partnerData.status || 'Pending'}. Please contact support if you need assistance.`, false);
-        }
-      } else {
-        earnStep = 2;
-        if (partnerName) partnerName.style.display = 'block';
-        if (partnerUpi) partnerUpi.style.display = 'block';
-        if (partnerName) partnerName.value = localStorage.getItem('userName') || "";
-        if (earnSubmitBtn) earnSubmitBtn.textContent = "Submit Application";
-        if (earnSubText) earnSubText.textContent = "You are eligible! Complete your profile details to register.";
-        openModal(earnModal);
-      }
-    }).catch(() => { openEarnRegistrationModal(); });
-  }
-
-  function handleEarnClick() {
-    const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-    if (!phone) { openEarnRegistrationModal(); } else { checkEarnPartnerStatus(phone); }
-  }
-  
-  if (bottomEarnBtn) { bottomEarnBtn.addEventListener('click', handleEarnClick); } 
-
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('#heroEarnAdBtn') || e.target.closest('.earn-ad-cta-btn')) { handleEarnClick(); }
-    if (e.target.closest('#earnHowItWorksBtn') || e.target.closest('.earn-ad-info-btn')) {
-      showCustomAlert("CartPrime Partner Program", "1. Pick any trending product from CartPrime.\n2. Share product photos or link on WhatsApp Status & Groups.\n3. When someone buys, our team delivers COD & your cash commission is sent directly to your UPI / Bank!", true);
-    }
-  });
-
-  if (closeEarnModal) { 
-    closeEarnModal.addEventListener('click', () => { closeModal(earnModal); resetEarnForm(); }); 
-  } 
-
-  if (earnForm) { 
-    earnForm.addEventListener('submit', (e) => { 
-      e.preventDefault(); 
-      const phone = partnerPhone.value.trim();
-      if (earnStep === 1) {
-        if (phone) { checkEarnPartnerStatus(phone); }
-      } else if (earnStep === 2) {
-        const name = partnerName.value.trim(); 
-        const upi = partnerUpi.value.trim(); 
-        if (name && phone && upi) { 
-          const partnerRef = ref(db, `earn_partners/${phone}`); 
-          const uniquePartnerId = generateUniquePartnerId();
-          set(partnerRef, { 
-            partnerId: uniquePartnerId, name: name, phone: phone, upi: upi, status: "Pending", timestamp: Date.now() 
-          }).then(() => { 
-            localStorage.setItem('partnerPhone', phone);
-            localStorage.setItem('partnerName', name);
-            localStorage.setItem('partnerId', uniquePartnerId);
-            closeModal(earnModal); 
-            resetEarnForm();
-            listenNotifications();
-            showCustomAlert("Application Submitted!", `Your partner application was received successfully!\nPartner ID: ${uniquePartnerId}.\nAccess will be granted after verification.`, true); 
-          }).catch((err) => { 
-            showCustomAlert("Submission Failed", "Error submitting request: " + err.message, false); 
-          }); 
-        } 
-      }
-    }); 
-  } 
 
   // Seller Profile Registration
   const sellerCtaBtn = document.getElementById('sellerCtaBtn');
@@ -2160,6 +2045,7 @@ nav {
 
         const statusText = profileData.status;
         closeModal(sellerModal);
+        checkUserSellerStatus();
         showCustomAlert(oldSnapshot.exists() ? 'Seller Profile Updated' : 'Seller Profile Created', `Your seller details were saved successfully.\nStatus: ${statusText}`, true);
       } catch (error) {
         console.error('Seller profile save failed:', error);
