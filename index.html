@@ -1049,8 +1049,8 @@ nav {
   </div> 
 </div> 
 
-<!-- Seller Registration CTA -->
-<section class="seller-cta-section" aria-label="Sell on CartPrime">
+<!-- Seller Registration CTA (അപ്രൂവ് ആയാൽ ഈ സെക്ഷൻ ഓട്ടോമാറ്റിക്കായി ഹൈഡ് ആകും) -->
+<section class="seller-cta-section" id="sellerCtaSection" aria-label="Sell on CartPrime">
   <div class="seller-cta-card">
     <div class="seller-cta-copy">
       <div class="seller-cta-icon"><i class="fa-solid fa-store"></i></div>
@@ -1244,6 +1244,32 @@ nav {
   let recaptchaVerifier = null;
   let generatedFallbackOtp = "";
   let otpTimerInterval = null;
+
+  // സെല്ലർ അപ്രൂവ്ഡ് ആണോ എന്ന് പരിശോധിച്ച് "Become a Seller" ഹൈഡ് ചെയ്യാനും പ്രൊഫൈൽ ഭാഗത്ത് "My Shop" കാണിക്കാനും ഉള്ള ഫങ്ഷൻ
+  function checkSellerApprovalStatus() {
+    const userPhone = localStorage.getItem('userPhone');
+    const sellerCtaSection = document.getElementById('sellerCtaSection');
+    const profilePhoneEl = document.getElementById('navProfilePhone');
+
+    if (!userPhone) return;
+
+    onValue(ref(db, `seller/${userPhone}`), (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const status = (data.status || "").toLowerCase();
+
+        if (status === 'approved') {
+          // 1. Become a Seller സെക്ഷൻ ഹോം പേജിൽ നിന്ന് ഒഴിവാക്കുന്നു
+          if (sellerCtaSection) sellerCtaSection.style.display = 'none';
+
+          // 2. പ്രൊഫൈൽ ഭാഗത്ത് 'My Shop' ബട്ടൺ കാണിക്കുന്നു
+          if (profilePhoneEl) {
+            profilePhoneEl.innerHTML = `<a href="seller-admin.html" style="color: #f59e0b; font-weight: 800; text-decoration: underline;"><i class="fa-solid fa-store mr-1"></i> My Shop</a>`;
+          }
+        }
+      }
+    });
+  }
 
   function initRecaptcha() {
     if (!recaptchaVerifier) {
@@ -1572,6 +1598,9 @@ nav {
       }
     }
     if (navProfilePhone) navProfilePhone.textContent = signedIn ? `+91 ${phone}` : 'Tap to sign in';
+    
+    // പ്രൊഫൈൽ അപ്ഡേറ്റ് ചെയ്യുമ്പോൾ സെല്ലർ സ്റ്റാറ്റസ് കൂടി പരിശോധിക്കുന്നു
+    checkSellerApprovalStatus();
   }
 
   updateHeaderProfileUI();
