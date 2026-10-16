@@ -156,20 +156,18 @@
         </div>
     </div>
 
-    <!-- Order Processing & Success Animation Overlay -->
+    <!-- Success Animation Overlay -->
     <div id="successAnimationOverlay" class="fixed inset-0 z-50 hidden flex items-center justify-center">
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center shadow-2xl transform transition-all">
-            
             <div id="processingState" class="py-4">
                 <div class="w-16 h-16 mx-auto mb-4 relative flex items-center justify-center">
                     <div class="absolute inset-0 border-4 border-amber-100 rounded-full"></div>
                     <div class="absolute inset-0 border-4 border-amber-500 rounded-full animate-spin border-t-transparent"></div>
                     <i class="fa-solid fa-bag-shopping text-amber-500 text-xl animate-pulse"></i>
                 </div>
-                <h3 class="text-lg font-extrabold text-slate-900 mb-1">Placing Your Order...</h3>
-                <p class="text-xs text-slate-500">Securing your transaction and notifying seller</p>
+                <h3 class="text-lg font-extrabold text-slate-900 mb-1" id="processTitle">Placing Your Order...</h3>
+                <p class="text-xs text-slate-500" id="processDesc">Securing your transaction and updating details</p>
             </div>
-
             <div id="successState" class="hidden py-2">
                 <div class="success-checkmark mb-4">
                     <div class="check-icon text-white text-3xl">
@@ -177,13 +175,12 @@
                     </div>
                 </div>
                 <h3 class="text-xl font-extrabold text-slate-900 mb-1">Order Placed Successfully!</h3>
-                <p class="text-xs text-slate-500 mb-4">Your order has been confirmed & sent to the seller.</p>
+                <p class="text-xs text-slate-500 mb-4">Your order has been confirmed & email sent.</p>
                 <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
                     <div class="bg-green-500 h-full w-full animate-pulse"></div>
                 </div>
                 <p class="text-[11px] text-slate-400 mt-3 font-medium">Redirecting to your orders...</p>
             </div>
-
         </div>
     </div>
 
@@ -203,41 +200,25 @@
 
     <main class="max-w-2xl mx-auto px-4 pt-4 space-y-4">
 
-        <!-- Trust Guarantee Banner -->
         <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-center justify-around text-center text-xs font-semibold text-amber-900">
-            <div class="flex items-center gap-1.5">
-                <i class="fa-solid fa-lock text-amber-500"></i>
-                <span>100% Secure</span>
-            </div>
+            <div class="flex items-center gap-1.5"><i class="fa-solid fa-lock text-amber-500"></i><span>100% Secure</span></div>
             <div class="h-4 w-[1px] bg-amber-200"></div>
-            <div class="flex items-center gap-1.5">
-                <i class="fa-solid fa-truck-fast text-amber-500"></i>
-                <span>Fast Delivery</span>
-            </div>
+            <div class="flex items-center gap-1.5"><i class="fa-solid fa-truck-fast text-amber-500"></i><span>Fast Delivery</span></div>
             <div class="h-4 w-[1px] bg-amber-200"></div>
-            <div class="flex items-center gap-1.5">
-                <i class="fa-solid fa-rotate-left text-amber-500"></i>
-                <span>Easy Returns</span>
-            </div>
+            <div class="flex items-center gap-1.5"><i class="fa-solid fa-rotate-left text-amber-500"></i><span>Easy Returns</span></div>
         </div>
 
-        <!-- Product Preview Card -->
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
             <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <i class="fa-solid fa-cart-shopping text-amber-500"></i>
-                Order Summary
+                <i class="fa-solid fa-cart-shopping text-amber-500"></i> Order Summary
             </h2>
-            <div id="productPreview">
-                <!-- Dynamic Content via JS -->
-            </div>
+            <div id="productPreview"></div>
         </div>
 
-        <!-- Address & Customer Details Form -->
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
             <div class="flex items-center justify-between border-b border-slate-100 pb-2">
                 <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <i class="fa-solid fa-location-dot text-amber-500"></i>
-                    Delivery Address
+                    <i class="fa-solid fa-location-dot text-amber-500"></i> Delivery Address
                 </h2>
                 <button type="button" onclick="getCurrentLocation()" class="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1.5 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-100 transition-colors">
                     <i class="fa-solid fa-location-crosshairs"></i>
@@ -249,16 +230,12 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label>
                     <input type="text" id="custName" placeholder="Enter your full name" class="input-style">
-                    <p id="custNameHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1">
-                        <i class="fa-solid fa-pen"></i> Auto-filled from your account — you can edit it
-                    </p>
+                    <p id="custNameHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1"><i class="fa-solid fa-pen"></i> Auto-filled from your account</p>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Mobile Number *</label>
                     <input type="tel" id="custPhone" placeholder="10-digit mobile number" maxlength="10" class="input-style">
-                    <p id="custPhoneHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1">
-                        <i class="fa-solid fa-pen"></i> Auto-filled from your account — you can edit it
-                    </p>
+                    <p id="custPhoneHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1"><i class="fa-solid fa-pen"></i> Auto-filled from your account</p>
                 </div>
             </div>
 
@@ -304,11 +281,9 @@
             </div>
         </div>
 
-        <!-- Payment Option -->
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
             <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <i class="fa-solid fa-credit-card text-amber-500"></i>
-                Payment Method
+                <i class="fa-solid fa-credit-card text-amber-500"></i> Payment Method
             </h2>
             <div class="flex items-center justify-between p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl">
                 <div class="flex items-center gap-3">
@@ -329,7 +304,6 @@
             <p>No advance payment needed — <b>your money stays with you.</b> Check the product at your doorstep, then pay cash only if you're satisfied.</p>
         </div>
 
-        <!-- Place Order Button -->
         <button onclick="placeOrder()" class="group w-full bg-slate-950 hover:bg-amber-500 active:scale-[0.98] text-white hover:text-black font-bold py-4 rounded-2xl shadow-lg shadow-black/20 transition-all flex items-center justify-center gap-2 text-base mt-2">
             <i class="fa-solid fa-bag-shopping text-amber-500 group-hover:text-black"></i>
             <span>Confirm Order (COD)</span>
@@ -337,7 +311,6 @@
 
     </main>
 
-    <!-- JavaScript & Firebase Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -381,14 +354,17 @@
                 playTone(523.25, 0, 0.2);
                 playTone(659.25, 0.15, 0.25);
                 playTone(783.99, 0.3, 0.4);
-            } catch (e) {
-                console.log("Audio not supported or blocked", e);
-            }
+            } catch (e) {}
         };
 
         let orderInfo = JSON.parse(localStorage.getItem('pendingOrder')) || {};
         let currentUserId = null;
         let currentUserEmail = null; 
+
+        const getDeliveryDateStr = () => {
+            const today = new Date();
+            return today.toISOString().split('T')[0];
+        };
 
         const parsePrice = (priceStr) => {
             if (!priceStr) return 0;
@@ -409,7 +385,6 @@
                 showAlert('Not Supported', 'Geolocation is not supported by your browser.', 'error');
                 return;
             }
-
             locBtnText.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Fetching...`;
 
             const setVal = (id, val) => {
@@ -417,50 +392,54 @@
                 if (el && val) el.value = val;
             };
 
+            const fillState = (stateName) => {
+                if (!stateName) return;
+                const stateSelect = document.getElementById('state');
+                let apiState = stateName.toLowerCase().replace(/^state of\s+/i, '').trim();
+                const matchingOption = Array.from(stateSelect.options).find(opt => opt.value.toLowerCase().trim() === apiState);
+                stateSelect.value = matchingOption ? matchingOption.value : 'Other';
+            };
+
             navigator.geolocation.getCurrentPosition(async (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
                 try {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
                     const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
                     const data = await res.json();
                     locBtnText.textContent = "Use Current Location";
                     if (data && data.address) {
-                        const a = data.address;
-                        setVal('pincode', a.postcode || '');
-                        setVal('city', a.city || a.town || a.village || '');
-                        setVal('area', a.suburb || a.neighbourhood || '');
-                        showAlert('Success', 'Address details loaded!', 'success');
+                        setVal('pincode', data.address.postcode || "");
+                        setVal('city', data.address.city || data.address.town || data.address.village || "");
+                        setVal('area', data.address.suburb || data.address.neighbourhood || "");
+                        setVal('house', data.address.house_number || "");
+                        fillState(data.address.state);
                     }
                 } catch (e) {
                     locBtnText.textContent = "Use Current Location";
-                    showAlert('Error', 'Could not fetch location.', 'error');
+                    showAlert('Error', 'Unable to fetch location details.', 'error');
                 }
             }, () => {
                 locBtnText.textContent = "Use Current Location";
                 showAlert('Error', 'Location permission denied.', 'error');
-            }, { enableHighAccuracy: true, timeout: 10000 });
+            }, { timeout: 10000 });
         };
 
-        const cleanPhone = (val) => {
-            if (!val) return "";
-            const digits = val.toString().replace(/\D/g, '');
-            return digits.length > 10 ? digits.slice(-10) : digits;
-        };
+        const cleanPhone = (val) => val ? val.toString().replace(/\D/g, '').slice(-10) : "";
 
         const autoFillUserDetails = async (user) => {
             const nameInput = document.getElementById('custName');
             const phoneInput = document.getElementById('custPhone');
             if (!nameInput || !phoneInput) return;
 
-            if (!nameInput.value.trim() && user.displayName) nameInput.value = user.displayName;
-            if (!phoneInput.value.trim() && user.phoneNumber) phoneInput.value = cleanPhone(user.phoneNumber);
+            if (user.displayName) nameInput.value = user.displayName;
+            if (user.phoneNumber) phoneInput.value = cleanPhone(user.phoneNumber);
 
             try {
                 const snap = await get(ref(db, `users/${user.uid}`));
                 if (snap.exists()) {
                     const d = snap.val() || {};
-                    if (d.name && !nameInput.value.trim()) nameInput.value = d.name;
-                    if (d.phone && !phoneInput.value.trim()) phoneInput.value = cleanPhone(d.phone);
+                    if (d.name && !nameInput.value) nameInput.value = d.name;
+                    if (d.phone && !phoneInput.value) phoneInput.value = cleanPhone(d.phone);
                 }
             } catch (e) {}
         };
@@ -468,7 +447,7 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserId = user.uid;
-                currentUserEmail = user.email; 
+                currentUserEmail = user.email;
                 autoFillUserDetails(user);
             }
         });
@@ -476,13 +455,11 @@
         window.changeQuantity = (index, delta) => {
             if (!orderInfo) return;
             if (orderInfo.orderType === "Cart" && Array.isArray(orderInfo.items)) {
-                let currentQty = parseInt(orderInfo.items[index].quantity) || 1;
-                let newQty = currentQty + delta;
+                let newQty = (parseInt(orderInfo.items[index].quantity) || 1) + delta;
                 if (newQty < 1) newQty = 1;
                 orderInfo.items[index].quantity = newQty;
             } else {
-                let currentQty = parseInt(orderInfo.quantity) || 1;
-                let newQty = currentQty + delta;
+                let newQty = (parseInt(orderInfo.quantity) || 1) + delta;
                 if (newQty < 1) newQty = 1;
                 orderInfo.quantity = newQty;
             }
@@ -501,7 +478,7 @@
 
             if (orderInfo.orderType === "Cart" && Array.isArray(orderInfo.items)) {
                 orderInfo.items.forEach((item, idx) => {
-                    let productImg = item.image || (item.images && item.images[0]) || "https://via.placeholder.com/150";
+                    let productImg = item.image || (item.images && item.images[0]) || "";
                     let unitPrice = parsePrice(item.price);
                     let qty = parseInt(item.quantity) || 1;
                     let itemTotal = unitPrice * qty;
@@ -511,8 +488,9 @@
                     <div class="prod-item-row">
                         <img src="${productImg}" alt="Product">
                         <div style="flex: 1; min-width: 0;">
-                            <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name || item.title}</p>
-                            <p style="color: #000; font-weight: 800; font-size: 0.9rem; margin-top: 2px;">₹${itemTotal.toLocaleString('en-IN')}</p>
+                            <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b;">${item.name || item.title}</p>
+                            <p style="color: #64748b; font-size: 0.82rem;">Size: <b>${item.selectedSize || item.size || 'N/A'}</b></p>
+                            <p style="color: #000; font-weight: 800; font-size: 0.9rem;">₹${itemTotal.toLocaleString('en-IN')}</p>
                         </div>
                         <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
                             <button onclick="changeQuantity(${idx}, -1)" class="qty-btn">-</button>
@@ -530,8 +508,9 @@
                 <div class="prod-item-row">
                     <img src="${orderInfo.productImage}" alt="Product">
                     <div style="flex: 1; min-width: 0;">
-                        <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${orderInfo.productName}</p>
-                        <p style="color: #000; font-weight: 800; font-size: 0.95rem; margin-top: 4px;">₹${finalPriceToPay.toLocaleString('en-IN')}</p>
+                        <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b;">${orderInfo.productName}</p>
+                        <p style="color: #64748b; font-size: 0.82rem;">Size: <b>${orderInfo.selectedSize || 'N/A'}</b></p>
+                        <p style="color: #000; font-weight: 800; font-size: 0.95rem;">₹${finalPriceToPay.toLocaleString('en-IN')}</p>
                     </div>
                     <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
                         <button onclick="changeQuantity(0, -1)" class="qty-btn">-</button>
@@ -541,14 +520,19 @@
                 </div>`;
             }
             
-            previewHtml += `<div class="total-checkout-price"><span>Total Payable:</span><span class="text-amber-600">₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
+            previewHtml += `
+            <div class="space-y-2 mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-slate-600">
+                <div class="flex justify-between"><span>Subtotal:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>
+                <div class="flex justify-between text-emerald-600"><span>Delivery Charge:</span><span class="font-bold uppercase">FREE</span></div>
+            </div>
+            <div class="total-checkout-price"><span>Total Payable:</span><span class="text-amber-600">₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
+
             document.getElementById('productPreview').innerHTML = previewHtml;
         }
 
         renderOrderPreview();
-        document.getElementById('pageLoader').style.display = 'none';
+        document.getElementById('pageLoader').remove();
 
-        // --- PLACE ORDER LOGIC (SELLER-SCOPED ORDERS) ---
         window.placeOrder = () => {
             const fields = {
                 name: document.getElementById('custName').value.trim(),
@@ -564,6 +548,10 @@
                 return showAlert('Address Missing', 'Please fill all required delivery address fields.', 'warning');
             }
 
+            if (fields.phone.length !== 10) {
+                return showAlert('Invalid Phone', 'Please enter a valid 10-digit phone number.', 'warning');
+            }
+
             Swal.fire({
                 title: 'Confirm Order?', text: "Confirm your order with Cash on Delivery?", icon: 'question',
                 showCancelButton: true, confirmButtonText: 'Yes, Confirm', cancelButtonText: 'Cancel',
@@ -571,30 +559,31 @@
             }).then((res) => {
                 if(res.isConfirmed) {
                     document.getElementById('successAnimationOverlay').classList.remove('hidden');
-                    document.getElementById('processingState').classList.remove('hidden');
-                    document.getElementById('successState').classList.add('hidden');
 
                     const orderId = Date.now(); 
                     const now = new Date();
-                    
-                    // Seller Phone identification from product data (addedByPhone)
-                    const sellerPhone = orderInfo.addedByPhone || orderInfo.sellerPhone || "Admin";
+                    const deliveryDate = getDeliveryDateStr();
+
+                    // സെല്ലറുടെ ഫോൺ നമ്പർ (addedByPhone) ഇവിടെ പ്രൊഡക്റ്റിൽ നിന്ന് എടുക്കുന്നു
+                    let sellerPhone = orderInfo.addedByPhone || orderInfo.sellerPhone || "Admin";
 
                     let finalOrder = { 
                         customerName: fields.name, 
                         customerPhone: fields.phone, 
                         phone: fields.phone, 
-                        address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state} - ${fields.pin}`, 
+                        address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state}, India - ${fields.pin}`, 
+                        transactionId: 'COD', 
                         date: now.toISOString().split('T')[0], 
                         createdAt: now.toISOString(),
                         status: "Order Confirmed", 
+                        paymentStatus: "COD",
                         paymentMethod: "COD",
                         orderId: orderId,
-                        sellerPhone: sellerPhone // <-- SCOPED TO THIS SELLER ONLY
+                        sellerPhone: sellerPhone, // ഇതാണ് പ്രധാനമായും സെല്ലറുടെ അഡ്മിൻ പേജിൽ മാത്രം കാണാൻ സഹായിക്കുന്നത്
+                        deliveryDate: deliveryDate
                     };
 
                     if (orderInfo.orderType === "Cart" && orderInfo.items) {
-                        finalOrder.orderType = "Cart";
                         let calcTotal = 0;
                         finalOrder.items = orderInfo.items.map(item => {
                             let p = parsePrice(item.price);
@@ -603,8 +592,8 @@
                             return { 
                                 name: item.name || item.title, 
                                 price: item.price, 
-                                quantity: q,
-                                sellerPhone: item.addedByPhone || sellerPhone 
+                                quantity: q, 
+                                size: item.selectedSize || item.size || "N/A" 
                             };
                         });
                         finalOrder.price = calcTotal.toLocaleString('en-IN');
@@ -612,14 +601,13 @@
                     } else {
                         let unitPrice = parsePrice(orderInfo.price);
                         let q = parseInt(orderInfo.quantity) || 1;
-                        finalOrder.orderType = "Single";
                         finalOrder.productName = orderInfo.productName;
                         finalOrder.price = (unitPrice * q).toLocaleString('en-IN');
                     }
 
-                    // Save Order under Firebase DB
+                    // ഫയർബേസിലെ 'orders' നോഡിലേക്ക് കസ്റ്റമറുടെ നമ്പറിൽ സേവ് ചെയ്യുന്നു, ഒപ്പം sellerPhone ഉം ഉൾപ്പെടുത്തിയിട്ടുണ്ട്.
                     set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder).then(() => {
-                        if (orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
+                        if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
                         localStorage.removeItem('pendingOrder');
 
                         playSuccessSound();
@@ -628,7 +616,6 @@
 
                         setTimeout(() => { location.href = 'orders.html'; }, 2000);
                     }).catch((err) => {
-                        console.error("Order save error:", err);
                         document.getElementById('successAnimationOverlay').classList.add('hidden');
                         showAlert('Error', 'Order could not be saved.', 'error');
                     });
