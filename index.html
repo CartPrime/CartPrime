@@ -2127,12 +2127,10 @@ nav {
 
     const affId = localStorage.getItem('cartPrime_affiliateId'); 
     const userName = localStorage.getItem('partnerName') || localStorage.getItem('userName') || '';
-    const userPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone') || '';
 
     let queryParams = [`id=${encodeURIComponent(productId)}`];
     if (affId) queryParams.push(`ref=${encodeURIComponent(affId)}`);
     if (userName) queryParams.push(`name=${encodeURIComponent(userName)}`);
-    if (userPhone) queryParams.push(`phone=${encodeURIComponent(userPhone)}`);
 
     const finalUrl = `/product-details?${queryParams.join('&')}`;
 
@@ -2325,7 +2323,7 @@ nav {
 
   updateBadges(null); 
 
-  // --- MERGE BOTH 'products' AND 'seller-products' FOLDERS ---
+  // --- FETCH PRODUCTS FROM BOTH 'products' AND 'seller-products/{phone}' ---
   function loadAllProductsFromBothFolders() {
     let productsLoaded = false;
     let sellerProductsLoaded = false;
@@ -2339,6 +2337,7 @@ nav {
       renderProducts(getFilteredProducts(activeCategory));
     }
 
+    // 1. Fetch standard products
     onValue(ref(db, 'products'), (snapshot) => { 
       standardProductsList = []; 
       snapshot.forEach(child => { 
@@ -2350,12 +2349,16 @@ nav {
       processAndRender();
     });
 
+    // 2. Fetch seller-products (structured under phone numbers as seen in DB)
     onValue(ref(db, 'seller-products'), (snapshot) => { 
       sellerProductsList = []; 
-      snapshot.forEach(child => { 
-        const data = child.val(); 
-        data.id = child.key; 
-        sellerProductsList.push(data); 
+      snapshot.forEach(phoneSnap => { 
+        // phoneSnap is each seller's phone number folder (e.g. 7356587790)
+        phoneSnap.forEach(prodSnap => {
+          const data = prodSnap.val(); 
+          data.id = prodSnap.key; 
+          sellerProductsList.push(data); 
+        });
       }); 
       sellerProductsLoaded = true;
       processAndRender();
