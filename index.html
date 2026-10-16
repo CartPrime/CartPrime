@@ -110,26 +110,28 @@ nav {
   padding: 2px; border: 2px solid var(--card-bg); box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
 }
 
+/* Profile chip (header) */
 .profile-chip {
-  display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border);
-  padding: 4px 10px 4px 5px; border-radius: 30px; cursor: pointer; transition: all 0.2s ease; max-width: 170px;
+  display: flex; align-items: center; gap: 9px; background: var(--surface); border: 1.5px solid var(--border);
+  padding: 4px 12px 4px 4px; border-radius: 40px; cursor: pointer; transition: all 0.2s ease;
+  max-width: 200px; min-width: 0; height: 42px; flex-shrink: 1;
 }
-.profile-chip:hover { 
-  border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow);
-}
+.profile-chip:hover { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
 .profile-avatar {
-  width: 30px; height: 30px; border-radius: 50%; background: #0b0b0f; color: #ffffff; display: flex;
-  align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; flex-shrink: 0;
+  width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0b0b0f;
+  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;
+  text-transform: uppercase; flex-shrink: 0; box-shadow: 0 0 10px var(--accent-glow);
 }
-.profile-info { display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-.profile-name { 
-  font-size: 0.75rem; font-weight: 700; color: var(--text-main); line-height: 1.1; display: flex; align-items: center; gap: 4px; 
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+.profile-chip.signed-out .profile-avatar { background: var(--primary); color: var(--bg); box-shadow: none; font-size: 0.8rem; }
+.profile-info { display: flex; flex-direction: column; overflow: hidden; min-width: 0; line-height: 1.15; }
+.profile-name {
+  font-size: 0.78rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 5px; min-width: 0;
 }
-.profile-phone { 
+.profile-name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.profile-phone {
   font-size: 0.65rem; color: var(--text-muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.edit-profile-btn { color: var(--text-muted); font-size: 0.72rem; }
+.edit-profile-btn { color: var(--text-muted); font-size: 0.65rem; flex-shrink: 0; }
 
 /* Bottom Nav */
 .bottom-nav {
@@ -587,7 +589,9 @@ nav {
   nav { padding: 10px 4%; flex-wrap: wrap; justify-content: space-between; gap: 8px; } 
   .logo { font-size: 1.15rem; order: 1; } 
   .nav-right { order: 2; gap: 6px; flex-shrink: 0; } 
-  .profile-chip { padding: 4px 8px 4px 4px; max-width: 130px; }
+  .profile-chip { padding: 3px 10px 3px 3px; max-width: 140px; height: 38px; gap: 7px; }
+  .profile-avatar { width: 30px; height: 30px; font-size: 0.85rem; }
+  .profile-name { font-size: 0.74rem; }
   .profile-phone { display: none; }
   .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin-top: 4px; } 
   .search-container input { padding: 9px 12px 9px 36px; font-size: 0.84rem; border-radius: 12px; } 
@@ -640,13 +644,24 @@ nav {
 
 @media (max-width: 380px) {
   .logo div { font-size: 1rem; }
-  .profile-chip { max-width: 100px; }
+  .profile-chip { max-width: 96px; padding-right: 8px; }
+  .edit-profile-btn { display: none; }
+  .otp-secure-field { letter-spacing: 8px; font-size: 1.4rem; }
   .shelf-card { flex: 0 0 140px; max-width: 140px; padding: 8px; }
   .shelf-card .image-box { height: 120px; }
   .budget-card { padding: 8px; gap: 6px; }
   .budget-card-price { font-size: 0.82rem; }
   .budget-card-icon { width: 28px; height: 28px; font-size: 0.8rem; }
 }
+
+@media (max-width: 330px) {
+  .profile-info { display: none; }
+  .profile-chip { padding: 3px; max-width: 42px; }
+  .nav-right { gap: 5px; }
+}
+
+/* Keep every popup scrollable on short screens */
+.modal-card { max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
 /* Seller registration CTA and fully responsive modal additions */
 .seller-cta-section { padding: 8px 6% 14px; width: 100%; }
@@ -750,11 +765,11 @@ nav {
       <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
     </div>
     
-    <div class="profile-chip" id="profileChip" title="Click to view/edit profile">
-      <div class="profile-avatar" id="navProfileAvatar">U</div>
+    <div class="profile-chip signed-out" id="profileChip" title="Sign in">
+      <div class="profile-avatar" id="navProfileAvatar"><i class="fa-solid fa-user"></i></div>
       <div class="profile-info">
-        <span class="profile-name" id="navProfileName">User <i class="fa-solid fa-pen edit-profile-btn"></i></span>
-        <span class="profile-phone" id="navProfilePhone">Not set</span>
+        <span class="profile-name" id="navProfileName"><span class="profile-name-text">Sign In</span></span>
+        <span class="profile-phone" id="navProfilePhone">Tap to sign in</span>
       </div>
     </div>
   </div> 
@@ -1515,11 +1530,32 @@ nav {
   let isNewUserSession = false;
 
   function updateHeaderProfileUI() {
-    const name = localStorage.getItem('userName') || "User";
-    const phone = localStorage.getItem('userPhone') || "";
-    if (navProfileAvatar) navProfileAvatar.textContent = name.charAt(0).toUpperCase();
-    if (navProfileName) navProfileName.innerHTML = `${name} <i class="fa-solid fa-pen edit-profile-btn"></i>`;
-    if (navProfilePhone) navProfilePhone.textContent = phone ? `+91 ${phone}` : "Tap to sign in";
+    const name = (localStorage.getItem('userName') || '').trim();
+    const phone = localStorage.getItem('userPhone') || '';
+    const signedIn = !!phone;
+    const displayName = signedIn ? (name || 'User') : 'Sign In';
+
+    if (profileChip) {
+      profileChip.classList.toggle('signed-out', !signedIn);
+      profileChip.title = signedIn ? `${displayName} - tap to edit profile` : 'Sign in';
+    }
+    if (navProfileAvatar) {
+      if (signedIn) { navProfileAvatar.textContent = displayName.charAt(0).toUpperCase(); }
+      else { navProfileAvatar.innerHTML = '<i class="fa-solid fa-user"></i>'; }
+    }
+    if (navProfileName) {
+      navProfileName.textContent = '';
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'profile-name-text';
+      nameSpan.textContent = displayName;
+      navProfileName.appendChild(nameSpan);
+      if (signedIn) {
+        const pen = document.createElement('i');
+        pen.className = 'fa-solid fa-pen edit-profile-btn';
+        navProfileName.appendChild(pen);
+      }
+    }
+    if (navProfilePhone) navProfilePhone.textContent = signedIn ? `+91 ${phone}` : 'Tap to sign in';
   }
 
   updateHeaderProfileUI();
@@ -1529,6 +1565,7 @@ nav {
       const userPhone = localStorage.getItem('userPhone');
       if (userPhone) {
         userWelcomePhone.value = userPhone;
+        userWelcomePhone.readOnly = true;
         userWelcomeName.value = localStorage.getItem('userName') || "";
         phoneInputGroup.style.display = 'block';
         otpInputGroup.style.display = 'none';
@@ -1598,6 +1635,7 @@ nav {
   }
 
   function resetRegistrationForm() {
+    userWelcomePhone.readOnly = false;
     registrationStep = 1;
     pendingPhone = "";
     pendingExistingName = "";
