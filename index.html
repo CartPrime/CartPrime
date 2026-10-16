@@ -903,6 +903,9 @@ nav {
       <label class="seller-field-label" for="sellerPhoneInput">REGISTERED MOBILE NUMBER</label>
       <input type="tel" id="sellerPhoneInput" class="modal-input seller-readonly" placeholder="Sign in to load your number" inputmode="numeric" readonly required>
 
+      <label class="seller-field-label" for="sellerEmailInput">EMAIL ID</label>
+      <input type="email" id="sellerEmailInput" class="modal-input" placeholder="e.g. yourname@gmail.com" autocomplete="email" inputmode="email" maxlength="120" required>
+
       <label class="seller-field-label" for="sellerStoreNameInput">SHOP / BUSINESS NAME</label>
       <input type="text" id="sellerStoreNameInput" class="modal-input" placeholder="Your shop or business name" maxlength="100" required>
 
@@ -1956,6 +1959,7 @@ nav {
   const sellerForm = document.getElementById('sellerForm');
   const sellerNameInput = document.getElementById('sellerNameInput');
   const sellerPhoneInput = document.getElementById('sellerPhoneInput');
+  const sellerEmailInput = document.getElementById('sellerEmailInput');
   const sellerStoreNameInput = document.getElementById('sellerStoreNameInput');
   const sellerCategoryInput = document.getElementById('sellerCategoryInput');
   const sellerProductDetailsInput = document.getElementById('sellerProductDetailsInput');
@@ -1963,6 +1967,8 @@ nav {
   const sellerSubmitBtn = document.getElementById('sellerSubmitBtn');
   const closeSellerModalBtn = document.getElementById('closeSellerModal');
   let sellerFormSaving = false;
+
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   function setSellerStatus(message) { if (sellerStatusNote) sellerStatusNote.textContent = message; }
 
@@ -1990,14 +1996,15 @@ nav {
       const sellerSnapshot = await get(ref(db, `seller/${phone}`));
       if (sellerSnapshot.exists()) {
         const savedSeller = sellerSnapshot.val() || {};
+        sellerEmailInput.value = savedSeller.email || '';
         sellerStoreNameInput.value = savedSeller.storeName || '';
         sellerCategoryInput.value = savedSeller.productCategory || '';
         sellerProductDetailsInput.value = savedSeller.productDescription || '';
         const status = savedSeller.status || 'Pending';
-        setSellerStatus(`Seller profile found. Current status: ${status}. You can update your shop and product details below.`);
+        setSellerStatus(`Seller profile found. Current status: ${status}. You can update your email, shop and product details below.`);
         sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Seller Profile';
       } else {
-        setSellerStatus('Your name and mobile number were filled from your CartPrime account. Complete the details to create your seller profile.');
+        setSellerStatus('Your name and mobile number were filled from your CartPrime account. Enter your email ID and complete the details to create your seller profile.');
         sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Seller Profile';
       }
     } catch (error) {
@@ -2025,6 +2032,7 @@ nav {
 
       const phone = (localStorage.getItem('userPhone') || '').replace(/\D/g, '');
       const name = (localStorage.getItem('userName') || '').trim();
+      const email = sellerEmailInput.value.trim().toLowerCase();
       const storeName = sellerStoreNameInput.value.trim();
       const productCategory = sellerCategoryInput.value;
       const productDescription = sellerProductDetailsInput.value.trim();
@@ -2034,6 +2042,11 @@ nav {
         closeModal(sellerModal);
         if (closeWelcomeModal) closeWelcomeModal.style.display = 'block';
         openModal(welcomeModal);
+        return;
+      }
+      if (!email || !EMAIL_REGEX.test(email)) {
+        showCustomAlert('Valid Email Required', 'Please enter a valid email ID (example: name@gmail.com).', false);
+        sellerEmailInput.focus();
         return;
       }
       if (!storeName || !productCategory || !productDescription) {
@@ -2052,7 +2065,7 @@ nav {
         const oldData = oldSnapshot.exists() ? (oldSnapshot.val() || {}) : {};
         const now = Date.now();
         const profileData = {
-          name, phone, storeName, productCategory, productDescription,
+          name, phone, email, storeName, productCategory, productDescription,
           status: oldData.status || 'Pending',
           createdAt: oldData.createdAt || now,
           updatedAt: now,
