@@ -528,13 +528,31 @@ function track6SecView(pId) {
     }, 6000);
 }
 
+// --- FETCH PRODUCT DETAILS FROM EITHER 'products' OR 'seller-products/{phone}' ---
 async function initPage() {
     isApprovedEarner = await checkEarnerStatus();
 
     if (productId) {
-        get(child(ref(db), `products/${productId}`)).then((productSnap) => {
+        try {
+            // 1. Try fetching from standard 'products' path first
+            let productSnap = await get(child(ref(db), `products/${productId}`));
+            let productData = null;
+
             if (productSnap.exists()) {
-                const productData = productSnap.val();
+                productData = productSnap.val();
+            } else {
+                // 2. If not found, check inside 'seller-products' across all phone folders
+                const sellerSnap = await get(ref(db, `seller-products`));
+                if (sellerSnap.exists()) {
+                    sellerSnap.forEach((phoneFolderSnap) => {
+                        if (phoneFolderSnap.hasChild(productId)) {
+                            productData = phoneFolderSnap.child(productId).val();
+                        }
+                    });
+                }
+            }
+
+            if (productData) {
                 renderProduct(productData, productData.reviews || null);
                 track6SecView(productId);
 
@@ -555,13 +573,16 @@ async function initPage() {
                   </div>
                 `;
             }
-            hideLoader();
-        }).catch(() => hideLoader());
+        } catch (err) {
+            console.error("Error loading product details:", err);
+        }
+        hideLoader();
     } else {
         hideLoader();
     }
 }
 initPage();
+// -------------------------------------------------------------------------------
 
 function getStarClass(rating) {
     const r = Math.round(rating);
