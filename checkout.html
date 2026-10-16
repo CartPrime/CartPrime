@@ -20,117 +20,105 @@
     <script src="https://cdn.jsdelivr.net/emailjs/dist/email.min.js"></script>
 
     <style>
-        body {
-            background-color: #0b0b0f;
-            color: #f8fafc;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
         .qty-btn {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border-radius: 8px;
-            background-color: #1e293b;
-            color: #f8fafc;
+            background-color: #e2e8f0;
+            color: #0f172a;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .qty-btn:hover {
-            background-color: #f59e0b;
-            color: #0b0b0f;
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+            background-color: #fde3a7;
         }
-
         .prod-item-row {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid #f1f5f9;
         }
         .prod-item-row img {
             width: 65px;
             height: 65px;
             object-fit: cover;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
         }
-
         .total-checkout-price {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 2px dashed rgba(245, 158, 11, 0.3);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px dashed #cbd5e1;
             font-weight: 800;
-            font-size: 1.1rem;
-            color: #f8fafc;
+            font-size: 1.05rem;
+            color: #0f172a;
         }
-
-        .glow-card {
-            background: #151922;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
+        .swal-custom-popup {
+            border-radius: 16px !important;
         }
-        .glow-card:hover {
-            border-color: rgba(245, 158, 11, 0.3);
-            box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.15);
+        .swal-custom-title {
+            font-size: 1.15rem !important;
+            font-weight: 700 !important;
         }
-
+        .swal-custom-confirm {
+            background-color: #0b0b0f !important;
+            border-radius: 8px !important;
+            padding: 8px 20px !important;
+        }
+        .swal-custom-cancel {
+            border-radius: 8px !important;
+            padding: 8px 20px !important;
+        }
         .input-style {
-            background-color: #1e293b;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
             border-radius: 0.75rem;
-            padding: 0.7rem 0.9rem;
+            padding: 0.6rem 0.8rem;
             font-size: 0.875rem;
             font-weight: 500;
-            color: #fff;
             width: 100%;
             transition: all 0.2s;
         }
         .input-style:focus {
             outline: none;
             border-color: #f59e0b;
-            background-color: #151922;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
         }
-
-        /* Money-safety reassurance strip */
         .money-safe-strip {
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 16px;
-            padding: 12px 16px;
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+            gap: 10px;
+            background: #fff7e6;
+            border: 1px solid #fde3a7;
+            border-radius: 14px;
+            padding: 10px 14px;
+            margin-top: 4px;
         }
         .money-safe-strip i.main-icon {
             color: #f59e0b;
-            font-size: 1.3rem;
+            font-size: 1.15rem;
             flex-shrink: 0;
         }
         .money-safe-strip p {
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: #fbbf24;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #b45309;
             line-height: 1.4;
         }
-        .money-safe-strip p b { font-weight: 800; color: #fff; }
+        .money-safe-strip p b { font-weight: 800; }
 
-        /* Animation Overlay */
         #successAnimationOverlay {
-            backdrop-filter: blur(8px);
-            background-color: rgba(11, 11, 15, 0.85);
+            backdrop-filter: blur(6px);
+            background-color: rgba(15, 23, 42, 0.75);
             transition: opacity 0.3s ease;
         }
         .success-checkmark {
@@ -147,7 +135,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 30px rgba(34, 197, 94, 0.6);
+            box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.5);
             animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         }
         @keyframes bounceIn {
@@ -155,238 +143,193 @@
             60% { transform: scale(1.1); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
         }
-
-        /* SweetAlert custom theme for Dark Mode */
-        .swal2-popup {
-            background: #151922 !important;
-            color: #f8fafc !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            border-radius: 20px !important;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8) !important;
-        }
-        .swal2-title { color: #f8fafc !important; }
-        .swal2-html-container { color: #94a3b8 !important; }
-        .swal2-confirm {
-            background: #f59e0b !important;
-            color: #0b0b0f !important;
-            font-weight: 800 !important;
-            border-radius: 10px !important;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4) !important;
-        }
-        .swal2-cancel {
-            background: #1e293b !important;
-            color: #f8fafc !important;
-            border-radius: 10px !important;
-        }
     </style>
 </head>
-<body class="min-h-screen pb-12">
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen pb-12">
 
     <!-- Loading Screen -->
-    <div id="pageLoader" class="fixed inset-0 bg-[#0b0b0f] z-50 flex items-center justify-center transition-opacity duration-300">
+    <div id="pageLoader" class="fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-300">
         <div class="flex flex-col items-center gap-3">
-            <i class="fa-solid fa-spinner fa-spin text-3xl text-amber-500 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]"></i>
-            <span class="text-sm font-semibold text-slate-400">Loading Checkout...</span>
+            <i class="fa-solid fa-spinner fa-spin text-3xl text-amber-500"></i>
+            <span class="text-sm font-semibold text-slate-600">Loading Checkout...</span>
         </div>
     </div>
 
     <!-- Success Animation Overlay -->
     <div id="successAnimationOverlay" class="fixed inset-0 z-50 hidden flex items-center justify-center">
-        <div class="glow-card p-8 max-w-sm w-full mx-4 text-center shadow-2xl transform transition-all border border-amber-500/30">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center shadow-2xl transform transition-all">
             
-            <!-- Step 1: Processing State -->
             <div id="processingState" class="py-4">
                 <div class="w-16 h-16 mx-auto mb-4 relative flex items-center justify-center">
-                    <div class="absolute inset-0 border-4 border-slate-800 rounded-full"></div>
-                    <div class="absolute inset-0 border-4 border-amber-500 rounded-full animate-spin border-t-transparent shadow-[0_0_15px_rgba(245,158,11,0.5)]"></div>
+                    <div class="absolute inset-0 border-4 border-amber-100 rounded-full"></div>
+                    <div class="absolute inset-0 border-4 border-amber-500 rounded-full animate-spin border-t-transparent"></div>
                     <i class="fa-solid fa-bag-shopping text-amber-500 text-xl animate-pulse"></i>
                 </div>
-                <h3 class="text-lg font-extrabold text-white mb-1">Placing Your Order...</h3>
-                <p class="text-xs text-slate-400">Securing your transaction and updating details</p>
+                <h3 class="text-lg font-extrabold text-slate-900 mb-1">Placing Your Order...</h3>
+                <p class="text-xs text-slate-500">Securing your transaction and updating details</p>
             </div>
 
-            <!-- Step 2: Success State -->
             <div id="successState" class="hidden py-2">
                 <div class="success-checkmark mb-4">
                     <div class="check-icon text-white text-3xl">
                         <i class="fa-solid fa-check"></i>
                     </div>
                 </div>
-                <h3 class="text-xl font-extrabold text-white mb-1">Order Placed Successfully!</h3>
-                <p class="text-xs text-slate-400 mb-4">Your order has been confirmed & email sent.</p>
-                <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                    <div class="bg-amber-500 h-full w-full animate-pulse shadow-[0_0_10px_#f59e0b]"></div>
+                <h3 class="text-xl font-extrabold text-slate-900 mb-1">Order Placed Successfully!</h3>
+                <p class="text-xs text-slate-500 mb-4">Your order has been confirmed & email sent.</p>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-green-500 h-full w-full animate-pulse"></div>
                 </div>
-                <p class="text-[11px] text-amber-400 mt-3 font-medium">Redirecting to your orders...</p>
+                <p class="text-[11px] text-slate-400 mt-3 font-medium">Redirecting to your orders...</p>
             </div>
 
         </div>
     </div>
 
     <!-- Header -->
-    <header class="bg-[#151922] border-b border-white/10 sticky top-0 z-40 backdrop-blur-md bg-opacity-90 shadow-lg">
-        <div class="max-w-2xl mx-auto px-4 py-3.5 flex items-center justify-between">
-            <a href="index.html" class="text-slate-400 hover:text-amber-400 transition-colors p-1">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="text-slate-600 hover:text-amber-500 transition-colors p-1">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
             </a>
             <div class="flex items-center gap-2">
-                <i class="fa-solid fa-shield-halved text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"></i>
-                <h1 class="text-base font-bold text-white tracking-wide">Secure Checkout</h1>
+                <i class="fa-solid fa-shield-halved text-amber-500"></i>
+                <h1 class="text-base font-bold text-slate-800">Secure Checkout</h1>
             </div>
             <div class="w-5"></div>
         </div>
     </header>
 
-    <main class="max-w-2xl mx-auto px-4 pt-5 space-y-4">
+    <main class="max-w-2xl mx-auto px-4 pt-4 space-y-4">
 
         <!-- Trust Guarantee Banner -->
-        <div class="glow-card p-3.5 flex items-center justify-around text-center text-xs font-bold text-slate-300 bg-gradient-to-r from-[#151922] via-[#1e293b] to-[#151922]">
-            <div class="flex items-center gap-1.5 text-amber-400">
-                <i class="fa-solid fa-lock"></i>
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-center justify-around text-center text-xs font-semibold text-amber-900">
+            <div class="flex items-center gap-1.5">
+                <i class="fa-solid fa-lock text-amber-500"></i>
                 <span>100% Secure</span>
             </div>
-            <div class="h-4 w-[1px] bg-white/10"></div>
-            <div class="flex items-center gap-1.5 text-amber-400">
-                <i class="fa-solid fa-truck-fast"></i>
+            <div class="h-4 w-[1px] bg-amber-200"></div>
+            <div class="flex items-center gap-1.5">
+                <i class="fa-solid fa-truck-fast text-amber-500"></i>
                 <span>Fast Delivery</span>
             </div>
-            <div class="h-4 w-[1px] bg-white/10"></div>
-            <div class="flex items-center gap-1.5 text-amber-400">
-                <i class="fa-solid fa-rotate-left"></i>
+            <div class="h-4 w-[1px] bg-amber-200"></div>
+            <div class="flex items-center gap-1.5">
+                <i class="fa-solid fa-rotate-left text-amber-500"></i>
                 <span>Easy Returns</span>
             </div>
         </div>
 
         <!-- Product Preview Card -->
-        <div class="glow-card p-5">
-            <h2 class="text-xs font-bold text-amber-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                <i class="fa-solid fa-cart-shopping"></i>
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-cart-shopping text-amber-500"></i>
                 Order Summary
             </h2>
-            <div id="productPreview">
-                <!-- Dynamic Content via JS -->
-            </div>
+            <div id="productPreview"></div>
         </div>
 
         <!-- Address & Customer Details Form -->
-        <div class="glow-card p-5 space-y-4">
-            <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                <h2 class="text-xs font-bold text-amber-500 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-location-dot"></i>
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-location-dot text-amber-500"></i>
                     Delivery Address
                 </h2>
-                <button type="button" onclick="getCurrentLocation()" class="text-xs font-bold text-amber-400 hover:text-black flex items-center gap-1.5 bg-amber-500/10 hover:bg-amber-500 px-3 py-1.5 rounded-xl border border-amber-500/30 transition-all shadow-[0_0_10px_rgba(245,158,11,0.15)]">
+                <button type="button" onclick="getCurrentLocation()" class="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1.5 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-100 transition-colors">
                     <i class="fa-solid fa-location-crosshairs"></i>
-                    <span id="locBtnText">Use GPS Location</span>
+                    <span id="locBtnText">Use Current Location</span>
                 </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Full Name *</label>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label>
                     <input type="text" id="custName" placeholder="Enter your full name" class="input-style">
-                    <p id="custNameHint" class="hidden text-[10px] font-semibold text-amber-400 mt-1">
+                    <p id="custNameHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1">
                         <i class="fa-solid fa-pen"></i> Auto-filled from your account — you can edit it
                     </p>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Mobile Number *</label>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Mobile Number *</label>
                     <input type="tel" id="custPhone" placeholder="10-digit mobile number" maxlength="10" class="input-style">
-                    <p id="custPhoneHint" class="hidden text-[10px] font-semibold text-amber-400 mt-1">
+                    <p id="custPhoneHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1">
                         <i class="fa-solid fa-pen"></i> Auto-filled from your account — you can edit it
                     </p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">House / Flat / Building *</label>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">House / Flat / Building *</label>
                     <input type="text" id="house" placeholder="House No, Building Name" class="input-style">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Street / Area / Locality</label>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Street / Area / Locality</label>
                     <input type="text" id="area" placeholder="Area, Landmark" class="input-style">
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3.5">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">City / Town *</label>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">City / Town *</label>
                     <input type="text" id="city" placeholder="City" class="input-style">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">State *</label>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">State *</label>
                     <select id="state" class="input-style">
-                        <option value="" style="background:#1e293b;">Select State</option>
-                        <option value="Kerala" style="background:#1e293b;">Kerala</option>
-                        <option value="Tamil Nadu" style="background:#1e293b;">Tamil Nadu</option>
-                        <option value="Karnataka" style="background:#1e293b;">Karnataka</option>
-                        <option value="Andhra Pradesh" style="background:#1e293b;">Andhra Pradesh</option>
-                        <option value="Telangana" style="background:#1e293b;">Telangana</option>
-                        <option value="Maharashtra" style="background:#1e293b;">Maharashtra</option>
-                        <option value="Delhi" style="background:#1e293b;">Delhi</option>
-                        <option value="Other" style="background:#1e293b;">Other</option>
+                        <option value="">Select State</option>
+                        <option value="Kerala">Kerala</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                        <option value="Telangana">Telangana</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
                 <div class="col-span-2 md:col-span-1">
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Pincode *</label>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Pincode *</label>
                     <input type="text" id="pincode" placeholder="6-digit Pincode" maxlength="6" class="input-style">
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-slate-400 mb-1">Country</label>
-                <input type="text" id="country" value="India" readonly class="input-style bg-[#1e293b]/50 text-slate-400 cursor-not-allowed">
+                <label class="block text-xs font-bold text-slate-600 mb-1">Country</label>
+                <input type="text" id="country" value="India" readonly class="input-style bg-slate-100 text-slate-500 cursor-not-allowed">
             </div>
         </div>
 
         <!-- Payment Option -->
-        <div class="glow-card p-5">
-            <h2 class="text-xs font-bold text-amber-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                <i class="fa-solid fa-credit-card"></i>
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-credit-card text-amber-500"></i>
                 Payment Method
             </h2>
-            <div class="flex items-center justify-between p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl shadow-[0_0_15px_rgba(34,197,94,0.1)]">
-                <div class="flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/30">
-                        <i class="fa-solid fa-hand-holding-dollar text-xl"></i>
+            <div class="flex items-center justify-between p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                        <i class="fa-solid fa-hand-holding-dollar text-lg"></i>
                     </div>
                     <div>
-                        <p class="text-xs font-bold text-emerald-300">Cash on Delivery (COD)</p>
-                        <p class="text-[11px] font-medium text-emerald-400/80">Pay cash when product arrives at door</p>
+                        <p class="text-xs font-bold text-emerald-950">Cash on Delivery (COD)</p>
+                        <p class="text-[11px] font-medium text-emerald-700">Pay cash when product arrives at door</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-circle-check text-emerald-400 text-xl drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]"></i>
+                <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
             </div>
         </div>
 
-        <!-- Trust Indicators Footer Badges -->
-        <div class="grid grid-cols-2 gap-3">
-            <div class="glow-card p-3.5 flex items-center gap-3">
-                <i class="fa-solid fa-shield-heart text-amber-500 text-xl drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]"></i>
-                <div>
-                    <p class="text-[11px] font-bold text-white">Buyer Protection</p>
-                    <p class="text-[9px] text-slate-400">Full refund if damaged</p>
-                </div>
-            </div>
-            <div class="glow-card p-3.5 flex items-center gap-3">
-                <i class="fa-solid fa-headset text-amber-500 text-xl drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]"></i>
-                <div>
-                    <p class="text-[11px] font-bold text-white">24/7 Support</p>
-                    <p class="text-[9px] text-slate-400">Dedicated assistance</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Money Safety Reassurance Strip -->
+        <!-- Money Safety Reassurance -->
         <div class="money-safe-strip">
             <i class="fa-solid fa-hand-holding-dollar main-icon"></i>
-            <p>No advance payment needed — <b>your money stays safe with you.</b> Check the product at your doorstep, then pay cash only if you're fully satisfied.</p>
+            <p>No advance payment needed — <b>your money stays with you.</b> Check the product at your doorstep, then pay cash only if you're satisfied.</p>
         </div>
 
         <!-- Place Order Button -->
-        <button onclick="placeOrder()" class="group w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-[0.98] text-slate-950 font-extrabold py-4 rounded-2xl shadow-[0_0_25px_rgba(245,158,11,0.3)] transition-all flex items-center justify-center gap-2.5 text-base mt-3">
-            <i class="fa-solid fa-bag-shopping text-slate-950 text-lg"></i>
+        <button onclick="placeOrder()" class="group w-full bg-slate-950 hover:bg-amber-500 active:scale-[0.98] text-white hover:text-black font-bold py-4 rounded-2xl shadow-lg shadow-black/20 transition-all flex items-center justify-center gap-2 text-base mt-2">
+            <i class="fa-solid fa-bag-shopping text-amber-500 group-hover:text-black"></i>
             <span>Confirm Order (COD)</span>
         </button>
 
@@ -418,56 +361,30 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // --- AUDIO SOUND EFFECT GENERATOR (Web Audio API) ---
         const playSuccessSound = () => {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                
                 const playTone = (frequency, startTime, duration) => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
-                    
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(frequency, audioCtx.currentTime + startTime);
-                    
                     gain.gain.setValueAtTime(0.3, audioCtx.currentTime + startTime);
                     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + startTime + duration);
-                    
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
-                    
                     osc.start(audioCtx.currentTime + startTime);
                     osc.stop(audioCtx.currentTime + startTime + duration);
                 };
-
-                playTone(523.25, 0, 0.2); // C5 note
-                playTone(659.25, 0.15, 0.25); // E5 note
-                playTone(783.99, 0.3, 0.4); // G5 note
-            } catch (e) {
-                console.log("Audio not supported or blocked", e);
-            }
+                playTone(523.25, 0, 0.2);
+                playTone(659.25, 0.15, 0.25);
+                playTone(783.99, 0.3, 0.4);
+            } catch (e) {}
         };
-
-        // --- URL REFERRAL CODE DETECTION & SAVING ---
-        const urlParams = new URLSearchParams(window.location.search);
-        const refFromUrl = urlParams.get('ref') || urlParams.get('referredBy');
-        const commFromUrl = urlParams.get('comm') || urlParams.get('commission');
-
-        if (refFromUrl) {
-            localStorage.setItem('referredBy', refFromUrl);
-        }
-        if (commFromUrl) {
-            localStorage.setItem('commissionAmount', commFromUrl);
-        }
 
         let orderInfo = JSON.parse(localStorage.getItem('pendingOrder')) || {};
         let currentUserId = null;
         let currentUserEmail = null; 
-
-        const getDeliveryDateStr = () => {
-            const today = new Date();
-            return today.toISOString().split('T')[0];
-        };
 
         const parsePrice = (priceStr) => {
             if (!priceStr) return 0;
@@ -477,23 +394,14 @@
 
         const showAlert = (title, text, icon) => {
             Swal.fire({
-                title: title, text: text, icon: icon
+                title: title, text: text, icon: icon,
+                customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
             });
         };
 
-        // GPS Location Fetching
         window.getCurrentLocation = function() {
             const locBtnText = document.getElementById('locBtnText');
-
-            if (!navigator.geolocation) {
-                showAlert('Not Supported', 'Geolocation is not supported by your browser.', 'error');
-                return;
-            }
-
-            if (!window.isSecureContext) {
-                showAlert('Not Secure', 'Location works only on HTTPS or localhost.', 'warning');
-                return;
-            }
+            if (!navigator.geolocation) return showAlert('Not Supported', 'Geolocation is not supported.', 'error');
 
             locBtnText.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Fetching...`;
 
@@ -502,167 +410,65 @@
                 if (el && val) el.value = val;
             };
 
-            const fillState = (stateName) => {
-                if (!stateName) return;
-                const stateSelect = document.getElementById('state');
-                let apiState = stateName.toLowerCase().replace(/^state of\s+/i, '').replace(/\s+state$/i, '').trim();
-
-                const matchingOption = Array.from(stateSelect.options).find(opt => {
-                    let optVal = opt.value.toLowerCase().trim();
-                    if (!optVal || optVal === 'other') return false;
-                    return optVal === apiState || apiState.includes(optVal) || optVal.includes(apiState);
-                });
-
-                stateSelect.value = matchingOption ? matchingOption.value : 'Other';
-            };
-
-            const fetchNominatim = async (lat, lon) => {
-                const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=en`;
-                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-                if (!res.ok) throw new Error('Nominatim failed');
-                const data = await res.json();
-                if (!data || !data.address) throw new Error('No address');
-
-                const a = data.address;
-                const pin = a.postcode ? a.postcode.replace(/\D/g, '').slice(0, 6) : "";
-                const city = a.city || a.town || a.municipality || a.village || a.city_district || a.suburb || a.county || a.state_district || "";
-                const area = [a.road, a.neighbourhood, a.suburb, a.village, a.city_district].filter(Boolean).filter((v, i, arr) => arr.indexOf(v) === i).slice(0, 3).join(", ");
-                const house = [a.house_number, a.building || a.amenity || a.shop].filter(Boolean).join(", ");
-
-                return { pin, city, area, house, state: a.state || a.state_district || "" };
-            };
-
-            const fetchBigDataCloud = async (lat, lon) => {
-                const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
-                const res = await fetch(url);
-                if (!res.ok) throw new Error('Fallback failed');
-                const d = await res.json();
-
-                const city = d.city || d.locality || d.localityInfo?.administrative?.slice(-1)[0]?.name || "";
-                const area = d.locality && d.locality !== city ? d.locality : (d.localityInfo?.informative?.[0]?.name || "");
-
-                return {
-                    pin: d.postcode ? d.postcode.toString().replace(/\D/g, '').slice(0, 6) : "",
-                    city: city,
-                    area: area,
-                    house: "",
-                    state: d.principalSubdivision || ""
-                };
-            };
-
-            const onSuccess = async (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-
-                let result = null;
+            navigator.geolocation.getCurrentPosition(async (position) => {
                 try {
-                    result = await fetchNominatim(lat, lon);
-                } catch (e1) {
-                    try {
-                        result = await fetchBigDataCloud(lat, lon);
-                    } catch (e2) {}
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}&zoom=18&addressdetails=1`);
+                    const data = await res.json();
+                    if (data && data.address) {
+                        const a = data.address;
+                        setVal('pincode', a.postcode ? a.postcode.replace(/\D/g, '').slice(0, 6) : "");
+                        setVal('city', a.city || a.town || a.village || "");
+                        setVal('area', a.road || a.suburb || "");
+                        locBtnText.textContent = "Use Current Location";
+                        showAlert('Success', 'Address loaded!', 'success');
+                    }
+                } catch (e) {
+                    locBtnText.textContent = "Use Current Location";
+                    showAlert('Error', 'Could not fetch location.', 'error');
                 }
-
-                locBtnText.textContent = "Use GPS Location";
-
-                if (!result || (!result.city && !result.area && !result.pin)) {
-                    showAlert('Not Found', 'Could not detect your address. Please enter it manually.', 'warning');
-                    return;
-                }
-
-                setVal('pincode', result.pin);
-                setVal('city', result.city);
-                setVal('area', result.area || result.city);
-                setVal('house', result.house);
-                fillState(result.state);
-
-                showAlert('Success', 'Address details loaded from current location!', 'success');
-            };
-
-            const onError = (error) => {
-                locBtnText.textContent = "Use GPS Location";
-                showAlert('Location Error', 'Unable to retrieve location. Please check GPS settings.', 'error');
-            };
-
-            navigator.geolocation.getCurrentPosition(onSuccess, onError, { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 });
-        };
-
-        const cleanPhone = (val) => {
-            if (!val) return "";
-            const digits = val.toString().replace(/\D/g, '');
-            return digits.length > 10 ? digits.slice(-10) : digits;
+            }, () => {
+                locBtnText.textContent = "Use Current Location";
+                showAlert('Error', 'Location permission denied.', 'error');
+            }, { enableHighAccuracy: true, timeout: 10000 });
         };
 
         const autoFillUserDetails = async (user) => {
             const nameInput = document.getElementById('custName');
             const phoneInput = document.getElementById('custPhone');
-            const nameHint = document.getElementById('custNameHint');
-            const phoneHint = document.getElementById('custPhoneHint');
             if (!nameInput || !phoneInput) return;
 
-            let nameWasAutoFilled = false;
-            let phoneWasAutoFilled = false;
-
-            if (!nameInput.value.trim() && user.displayName) {
-                nameInput.value = user.displayName;
-                nameWasAutoFilled = true;
-            }
-            if (!phoneInput.value.trim() && user.phoneNumber) {
-                phoneInput.value = cleanPhone(user.phoneNumber);
-                phoneWasAutoFilled = true;
-            }
+            if (user.displayName) nameInput.value = user.displayName;
+            if (user.phoneNumber) phoneInput.value = user.phoneNumber.replace(/\D/g, '').slice(-10);
 
             try {
                 const snap = await get(ref(db, `users/${user.uid}`));
                 if (snap.exists()) {
                     const d = snap.val() || {};
-                    const dbName = d.name || d.fullName || d.username || d.displayName || "";
-                    const dbPhone = d.phone || d.phoneNumber || d.mobile || "";
-
-                    if (dbName && !nameInput.value.trim()) {
-                        nameInput.value = dbName;
-                        nameWasAutoFilled = true;
-                    }
-                    if (dbPhone && !phoneInput.value.trim()) {
-                        phoneInput.value = cleanPhone(dbPhone);
-                        phoneWasAutoFilled = true;
-                    }
+                    if (d.name && !nameInput.value) nameInput.value = d.name;
+                    if (d.phone && !phoneInput.value) phoneInput.value = d.phone.replace(/\D/g, '').slice(-10);
                 }
             } catch (e) {}
-
-            if (nameWasAutoFilled && nameHint) {
-                nameHint.classList.remove('hidden');
-                nameInput.addEventListener('input', () => nameHint.classList.add('hidden'), { once: true });
-            }
-            if (phoneWasAutoFilled && phoneHint) {
-                phoneHint.classList.remove('hidden');
-                phoneInput.addEventListener('input', () => phoneHint.classList.add('hidden'), { once: true });
-            }
         };
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserId = user.uid;
-                currentUserEmail = user.email; 
+                currentUserEmail = user.email;
                 autoFillUserDetails(user);
             }
         });
 
         window.changeQuantity = (index, delta) => {
             if (!orderInfo) return;
-
             if (orderInfo.orderType === "Cart" && Array.isArray(orderInfo.items)) {
-                let currentQty = parseInt(orderInfo.items[index].quantity) || 1;
-                let newQty = currentQty + delta;
+                let newQty = (parseInt(orderInfo.items[index].quantity) || 1) + delta;
                 if (newQty < 1) newQty = 1;
                 orderInfo.items[index].quantity = newQty;
             } else {
-                let currentQty = parseInt(orderInfo.quantity) || 1;
-                let newQty = currentQty + delta;
+                let newQty = (parseInt(orderInfo.quantity) || 1) + delta;
                 if (newQty < 1) newQty = 1;
                 orderInfo.quantity = newQty;
             }
-
             localStorage.setItem('pendingOrder', JSON.stringify(orderInfo));
             renderOrderPreview();
         };
@@ -678,107 +484,55 @@
 
             if (orderInfo.orderType === "Cart" && Array.isArray(orderInfo.items)) {
                 orderInfo.items.forEach((item, idx) => {
-                    let productImg = item.image || (item.images && item.images[0]) || "https://via.placeholder.com/150";
                     let unitPrice = parsePrice(item.price);
                     let qty = parseInt(item.quantity) || 1;
                     let itemTotal = unitPrice * qty;
-                    let itemSize = item.selectedSize || item.size || 'N/A';
-                    
                     finalPriceToPay += itemTotal;
 
                     previewHtml += `
                     <div class="prod-item-row">
-                        <img src="${productImg}" alt="Product">
-                        <div class="prod-item-details" style="flex: 1; min-width: 0;">
-                            <p style="font-weight: 700; font-size: 0.95rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name || item.title}</p>
-                            <p style="color: #94a3b8; font-size: 0.82rem; font-weight: 600; margin-top: 2px;">
-                                Size: <span style="color: #fbbf24; font-weight: 800;">${itemSize}</span>
-                            </p>
-                            <p style="color: #fbbf24; font-weight: 800; font-size: 0.9rem; margin-top: 2px;">₹${itemTotal.toLocaleString('en-IN')}</p>
+                        <img src="${item.image || 'https://via.placeholder.com/150'}" alt="Product">
+                        <div style="flex: 1; min-width: 0;">
+                            <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name || item.title}</p>
+                            <p style="color: #64748b; font-size: 0.82rem; font-weight: 600;">Size: ${item.selectedSize || item.size || 'N/A'}</p>
+                            <p style="color: #000; font-weight: 800; font-size: 0.9rem;">₹${itemTotal.toLocaleString('en-IN')}</p>
                         </div>
-                        <div class="flex items-center gap-2 bg-[#1e293b] p-1.5 rounded-xl border border-white/10">
+                        <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
                             <button onclick="changeQuantity(${idx}, -1)" class="qty-btn">-</button>
-                            <span class="font-bold text-sm px-1 text-white">${qty}</span>
+                            <span class="font-bold text-sm px-1 text-slate-800">${qty}</span>
                             <button onclick="changeQuantity(${idx}, 1)" class="qty-btn">+</button>
                         </div>
                     </div>`;
                 });
-                
-                previewHtml += `
-                <div class="space-y-2 mt-4 pt-3 border-t border-white/10 text-xs font-semibold text-slate-400">
-                    <div class="flex justify-between"><span>Subtotal:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>
-                    <div class="flex justify-between text-emerald-400"><span>Delivery Charge:</span><span class="font-bold uppercase">FREE</span></div>
-                </div>
-                <div class="total-checkout-price"><span>Total Payable:</span><span class="text-amber-400">₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
             } else {
                 let unitPrice = parsePrice(orderInfo.price);
                 let qty = parseInt(orderInfo.quantity) || 1;
-                let itemSize = orderInfo.selectedSize || 'N/A';
                 finalPriceToPay = unitPrice * qty;
 
                 previewHtml = `
                 <div class="prod-item-row">
-                    <img src="${orderInfo.productImage}" alt="Product">
-                    <div class="prod-item-details" style="flex: 1; min-width: 0;">
-                        <p style="font-weight: 700; font-size: 0.95rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${orderInfo.productName}</p>
-                        <p style="color: #94a3b8; font-size: 0.82rem; font-weight: 600; margin-top: 2px;">
-                            Size: <span style="color: #fbbf24; font-weight: 800;">${itemSize}</span>
-                        </p>
-                        <p style="color: #fbbf24; font-weight: 800; font-size: 0.95rem; margin-top: 4px;">₹${finalPriceToPay.toLocaleString('en-IN')}</p>
+                    <img src="${orderInfo.productImage || 'https://via.placeholder.com/150'}" alt="Product">
+                    <div style="flex: 1; min-width: 0;">
+                        <p style="font-weight: 700; font-size: 0.95rem; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${orderInfo.productName}</p>
+                        <p style="color: #64748b; font-size: 0.82rem; font-weight: 600;">Size: ${orderInfo.selectedSize || 'N/A'}</p>
+                        <p style="color: #000; font-weight: 800; font-size: 0.95rem;">₹${finalPriceToPay.toLocaleString('en-IN')}</p>
                     </div>
-                    <div class="flex items-center gap-2 bg-[#1e293b] p-1.5 rounded-xl border border-white/10">
+                    <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
                         <button onclick="changeQuantity(0, -1)" class="qty-btn">-</button>
-                        <span class="font-bold text-sm px-1 text-white">${qty}</span>
+                        <span class="font-bold text-sm px-1 text-slate-800">${qty}</span>
                         <button onclick="changeQuantity(0, 1)" class="qty-btn">+</button>
                     </div>
-                </div>
-                <div class="space-y-2 mt-4 pt-3 border-t border-white/10 text-xs font-semibold text-slate-400">
-                    <div class="flex justify-between"><span>Subtotal:</span><span>₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>
-                    <div class="flex justify-between text-emerald-400"><span>Delivery Charge:</span><span class="font-bold uppercase">FREE</span></div>
-                </div>
-                <div class="total-checkout-price"><span>Total Payable:</span><span class="text-amber-400">₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
+                </div>`;
             }
-            
-            const previewContainer = document.getElementById('productPreview');
-            if (previewContainer) previewContainer.innerHTML = previewHtml;
-        }
 
-        function hideLoader() {
-            const loader = document.getElementById('pageLoader');
-            if (loader) {
-                loader.classList.add('opacity-0', 'pointer-events-none');
-                setTimeout(() => loader.remove(), 500);
-            }
+            previewHtml += `<div class="total-checkout-price"><span>Total Payable:</span><span class="text-amber-600">₹${finalPriceToPay.toLocaleString('en-IN')}</span></div>`;
+            document.getElementById('productPreview').innerHTML = previewHtml;
         }
 
         renderOrderPreview();
-        hideLoader();
+        document.getElementById('pageLoader').remove();
 
-        window.sendOrderEmail = function(orderData, userEmail) {
-            if (!userEmail || typeof emailjs === 'undefined') return;
-
-            let productDetailsText = "";
-            if (orderData.items && Array.isArray(orderData.items)) {
-                orderData.items.forEach((item, index) => {
-                    productDetailsText += `${index + 1}. ${item.name} (Size: ${item.size || 'N/A'}, Qty: ${item.quantity}) - ₹${item.price}\n`;
-                });
-            }
-
-            const templateParams = {
-                to_email: userEmail,
-                customer_name: orderData.customerName,
-                order_id: orderData.orderId,
-                total_price: orderData.price,
-                payment_method: orderData.paymentMethod,
-                delivery_address: orderData.address,
-                product_details: productDetailsText
-            };
-
-            try {
-                emailjs.send('service_crbmtvy', 'template_rd6d6w6', templateParams, EMAILJS_PUBLIC_KEY);
-            } catch (e) { console.error(e); }
-        };
-
+        // --- PLACE ORDER WITH SELLER SCOPING ---
         window.placeOrder = () => {
             const fields = {
                 name: document.getElementById('custName').value.trim(),
@@ -788,192 +542,81 @@
                 area: document.getElementById('area').value.trim(),
                 city: document.getElementById('city').value.trim(),
                 state: document.getElementById('state').value.trim(),
-                pin: document.getElementById('pincode').value.trim(),
-                utr: 'COD'
+                pin: document.getElementById('pincode').value.trim()
             };
 
-            if(!fields.name || !fields.phone || !fields.country || !fields.house || !fields.city || !fields.state || !fields.pin) {
-                return Swal.fire({
-                    title: 'Address Missing',
-                    text: 'Please fill all required delivery address fields.',
-                    icon: 'warning',
-                    confirmButtonText: 'Ok'
-                });
+            if(!fields.name || !fields.phone || !fields.house || !fields.city || !fields.state || !fields.pin) {
+                return showAlert('Address Missing', 'Please fill all required delivery address fields.', 'warning');
             }
 
-            if (fields.phone.length !== 10) {
-                return Swal.fire({
-                    title: 'Invalid Phone Number',
-                    text: 'Please enter a valid 10-digit phone number.',
-                    icon: 'warning',
-                    confirmButtonText: 'Ok'
-                });
-            }
-
-            if (fields.pin.length !== 6) {
-                return Swal.fire({
-                    title: 'Invalid Pincode',
-                    text: 'Please enter a valid 6-digit pincode.',
-                    icon: 'warning',
-                    confirmButtonText: 'Ok'
-                });
+            if (fields.phone.length !== 10 || fields.pin.length !== 6) {
+                return showAlert('Invalid Input', 'Please check your 10-digit mobile number and 6-digit pincode.', 'warning');
             }
 
             Swal.fire({
                 title: 'Confirm Order?', text: "Confirm your order with Cash on Delivery?", icon: 'question',
-                showCancelButton: true, confirmButtonText: 'Yes, Confirm', cancelButtonText: 'Cancel'
+                showCancelButton: true, confirmButtonText: 'Yes, Confirm', cancelButtonText: 'Cancel',
+                customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
             }).then((res) => {
                 if(res.isConfirmed) {
-                    
-                    const successOverlay = document.getElementById('successAnimationOverlay');
-                    const processingState = document.getElementById('processingState');
-                    const successState = document.getElementById('successState');
-                    
-                    if (successOverlay) {
-                        successOverlay.classList.remove('hidden');
-                        processingState.classList.remove('hidden');
-                        successState.classList.add('hidden');
-                    }
+                    document.getElementById('successAnimationOverlay').classList.remove('hidden');
+                    document.getElementById('processingState').classList.remove('hidden');
 
                     const orderId = Date.now(); 
                     const now = new Date();
-                    
-                    const refUser = refFromUrl || orderInfo.referredBy || localStorage.getItem('referredBy') || null;
-                    const commFromUrlValue = commFromUrl || orderInfo.commissionAmount || localStorage.getItem('commissionAmount') || 0;
 
-                    const actualDeliveryDate = getDeliveryDateStr();
-                    const isOrderReturnable = orderInfo.return === true || orderInfo.return === 'true' || orderInfo.returnPolicy === true || orderInfo.isReturnable === true || false;
+                    // Retrieve seller phone from orderInfo (added when adding to cart / buy now)
+                    const sellerPhone = orderInfo.addedByPhone || orderInfo.sellerPhone || "Admin";
 
                     let finalOrder = { 
                         customerName: fields.name, 
                         customerPhone: fields.phone, 
                         phone: fields.phone, 
                         address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state}, ${fields.country} - ${fields.pin}`, 
-                        transactionId: 'COD', 
                         date: now.toISOString().split('T')[0], 
                         createdAt: now.toISOString(),
-                        timestamp: Date.now(),
                         status: "Order Confirmed", 
-                        paymentStatus: "COD",
                         paymentMethod: "COD",
                         orderId: orderId,
-                        referredBy: refUser,
-                        commissionAmount: parseFloat(commFromUrlValue) || 0,
-                        orderLink: window.location.href,
-                        returnPolicy: isOrderReturnable,
-                        isReturnable: isOrderReturnable,
-                        deliveryDate: actualDeliveryDate
+                        sellerPhone: sellerPhone // <--- IMPORTANT: Scopes the order to this specific seller!
                     };
 
                     if (orderInfo.orderType === "Cart" && orderInfo.items) {
                         finalOrder.orderType = "Cart";
                         let calcTotal = 0;
-                        
                         finalOrder.items = orderInfo.items.map(item => {
                             let p = parsePrice(item.price);
                             let q = parseInt(item.quantity) || 1;
-                            let itemReturnStatus = item.return === true || item.return === 'true' || item.returnPolicy === true || item.isReturnable === true || false;
                             calcTotal += (p * q);
                             return { 
-                                id: item.id || "", 
                                 name: item.name || item.title || "Product", 
                                 price: item.price, 
-                                image: item.image || "", 
                                 quantity: q, 
-                                size: item.selectedSize || item.size || "N/A", 
-                                return: itemReturnStatus,
-                                returnPolicy: itemReturnStatus,
-                                isReturnable: itemReturnStatus,
-                                deliveryDate: actualDeliveryDate
+                                size: item.selectedSize || item.size || "N/A"
                             };
                         });
-                        
                         finalOrder.price = calcTotal.toLocaleString('en-IN');
-                        finalOrder.productName = orderInfo.items.map(i => `${i.name || i.title} (Size: ${i.selectedSize || i.size || 'N/A'}, Qty: ${i.quantity})`).join(', ');
+                        finalOrder.productName = orderInfo.items.map(i => i.name || i.title).join(', ');
                     } else {
                         let unitPrice = parsePrice(orderInfo.price);
                         let q = parseInt(orderInfo.quantity) || 1;
-                        let calcTotal = unitPrice * q;
-
                         finalOrder.orderType = "Single";
                         finalOrder.productName = `${orderInfo.productName} (Size: ${orderInfo.selectedSize || 'N/A'}, Qty: ${q})`;
-                        finalOrder.price = calcTotal.toLocaleString('en-IN');
-                        finalOrder.selectedSize = orderInfo.selectedSize || "N/A";
-                        
-                        finalOrder.items = [{
-                            id: orderInfo.productId || "",
-                            name: orderInfo.productName,
-                            price: orderInfo.price,
-                            image: orderInfo.productImage || "",
-                            quantity: q,
-                            size: orderInfo.selectedSize || "N/A",
-                            return: isOrderReturnable,
-                            returnPolicy: isOrderReturnable,
-                            isReturnable: isOrderReturnable,
-                            deliveryDate: actualDeliveryDate
-                        }];
+                        finalOrder.price = (unitPrice * q).toLocaleString('en-IN');
                     }
 
-                    const primaryOrderPromise = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
-                    let referralOrderPromise = Promise.resolve();
-
-                    if (refUser) {
-                        const cleanRefCode = refUser.toString().replace(/[.#$\[\]]/g, "_");
-
-                        const referralPayload = {
-                            ...finalOrder,
-                            referralCode: cleanRefCode,
-                            status: "Order Confirmed",
-                            referralStatus: "Pending",
-                            commission: parseFloat(commFromUrlValue) || 0,
-                            returnPolicy: isOrderReturnable ? "7 Days Return Policy" : "No Return",
-                            isReturnable: isOrderReturnable,
-                            referralCreatedAt: now.toISOString()
-                        };
-
-                        referralOrderPromise = set(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), referralPayload);
-
-                        const masterStatusRef = ref(db, `orders/${fields.phone}/${orderId}/status`);
-                        onValue(masterStatusRef, (snapshot) => {
-                            const currentStatus = snapshot.val();
-                            if (currentStatus) {
-                                const statusNormalized = currentStatus.toString().trim().toLowerCase();
-                                const calculatedRefStatus = (statusNormalized === "delivered") ? "Delivered" : "Pending";
-
-                                update(ref(db, `referralOrders/${cleanRefCode}/${orderId}`), {
-                                    status: currentStatus,
-                                    referralStatus: calculatedRefStatus,
-                                    lastUpdated: new Date().toISOString()
-                                });
-                            }
-                        });
-                    }
-
-                    Promise.all([primaryOrderPromise, referralOrderPromise]).then(() => {
-                        const activeUser = auth.currentUser;
-                        const emailToSend = activeUser ? activeUser.email : currentUserEmail;
-
-                        if (emailToSend) window.sendOrderEmail(finalOrder, emailToSend);
-
+                    // Save order to Firebase under customer phone
+                    set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder).then(() => {
                         if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
-                        
                         localStorage.removeItem('pendingOrder');
-                        localStorage.removeItem('referredBy');
-                        localStorage.removeItem('commissionAmount');
 
                         playSuccessSound();
-                        if (processingState && successState) {
-                            processingState.classList.add('hidden');
-                            successState.classList.remove('hidden');
-                        }
+                        document.getElementById('processingState').classList.add('hidden');
+                        document.getElementById('successState').classList.remove('hidden');
 
-                        setTimeout(() => {
-                            location.href = 'orders.html';
-                        }, 2000);
-
-                    }).catch((err) => {
-                        console.error("Order save error:", err);
-                        if (successOverlay) successOverlay.classList.add('hidden');
+                        setTimeout(() => { location.href = 'orders.html'; }, 2000);
+                    }).catch(() => {
+                        document.getElementById('successAnimationOverlay').classList.add('hidden');
                         showAlert('Error', 'Order could not be saved.', 'error');
                     });
                 }
