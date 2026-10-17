@@ -15,7 +15,6 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
     (function(){
-      // Replace with your EmailJS Public Key
       emailjs.init("wzHy3_rdq5SpvXOt7"); 
     })();
   </script>
@@ -124,7 +123,6 @@
       to { transform: translateX(0); opacity: 1; }
     }
 
-    /* Top Enterprise Header */
     nav {
       display: flex;
       justify-content: space-between;
@@ -176,7 +174,6 @@
       gap: 14px;
     }
 
-    /* Theme Switcher Selector */
     .theme-dropdown {
       position: relative;
       background: var(--surface);
@@ -229,7 +226,6 @@
       font-weight: 700;
     }
 
-    /* Range Filter Toolbar */
     .filter-bar {
       display: flex;
       justify-content: space-between;
@@ -276,7 +272,6 @@
       box-shadow: 0 0 15px var(--glow-accent);
     }
 
-    /* Metric Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -322,7 +317,6 @@
 
     .main-container { padding: 15px 5%; }
 
-    /* Nav Tabs */
     .tabs {
       display: flex;
       gap: 12px;
@@ -363,7 +357,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* List Item Visuals */
     .list-container { display: flex; flex-direction: column; gap: 16px; }
 
     .list-item-card {
@@ -450,7 +443,6 @@
     .btn-edit:hover { background: var(--info); color: #fff; }
     .btn-save { background: var(--success); color: #fff; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); }
 
-    /* Forms */
     .form-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -480,7 +472,6 @@
     .btn-upload { background: var(--surface); color: var(--info); border: 1px solid var(--border); padding: 11px 16px; border-radius: 12px; font-size: 0.82rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
     .btn-submit { width: 100%; padding: 16px; background: var(--accent); color: #05070c; border: none; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 20px var(--glow-accent); }
 
-    /* Analytics */
     .analytics-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
     @media (max-width: 992px) { .analytics-grid { grid-template-columns: 1fr; } }
 
@@ -751,17 +742,17 @@
           </h4>
 
           <div class="analytics-summary-box">
-            ##### AVERAGE ORDER VALUE
+            <h5>AVERAGE ORDER VALUE</h5>
             <p id="avgOrderVal">₹0</p>
           </div>
 
           <div class="analytics-summary-box">
-            ##### FULFILLMENT SUCCESS RATE
+            <h5>FULFILLMENT SUCCESS RATE</h5>
             <p id="fulfillmentRate">0%</p>
           </div>
 
           <div class="analytics-summary-box">
-            ##### ACTIVE CONVERSIONS
+            <h5>ACTIVE CONVERSIONS</h5>
             <p id="activeConversions">0 Orders</p>
           </div>
         </div>
@@ -815,26 +806,28 @@
       }, 3000);
     };
 
-    // Automated Email Dispatcher via EmailJS
-    window.sendOrderNotificationEmail = function(orderId, productName, price, customerPhone, status, address) {
+    // Automated Email Dispatcher mapped directly to your EmailJS template fields
+    window.sendOrderNotificationEmail = function(orderId, productName, price, customerPhone, address, orderDate, quantity = 1) {
       const templateParams = {
-        to_email: sellerEmail,
         order_id: orderId,
+        customer_name: loggedUserName,
+        order_date: orderDate,
         product_name: productName,
-        price: price,
+        quantity: quantity,
+        product_price: price,
+        total_amount: price,
         customer_phone: customerPhone,
-        status: status,
-        address: address,
-        store_name: loggedUserName
+        delivery_address: address,
+        email: sellerEmail
       };
 
-      // Replace YOUR_SERVICE_ID and YOUR_TEMPLATE_ID with actual values from your EmailJS Account
       emailjs.send("service_4631wui", "template_50novw9", templateParams)
         .then(function(response) {
             console.log('EMAIL SENT SUCCESS!', response.status, response.text);
-            showToast("Notification email sent!", "info");
+            showToast("Notification email sent to seller!", "info");
         }, function(error) {
             console.log('EMAIL FAILED...', error);
+            showToast("Email sending failed", "error");
         });
     };
 
@@ -1182,7 +1175,17 @@
               if (!rawOrdersCache[phone] || !rawOrdersCache[phone][orderId]) {
                 const newOrder = newOrdersCache[phone][orderId];
                 showToast(`New Order #${orderId.substring(0,6)} Received!`, "success");
-                sendOrderNotificationEmail(orderId, newOrder.productName || 'Cart Item', newOrder.price, phone, newOrder.status || 'Order Confirmed', newOrder.address || 'N/A');
+                
+                const orderTimeStr = newOrder.timestamp ? new Date(newOrder.timestamp).toLocaleString() : new Date().toLocaleString();
+                sendOrderNotificationEmail(
+                  orderId, 
+                  newOrder.productName || 'Cart Item', 
+                  newOrder.price || '0', 
+                  phone, 
+                  newOrder.address || 'N/A', 
+                  orderTimeStr,
+                  newOrder.quantity || 1
+                );
               }
             });
           });
@@ -1293,8 +1296,6 @@
         deliveryDate: dateVal
       }).then(() => {
         showToast("Order status updated!", "success");
-        const orderData = rawOrdersCache[custPhone][orderId];
-        sendOrderNotificationEmail(orderId, orderData.productName || 'Cart Item', orderData.price, custPhone, statusVal, orderData.address || 'N/A');
       }).catch(err => {
         showToast("Error: " + err.message, "error");
       });
