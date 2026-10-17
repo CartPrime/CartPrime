@@ -564,7 +564,6 @@
                     const now = new Date();
                     const deliveryDate = getDeliveryDateStr();
 
-                    // സെല്ലറുടെ ഫോൺ നമ്പർ/ഐഡി എടുക്കുന്നു (പ്രൊഡക്റ്റിൽ ഉള്ളത്)
                     let sellerPhone = orderInfo.addedByPhone || orderInfo.sellerPhone || orderInfo.addedBy || "Admin";
 
                     let finalOrder = { 
@@ -579,7 +578,7 @@
                         paymentStatus: "COD",
                         paymentMethod: "COD",
                         orderId: orderId,
-                        sellerPhone: sellerPhone, // വെണ്ടർ അല്ലെങ്കിൽ സെല്ലർ തിരിച്ചറിയാൻ ഇത് സഹായിക്കുന്നു
+                        sellerPhone: sellerPhone,
                         deliveryDate: deliveryDate
                     };
 
@@ -605,8 +604,17 @@
                         finalOrder.price = (unitPrice * q).toLocaleString('en-IN');
                     }
 
-                    // ഫയർബേസിലെ 'orders' നോഡിൽ കസ്റ്റമറുടെ നമ്പറിൽ ഓർഡർ സേവ് ചെയ്യുന്നു
-                    set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder).then(() => {
+                    // Save to customer orders path
+                    const customerOrderRef = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
+                    
+                    // Save to seller orders path if sellerPhone is valid and not Admin
+                    let promises = [customerOrderRef];
+                    if (sellerPhone && sellerPhone !== "Admin") {
+                        const sellerOrderRef = set(ref(db, `seller-orders/${sellerPhone}/${orderId}`), finalOrder);
+                        promises.push(sellerOrderRef);
+                    }
+
+                    Promise.all(promises).then(() => {
                         if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
                         localStorage.removeItem('pendingOrder');
 
