@@ -285,7 +285,7 @@
   <!-- Top Navigation Bar -->
   <nav>
     <div class="logo">
-      <i class="fa-solid fa-cart-shopping"></i> CartPrime Admin Dashboard
+      <i class="fa-solid fa-cart-shopping"></i> CartPrime Seller Dashboard
     </div>
     <div class="user-profile-badge">
       <i class="fa-solid fa-user-check" style="color: var(--accent);"></i>
@@ -324,7 +324,7 @@
     <div class="tab-content active" id="tab-add-product">
       <div class="form-card">
         <h3 id="formHeading" style="margin-bottom: 6px;"><i class="fa-solid fa-circle-plus" style="color: var(--accent);"></i> Add New Product</h3>
-        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 20px;">Publish or update products with high quality images, specifications and pricing</p>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 20px;">Publish or update products directly to your seller inventory</p>
         
         <form id="adminProductForm">
           <input type="hidden" id="editingProductId" value="">
@@ -480,7 +480,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Identify current user/seller session
+    // Identify current user/seller session phone
     const loggedUserPhone = localStorage.getItem('userPhone') || localStorage.getItem('sellerSessionPhone') || "Admin";
     const loggedUserName = localStorage.getItem('userName') || "Seller Admin";
 
@@ -581,7 +581,7 @@
       container.appendChild(div);
     }
 
-    // 1. ADD / UPDATE PRODUCT FORM SUBMIT
+    // 1. ADD / UPDATE PRODUCT FORM SUBMIT (SAVED TO seller-products/{phone})
     const adminProductForm = document.getElementById('adminProductForm');
     adminProductForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -620,18 +620,20 @@
         addedByPhone: loggedUserPhone
       };
 
+      const sellerProductsRef = ref(db, `seller-products/${loggedUserPhone}`);
+
       if (editingId) {
-        // Update existing product
-        update(ref(db, `products/${editingId}`), productData).then(() => {
+        // Update existing product in seller-products/{phone}
+        update(ref(db, `seller-products/${loggedUserPhone}/${editingId}`), productData).then(() => {
           alert("Product updated successfully!");
           resetProductForm();
         });
       } else {
-        // Create new product
+        // Create new product under seller-products/{phone}
         productData.createdAt = Date.now();
-        const newRef = push(ref(db, 'products'));
+        const newRef = push(sellerProductsRef);
         set(newRef, productData).then(() => {
-          alert("Product added successfully!");
+          alert("Product added successfully to your store!");
           resetProductForm();
         });
       }
@@ -646,7 +648,6 @@
       document.getElementById('submitBtnText').textContent = "SAVE PRODUCT";
       document.getElementById('cancelEditBtn').style.display = "none";
       
-      // Reset dynamic containers to 1 default row
       document.getElementById('specContainer').innerHTML = `
         <div class="spec-row">
           <input type="text" class="input-field spec-key" placeholder="Key (e.g. Color)">
@@ -680,12 +681,10 @@
       document.getElementById('pVisibility').value = item.showOnHome !== false ? 'true' : 'false';
       document.getElementById('pPaymentType').value = item.paymentType || 'Cash On Delivery & Online';
 
-      // Check sizes
       document.querySelectorAll('input[name="sizes"]').forEach(cb => {
         cb.checked = item.sizes && item.sizes.includes(cb.value);
       });
 
-      // Load Specifications
       const specContainer = document.getElementById('specContainer');
       specContainer.innerHTML = '';
       if (item.specifications && Object.keys(item.specifications).length > 0) {
@@ -696,7 +695,6 @@
         addSpecRow('', '');
       }
 
-      // Load Images
       const galleryContainer = document.getElementById('galleryContainer');
       galleryContainer.innerHTML = '';
       if (item.images && item.images.length > 0) {
@@ -707,19 +705,17 @@
         addGalleryRow('');
       }
 
-      // Change Form State UI
       document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-pen-to-square" style="color: var(--info);"></i> Edit Product';
       document.getElementById('formTitleText').textContent = "Edit Product";
       document.getElementById('submitBtnText').textContent = "UPDATE PRODUCT";
       document.getElementById('cancelEditBtn').style.display = "block";
 
-      // Switch to Add/Edit tab
       document.querySelector('[data-tab="tab-add-product"]').click();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // 2. LISTEN AND FILTER PRODUCTS (ONLY LOGGED-IN USER'S PRODUCTS)
-    onValue(ref(db, 'products'), (snapshot) => {
+    // 2. LISTEN AND DISPLAY PRODUCTS FROM 'seller-products/{phone}'
+    onValue(ref(db, `seller-products/${loggedUserPhone}`), (snapshot) => {
       const grid = document.getElementById('productsGrid');
       if (!snapshot.exists()) {
         grid.innerHTML = '<div class="empty-state">No products added yet.</div>';
@@ -733,39 +729,32 @@
 
       Object.keys(products).forEach(id => {
         const item = products[id];
-
-        if (item.addedByPhone === loggedUserPhone || loggedUserPhone === "Admin") {
-          myCount++;
-          const encodedItem = encodeURIComponent(JSON.stringify(item));
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.innerHTML = `
-            <img src="${item.images ? item.images[0] : ''}" style="width:100%; height:160px; object-fit:cover; border-radius:12px;" alt="Product">
-            <h4 style="margin-top:8px; font-size:0.95rem;">${item.name}</h4>
-            <div style="font-weight:800; color:var(--accent); font-size:1.05rem;">₹${item.price} <span style="font-size:0.75rem; color:var(--text-muted); text-decoration:line-through;">₹${item.mrp}</span></div>
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <button class="btn btn-edit" onclick="editProduct('${id}', '${encodedItem}')"><i class="fa-solid fa-pen"></i> Edit</button>
-              <button class="btn btn-delete" onclick="deleteProduct('${id}')"><i class="fa-solid fa-trash"></i> Delete</button>
-            </div>
-          `;
-          grid.appendChild(card);
-        }
+        myCount++;
+        const encodedItem = encodeURIComponent(JSON.stringify(item));
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${item.images ? item.images[0] : ''}" style="width:100%; height:160px; object-fit:cover; border-radius:12px;" alt="Product">
+          <h4 style="margin-top:8px; font-size:0.95rem;">${item.name}</h4>
+          <div style="font-weight:800; color:var(--accent); font-size:1.05rem;">₹${item.price} <span style="font-size:0.75rem; color:var(--text-muted); text-decoration:line-through;">₹${item.mrp}</span></div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn btn-edit" onclick="editProduct('${id}', '${encodedItem}')"><i class="fa-solid fa-pen"></i> Edit</button>
+            <button class="btn btn-delete" onclick="deleteProduct('${id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+          </div>
+        `;
+        grid.appendChild(card);
       });
-
-      if (myCount === 0) {
-        grid.innerHTML = '<div class="empty-state">You have not added any products yet.</div>';
-      }
 
       document.getElementById('statMyProducts').textContent = myCount;
     });
 
     window.deleteProduct = (id) => {
       if (confirm("Are you sure you want to delete this product?")) {
-        remove(ref(db, `products/${id}`));
+        remove(ref(db, `seller-products/${loggedUserPhone}/${id}`));
       }
     };
 
-    // 3. LISTEN AND FILTER ORDERS FOR THIS SELLER / USER
+    // 3. LISTEN AND FILTER ORDERS FOR THIS SELLER
     onValue(ref(db, 'orders'), (snapshot) => {
       const grid = document.getElementById('ordersGrid');
       if (!snapshot.exists()) {
