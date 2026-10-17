@@ -482,6 +482,7 @@ let earnerPartnerId = null;
 let currentProductImages = [];
 let currentModalImgIndex = 0;
 let isWishlisted = false;
+let activeProductPath = null; // Stores exact Firebase path for views increment
 
 const userId = localStorage.getItem('userId');
 const cleanPhoneStr = (p) => p ? p.toString().replace(/\D/g, '').slice(-10) : '';
@@ -537,10 +538,10 @@ function hideLoader() {
     }
 }
 
-function track6SecView(pId) {
-    if (!pId) return;
+function track6SecView(pathPrefix) {
+    if (!pathPrefix) return;
     setTimeout(() => {
-        const viewRef = ref(db, `products/${pId}/views`);
+        const viewRef = ref(db, `${pathPrefix}/views`);
         get(viewRef).then((snapshot) => {
             const currentViews = snapshot.exists() ? snapshot.val() : 0;
             set(viewRef, currentViews + 1);
@@ -561,6 +562,7 @@ async function initPage() {
             let productSnap = await get(child(ref(db), `products/${productId}`));
             if (productSnap.exists()) {
                 productData = productSnap.val();
+                activeProductPath = `products/${productId}`;
             } else {
                 // 2. Check inside 'seller-products' across all phone folders
                 const sellerSnap = await get(ref(db, `seller-products`));
@@ -573,8 +575,9 @@ async function initPage() {
                         }
                     });
 
-                    // Fetch seller's store name if uploaded by a seller
                     if (foundSellerPhone) {
+                        activeProductPath = `seller-products/${foundSellerPhone}/${productId}`;
+                        // Fetch seller's store name if uploaded by a seller
                         try {
                             const storeSnap = await get(ref(db, `seller/${foundSellerPhone}`));
                             if (storeSnap.exists()) {
@@ -595,7 +598,7 @@ async function initPage() {
                 }
 
                 renderProduct(productData, productData.reviews || null);
-                track6SecView(productId);
+                track6SecView(activeProductPath);
 
                 // Wishlist state sync
                 get(child(ref(db), `wishlist/${currentActiveUserId}/${productId}`)).then(snap => {
