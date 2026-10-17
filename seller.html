@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    :root {
+    /* THEME 1: DARK PRO GLOW (DEFAULT) */
+    [data-theme="dark"] {
       --bg: #05070c;
       --card-bg: #0c0f18;
       --surface: #131826;
@@ -28,16 +29,49 @@
       --purple: #8b5cf6;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    /* THEME 2: CYBERPUNK NEON */
+    [data-theme="cyber"] {
+      --bg: #030712;
+      --card-bg: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
+      --accent: #06b6d4;
+      --accent-hover: #22d3ee;
+      --glow-accent: rgba(6, 182, 212, 0.45);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: rgba(6, 182, 212, 0.2);
+      --success: #22c55e;
+      --danger: #f43f5e;
+      --info: #38bdf8;
+      --purple: #d946ef;
+    }
+
+    /* THEME 3: LIGHT CORPORATE CLEAN */
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --surface: #f1f5f9;
+      --surface-hover: #e2e8f0;
+      --accent: #d97706;
+      --accent-hover: #b45309;
+      --glow-accent: rgba(217, 119, 6, 0.2);
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: rgba(15, 23, 42, 0.1);
+      --success: #16a34a;
+      --danger: #dc2626;
+      --info: #0284c7;
+      --purple: #7c3aed;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.3s, color 0.3s, border-color 0.3s; }
 
     body {
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       padding-bottom: 60px;
-      background-image: 
-        radial-gradient(circle at 10% 10%, rgba(245, 158, 11, 0.06) 0%, transparent 40%),
-        radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.06) 0%, transparent 40%);
     }
 
     /* Top Enterprise Header */
@@ -46,13 +80,13 @@
       justify-content: space-between;
       align-items: center;
       padding: 16px 5%;
-      background: rgba(12, 15, 24, 0.92);
+      background: var(--card-bg);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
 
     .brand-container {
@@ -72,25 +106,52 @@
 
     .logo i { 
       color: var(--accent); 
-      filter: drop-shadow(0 0 12px var(--glow-accent)); 
+      filter: drop-shadow(0 0 10px var(--glow-accent)); 
     }
 
     .admin-pill {
-      background: rgba(245, 158, 11, 0.15);
+      background: var(--surface);
       color: var(--accent);
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 0.72rem;
       font-weight: 800;
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      border: 1px solid var(--border);
       letter-spacing: 0.5px;
-      box-shadow: 0 0 10px var(--glow-accent);
     }
 
     .nav-actions {
       display: flex;
       align-items: center;
       gap: 14px;
+    }
+
+    /* Theme Switcher Button Selector */
+    .theme-dropdown {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .theme-dropdown select {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+    }
+    .theme-dropdown select option {
+      background: var(--card-bg);
+      color: var(--text);
     }
 
     .live-time-badge {
@@ -159,9 +220,9 @@
     }
 
     .range-btn.active {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #05070c;
-      border: 1px solid var(--accent);
+      background: var(--surface-hover);
+      color: var(--accent);
+      border: 1px solid var(--border);
       box-shadow: 0 0 15px var(--glow-accent);
     }
 
@@ -181,42 +242,32 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
     }
 
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
     .stat-card:hover { 
       transform: translateY(-3px); 
-      border-color: rgba(245, 158, 11, 0.4);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 20px rgba(245, 158, 11, 0.15);
+      border-color: var(--accent);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15), 0 0 15px var(--glow-accent);
     }
-    .stat-card:hover::before { opacity: 1; }
 
     .stat-icon {
       width: 54px;
       height: 54px;
       border-radius: 16px;
-      background: rgba(245, 158, 11, 0.1);
+      background: var(--surface);
       color: var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.45rem;
-      box-shadow: 0 0 18px var(--glow-accent);
+      box-shadow: 0 0 15px var(--glow-accent);
     }
 
-    .stat-info h4 { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-info h4 { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
     .stat-info span { font-size: 1.65rem; font-weight: 800; letter-spacing: -0.5px; }
 
     .main-container { padding: 15px 5%; }
@@ -244,19 +295,14 @@
       align-items: center;
       gap: 10px;
       white-space: nowrap;
-      transition: all 0.25s ease;
     }
 
-    .tab-btn:hover {
-      background: var(--surface);
-      color: var(--text);
-    }
-
+    .tab-btn:hover { background: var(--surface); color: var(--text); }
     .tab-btn.active {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #0b0b0f;
+      background: var(--accent);
+      color: #05070c;
       border-color: var(--accent);
-      box-shadow: 0 0 25px var(--glow-accent);
+      box-shadow: 0 0 20px var(--glow-accent);
     }
 
     .tab-content { display: none; }
@@ -279,7 +325,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 18px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
       flex-wrap: wrap;
     }
 
@@ -300,21 +346,21 @@
       flex-shrink: 0;
     }
 
-    .list-item-info h4 { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 5px; }
+    .list-item-info h4 { font-size: 1rem; font-weight: 800; color: var(--text); margin-bottom: 5px; }
     .list-item-info p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 3px; }
 
     .views-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(14, 165, 233, 0.15);
+      background: var(--surface);
       color: var(--info);
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 0.75rem;
       font-weight: 800;
       margin-top: 6px;
-      border: 1px solid rgba(14, 165, 233, 0.25);
+      border: 1px solid var(--border);
     }
 
     .action-controls {
@@ -329,14 +375,11 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 14px;
-      color: #fff;
+      color: var(--text);
       font-size: 0.85rem;
       outline: none;
     }
-
-    .status-select:focus, .date-input:focus, .input-field:focus {
-      border-color: var(--accent);
-    }
+    .status-select:focus, .date-input:focus, .input-field:focus { border-color: var(--accent); }
 
     .btn {
       padding: 11px 18px;
@@ -349,17 +392,15 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.2s ease;
     }
 
-    .btn-delete { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .btn-delete { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--border); }
     .btn-delete:hover { background: var(--danger); color: #fff; }
-    .btn-edit { background: rgba(14, 165, 233, 0.15); color: var(--info); border: 1px solid rgba(14, 165, 233, 0.3); }
+    .btn-edit { background: rgba(14, 165, 233, 0.15); color: var(--info); border: 1px solid var(--border); }
     .btn-edit:hover { background: var(--info); color: #fff; }
-    .btn-save { background: var(--success); color: #fff; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-    .btn-save:hover { background: #059669; }
+    .btn-save { background: var(--success); color: #fff; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); }
 
-    /* Forms Layout */
+    /* Forms */
     .form-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -367,7 +408,7 @@
       padding: 32px;
       max-width: 860px;
       margin: 0 auto;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     }
 
     .form-group { margin-bottom: 20px; }
@@ -385,66 +426,43 @@
     .spec-row, .gallery-image-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
     .spec-row { display: grid; grid-template-columns: 1fr 1fr 42px; }
 
-    .btn-secondary-action {
-      background: var(--surface); border: 1px solid var(--border); color: var(--text);
-      padding: 11px 16px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; cursor: pointer;
-    }
+    .btn-secondary-action { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 11px 16px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+    .btn-upload { background: var(--surface); color: var(--info); border: 1px solid var(--border); padding: 11px 16px; border-radius: 12px; font-size: 0.82rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .btn-submit { width: 100%; padding: 16px; background: var(--accent); color: #05070c; border: none; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 20px var(--glow-accent); }
 
-    .btn-upload {
-      background: rgba(2, 132, 199, 0.2); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.4);
-      padding: 11px 16px; border-radius: 12px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
-      white-space: nowrap;
-    }
+    /* Analytics */
+    .analytics-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    @media (max-width: 992px) { .analytics-grid { grid-template-columns: 1fr; } }
 
-    .btn-submit {
-      width: 100%; padding: 16px; background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #0b0b0f; border: none; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer;
-      box-shadow: 0 4px 20px var(--glow-accent);
-    }
-
-    /* Advanced Analytics Card Layout */
-    .analytics-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
-    }
-    @media (max-width: 992px) {
-      .analytics-grid { grid-template-columns: 1fr; }
-    }
-
-    .analytics-card {
-      background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 28px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-
-    .analytics-summary-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 14px;
-    }
+    .analytics-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+    .analytics-summary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 14px; }
     .analytics-summary-box h5 { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
-    .analytics-summary-box p { font-size: 1.4rem; font-weight: 800; color: #fff; margin-top: 4px; }
+    .analytics-summary-box p { font-size: 1.4rem; font-weight: 800; color: var(--text); margin-top: 4px; }
 
-    .empty-state {
-      text-align: center; padding: 60px 20px; background: var(--card-bg);
-      border-radius: 20px; border: 1px dashed var(--border); color: var(--text-muted); font-size: 0.95rem;
-    }
+    .empty-state { text-align: center; padding: 60px 20px; background: var(--card-bg); border-radius: 20px; border: 1px dashed var(--border); color: var(--text-muted); font-size: 0.95rem; }
   </style>
 </head>
 <body>
 
-  <!-- Enterprise Admin Header Bar -->
+  <!-- Top Enterprise Header Bar -->
   <nav>
     <div class="brand-container">
       <div class="logo">
         <i class="fa-solid fa-cart-shopping"></i> CartPrime
       </div>
-      <span class="admin-pill"><i class="fa-solid fa-shield-halved"></i> MASTER ADMIN COMMAND</span>
+      <span class="admin-pill"><i class="fa-solid fa-shield-halved"></i> MASTER ADMIN</span>
     </div>
     <div class="nav-actions">
-      <div class="live-time-badge" id="liveClock"><i class="fa-regular fa-clock"></i> Live System</div>
+      <!-- Theme Switcher Selector -->
+      <div class="theme-dropdown">
+        <i class="fa-solid fa-palette" style="color: var(--accent);"></i>
+        <select id="themeSelector" onchange="switchTheme(this.value)">
+          <option value="dark">Pro Glow Dark</option>
+          <option value="cyber">Cyber Neon</option>
+          <option value="light">Corporate Light</option>
+        </select>
+      </div>
+      <div class="live-time-badge" id="liveClock"><i class="fa-regular fa-clock"></i> Live</div>
       <div class="user-profile-badge">
         <i class="fa-solid fa-user-check" style="color: var(--accent);"></i>
         <span id="activeUserDisplay">Seller Admin</span>
@@ -528,7 +546,7 @@
 
           <div class="form-group">
             <label>CATEGORY (`category`)</label>
-            <select id="pCategory" class="input-field" style="background: var(--surface); width: 100%;" required>
+            <select id="pCategory" class="input-field" style="width: 100%;" required>
               <option value="">SELECT CATEGORY</option>
               <option value="Gadgets">Gadgets</option>
               <option value="Fashion">Fashion</option>
@@ -604,14 +622,14 @@
           <div class="grid-2">
             <div class="form-group">
               <label>RETURN POLICY</label>
-              <select id="pReturnPolicy" class="input-field" style="background: var(--surface); width: 100%;">
+              <select id="pReturnPolicy" class="input-field" style="width: 100%;">
                 <option value="true">Available (7 Days)</option>
                 <option value="false">No Returns</option>
               </select>
             </div>
             <div class="form-group">
               <label>CASH ON DELIVERY (`cod`)</label>
-              <select id="pCod" class="input-field" style="background: var(--surface); width: 100%;">
+              <select id="pCod" class="input-field" style="width: 100%;">
                 <option value="true">COD Allowed</option>
                 <option value="false">Prepaid Only</option>
               </select>
@@ -621,14 +639,14 @@
           <div class="grid-2">
             <div class="form-group">
               <label>STORE VISIBILITY</label>
-              <select id="pVisibility" class="input-field" style="background: var(--surface); width: 100%;">
+              <select id="pVisibility" class="input-field" style="width: 100%;">
                 <option value="true">Visible Everywhere</option>
                 <option value="false">Hidden from Home</option>
               </select>
             </div>
             <div class="form-group">
               <label>STOCK STATUS</label>
-              <select id="pStock" class="input-field" style="background: var(--surface); width: 100%;">
+              <select id="pStock" class="input-field" style="width: 100%;">
                 <option value="false">In Stock</option>
                 <option value="true">Out of Stock</option>
               </select>
@@ -721,13 +739,23 @@
 
     document.getElementById('activeUserDisplay').textContent = `${loggedUserName} (+91 ${loggedUserPhone})`;
 
+    // Theme Switcher Logic
+    window.switchTheme = function(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      localStorage.setItem('cartprime_admin_theme', themeName);
+    };
+
+    // Load saved theme on startup
+    const savedTheme = localStorage.getItem('cartprime_admin_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('themeSelector').value = savedTheme;
+
     // Live clock update
     setInterval(() => {
       const now = new Date();
       document.getElementById('liveClock').innerHTML = `<i class="fa-regular fa-clock"></i> ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
     }, 1000);
 
-    // Global Cache & Filter State
     let rawOrdersCache = {};
     let selectedFilterRange = '7days';
 
@@ -738,7 +766,6 @@
       processAndRenderOrders();
     };
 
-    // Tab Switching Logic
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -749,7 +776,6 @@
       });
     });
 
-    // Chart.js High-End Glow Setup with Dual Axis (Orders & Revenue)
     let salesChartInstance = null;
     function initSalesChart(chartDataMap, revenueDataMap) {
       const ctx = document.getElementById('salesChart').getContext('2d');
@@ -759,12 +785,10 @@
 
       if (salesChartInstance) salesChartInstance.destroy();
 
-      // Custom Gradient Fill for Order Glow
       const orderGradient = ctx.createLinearGradient(0, 0, 0, 300);
       orderGradient.addColorStop(0, 'rgba(245, 158, 11, 0.45)');
       orderGradient.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
 
-      // Custom Gradient for Revenue Bars
       const revGradient = ctx.createLinearGradient(0, 0, 0, 300);
       revGradient.addColorStop(0, 'rgba(14, 165, 233, 0.7)');
       revGradient.addColorStop(1, 'rgba(14, 165, 233, 0.1)');
@@ -784,9 +808,7 @@
               fill: true,
               tension: 0.4,
               pointBackgroundColor: '#f59e0b',
-              pointBorderColor: '#0c0f18',
-              pointBorderWidth: 2,
-              pointRadius: 6,
+              pointRadius: 5,
               yAxisID: 'yOrders'
             },
             {
@@ -796,7 +818,7 @@
               backgroundColor: revGradient,
               borderColor: '#0ea5e9',
               borderWidth: 1,
-              borderRadius: 8,
+              borderRadius: 6,
               yAxisID: 'yRevenue'
             }
           ]
@@ -805,35 +827,17 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700' } } },
-            tooltip: {
-              backgroundColor: '#131826',
-              titleColor: '#f59e0b',
-              bodyColor: '#f8fafc',
-              borderColor: 'rgba(255,255,255,0.1)',
-              borderWidth: 1
-            }
+            legend: { labels: { color: getComputedStyle(document.body).getPropertyValue('--text') } }
           },
           scales: {
             x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8' } },
-            yOrders: { 
-              type: 'linear', 
-              position: 'left',
-              grid: { color: 'rgba(255,255,255,0.04)' }, 
-              ticks: { color: '#f59e0b', stepSize: 1 } 
-            },
-            yRevenue: { 
-              type: 'linear', 
-              position: 'right',
-              grid: { drawOnChartArea: false }, 
-              ticks: { color: '#0ea5e9' } 
-            }
+            yOrders: { type: 'linear', position: 'left', grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#f59e0b', stepSize: 1 } },
+            yRevenue: { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#0ea5e9' } }
           }
         }
       });
     }
 
-    // ImgBB Upload Handler
     window.uploadImageToImgBB = function(fileInput) {
       const file = fileInput.files[0];
       if (!file) return;
@@ -870,7 +874,6 @@
       };
     };
 
-    // Specs & Gallery UI rows
     document.getElementById('btnAddSpec').addEventListener('click', () => addSpecRow("", ""));
     function addSpecRow(key, val) {
       const container = document.getElementById('specContainer');
@@ -899,7 +902,6 @@
       container.appendChild(div);
     }
 
-    // 1. ADD / UPDATE PRODUCT IN FIREBASE
     const adminProductForm = document.getElementById('adminProductForm');
     adminProductForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -966,7 +968,6 @@
       document.getElementById('cancelEditBtn').style.display = "none";
     };
 
-    // 2. LISTEN PRODUCT LIST IN FIREBASE
     onValue(ref(db, `seller-products/${loggedUserPhone}`), (snapshot) => {
       const grid = document.getElementById('productsGrid');
       if (!snapshot.exists()) {
@@ -1053,7 +1054,6 @@
       }
     };
 
-    // 3. LISTEN & COMPUTE ADVANCED ORDER TRENDS
     const ordersRef = ref(db, `seller-orders/${loggedUserPhone}`);
     onValue(ordersRef, (snapshot) => {
       if (!snapshot.exists()) {
@@ -1140,12 +1140,10 @@
         grid.innerHTML = '<div class="empty-state">No order streams found for selected range.</div>';
       }
 
-      // Update Top KPIs
       document.getElementById('statMyOrders').textContent = myOrderCount;
       document.getElementById('statTotalRevenue').textContent = `₹${totalRev.toLocaleString('en-IN')}`;
       document.getElementById('statDelivered').textContent = deliveredCount;
 
-      // Update Analytical Performance Box Summary
       const avgVal = myOrderCount > 0 ? Math.round(totalRev / myOrderCount) : 0;
       const rateVal = myOrderCount > 0 ? Math.round((deliveredCount / myOrderCount) * 100) : 0;
 
@@ -1153,11 +1151,9 @@
       document.getElementById('fulfillmentRate').textContent = `${rateVal}%`;
       document.getElementById('activeConversions').textContent = `${myOrderCount} Orders`;
       
-      // Render Dynamic Dual-Axis Chart
       initSalesChart(chartDatesMap, revenueDatesMap);
     }
 
-    // Update Status Action
     window.updateOrderStatus = (custPhone, orderId) => {
       const statusVal = document.getElementById(`status_${custPhone}_${orderId}`).value;
       const dateVal = document.getElementById(`date_${custPhone}_${orderId}`).value;
