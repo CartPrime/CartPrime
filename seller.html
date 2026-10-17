@@ -7,18 +7,18 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Chart.js for Analytics -->
+  <!-- Chart.js for Advanced Analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
-      --bg: #06080d;
-      --card-bg: #0d111a;
-      --surface: #141a29;
-      --surface-hover: #1c2438;
+      --bg: #05070c;
+      --card-bg: #0c0f18;
+      --surface: #131826;
+      --surface-hover: #1b2336;
       --accent: #f59e0b;
       --accent-hover: #fbbf24;
-      --glow-accent: rgba(245, 158, 11, 0.35);
+      --glow-accent: rgba(245, 158, 11, 0.4);
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --border: rgba(255, 255, 255, 0.08);
@@ -36,23 +36,23 @@
       min-height: 100vh;
       padding-bottom: 60px;
       background-image: 
-        radial-gradient(circle at 10% 10%, rgba(245, 158, 11, 0.05) 0%, transparent 40%),
-        radial-gradient(circle at 90% 90%, rgba(14, 165, 233, 0.05) 0%, transparent 40%);
+        radial-gradient(circle at 10% 10%, rgba(245, 158, 11, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.06) 0%, transparent 40%);
     }
 
-    /* Enterprise Admin Header */
+    /* Top Enterprise Header */
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 16px 5%;
-      background: rgba(13, 17, 26, 0.92);
+      background: rgba(12, 15, 24, 0.92);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     }
 
     .brand-container {
@@ -63,7 +63,7 @@
 
     .logo {
       font-weight: 800;
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -78,12 +78,13 @@
     .admin-pill {
       background: rgba(245, 158, 11, 0.15);
       color: var(--accent);
-      padding: 4px 10px;
+      padding: 4px 12px;
       border-radius: 20px;
       font-size: 0.72rem;
       font-weight: 800;
       border: 1px solid rgba(245, 158, 11, 0.3);
       letter-spacing: 0.5px;
+      box-shadow: 0 0 10px var(--glow-accent);
     }
 
     .nav-actions {
@@ -122,7 +123,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 5% 5px;
+      padding: 22px 5% 5px;
       flex-wrap: wrap;
       gap: 12px;
     }
@@ -146,7 +147,7 @@
     }
 
     .range-btn {
-      padding: 7px 16px;
+      padding: 8px 18px;
       border-radius: 10px;
       border: none;
       background: transparent;
@@ -154,14 +155,14 @@
       font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s ease;
     }
 
     .range-btn.active {
-      background: var(--surface-hover);
-      color: var(--accent);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #05070c;
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 15px var(--glow-accent);
     }
 
     /* Metric Grid */
@@ -176,7 +177,7 @@
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 20px;
+      padding: 22px;
       display: flex;
       align-items: center;
       gap: 16px;
@@ -198,25 +199,25 @@
     .stat-card:hover { 
       transform: translateY(-3px); 
       border-color: rgba(245, 158, 11, 0.4);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 15px rgba(245, 158, 11, 0.1);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 20px rgba(245, 158, 11, 0.15);
     }
     .stat-card:hover::before { opacity: 1; }
 
     .stat-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
       background: rgba(245, 158, 11, 0.1);
       color: var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      box-shadow: 0 0 15px var(--glow-accent);
+      font-size: 1.45rem;
+      box-shadow: 0 0 18px var(--glow-accent);
     }
 
-    .stat-info h4 { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-info span { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+    .stat-info h4 { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-info span { font-size: 1.65rem; font-weight: 800; letter-spacing: -0.5px; }
 
     .main-container { padding: 15px 5%; }
 
@@ -401,9 +402,30 @@
       box-shadow: 0 4px 20px var(--glow-accent);
     }
 
+    /* Advanced Analytics Card Layout */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 992px) {
+      .analytics-grid { grid-template-columns: 1fr; }
+    }
+
     .analytics-card {
       background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
+
+    .analytics-summary-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 14px;
+    }
+    .analytics-summary-box h5 { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+    .analytics-summary-box p { font-size: 1.4rem; font-weight: 800; color: #fff; margin-top: 4px; }
 
     .empty-state {
       text-align: center; padding: 60px 20px; background: var(--card-bg);
@@ -413,13 +435,13 @@
 </head>
 <body>
 
-  <!-- Enterprise Admin Bar -->
+  <!-- Enterprise Admin Header Bar -->
   <nav>
     <div class="brand-container">
       <div class="logo">
         <i class="fa-solid fa-cart-shopping"></i> CartPrime
       </div>
-      <span class="admin-pill"><i class="fa-solid fa-shield"></i> MASTER ADMIN</span>
+      <span class="admin-pill"><i class="fa-solid fa-shield-halved"></i> MASTER ADMIN COMMAND</span>
     </div>
     <div class="nav-actions">
       <div class="live-time-badge" id="liveClock"><i class="fa-regular fa-clock"></i> Live System</div>
@@ -430,7 +452,7 @@
     </div>
   </nav>
 
-  <!-- Date Analytics Selector Bar -->
+  <!-- Date Range Selection Header -->
   <div class="filter-bar">
     <div class="filter-title">
       <i class="fa-solid fa-sliders" style="color:var(--accent);"></i> METRICS TIME FRAME:
@@ -443,7 +465,7 @@
     </div>
   </div>
 
-  <!-- Metric Overview Cards -->
+  <!-- Real-time KPI Stats Grid -->
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon" style="color: var(--success);"><i class="fa-solid fa-boxes-stacked"></i></div>
@@ -482,14 +504,14 @@
       <button class="tab-btn active" data-tab="tab-add-product"><i class="fa-solid fa-circle-plus"></i> <span id="formTitleText">Add New Product</span></button>
       <button class="tab-btn" data-tab="tab-products"><i class="fa-solid fa-list-check"></i> Inventory Catalog</button>
       <button class="tab-btn" data-tab="tab-orders"><i class="fa-solid fa-truck-fast"></i> Orders & Delivery Tracker</button>
-      <button class="tab-btn" data-tab="tab-analytics"><i class="fa-solid fa-chart-line"></i> Revenue Trends</button>
+      <button class="tab-btn" data-tab="tab-analytics"><i class="fa-solid fa-chart-line"></i> Revenue & Order Analytics</button>
     </div>
 
     <!-- TAB 1: ADD / EDIT PRODUCT -->
     <div class="tab-content active" id="tab-add-product">
       <div class="form-card">
         <h3 id="formHeading" style="margin-bottom: 6px; font-size: 1.2rem;"><i class="fa-solid fa-circle-plus" style="color: var(--accent);"></i> Add New Store Product</h3>
-        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 24px;">Add product features, specs, and gallery images to sync with CartPrime.</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 24px;">Publish or manage catalog items in real-time across CartPrime.</p>
         
         <form id="adminProductForm">
           <input type="hidden" id="editingProductId" value="">
@@ -553,7 +575,7 @@
             <textarea id="pDesc" class="input-field" rows="3" placeholder="• Bullet features..." style="width: 100%; resize: vertical;"></textarea>
           </div>
 
-          <!-- Specs -->
+          <!-- Specifications -->
           <div class="form-group">
             <label>SPECIFICATIONS (`specs`)</label>
             <div id="specContainer">
@@ -566,7 +588,7 @@
             <button type="button" class="btn-secondary-action" id="btnAddSpec"><i class="fa-solid fa-plus"></i> Add Spec Row</button>
           </div>
 
-          <!-- Gallery -->
+          <!-- Gallery Images -->
           <div class="form-group">
             <label>PRODUCT IMAGES GALLERY</label>
             <div id="galleryContainer">
@@ -621,30 +643,58 @@
       </div>
     </div>
 
-    <!-- TAB 2: MANAGE PRODUCTS -->
+    <!-- TAB 2: INVENTORY CATALOG -->
     <div class="tab-content" id="tab-products">
       <div class="list-container" id="productsGrid">
-        <div class="empty-state">Loading products...</div>
+        <div class="empty-state">Loading inventory products...</div>
       </div>
     </div>
 
-    <!-- TAB 3: CUSTOMER ORDERS -->
+    <!-- TAB 3: CUSTOMER ORDERS TRACKER -->
     <div class="tab-content" id="tab-orders">
       <div class="list-container" id="ordersGrid">
-        <div class="empty-state">Loading customer orders...</div>
+        <div class="empty-state">Loading customer order stream...</div>
       </div>
     </div>
 
-    <!-- TAB 4: SALES ANALYTICS -->
+    <!-- TAB 4: ADVANCED REVENUE & ORDER GRAPH ANALYTICS -->
     <div class="tab-content" id="tab-analytics">
-      <div class="analytics-card">
-        <h3 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 10px;">
-          <i class="fa-solid fa-chart-line" style="color: var(--accent);"></i> Daily Order Trend Breakdown
-        </h3>
-        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;" id="chartSubtitle">Order metrics display dynamically filtered by date range.</p>
-        <div style="position: relative; width: 100%; height: 320px; margin-top: 20px;">
-          <canvas id="salesChart"></canvas>
+      <div class="analytics-grid">
+        
+        <!-- Graph Container -->
+        <div class="analytics-card">
+          <h3 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-chart-line" style="color: var(--accent);"></i> Daily Order Count & Revenue Curve
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Visualizing live data curves filtered by selected timeframe.</p>
+          
+          <div style="position: relative; width: 100%; height: 350px; margin-top: 20px;">
+            <canvas id="salesChart"></canvas>
+          </div>
         </div>
+
+        <!-- Analytical Breakdown Box -->
+        <div class="analytics-card" style="display: flex; flex-direction: column; justify-content: center;">
+          <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 18px; color: var(--accent); display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-chart-pie"></i> Performance Summary
+          </h4>
+
+          <div class="analytics-summary-box">
+            <h5>AVERAGE ORDER VALUE</h5>
+            <p id="avgOrderVal">₹0</p>
+          </div>
+
+          <div class="analytics-summary-box">
+            <h5>FULFILLMENT SUCCESS RATE</h5>
+            <p id="fulfillmentRate">0%</p>
+          </div>
+
+          <div class="analytics-summary-box">
+            <h5>ACTIVE CONVERSIONS</h5>
+            <p id="activeConversions">0 Orders</p>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -688,7 +738,7 @@
       processAndRenderOrders();
     };
 
-    // Tab Navigation
+    // Tab Switching Logic
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -699,40 +749,85 @@
       });
     });
 
-    // Chart.js Setup
+    // Chart.js High-End Glow Setup with Dual Axis (Orders & Revenue)
     let salesChartInstance = null;
-    function initSalesChart(chartDataMap) {
+    function initSalesChart(chartDataMap, revenueDataMap) {
       const ctx = document.getElementById('salesChart').getContext('2d');
       const labels = Object.keys(chartDataMap).sort();
-      const dataValues = labels.map(date => chartDataMap[date]);
+      const orderValues = labels.map(date => chartDataMap[date]);
+      const revenueValues = labels.map(date => revenueDataMap[date] || 0);
 
       if (salesChartInstance) salesChartInstance.destroy();
 
+      // Custom Gradient Fill for Order Glow
+      const orderGradient = ctx.createLinearGradient(0, 0, 0, 300);
+      orderGradient.addColorStop(0, 'rgba(245, 158, 11, 0.45)');
+      orderGradient.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
+
+      // Custom Gradient for Revenue Bars
+      const revGradient = ctx.createLinearGradient(0, 0, 0, 300);
+      revGradient.addColorStop(0, 'rgba(14, 165, 233, 0.7)');
+      revGradient.addColorStop(1, 'rgba(14, 165, 233, 0.1)');
+
       salesChartInstance = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
-          labels: labels.length > 0 ? labels : ['No Activity'],
-          datasets: [{
-            label: 'Orders Count',
-            data: dataValues.length > 0 ? dataValues : [0],
-            borderColor: '#f59e0b',
-            backgroundColor: 'rgba(245, 158, 11, 0.12)',
-            borderWidth: 3,
-            fill: true,
-            tension: 0.35,
-            pointBackgroundColor: '#f59e0b',
-            pointRadius: 5
-          }]
+          labels: labels.length > 0 ? labels : ['No Data'],
+          datasets: [
+            {
+              type: 'line',
+              label: 'Daily Orders Count',
+              data: orderValues.length > 0 ? orderValues : [0],
+              borderColor: '#f59e0b',
+              borderWidth: 3,
+              backgroundColor: orderGradient,
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: '#f59e0b',
+              pointBorderColor: '#0c0f18',
+              pointBorderWidth: 2,
+              pointRadius: 6,
+              yAxisID: 'yOrders'
+            },
+            {
+              type: 'bar',
+              label: 'Daily Revenue (₹)',
+              data: revenueValues.length > 0 ? revenueValues : [0],
+              backgroundColor: revGradient,
+              borderColor: '#0ea5e9',
+              borderWidth: 1,
+              borderRadius: 8,
+              yAxisID: 'yRevenue'
+            }
+          ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700' } } }
+            legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700' } } },
+            tooltip: {
+              backgroundColor: '#131826',
+              titleColor: '#f59e0b',
+              bodyColor: '#f8fafc',
+              borderColor: 'rgba(255,255,255,0.1)',
+              borderWidth: 1
+            }
           },
           scales: {
             x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8' } },
-            y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8', stepSize: 1 } }
+            yOrders: { 
+              type: 'linear', 
+              position: 'left',
+              grid: { color: 'rgba(255,255,255,0.04)' }, 
+              ticks: { color: '#f59e0b', stepSize: 1 } 
+            },
+            yRevenue: { 
+              type: 'linear', 
+              position: 'right',
+              grid: { drawOnChartArea: false }, 
+              ticks: { color: '#0ea5e9' } 
+            }
           }
         }
       });
@@ -775,7 +870,7 @@
       };
     };
 
-    // Specs & Gallery rows
+    // Specs & Gallery UI rows
     document.getElementById('btnAddSpec').addEventListener('click', () => addSpecRow("", ""));
     function addSpecRow(key, val) {
       const container = document.getElementById('specContainer');
@@ -804,7 +899,7 @@
       container.appendChild(div);
     }
 
-    // 1. ADD / UPDATE PRODUCT
+    // 1. ADD / UPDATE PRODUCT IN FIREBASE
     const adminProductForm = document.getElementById('adminProductForm');
     adminProductForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -871,7 +966,7 @@
       document.getElementById('cancelEditBtn').style.display = "none";
     };
 
-    // 2. LISTEN PRODUCT LIST
+    // 2. LISTEN PRODUCT LIST IN FIREBASE
     onValue(ref(db, `seller-products/${loggedUserPhone}`), (snapshot) => {
       const grid = document.getElementById('productsGrid');
       if (!snapshot.exists()) {
@@ -953,12 +1048,12 @@
     };
 
     window.deleteProduct = (id) => {
-      if (confirm("Delete this product from catalog?")) {
+      if (confirm("Delete this product from store?")) {
         remove(ref(db, `seller-products/${loggedUserPhone}/${id}`));
       }
     };
 
-    // 3. LISTEN & PROCESS ORDERS WITH DATE RANGE FILTERS
+    // 3. LISTEN & COMPUTE ADVANCED ORDER TRENDS
     const ordersRef = ref(db, `seller-orders/${loggedUserPhone}`);
     onValue(ordersRef, (snapshot) => {
       if (!snapshot.exists()) {
@@ -977,6 +1072,7 @@
       let totalRev = 0;
       let deliveredCount = 0;
       const chartDatesMap = {};
+      const revenueDatesMap = {};
 
       const now = new Date();
 
@@ -985,11 +1081,9 @@
         Object.keys(userOrders).forEach(orderId => {
           const order = userOrders[orderId];
           
-          // Determine order date
           const orderTime = order.timestamp ? new Date(order.timestamp) : (order.date ? new Date(order.date) : new Date());
           const dateStr = orderTime.toISOString().split('T')[0];
 
-          // Filter logic
           let isIncluded = true;
           const diffDays = (now - orderTime) / (1000 * 3600 * 24);
 
@@ -1011,6 +1105,7 @@
             if (currentStatus === 'Delivered') deliveredCount++;
 
             chartDatesMap[dateStr] = (chartDatesMap[dateStr] || 0) + 1;
+            revenueDatesMap[dateStr] = (revenueDatesMap[dateStr] || 0) + priceNum;
 
             const currentDeliveryDate = order.deliveryDate || '';
 
@@ -1042,14 +1137,24 @@
       });
 
       if (myOrderCount === 0) {
-        grid.innerHTML = '<div class="empty-state">No orders found for the selected time range.</div>';
+        grid.innerHTML = '<div class="empty-state">No order streams found for selected range.</div>';
       }
 
+      // Update Top KPIs
       document.getElementById('statMyOrders').textContent = myOrderCount;
       document.getElementById('statTotalRevenue').textContent = `₹${totalRev.toLocaleString('en-IN')}`;
       document.getElementById('statDelivered').textContent = deliveredCount;
+
+      // Update Analytical Performance Box Summary
+      const avgVal = myOrderCount > 0 ? Math.round(totalRev / myOrderCount) : 0;
+      const rateVal = myOrderCount > 0 ? Math.round((deliveredCount / myOrderCount) * 100) : 0;
+
+      document.getElementById('avgOrderVal').textContent = `₹${avgVal.toLocaleString('en-IN')}`;
+      document.getElementById('fulfillmentRate').textContent = `${rateVal}%`;
+      document.getElementById('activeConversions').textContent = `${myOrderCount} Orders`;
       
-      initSalesChart(chartDatesMap);
+      // Render Dynamic Dual-Axis Chart
+      initSalesChart(chartDatesMap, revenueDatesMap);
     }
 
     // Update Status Action
