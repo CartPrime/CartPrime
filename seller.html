@@ -123,7 +123,6 @@
       to { transform: translateX(0); opacity: 1; }
     }
 
-    /* Top Enterprise Header */
     nav {
       display: flex;
       justify-content: space-between;
@@ -489,7 +488,7 @@
   <!-- Toast Notification System -->
   <div id="toastContainer"></div>
 
-  <!-- Top Navigation Bar -->
+  <!-- Top Enterprise Header Bar -->
   <nav>
     <div class="brand-container">
       <div class="logo">
@@ -498,6 +497,7 @@
       <span class="admin-pill"><i class="fa-solid fa-user-gear"></i> SELLER ADMIN</span>
     </div>
     <div class="nav-actions">
+      <!-- Theme Switcher Selector -->
       <div class="theme-dropdown">
         <i class="fa-solid fa-palette" style="color: var(--accent);"></i>
         <select id="themeSelector" onchange="switchTheme(this.value)">
@@ -514,7 +514,7 @@
     </div>
   </nav>
 
-  <!-- Filter Controls -->
+  <!-- Date Range Selection Header -->
   <div class="filter-bar">
     <div class="filter-title">
       <i class="fa-solid fa-sliders" style="color:var(--accent);"></i> METRICS TIME FRAME:
@@ -527,7 +527,7 @@
     </div>
   </div>
 
-  <!-- Metrics Grid -->
+  <!-- Real-time KPI Stats Grid -->
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon" style="color: var(--success);"><i class="fa-solid fa-boxes-stacked"></i></div>
@@ -561,6 +561,7 @@
 
   <div class="main-container">
     
+    <!-- Tab Controls -->
     <div class="tabs">
       <button class="tab-btn active" data-tab="tab-add-product"><i class="fa-solid fa-circle-plus"></i> <span id="formTitleText">Add New Product</span></button>
       <button class="tab-btn" data-tab="tab-products"><i class="fa-solid fa-list-check"></i> Inventory Catalog</button>
@@ -636,6 +637,7 @@
             <textarea id="pDesc" class="input-field" rows="3" placeholder="• Bullet features..." style="width: 100%; resize: vertical;"></textarea>
           </div>
 
+          <!-- Specifications -->
           <div class="form-group">
             <label>SPECIFICATIONS (`specs`)</label>
             <div id="specContainer">
@@ -648,6 +650,7 @@
             <button type="button" class="btn-secondary-action" id="btnAddSpec"><i class="fa-solid fa-plus"></i> Add Spec Row</button>
           </div>
 
+          <!-- Gallery Images -->
           <div class="form-group">
             <label>PRODUCT IMAGES GALLERY</label>
             <div id="galleryContainer">
@@ -719,33 +722,41 @@
     <!-- TAB 4: ADVANCED REVENUE & ORDER GRAPH ANALYTICS -->
     <div class="tab-content" id="tab-analytics">
       <div class="analytics-grid">
+        
+        <!-- Graph Container -->
         <div class="analytics-card">
           <h3 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 10px;">
             <i class="fa-solid fa-chart-line" style="color: var(--accent);"></i> Daily Order Count & Revenue Curve
           </h3>
           <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Visualizing live data curves filtered by selected timeframe.</p>
+          
           <div style="position: relative; width: 100%; height: 350px; margin-top: 20px;">
             <canvas id="salesChart"></canvas>
           </div>
         </div>
 
+        <!-- Analytical Breakdown Box -->
         <div class="analytics-card" style="display: flex; flex-direction: column; justify-content: center;">
           <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 18px; color: var(--accent); display:flex; align-items:center; gap:8px;">
             <i class="fa-solid fa-chart-pie"></i> Performance Summary
           </h4>
+
           <div class="analytics-summary-box">
-            ##### AVERAGE ORDER VALUE
+            <h5>AVERAGE ORDER VALUE</h5>
             <p id="avgOrderVal">₹0</p>
           </div>
+
           <div class="analytics-summary-box">
-            ##### FULFILLMENT SUCCESS RATE
+            <h5>FULFILLMENT SUCCESS RATE</h5>
             <p id="fulfillmentRate">0%</p>
           </div>
+
           <div class="analytics-summary-box">
-            ##### ACTIVE CONVERSIONS
+            <h5>ACTIVE CONVERSIONS</h5>
             <p id="activeConversions">0 Orders</p>
           </div>
         </div>
+
       </div>
     </div>
 
@@ -769,24 +780,24 @@
 
     const loggedUserPhone = localStorage.getItem('userPhone') || localStorage.getItem('sellerSessionPhone') || "Admin";
     const loggedUserName = localStorage.getItem('userName') || localStorage.getItem('storeName') || "CartPrime Seller";
-    
-    // Dynamic Seller Email from session or fallback
-    const sellerEmail = localStorage.getItem('sellerEmail') || localStorage.getItem('userEmail') || "admin@cartprime.com";
+    const sellerEmail = localStorage.getItem('userEmail') || localStorage.getItem('sellerEmail') || "admin@cartprime.com";
 
     document.getElementById('activeUserDisplay').textContent = `${loggedUserName} (+91 ${loggedUserPhone})`;
     document.getElementById('pShippedFrom').value = loggedUserName;
 
     window.productsCache = {};
 
-    // Toast Alert
+    // Custom Styled Toast System
     window.showToast = function(msg, type = 'success') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
       toast.className = `toast-item ${type}`;
+
       const iconClass = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info');
       toast.innerHTML = `<i class="fa-solid ${iconClass}"></i><p>${msg}</p>`;
 
       container.appendChild(toast);
+
       setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateX(100%)';
@@ -795,27 +806,32 @@
       }, 3000);
     };
 
-    // 📧 Real-time EmailJS Integration sending directly to Seller Inbox
-    window.sendOrderNotificationEmail = function(orderId, productName, price, customerPhone, address, orderDate, quantity = 1, customerName = "Customer") {
+    // Automated Email Dispatcher fully mapped to your exact EmailJS template fields
+    window.sendOrderNotificationEmail = function(orderId, productName, price, customerPhone, address, orderDate, quantity = 1, customerName = "Customer", customerEmail = "N/A", productImageUrl = "", productDesc = "") {
       const templateParams = {
         order_id: orderId,
         customer_name: customerName,
+        customer_email: customerEmail,
+        customer_phone: customerPhone,
         order_date: orderDate,
+        product_image_url: productImageUrl,
         product_name: productName,
+        product_description: productDesc,
         quantity: quantity,
         product_price: price,
+        subtotal: price,
+        shipping: "0",
         total_amount: price,
-        customer_phone: customerPhone,
         delivery_address: address,
-        email: sellerEmail  // Maps to {{email}} field in EmailJS template
+        email: sellerEmail
       };
 
       emailjs.send("service_4631wui", "template_50novw9", templateParams)
         .then(function(response) {
-            console.log('SELLER EMAIL SENT SUCCESSFULLY!', response.status, response.text);
-            showToast("Order notification sent to Seller Email!", "info");
+            console.log('EMAIL SENT SUCCESS!', response.status, response.text);
+            showToast("Notification email sent to seller!", "info");
         }, function(error) {
-            console.error('EMAIL FAILED...', error);
+            console.log('EMAIL FAILED...', error);
             showToast("Email sending failed", "error");
         });
     };
@@ -831,6 +847,7 @@
     document.documentElement.setAttribute('data-theme', savedTheme);
     document.getElementById('themeSelector').value = savedTheme;
 
+    // Live clock update
     setInterval(() => {
       const now = new Date();
       document.getElementById('liveClock').innerHTML = `<i class="fa-regular fa-clock"></i> ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
@@ -850,6 +867,7 @@
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
         btn.classList.add('active');
         document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
       });
@@ -1155,6 +1173,7 @@
       } else {
         const newOrdersCache = snapshot.val();
 
+        // Detect new order and send Email Notification
         if (!isInitialLoad) {
           Object.keys(newOrdersCache).forEach(phone => {
             Object.keys(newOrdersCache[phone]).forEach(orderId => {
@@ -1171,7 +1190,10 @@
                   newOrder.address || 'N/A', 
                   orderTimeStr,
                   newOrder.quantity || 1,
-                  newOrder.userName || "Customer"
+                  newOrder.userName || "Customer",
+                  newOrder.email || "N/A",
+                  newOrder.productImage || newOrder.image || "",
+                  newOrder.description || ""
                 );
               }
             });
