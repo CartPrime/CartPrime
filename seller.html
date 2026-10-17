@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CartPrime | Master Admin Command Center</title>
+  <title>CartPrime | Seller Admin Dashboard</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -72,6 +72,46 @@
       color: var(--text);
       min-height: 100vh;
       padding-bottom: 60px;
+    }
+
+    /* CUSTOM TOAST NOTIFICATIONS */
+    #toastContainer {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 14px 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      backdrop-filter: blur(12px);
+      min-width: 280px;
+      animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toast-item.success { border-color: var(--success); }
+    .toast-item.success i { color: var(--success); }
+    .toast-item.error { border-color: var(--danger); }
+    .toast-item.error i { color: var(--danger); }
+    .toast-item.info { border-color: var(--info); }
+    .toast-item.info i { color: var(--info); }
+
+    .toast-item p { font-size: 0.85rem; font-weight: 700; }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
     /* Top Enterprise Header */
@@ -444,13 +484,16 @@
 </head>
 <body>
 
+  <!-- Toast Notification System -->
+  <div id="toastContainer"></div>
+
   <!-- Top Enterprise Header Bar -->
   <nav>
     <div class="brand-container">
       <div class="logo">
         <i class="fa-solid fa-cart-shopping"></i> CartPrime
       </div>
-      <span class="admin-pill"><i class="fa-solid fa-shield-halved"></i> MASTER ADMIN</span>
+      <span class="admin-pill"><i class="fa-solid fa-user-gear"></i> SELLER ADMIN</span>
     </div>
     <div class="nav-actions">
       <!-- Theme Switcher Selector -->
@@ -738,15 +781,34 @@
     const loggedUserName = localStorage.getItem('userName') || localStorage.getItem('storeName') || "CartPrime Seller";
 
     document.getElementById('activeUserDisplay').textContent = `${loggedUserName} (+91 ${loggedUserPhone})`;
-    document.getElementById('pShippedFrom').value = loggedUserName; // Default to Store Name instead of Meesho
+    document.getElementById('pShippedFrom').value = loggedUserName;
 
-    // Cache products for robust editing
     window.productsCache = {};
+
+    // Custom Styled Toast System
+    window.showToast = function(msg, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast-item ${type}`;
+
+      const iconClass = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info');
+      toast.innerHTML = `<i class="fa-solid ${iconClass}"></i><p>${msg}</p>`;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    };
 
     // Theme Switcher Logic
     window.switchTheme = function(themeName) {
       document.documentElement.setAttribute('data-theme', themeName);
       localStorage.setItem('cartprime_admin_theme', themeName);
+      showToast(`Switched to ${themeName.toUpperCase()} theme`, 'info');
     };
 
     const savedTheme = localStorage.getItem('cartprime_admin_theme') || 'dark';
@@ -868,10 +930,10 @@
           if (data && data.success && data.data && data.data.url) {
             btn.innerHTML = '<i class="fa-solid fa-check"></i> Uploaded';
             urlInput.value = data.data.url;
-            alert("Image uploaded successfully!");
+            showToast("Image uploaded successfully!", "success");
           } else {
             btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload';
-            alert("Upload failed");
+            showToast("Image upload failed", "error");
           }
         });
       };
@@ -950,14 +1012,14 @@
 
       if (editingId) {
         update(ref(db, `seller-products/${loggedUserPhone}/${editingId}`), productData).then(() => {
-          alert("Product updated successfully!");
+          showToast("Product updated successfully!", "success");
           resetProductForm();
         });
       } else {
         productData.createdAt = Date.now();
         productData.views = 0;
         push(ref(db, `seller-products/${loggedUserPhone}`), productData).then(() => {
-          alert("Product added successfully!");
+          showToast("Product added to catalog!", "success");
           resetProductForm();
         });
       }
@@ -1013,11 +1075,10 @@
       document.getElementById('statMyProducts').textContent = myCount;
     });
 
-    // FIXED: Edit product function fetching directly from local window cache
     window.editProductData = function(id) {
       const item = window.productsCache[id];
       if (!item) {
-        alert("Unable to load product details for editing.");
+        showToast("Unable to load product details.", "error");
         return;
       }
 
@@ -1039,12 +1100,10 @@
       document.getElementById('pVisibility').value = item.showOnHome !== undefined ? String(item.showOnHome) : "true";
       document.getElementById('pStock').value = item.outOfStock !== undefined ? String(item.outOfStock) : "false";
 
-      // Reset checkboxes
       document.querySelectorAll('input[name="sizes"]').forEach(cb => {
         cb.checked = item.sizes && item.sizes.includes(cb.value);
       });
 
-      // Populate Specs
       const specContainer = document.getElementById('specContainer');
       specContainer.innerHTML = "";
       if (item.specs && Object.keys(item.specs).length > 0) {
@@ -1053,7 +1112,6 @@
         addSpecRow("", "");
       }
 
-      // Populate Gallery Images
       const galleryContainer = document.getElementById('galleryContainer');
       galleryContainer.innerHTML = "";
       if (item.images && item.images.length > 0) {
@@ -1062,14 +1120,15 @@
         addGalleryRow("");
       }
 
-      // Switch to add/edit product tab smoothly
       document.querySelector('[data-tab="tab-add-product"]').click();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     window.deleteProduct = (id) => {
       if (confirm("Delete this product from store?")) {
-        remove(ref(db, `seller-products/${loggedUserPhone}/${id}`));
+        remove(ref(db, `seller-products/${loggedUserPhone}/${id}`)).then(() => {
+          showToast("Product deleted successfully!", "info");
+        });
       }
     };
 
@@ -1181,9 +1240,9 @@
         status: statusVal,
         deliveryDate: dateVal
       }).then(() => {
-        alert("Order status updated!");
+        showToast("Order status updated successfully!", "success");
       }).catch(err => {
-        alert("Error: " + err.message);
+        showToast("Error updating order: " + err.message, "error");
       });
     };
   </script>
