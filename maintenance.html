@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffd21f" />
+  <title>Cartprime | We'll Be Back Soon</title>
+  <style>
+    :root{--yellow:#ffd21f;--yellow-dark:#e4ad00;--black:#111111;--white:#ffffff;--muted:#555555;--pale:#fff7cc;--line:#eadb91}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--black)}
+    body{min-height:100vh;background:radial-gradient(ellipse at 12% 4%,#fff1a6 0,transparent 35%),linear-gradient(135deg,#ffffff,#fffbea);overflow-x:hidden}
+    .shape{position:fixed;pointer-events:none;z-index:0;background:#ffe46b;opacity:.8}
+    .shape.top{width:240px;height:180px;left:-100px;top:-70px;border-radius:45% 55% 64% 36%;transform:rotate(-25deg)}
+    .shape.bottom{width:260px;height:180px;right:-100px;bottom:-90px;border-radius:55% 45% 0 0;background:#ffd21f;transform:rotate(-25deg)}
+    .page{position:relative;z-index:1;max-width:1180px;min-height:100vh;margin:auto;padding:30px 28px 24px;display:flex;flex-direction:column}
+    header{display:flex;justify-content:center;align-items:center;padding:10px 0 24px}
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+    .brand-icon{width:52px;height:52px;color:#111111;flex-shrink:0}
+    .brand-name{font-size:clamp(27px,4vw,42px);font-weight:850;letter-spacing:-1.7px;line-height:1.05}
+    .brand-name span{color:var(--yellow-dark)}
+    .tagline{font-size:14px;color:#607796;margin-top:6px}
+    main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(28px,5vw,72px);padding:24px 0 35px}
+    .art{width:100%;max-width:520px;margin:auto;display:block}
+    .content{max-width:520px}
+    .badge{display:inline-flex;align-items:center;gap:9px;padding:10px 15px;border-radius:13px;background:#fff1a6;color:#111111;font-size:15px;font-weight:700;margin-bottom:22px}
+    .badge svg{width:19px;height:19px}
+    h1{font-size:clamp(40px,5.2vw,68px);line-height:1.03;letter-spacing:-2.7px;margin:0 0 22px;font-weight:850}
+    h1 span{color:var(--yellow-dark)}
+    .description{font-size:clamp(16px,1.7vw,20px);line-height:1.7;color:#435c7d;margin:0 0 30px;max-width:510px}
+    .benefits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .benefit{display:flex;align-items:center;gap:10px;color:#3e587b;font-size:14px;line-height:1.4;min-width:0}
+    .benefit-icon{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;border-radius:50%;background:#fff0a0;color:var(--yellow-dark)}
+    .benefit-icon svg{width:22px;height:22px}
+    .notice{align-self:center;display:flex;align-items:center;justify-content:center;gap:16px;width:min(100%,650px);padding:22px 24px;background:rgba(255,241,166,.58);border:1px solid rgba(234,219,145,.9);border-radius:18px;margin:0 auto 28px}
+    .clock{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;background:var(--yellow);color:#111111;flex-shrink:0}
+    .clock svg{width:26px;height:26px}
+    .notice strong{display:block;color:#111111;font-size:17px;margin-bottom:5px}
+    .notice p{margin:0;color:#536b8a;font-size:14px;line-height:1.5}
+    footer{text-align:center;padding:0 0 12px;color:#4d6685;font-size:14px}
+    .heart{display:flex;align-items:center;justify-content:center;gap:18px;color:var(--yellow-dark);margin-bottom:9px}
+    .heart:before,.heart:after{content:"";height:1px;width:72px;background:#e4d99e}
+    .heart svg{width:19px;height:19px}
+    @media(max-width:760px){.page{padding:22px 18px 20px}header{padding:4px 0 12px}.brand-icon{width:43px;height:43px}.brand-name{font-size:31px}.tagline{font-size:12px}main{grid-template-columns:1fr;gap:16px;padding:14px 0 24px}.art{max-width:340px;max-height:260px}.content{text-align:center;margin:auto}.badge{font-size:13px;margin-bottom:17px}h1{font-size:clamp(40px,10vw,56px);letter-spacing:-1.8px;margin-bottom:16px}.description{font-size:16px;line-height:1.6;margin:0 auto 24px}.benefits{max-width:490px;margin:auto;gap:8px}.benefit{flex-direction:column;text-align:center;font-size:12px;gap:7px}.benefit-icon{width:38px;height:38px}.notice{padding:18px 16px;gap:12px;margin-bottom:24px}.notice strong{font-size:15px}.notice p{font-size:13px}.clock{width:42px;height:42px}}
+    @media(max-width:380px){.page{padding-left:14px;padding-right:14px}.brand-name{font-size:27px}.brand-icon{width:38px;height:38px}.art{max-width:285px;max-height:225px}.benefit{font-size:11px}.benefit-icon{width:34px;height:34px}.benefit-icon svg{width:19px;height:19px}.notice{text-align:left}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="shape top" aria-hidden="true"></div><div class="shape bottom" aria-hidden="true"></div>
+  <div class="page">
+    <header>
+      <a class="brand" href="#" aria-label="Cartprime home">
+        <svg class="brand-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M5 9h8l7 31h30l8-23H18" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 25h27M27 32h22" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle cx="25" cy="51" r="5" fill="currentColor"/><circle cx="48" cy="51" r="5" fill="currentColor"/></svg>
+        <div><div class="brand-name">Cart<span>prime</span></div><div class="tagline">Smart Shopping. Better Deals.</div></div>
+      </a>
+    </header>
+    <main>
+      <svg class="art" viewBox="0 0 560 430" role="img" aria-label="Illustration of a website being maintained" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffef7"/><stop offset="1" stop-color="#fff0a0"/></linearGradient><linearGradient id="laptop" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#333333"/><stop offset="1" stop-color="#111111"/></linearGradient><linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe66b"/><stop offset="1" stop-color="#e4ad00"/></linearGradient><filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#9b8b3a" flood-opacity=".22"/></filter></defs>
+        <ellipse cx="277" cy="370" rx="244" ry="31" fill="#dceaff"/>
+        <g filter="url(#shadow)"><path d="M139 76Q137 57 157 55L405 35Q424 34 427 54L451 280L166 301Z" fill="url(#laptop)"/><path d="M151 75Q150 65 162 64L400 45Q411 44 413 56L435 260L174 279Z" fill="url(#screen)"/><path d="M130 296L454 274L480 300Q484 309 468 312L139 335Q119 333 124 319Z" fill="#7891b2"/><path d="M130 296L454 274L467 291L141 314Z" fill="#d9e8fa"/></g>
+        <circle cx="172" cy="79" r="5" fill="#ff776e"/><circle cx="189" cy="77" r="5" fill="#ffcf4c"/><circle cx="206" cy="76" r="5" fill="#5dc98b"/>
+        <g transform="translate(290 150)"><circle r="53" fill="#e0edff"/><path d="M-9-44h18l4 13 12 5 12-6 11 15-9 10 1 13 10 9-8 17-13-3-10 8-2 13h-19l-3-13-11-7-13 4-9-17 9-10-1-12-10-9 9-16 12 4 10-7Z" fill="url(#blue)"/><circle r="20" fill="#edf6ff"/><circle r="12" fill="#c4dfff"/></g>
+        <rect x="208" y="222" width="168" height="27" rx="13.5" fill="#fff" stroke="#cfdef2" stroke-width="3"/><rect x="215" y="229" width="103" height="13" rx="6.5" fill="url(#blue)"/><circle cx="357" cy="235" r="5" fill="#dbe8f8"/>
+        <g transform="translate(385 205) rotate(-20)" filter="url(#shadow)"><rect x="-10" y="-9" width="22" height="155" rx="11" fill="#a8bed9"/><rect x="-5" y="-5" width="12" height="130" rx="6" fill="#e8f1fb"/><path d="M-22 5Q-22-17-7-24L8-30 23-13 13 1 5 7Z" fill="#8da9ca"/><circle cx="1" cy="135" r="15" fill="#8da9ca"/><circle cx="1" cy="135" r="7" fill="#edf5ff"/></g>
+        <g transform="translate(65 240)" filter="url(#shadow)"><path d="M46 0L88 137H3Z" fill="#ff8d22"/><path d="M37 30L54 30 63 58 29 58Z" fill="#fff"/><path d="M20 84H70L80 116H10Z" fill="#fff"/><ellipse cx="45" cy="137" rx="47" ry="8" fill="#f3a34d"/></g>
+        <g transform="translate(126 300)" filter="url(#shadow)"><path d="M5 37Q7 1 55-9Q103-1 106 37L119 49L111 70H1L-8 50Z" fill="#ffc928"/><path d="M27 19Q29-3 55-7Q82-2 84 19" fill="none" stroke="#f2b316" stroke-width="8" stroke-linecap="round"/><rect x="-5" y="47" width="123" height="18" rx="8" fill="#ffd94b"/><path d="M8 65L16 78H98L108 65" fill="#f5b817"/></g>
+        <g transform="translate(448 203)"><path d="M0 102Q-15 53 11 9Q40 34 30 70Q26 90 10 105" fill="#4eae8b"/><path d="M15 108Q25 50 65 30Q74 76 39 104" fill="#72c5a0"/><path d="M-2 108H54L46 143H7Z" fill="#c7d8ed"/><path d="M4 114H49" stroke="#a7bed9" stroke-width="3"/></g>
+        <g stroke="#55a6ff" stroke-width="7" stroke-linecap="round"><path d="M89 91l-15-19M58 130H35M461 100l14-19M487 123l19-6"/></g>
+      </svg>
+      <section class="content">
+        <div class="badge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.7 19.3 14.6 11.2a6.5 6.5 0 0 0-8.3-8.3l4 4-3.4 3.4-4-4a6.5 6.5 0 0 0 8.3 8.3l8.1 8.1a2.4 2.4 0 0 0 3.4-3.4Z"/></svg> Website Under Maintenance</div>
+        <h1>We’ll Be Back<br><span>Soon!</span></h1>
+        <p class="description">We’re currently performing some maintenance to make your shopping experience even better. Please check back shortly.</p>
+        <div class="benefits">
+          <div class="benefit"><span class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-3 8h7l-6 12 1-9H6l7-11Z"/></svg></span><span>Better<br>Performance</span></div>
+          <div class="benefit"><span class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg></span><span>Improved<br>Security</span></div>
+          <div class="benefit"><span class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span><span>Enhanced<br>Experience</span></div>
+        </div>
+      </section>
+    </main>
+    <div class="notice"><div class="clock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><strong>We’ll be back online soon!</strong><p>Thank you for your patience and support.</p></div></div>
+    <footer><div class="heart"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></div>Cartprime Team</footer>
+  </div>
+</body>
+</html>
