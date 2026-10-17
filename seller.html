@@ -7,8 +7,18 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <!-- Chart.js for Advanced Analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- EmailJS SDK for Email Alerts -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function(){
+      // Replace with your EmailJS Public Key
+      emailjs.init("YOUR_PUBLIC_KEY"); 
+    })();
+  </script>
 
   <style>
     /* THEME 1: DARK PRO GLOW (DEFAULT) */
@@ -741,17 +751,17 @@
           </h4>
 
           <div class="analytics-summary-box">
-            <h5>AVERAGE ORDER VALUE</h5>
+            ##### AVERAGE ORDER VALUE
             <p id="avgOrderVal">₹0</p>
           </div>
 
           <div class="analytics-summary-box">
-            <h5>FULFILLMENT SUCCESS RATE</h5>
+            ##### FULFILLMENT SUCCESS RATE
             <p id="fulfillmentRate">0%</p>
           </div>
 
           <div class="analytics-summary-box">
-            <h5>ACTIVE CONVERSIONS</h5>
+            ##### ACTIVE CONVERSIONS
             <p id="activeConversions">0 Orders</p>
           </div>
         </div>
@@ -779,6 +789,7 @@
 
     const loggedUserPhone = localStorage.getItem('userPhone') || localStorage.getItem('sellerSessionPhone') || "Admin";
     const loggedUserName = localStorage.getItem('userName') || localStorage.getItem('storeName') || "CartPrime Seller";
+    const sellerEmail = localStorage.getItem('userEmail') || "admin@cartprime.com"; // Seller Email
 
     document.getElementById('activeUserDisplay').textContent = `${loggedUserName} (+91 ${loggedUserPhone})`;
     document.getElementById('pShippedFrom').value = loggedUserName;
@@ -802,6 +813,29 @@
         toast.style.transition = 'all 0.3s ease';
         setTimeout(() => toast.remove(), 300);
       }, 3000);
+    };
+
+    // Automated Email Dispatcher via EmailJS
+    window.sendOrderNotificationEmail = function(orderId, productName, price, customerPhone, status, address) {
+      const templateParams = {
+        to_email: sellerEmail,
+        order_id: orderId,
+        product_name: productName,
+        price: price,
+        customer_phone: customerPhone,
+        status: status,
+        address: address,
+        store_name: loggedUserName
+      };
+
+      // Replace YOUR_SERVICE_ID and YOUR_TEMPLATE_ID with actual values from your EmailJS Account
+      emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+        .then(function(response) {
+            console.log('EMAIL SENT SUCCESS!', response.status, response.text);
+            showToast("Notification email sent!", "info");
+        }, function(error) {
+            console.log('EMAIL FAILED...', error);
+        });
     };
 
     // Theme Switcher Logic
@@ -1133,11 +1167,29 @@
     };
 
     const ordersRef = ref(db, `seller-orders/${loggedUserPhone}`);
+    let isInitialLoad = true;
+
     onValue(ordersRef, (snapshot) => {
       if (!snapshot.exists()) {
         rawOrdersCache = {};
       } else {
-        rawOrdersCache = snapshot.val();
+        const newOrdersCache = snapshot.val();
+
+        // Detect new order and send Email Notification
+        if (!isInitialLoad) {
+          Object.keys(newOrdersCache).forEach(phone => {
+            Object.keys(newOrdersCache[phone]).forEach(orderId => {
+              if (!rawOrdersCache[phone] || !rawOrdersCache[phone][orderId]) {
+                const newOrder = newOrdersCache[phone][orderId];
+                showToast(`New Order #${orderId.substring(0,6)} Received!`, "success");
+                sendOrderNotificationEmail(orderId, newOrder.productName || 'Cart Item', newOrder.price, phone, newOrder.status || 'Order Confirmed', newOrder.address || 'N/A');
+              }
+            });
+          });
+        }
+
+        rawOrdersCache = newOrdersCache;
+        isInitialLoad = false;
       }
       processAndRenderOrders();
     });
@@ -1240,9 +1292,11 @@
         status: statusVal,
         deliveryDate: dateVal
       }).then(() => {
-        showToast("Order status updated successfully!", "success");
+        showToast("Order status updated!", "success");
+        const orderData = rawOrdersCache[custPhone][orderId];
+        sendOrderNotificationEmail(orderId, orderData.productName || 'Cart Item', orderData.price, custPhone, statusVal, orderData.address || 'N/A');
       }).catch(err => {
-        showToast("Error updating order: " + err.message, "error");
+        showToast("Error: " + err.message, "error");
       });
     };
   </script>
