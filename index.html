@@ -1375,6 +1375,88 @@ nav {
     setTimeout(() => { modalElement.style.display = 'none'; }, 300);
   }
 
+  // --- EARN MODAL LOGIC & EVENT LISTENERS ---
+  const earnModal = document.getElementById('earnModal');
+  const earnForm = document.getElementById('earnForm');
+  const partnerPhoneInput = document.getElementById('partnerPhone');
+  const partnerNameInput = document.getElementById('partnerName');
+  const partnerUpiInput = document.getElementById('partnerUpi');
+  const closeEarnModal = document.getElementById('closeEarnModal');
+  const earnSubmitBtn = document.getElementById('earnSubmitBtn');
+  const earnSubText = document.getElementById('earnSubText');
+
+  function openEarnModal() {
+    if (!earnModal) return;
+    const userPhone = localStorage.getItem('userPhone') || '';
+    const userName = localStorage.getItem('userName') || '';
+    if (partnerPhoneInput && userPhone) partnerPhoneInput.value = userPhone;
+    if (partnerNameInput && userName) partnerNameInput.value = userName;
+    openModal(earnModal);
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('#heroEarnAdBtn, #earnHowItWorksBtn, #bottomEarnBtn');
+    if (btn) {
+      openEarnModal();
+    }
+  });
+
+  if (closeEarnModal) {
+    closeEarnModal.addEventListener('click', () => closeModal(earnModal));
+  }
+
+  if (earnForm) {
+    earnForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const phoneVal = partnerPhoneInput ? partnerPhoneInput.value.trim().replace(/[^0-9]/g, '') : '';
+      if (!phoneVal || phoneVal.length !== 10) {
+        showCustomAlert("Invalid Number", "Please enter a valid 10-digit mobile/WhatsApp number.", false);
+        return;
+      }
+      
+      earnSubmitBtn.disabled = true;
+      earnSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
+
+      const partnerRef = ref(db, `earn_partners/${phoneVal}`);
+      get(partnerRef).then((snapshot) => {
+        earnSubmitBtn.disabled = false;
+        earnSubmitBtn.innerHTML = 'Check Eligibility';
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          localStorage.setItem('partnerPhone', phoneVal);
+          localStorage.setItem('partnerName', data.name || 'Partner');
+          localStorage.setItem('partnerId', data.partnerId || phoneVal);
+          closeModal(earnModal);
+          showCustomAlert("Active Partner", `Welcome back, ${data.name || 'Partner'}! Your partner account is active.`, true);
+          updateBadges(auth.currentUser);
+        } else {
+          // Register new partner instantly
+          const newPartnerId = 'CP_' + Math.floor(100000 + Math.random() * 900000);
+          const defaultName = localStorage.getItem('userName') || 'CartPrime Partner';
+          set(partnerRef, {
+            phone: phoneVal,
+            name: defaultName,
+            partnerId: newPartnerId,
+            joinedAt: Date.now(),
+            status: 'active'
+          }).then(() => {
+            localStorage.setItem('partnerPhone', phoneVal);
+            localStorage.setItem('partnerName', defaultName);
+            localStorage.setItem('partnerId', newPartnerId);
+            closeModal(earnModal);
+            showCustomAlert("Registration Successful", "You are now registered as a CartPrime Partner! Start sharing items to earn.", true);
+            updateBadges(auth.currentUser);
+          });
+        }
+      }).catch(() => {
+        earnSubmitBtn.disabled = false;
+        earnSubmitBtn.innerHTML = 'Check Eligibility';
+        showCustomAlert("Error", "Could not check eligibility. Please try again.", false);
+      });
+    });
+  }
+  // ------------------------------------------
+
   const profileChip = document.getElementById('profileChip');
   const navProfileAvatar = document.getElementById('navProfileAvatar');
   const navProfileName = document.getElementById('navProfileName');
@@ -2323,7 +2405,6 @@ nav {
 
   updateBadges(null); 
 
-  // --- FETCH PRODUCTS FROM BOTH 'products' AND 'seller-products/{phone}' ---
   function loadAllProductsFromBothFolders() {
     let productsLoaded = false;
     let sellerProductsLoaded = false;
@@ -2337,7 +2418,6 @@ nav {
       renderProducts(getFilteredProducts(activeCategory));
     }
 
-    // 1. Fetch standard products
     onValue(ref(db, 'products'), (snapshot) => { 
       standardProductsList = []; 
       snapshot.forEach(child => { 
@@ -2349,11 +2429,9 @@ nav {
       processAndRender();
     });
 
-    // 2. Fetch seller-products (structured under phone numbers as seen in DB)
     onValue(ref(db, 'seller-products'), (snapshot) => { 
       sellerProductsList = []; 
       snapshot.forEach(phoneSnap => { 
-        // phoneSnap is each seller's phone number folder (e.g. 7356587790)
         phoneSnap.forEach(prodSnap => {
           const data = prodSnap.val(); 
           data.id = prodSnap.key; 
@@ -2366,7 +2444,6 @@ nav {
   }
 
   loadAllProductsFromBothFolders();
-  // -----------------------------------------------------------
 
   const bannerSection = document.getElementById('bannerSection'); 
   const bannerSlider = document.getElementById('bannerSlider'); 
