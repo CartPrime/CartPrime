@@ -3,21 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CartPrime | Master Admin Dashboard</title>
+  <title>CartPrime | Master Seller Dashboard</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js for Analytics Graph -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
-      --bg: #0b0b0f;
-      --card-bg: #151922;
-      --surface: #1e293b;
+      --bg: #09090e;
+      --card-bg: #12151e;
+      --surface: #1a202c;
       --accent: #f59e0b;
       --accent-hover: #fbbf24;
+      --glow-accent: rgba(245, 158, 11, 0.25);
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --border: rgba(255, 255, 255, 0.1);
+      --border: rgba(255, 255, 255, 0.08);
       --success: #22c55e;
       --danger: #ef4444;
       --info: #0ea5e9;
@@ -29,19 +32,21 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-bottom: 40px;
+      padding-bottom: 50px;
     }
 
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 5%;
-      background: var(--card-bg);
+      padding: 18px 5%;
+      background: rgba(18, 21, 30, 0.85);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
 
     .logo {
@@ -50,56 +55,66 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      letter-spacing: -0.5px;
     }
 
-    .logo i { color: var(--accent); }
+    .logo i { color: var(--accent); filter: drop-shadow(0 0 8px var(--glow-accent)); }
 
     .user-profile-badge {
       display: flex;
       align-items: center;
       gap: 10px;
       background: var(--surface);
-      padding: 6px 14px;
+      padding: 6px 16px;
       border-radius: 30px;
       border: 1px solid var(--border);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-      padding: 25px 5% 10px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      padding: 25px 5% 15px;
     }
 
     .stat-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
+      border-radius: 20px;
+      padding: 20px;
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 10px 35px rgba(245, 158, 11, 0.1);
     }
 
     .stat-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: rgba(245, 158, 11, 0.12);
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(245, 158, 11, 0.1);
       color: var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
+      font-size: 1.4rem;
+      box-shadow: 0 0 15px var(--glow-accent);
     }
 
-    .stat-info h4 { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
-    .stat-info span { font-size: 1.5rem; font-weight: 800; }
+    .stat-info h4 { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-info span { font-size: 1.6rem; font-weight: 800; }
 
     .main-container {
-      padding: 15px 5%;
+      padding: 10px 5%;
     }
 
     .tabs {
@@ -112,10 +127,10 @@
     }
 
     .tab-btn {
-      padding: 10px 20px;
+      padding: 11px 22px;
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       color: var(--text-muted);
       cursor: pointer;
       font-weight: 700;
@@ -128,13 +143,30 @@
     }
 
     .tab-btn.active {
-      background: var(--accent);
+      background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #0b0b0f;
       border-color: var(--accent);
+      box-shadow: 0 0 20px var(--glow-accent);
     }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+
+    /* Analytics Section Styling */
+    .analytics-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      margin-top: 15px;
+    }
 
     .products-grid {
       display: grid;
@@ -145,18 +177,21 @@
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 18px;
       position: relative;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
     }
+    .card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.2); }
 
     .btn {
       flex: 1;
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 12px;
       border: none;
       font-weight: 800;
       font-size: 0.8rem;
@@ -169,29 +204,37 @@
       text-decoration: none;
     }
 
-    .btn-delete { background: var(--danger); color: #fff; }
-    .btn-edit { background: var(--info); color: #fff; }
+    .btn-delete { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .btn-delete:hover { background: var(--danger); color: #fff; }
+    .btn-edit { background: rgba(14, 165, 233, 0.15); color: var(--info); border: 1px solid rgba(14, 165, 233, 0.3); }
+    .btn-edit:hover { background: var(--info); color: #fff; }
 
     .form-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 24px;
-      max-width: 800px;
+      border-radius: 24px;
+      padding: 28px;
+      max-width: 820px;
       margin: 0 auto;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
     }
 
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px; }
     .input-field {
       width: 100%;
-      padding: 12px;
+      padding: 13px 15px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       color: #fff;
       font-size: 0.9rem;
       outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--glow-accent);
     }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -206,33 +249,29 @@
       align-items: center;
       gap: 6px;
       background: var(--surface);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.8rem;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.82rem;
       border: 1px solid var(--border);
       cursor: pointer;
+      user-select: none;
     }
+    .size-chip input { accent-color: var(--accent); }
 
-    .spec-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 40px;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .gallery-image-row {
+    .spec-row, .gallery-image-row {
       display: flex;
       gap: 10px;
       align-items: center;
       margin-bottom: 10px;
     }
+    .spec-row { display: grid; grid-template-columns: 1fr 1fr 40px; }
 
     .btn-secondary-action {
       background: var(--surface);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 8px 14px;
-      border-radius: 8px;
+      padding: 10px 16px;
+      border-radius: 10px;
       font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
@@ -240,14 +279,16 @@
       align-items: center;
       gap: 6px;
       margin-top: 4px;
+      transition: background 0.2s;
     }
+    .btn-secondary-action:hover { background: rgba(255,255,255,0.06); }
 
     .btn-upload {
-      background: #0284c7;
-      color: #fff;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 8px;
+      background: rgba(2, 132, 199, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(2, 132, 199, 0.4);
+      padding: 12px 16px;
+      border-radius: 10px;
       font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
@@ -259,24 +300,29 @@
 
     .btn-submit {
       width: 100%;
-      padding: 13px;
+      padding: 15px;
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #0b0b0f;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       font-weight: 800;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       cursor: pointer;
+      box-shadow: 0 4px 20px var(--glow-accent);
+      transition: transform 0.2s, filter 0.2s;
     }
+    .btn-submit:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
     .empty-state {
       text-align: center;
-      padding: 40px;
+      padding: 50px 20px;
       background: var(--card-bg);
-      border-radius: 18px;
+      border-radius: 20px;
       border: 1px dashed var(--border);
       color: var(--text-muted);
       grid-column: 1 / -1;
+      font-size: 0.95rem;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -298,15 +344,22 @@
     <div class="stat-card">
       <div class="stat-icon" style="color: var(--success);"><i class="fa-solid fa-boxes-stacked"></i></div>
       <div class="stat-info">
-        <h4>MY PRODUCTS</h4>
+        <h4>TOTAL PRODUCTS</h4>
         <span id="statMyProducts">0</span>
       </div>
     </div>
     <div class="stat-card">
       <div class="stat-icon" style="color: #38bdf8;"><i class="fa-solid fa-bag-shopping"></i></div>
       <div class="stat-info">
-        <h4>MY ORDERS</h4>
+        <h4>TOTAL ORDERS</h4>
         <span id="statMyOrders">0</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="color: var(--accent);"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+      <div class="stat-info">
+        <h4>TOTAL REVENUE</h4>
+        <span id="statTotalRevenue">₹0</span>
       </div>
     </div>
   </div>
@@ -318,29 +371,30 @@
       <button class="tab-btn active" data-tab="tab-add-product"><i class="fa-solid fa-circle-plus"></i> <span id="formTitleText">Add New Product</span></button>
       <button class="tab-btn" data-tab="tab-products"><i class="fa-solid fa-boxes-stacked"></i> Manage My Products</button>
       <button class="tab-btn" data-tab="tab-orders"><i class="fa-solid fa-truck-fast"></i> Customer Orders</button>
+      <button class="tab-btn" data-tab="tab-analytics"><i class="fa-solid fa-chart-line"></i> Sales Analytics</button>
     </div>
 
     <!-- TAB 1: ADD / EDIT PRODUCT -->
     <div class="tab-content active" id="tab-add-product">
       <div class="form-card">
         <h3 id="formHeading" style="margin-bottom: 6px;"><i class="fa-solid fa-circle-plus" style="color: var(--accent);"></i> Add New Product</h3>
-        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 20px;">Publish or update products directly to your seller inventory</p>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 20px;">Publish or update products with full details matching your store schema</p>
         
         <form id="adminProductForm">
           <input type="hidden" id="editingProductId" value="">
 
           <div class="form-group">
-            <label>PRODUCT NAME</label>
-            <input type="text" id="pName" class="input-field" placeholder="Short Brand / Product Name" required>
+            <label>PRODUCT NAME / SHORT TITLE (`name` & `title`)</label>
+            <input type="text" id="pName" class="input-field" placeholder="e.g. Universal Power Adapter Plug" required>
           </div>
 
           <div class="form-group">
-            <label>FULL DISPLAY TITLE</label>
-            <input type="text" id="pFullTitle" class="input-field" placeholder="Full descriptive title displayed on product page">
+            <label>FULL DISPLAY TITLE (`fullTitle`)</label>
+            <input type="text" id="pFullTitle" class="input-field" placeholder="Full descriptive title displayed on product details page">
           </div>
 
           <div class="form-group">
-            <label>CATEGORY</label>
+            <label>CATEGORY (`category`)</label>
             <select id="pCategory" class="input-field" style="background: var(--surface);" required>
               <option value="">SELECT CATEGORY</option>
               <option value="Gadgets">Gadgets</option>
@@ -351,7 +405,7 @@
           </div>
 
           <div class="form-group">
-            <label>AVAILABLE SIZES (OPTIONAL):</label>
+            <label>AVAILABLE SIZES (`sizes`):</label>
             <div class="size-checkboxes">
               <label class="size-chip"><input type="checkbox" name="sizes" value="S"> S</label>
               <label class="size-chip"><input type="checkbox" name="sizes" value="M"> M</label>
@@ -364,34 +418,34 @@
 
           <div class="grid-2">
             <div class="form-group">
-              <label>MRP (₹ STRIKE-THROUGH PRICE)</label>
-              <input type="number" id="pMrp" class="input-field" placeholder="e.g. 1999" required>
+              <label>MRP (₹ STRIKE-THROUGH PRICE - `mrp`)</label>
+              <input type="number" id="pMrp" class="input-field" placeholder="e.g. 800" required>
             </div>
             <div class="form-group">
-              <label>SELLING PRICE (₹)</label>
-              <input type="number" id="pPrice" class="input-field" placeholder="e.g. 899" required>
+              <label>SELLING PRICE (₹ - `price`)</label>
+              <input type="number" id="pPrice" class="input-field" placeholder="e.g. 450" required>
             </div>
           </div>
 
           <div class="grid-2">
             <div class="form-group">
-              <label>SHIPPED FROM</label>
-              <input type="text" id="pShippedFrom" class="input-field" placeholder="Warehouse Location / Hub">
+              <label>SHIPPED FROM (`shippedFrom`)</label>
+              <input type="text" id="pShippedFrom" class="input-field" value="Meesho" placeholder="Warehouse Location / Hub">
             </div>
             <div class="form-group">
-              <label>ESTIMATED DELIVERY (DAYS)</label>
+              <label>ESTIMATED DELIVERY (DAYS - `deliveryDays`)</label>
               <input type="number" id="pDeliveryDays" class="input-field" value="7">
             </div>
           </div>
 
           <div class="form-group">
-            <label>PRODUCT DESCRIPTION</label>
-            <textarea id="pDesc" class="input-field" rows="3" placeholder="Enter features with bullet points..."></textarea>
+            <label>PRODUCT DESCRIPTION (`desc`)</label>
+            <textarea id="pDesc" class="input-field" rows="3" placeholder="• Enter features with bullet points..."></textarea>
           </div>
 
           <!-- Specifications Section -->
           <div class="form-group">
-            <label>SPECIFICATIONS</label>
+            <label>SPECIFICATIONS (`specs`)</label>
             <div id="specContainer">
               <div class="spec-row">
                 <input type="text" class="input-field spec-key" placeholder="Key (e.g. Color)">
@@ -404,7 +458,7 @@
 
           <!-- Gallery Images Section with ImgBB Integration -->
           <div class="form-group">
-            <label>PRODUCT GALLERY IMAGES</label>
+            <label>PRODUCT GALLERY IMAGES (`images` array)</label>
             <div id="galleryContainer">
               <div class="gallery-image-row">
                 <input type="url" class="input-field gallery-url" placeholder="IMAGE URL 1" required>
@@ -417,32 +471,41 @@
 
           <div class="grid-2">
             <div class="form-group">
-              <label>RETURN POLICY</label>
+              <label>RETURN POLICY (`return`)</label>
               <select id="pReturnPolicy" class="input-field" style="background: var(--surface);">
-                <option value="7 Days Hassle-Free Return">7 Days Hassle-Free Return</option>
-                <option value="No Returns Allowed">No Returns Allowed</option>
+                <option value="true">Available (7 Days)</option>
+                <option value="false">No Returns Allowed</option>
               </select>
             </div>
             <div class="form-group">
-              <label>STORE VISIBILITY</label>
+              <label>CASH ON DELIVERY (`cod`)</label>
+              <select id="pCod" class="input-field" style="background: var(--surface);">
+                <option value="true">COD Available</option>
+                <option value="false">Online Payment Only</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label>STORE VISIBILITY (`showOnHome`)</label>
               <select id="pVisibility" class="input-field" style="background: var(--surface);">
                 <option value="true">Show on Home & Search</option>
                 <option value="false">Search Only (Hidden from Home)</option>
               </select>
             </div>
+            <div class="form-group">
+              <label>STOCK STATUS (`outOfStock`)</label>
+              <select id="pStock" class="input-field" style="background: var(--surface);">
+                <option value="false">In Stock</option>
+                <option value="true">Out of Stock</option>
+              </select>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label>PAYMENT TYPE ALLOWED</label>
-            <select id="pPaymentType" class="input-field" style="background: var(--surface);">
-              <option value="Cash On Delivery & Online">Cash On Delivery & Online</option>
-              <option value="Online Payment Only">Online Payment Only</option>
-            </select>
-          </div>
-
-          <div style="display: flex; gap: 10px; margin-top: 15px;">
+          <div style="display: flex; gap: 10px; margin-top: 20px;">
             <button type="submit" class="btn-submit" id="submitBtnText">SAVE PRODUCT</button>
-            <button type="button" id="cancelEditBtn" class="btn" style="background: var(--surface); color: var(--text); display: none;" onclick="resetProductForm()">Cancel</button>
+            <button type="button" id="cancelEditBtn" class="btn" style="background: var(--surface); color: var(--text); display: none; padding: 15px;" onclick="resetProductForm()">Cancel</button>
           </div>
         </form>
       </div>
@@ -459,6 +522,19 @@
     <div class="tab-content" id="tab-orders">
       <div class="products-grid" id="ordersGrid">
         <div class="empty-state">Loading your orders...</div>
+      </div>
+    </div>
+
+    <!-- TAB 4: SALES ANALYTICS -->
+    <div class="tab-content" id="tab-analytics">
+      <div class="analytics-card">
+        <h3 style="font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-chart-line" style="color: var(--accent);"></i> Revenue Growth & Order Trends
+        </h3>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Visual representation of your daily order volume and store performance.</p>
+        <div class="chart-container">
+          <canvas id="salesChart"></canvas>
+        </div>
       </div>
     </div>
 
@@ -480,7 +556,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Identify current user/seller session phone
     const loggedUserPhone = localStorage.getItem('userPhone') || localStorage.getItem('sellerSessionPhone') || "Admin";
     const loggedUserName = localStorage.getItem('userName') || "Seller Admin";
 
@@ -496,6 +571,49 @@
         document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
       });
     });
+
+    // Chart.js Setup
+    let salesChartInstance = null;
+    function initSalesChart(chartDataMap) {
+      const ctx = document.getElementById('salesChart').getContext('2d');
+      const labels = Object.keys(chartDataMap).sort();
+      const dataValues = labels.map(date => chartDataMap[date]);
+
+      if (salesChartInstance) {
+        salesChartInstance.destroy();
+      }
+
+      salesChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels.length > 0 ? labels : ['No Data'],
+          datasets: [{
+            label: 'Orders per Day',
+            data: dataValues.length > 0 ? dataValues : [0],
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#f59e0b',
+            pointBorderColor: '#09090e',
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', weight: '700' } } }
+          },
+          scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#94a3b8', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      });
+    }
+    initSalesChart({});
 
     // ImgBB Direct Image Upload Handler
     window.uploadImageToImgBB = function(fileInput) {
@@ -602,35 +720,39 @@
         if (inp.value.trim()) images.push(inp.value.trim());
       });
 
+      const productName = document.getElementById('pName').value.trim();
+      const fullTitleVal = document.getElementById('pFullTitle').value.trim() || productName;
+
       const productData = {
-        name: document.getElementById('pName').value.trim(),
-        fullTitle: document.getElementById('pFullTitle').value.trim(),
+        name: productName,
+        title: fullTitleVal,
+        fullTitle: fullTitleVal,
         price: document.getElementById('pPrice').value.trim(),
         mrp: document.getElementById('pMrp').value.trim(),
         category: document.getElementById('pCategory').value,
         sizes: selectedSizes,
         shippedFrom: document.getElementById('pShippedFrom').value.trim(),
         deliveryDays: document.getElementById('pDeliveryDays').value.trim(),
-        description: document.getElementById('pDesc').value.trim(),
-        specifications: specs,
+        desc: document.getElementById('pDesc').value.trim(),
+        specs: specs,
         images: images,
-        returnPolicy: document.getElementById('pReturnPolicy').value,
+        return: document.getElementById('pReturnPolicy').value === 'true',
+        cod: document.getElementById('pCod').value === 'true',
         showOnHome: document.getElementById('pVisibility').value === 'true',
-        paymentType: document.getElementById('pPaymentType').value,
+        outOfStock: document.getElementById('pStock').value === 'true',
         addedByPhone: loggedUserPhone
       };
 
       const sellerProductsRef = ref(db, `seller-products/${loggedUserPhone}`);
 
       if (editingId) {
-        // Update existing product in seller-products/{phone}
         update(ref(db, `seller-products/${loggedUserPhone}/${editingId}`), productData).then(() => {
           alert("Product updated successfully!");
           resetProductForm();
         });
       } else {
-        // Create new product under seller-products/{phone}
         productData.createdAt = Date.now();
+        productData.views = 0;
         const newRef = push(sellerProductsRef);
         set(newRef, productData).then(() => {
           alert("Product added successfully to your store!");
@@ -664,22 +786,23 @@
       `;
     };
 
-    // Edit Product Function (Loads data into form)
+    // Edit Product Function
     window.editProduct = function(id, itemJson) {
       const item = JSON.parse(decodeURIComponent(itemJson));
       
       document.getElementById('editingProductId').value = id;
       document.getElementById('pName').value = item.name || '';
-      document.getElementById('pFullTitle').value = item.fullTitle || '';
+      document.getElementById('pFullTitle').value = item.fullTitle || item.title || '';
       document.getElementById('pCategory').value = item.category || '';
       document.getElementById('pMrp').value = item.mrp || '';
       document.getElementById('pPrice').value = item.price || '';
       document.getElementById('pShippedFrom').value = item.shippedFrom || '';
       document.getElementById('pDeliveryDays').value = item.deliveryDays || 7;
-      document.getElementById('pDesc').value = item.description || '';
-      document.getElementById('pReturnPolicy').value = item.returnPolicy || '7 Days Hassle-Free Return';
+      document.getElementById('pDesc').value = item.desc || item.description || '';
+      document.getElementById('pReturnPolicy').value = item.return ? 'true' : 'false';
+      document.getElementById('pCod').value = item.cod ? 'true' : 'false';
       document.getElementById('pVisibility').value = item.showOnHome !== false ? 'true' : 'false';
-      document.getElementById('pPaymentType').value = item.paymentType || 'Cash On Delivery & Online';
+      document.getElementById('pStock').value = item.outOfStock ? 'true' : 'false';
 
       document.querySelectorAll('input[name="sizes"]').forEach(cb => {
         cb.checked = item.sizes && item.sizes.includes(cb.value);
@@ -687,9 +810,10 @@
 
       const specContainer = document.getElementById('specContainer');
       specContainer.innerHTML = '';
-      if (item.specifications && Object.keys(item.specifications).length > 0) {
-        Object.keys(item.specifications).forEach(k => {
-          addSpecRow(k, item.specifications[k]);
+      const specsObj = item.specs || item.specifications || {};
+      if (Object.keys(specsObj).length > 0) {
+        Object.keys(specsObj).forEach(k => {
+          addSpecRow(k, specsObj[k]);
         });
       } else {
         addSpecRow('', '');
@@ -714,7 +838,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // 2. LISTEN AND DISPLAY PRODUCTS FROM 'seller-products/{phone}'
+    // 2. LISTEN & DISPLAY PRODUCTS FROM 'seller-products/{phone}'
     onValue(ref(db, `seller-products/${loggedUserPhone}`), (snapshot) => {
       const grid = document.getElementById('productsGrid');
       if (!snapshot.exists()) {
@@ -735,7 +859,7 @@
         card.className = 'card';
         card.innerHTML = `
           <img src="${item.images ? item.images[0] : ''}" style="width:100%; height:160px; object-fit:cover; border-radius:12px;" alt="Product">
-          <h4 style="margin-top:8px; font-size:0.95rem;">${item.name}</h4>
+          <h4 style="margin-top:8px; font-size:0.95rem;">${item.name || item.title}</h4>
           <div style="font-weight:800; color:var(--accent); font-size:1.05rem;">₹${item.price} <span style="font-size:0.75rem; color:var(--text-muted); text-decoration:line-through;">₹${item.mrp}</span></div>
           <div style="display:flex; gap:8px; margin-top:8px;">
             <button class="btn btn-edit" onclick="editProduct('${id}', '${encodedItem}')"><i class="fa-solid fa-pen"></i> Edit</button>
@@ -754,17 +878,35 @@
       }
     };
 
-    // 3. LISTEN AND FILTER ORDERS FOR THIS SELLER
-    onValue(ref(db, 'orders'), (snapshot) => {
+    // 3. LISTEN & FILTER ORDERS FROM 'seller-orders/{phone}' OR fallback 'orders'
+    const ordersRef = ref(db, `seller-orders/${loggedUserPhone}`);
+    onValue(ordersRef, (snapshot) => {
       const grid = document.getElementById('ordersGrid');
       if (!snapshot.exists()) {
-        grid.innerHTML = '<div class="empty-state">No orders received yet.</div>';
-        document.getElementById('statMyOrders').textContent = "0";
+        checkFallbackOrders(grid);
         return;
       }
 
-      const allOrders = snapshot.val();
+      processOrdersData(snapshot.val(), grid);
+    });
+
+    function checkFallbackOrders(grid) {
+      onValue(ref(db, 'orders'), (snap) => {
+        if (!snap.exists()) {
+          grid.innerHTML = '<div class="empty-state">No orders received yet.</div>';
+          document.getElementById('statMyOrders').textContent = "0";
+          document.getElementById('statTotalRevenue').textContent = "₹0";
+          initSalesChart({});
+          return;
+        }
+        processOrdersData(snap.val(), grid);
+      });
+    }
+
+    function processOrdersData(allOrders, grid) {
       let myOrderCount = 0;
+      let totalRev = 0;
+      const chartDatesMap = {};
       grid.innerHTML = "";
 
       Object.keys(allOrders).forEach(phone => {
@@ -772,8 +914,14 @@
         Object.keys(userOrders).forEach(orderId => {
           const order = userOrders[orderId];
 
-          if (order.sellerPhone === loggedUserPhone || loggedUserPhone === "Admin") {
+          if (order.sellerPhone === loggedUserPhone || loggedUserPhone === "Admin" || !order.sellerPhone) {
             myOrderCount++;
+            const priceNum = parseFloat(String(order.price || order.totalAmount || 0).replace(/[^0-9.]/g, '')) || 0;
+            totalRev += priceNum;
+
+            const orderDate = order.date || (order.createdAt ? order.createdAt.split('T')[0] : 'Recent');
+            chartDatesMap[orderDate] = (chartDatesMap[orderDate] || 0) + 1;
+
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
@@ -795,7 +943,9 @@
       }
 
       document.getElementById('statMyOrders').textContent = myOrderCount;
-    });
+      document.getElementById('statTotalRevenue').textContent = `₹${totalRev.toLocaleString('en-IN')}`;
+      initSalesChart(chartDatesMap);
+    }
   </script>
 </body>
 </html>
