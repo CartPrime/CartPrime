@@ -556,7 +556,7 @@
                 title: 'Confirm Order?', text: "Confirm your order with Cash on Delivery?", icon: 'question',
                 showCancelButton: true, confirmButtonText: 'Yes, Confirm', cancelButtonText: 'Cancel',
                 customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
-            }).then((res) => {
+            }).then(async (res) => {
                 if(res.isConfirmed) {
                     document.getElementById('successAnimationOverlay').classList.remove('hidden');
 
@@ -564,7 +564,21 @@
                     const now = new Date();
                     const deliveryDate = getDeliveryDateStr();
 
-                    let sellerPhone = orderInfo.addedByPhone || orderInfo.sellerPhone || orderInfo.addedBy || "Admin";
+                    let sellerPhone = orderInfo.addedByPhone || orderInfo.sellerPhone || orderInfo.addedBy || null;
+
+                    // If sellerPhone is not directly in pendingOrder, try checking seller-products path
+                    if (!sellerPhone && orderInfo.productId) {
+                        try {
+                            const sellerSnap = await get(ref(db, `seller-products`));
+                            if (sellerSnap.exists()) {
+                                sellerSnap.forEach((phoneFolderSnap) => {
+                                    if (phoneFolderSnap.hasChild(orderInfo.productId)) {
+                                        sellerPhone = phoneFolderSnap.key;
+                                    }
+                                });
+                            }
+                        } catch (e) {}
+                    }
 
                     let finalOrder = { 
                         customerName: fields.name, 
@@ -578,7 +592,7 @@
                         paymentStatus: "COD",
                         paymentMethod: "COD",
                         orderId: orderId,
-                        sellerPhone: sellerPhone,
+                        sellerPhone: sellerPhone || "Admin",
                         deliveryDate: deliveryDate
                     };
 
@@ -604,17 +618,15 @@
                         finalOrder.price = (unitPrice * q).toLocaleString('en-IN');
                     }
 
-                    // Save to customer orders path
-                    const customerOrderRef = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
-                    
-                    // Save to seller orders path if sellerPhone is valid and not Admin
-                    let promises = [customerOrderRef];
-                    if (sellerPhone && sellerPhone !== "Admin") {
-                        const sellerOrderRef = set(ref(db, `seller-orders/${sellerPhone}/${orderId}`), finalOrder);
-                        promises.push(sellerOrderRef);
+                    // Determine database storage path: seller-orders/{sellerPhone} if seller product, else orders
+                    let saveOrderPromise;
+                    if (sellerPhone && sellerPhone !== "Admin" && sellerPhone !== "undefined") {
+                        saveOrderPromise = set(ref(db, `seller-orders/${sellerPhone}/${fields.phone}/${orderId}`), finalOrder);
+                    } else {
+                        saveOrderPromise = set(ref(db, `orders/${fields.phone}/${orderId}`), finalOrder);
                     }
 
-                    Promise.all(promises).then(() => {
+                    saveOrderPromise.then(() => {
                         if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
                         localStorage.removeItem('pendingOrder');
 
