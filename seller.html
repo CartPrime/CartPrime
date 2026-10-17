@@ -126,7 +126,7 @@
       gap: 14px;
     }
 
-    /* Theme Switcher Button Selector */
+    /* Theme Switcher Selector */
     .theme-dropdown {
       position: relative;
       background: var(--surface);
@@ -579,8 +579,8 @@
 
           <div class="grid-2">
             <div class="form-group">
-              <label>SHIPPED FROM (`shippedFrom`)</label>
-              <input type="text" id="pShippedFrom" class="input-field" value="Meesho" style="width: 100%;">
+              <label>STORE / VENDOR NAME (`shippedFrom`)</label>
+              <input type="text" id="pShippedFrom" class="input-field" placeholder="Enter Store Name" style="width: 100%;">
             </div>
             <div class="form-group">
               <label>ESTIMATED DELIVERY (DAYS)</label>
@@ -735,9 +735,13 @@
     const db = getDatabase(app);
 
     const loggedUserPhone = localStorage.getItem('userPhone') || localStorage.getItem('sellerSessionPhone') || "Admin";
-    const loggedUserName = localStorage.getItem('userName') || "Seller Admin";
+    const loggedUserName = localStorage.getItem('userName') || localStorage.getItem('storeName') || "CartPrime Seller";
 
     document.getElementById('activeUserDisplay').textContent = `${loggedUserName} (+91 ${loggedUserPhone})`;
+    document.getElementById('pShippedFrom').value = loggedUserName; // Default to Store Name instead of Meesho
+
+    // Cache products for robust editing
+    window.productsCache = {};
 
     // Theme Switcher Logic
     window.switchTheme = function(themeName) {
@@ -745,7 +749,6 @@
       localStorage.setItem('cartprime_admin_theme', themeName);
     };
 
-    // Load saved theme on startup
     const savedTheme = localStorage.getItem('cartprime_admin_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
     document.getElementById('themeSelector').value = savedTheme;
@@ -933,7 +936,7 @@
         mrp: document.getElementById('pMrp').value.trim(),
         category: document.getElementById('pCategory').value,
         sizes: selectedSizes,
-        shippedFrom: document.getElementById('pShippedFrom').value.trim(),
+        shippedFrom: document.getElementById('pShippedFrom').value.trim() || loggedUserName,
         deliveryDays: document.getElementById('pDeliveryDays').value.trim(),
         desc: document.getElementById('pDesc').value.trim(),
         specs: specs,
@@ -966,6 +969,7 @@
       document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-circle-plus" style="color: var(--accent);"></i> Add New Store Product';
       document.getElementById('submitBtnText').textContent = "SAVE PRODUCT";
       document.getElementById('cancelEditBtn').style.display = "none";
+      document.getElementById('pShippedFrom').value = loggedUserName;
     };
 
     onValue(ref(db, `seller-products/${loggedUserPhone}`), (snapshot) => {
@@ -973,10 +977,12 @@
       if (!snapshot.exists()) {
         grid.innerHTML = '<div class="empty-state">No products added yet.</div>';
         document.getElementById('statMyProducts').textContent = "0";
+        window.productsCache = {};
         return;
       }
 
       const products = snapshot.val();
+      window.productsCache = products;
       grid.innerHTML = "";
       let myCount = 0;
 
@@ -997,7 +1003,7 @@
             </div>
           </div>
           <div class="action-controls">
-            <button class="btn btn-edit" onclick="editProductData('${id}', ${encodeURIComponent(JSON.stringify(item))})"><i class="fa-solid fa-pen"></i> Edit</button>
+            <button class="btn btn-edit" onclick="editProductData('${id}')"><i class="fa-solid fa-pen"></i> Edit</button>
             <button class="btn btn-delete" onclick="deleteProduct('${id}')"><i class="fa-solid fa-trash"></i> Delete</button>
           </div>
         `;
@@ -1007,36 +1013,47 @@
       document.getElementById('statMyProducts').textContent = myCount;
     });
 
-    window.editProductData = function(id, item) {
+    // FIXED: Edit product function fetching directly from local window cache
+    window.editProductData = function(id) {
+      const item = window.productsCache[id];
+      if (!item) {
+        alert("Unable to load product details for editing.");
+        return;
+      }
+
       document.getElementById('editingProductId').value = id;
       document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-pen-to-square" style="color: var(--accent);"></i> Edit Catalog Item';
       document.getElementById('submitBtnText').textContent = "UPDATE PRODUCT";
       document.getElementById('cancelEditBtn').style.display = "inline-flex";
 
-      document.getElementById('pName').value = item.name || "";
-      document.getElementById('pFullTitle').value = item.fullTitle || "";
+      document.getElementById('pName').value = item.name || item.title || "";
+      document.getElementById('pFullTitle').value = item.fullTitle || item.title || "";
       document.getElementById('pCategory').value = item.category || "";
       document.getElementById('pPrice').value = item.price || "";
       document.getElementById('pMrp').value = item.mrp || "";
-      document.getElementById('pShippedFrom').value = item.shippedFrom || "Meesho";
+      document.getElementById('pShippedFrom').value = item.shippedFrom || loggedUserName;
       document.getElementById('pDeliveryDays').value = item.deliveryDays || "7";
       document.getElementById('pDesc').value = item.desc || "";
-      document.getElementById('pReturnPolicy').value = String(item.return);
-      document.getElementById('pCod').value = String(item.cod);
-      document.getElementById('pVisibility').value = String(item.showOnHome);
-      document.getElementById('pStock').value = String(item.outOfStock);
+      document.getElementById('pReturnPolicy').value = item.return !== undefined ? String(item.return) : "true";
+      document.getElementById('pCod').value = item.cod !== undefined ? String(item.cod) : "true";
+      document.getElementById('pVisibility').value = item.showOnHome !== undefined ? String(item.showOnHome) : "true";
+      document.getElementById('pStock').value = item.outOfStock !== undefined ? String(item.outOfStock) : "false";
 
+      // Reset checkboxes
       document.querySelectorAll('input[name="sizes"]').forEach(cb => {
         cb.checked = item.sizes && item.sizes.includes(cb.value);
       });
 
+      // Populate Specs
       const specContainer = document.getElementById('specContainer');
       specContainer.innerHTML = "";
-      if (item.specs) {
+      if (item.specs && Object.keys(item.specs).length > 0) {
         Object.keys(item.specs).forEach(k => addSpecRow(k, item.specs[k]));
+      } else {
+        addSpecRow("", "");
       }
-      if (specContainer.children.length === 0) addSpecRow("", "");
 
+      // Populate Gallery Images
       const galleryContainer = document.getElementById('galleryContainer');
       galleryContainer.innerHTML = "";
       if (item.images && item.images.length > 0) {
@@ -1045,7 +1062,9 @@
         addGalleryRow("");
       }
 
+      // Switch to add/edit product tab smoothly
       document.querySelector('[data-tab="tab-add-product"]').click();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     window.deleteProduct = (id) => {
