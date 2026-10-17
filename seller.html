@@ -12,12 +12,12 @@
 
   <style>
     :root {
-      --bg: #09090e;
-      --card-bg: #12151e;
-      --surface: #1a202c;
+      --bg: #07090e;
+      --card-bg: #0f131f;
+      --surface: #161b2c;
       --accent: #f59e0b;
       --accent-hover: #fbbf24;
-      --glow-accent: rgba(245, 158, 11, 0.25);
+      --glow-accent: rgba(245, 158, 11, 0.35);
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --border: rgba(255, 255, 255, 0.08);
@@ -32,7 +32,10 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-bottom: 50px;
+      padding-bottom: 60px;
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(245, 158, 11, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(14, 165, 233, 0.04) 0%, transparent 40%);
     }
 
     nav {
@@ -40,246 +43,301 @@
       justify-content: space-between;
       align-items: center;
       padding: 18px 5%;
-      background: rgba(18, 21, 30, 0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(15, 19, 31, 0.9);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     }
 
     .logo {
       font-weight: 800;
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       display: flex;
       align-items: center;
       gap: 10px;
+      letter-spacing: -0.5px;
     }
 
-    .logo i { color: var(--accent); filter: drop-shadow(0 0 8px var(--glow-accent)); }
+    .logo i { 
+      color: var(--accent); 
+      filter: drop-shadow(0 0 10px var(--glow-accent)); 
+    }
 
     .user-profile-badge {
       display: flex;
       align-items: center;
       gap: 10px;
       background: var(--surface);
-      padding: 6px 16px;
+      padding: 8px 18px;
       border-radius: 30px;
       border: 1px solid var(--border);
       font-size: 0.82rem;
       font-weight: 700;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-      padding: 25px 5% 15px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      padding: 30px 5% 15px;
     }
 
     .stat-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 20px;
+      border-radius: 22px;
+      padding: 22px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-      transition: transform 0.2s ease;
+      gap: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
-    .stat-card:hover { transform: translateY(-3px); border-color: rgba(245, 158, 11, 0.4); }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .stat-card:hover { 
+      transform: translateY(-4px); 
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(245, 158, 11, 0.1);
+    }
+    .stat-card:hover::before { opacity: 1; }
 
     .stat-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
       background: rgba(245, 158, 11, 0.1);
       color: var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      box-shadow: 0 0 15px var(--glow-accent);
+      font-size: 1.5rem;
+      box-shadow: 0 0 20px var(--glow-accent);
     }
 
-    .stat-info h4 { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
-    .stat-info span { font-size: 1.6rem; font-weight: 800; }
+    .stat-info h4 { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-info span { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.5px; }
 
     .main-container { padding: 10px 5%; }
 
     .tabs {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 25px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 12px;
+      padding-bottom: 15px;
       overflow-x: auto;
     }
 
     .tab-btn {
-      padding: 11px 22px;
+      padding: 12px 24px;
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 16px;
       color: var(--text-muted);
       cursor: pointer;
       font-weight: 700;
       font-size: 0.85rem;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       white-space: nowrap;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
+    }
+
+    .tab-btn:hover {
+      background: var(--surface);
+      color: var(--text);
+      border-color: rgba(255,255,255,0.15);
     }
 
     .tab-btn.active {
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #0b0b0f;
       border-color: var(--accent);
-      box-shadow: 0 0 20px var(--glow-accent);
+      box-shadow: 0 0 25px var(--glow-accent);
     }
 
     .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
 
-    /* List View Layout for Products & Orders */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .list-container {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 16px;
     }
 
     .list-item-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
+      border-radius: 20px;
+      padding: 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      gap: 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
       flex-wrap: wrap;
+      transition: border-color 0.2s;
+    }
+
+    .list-item-card:hover {
+      border-color: rgba(255,255,255,0.15);
     }
 
     .list-item-main {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 18px;
       flex: 1;
-      min-width: 250px;
+      min-width: 280px;
     }
 
     .list-item-img {
-      width: 70px;
-      height: 70px;
-      border-radius: 12px;
+      width: 75px;
+      height: 75px;
+      border-radius: 14px;
       object-fit: cover;
       border: 1px solid var(--border);
       flex-shrink: 0;
     }
 
-    .list-item-info h4 { font-size: 0.98rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
-    .list-item-info p { font-size: 0.8rem; color: var(--text-muted); }
+    .list-item-info h4 { font-size: 1.02rem; font-weight: 800; color: #fff; margin-bottom: 5px; }
+    .list-item-info p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 3px; }
 
     .views-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       background: rgba(14, 165, 233, 0.15);
       color: var(--info);
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 20px;
       font-size: 0.75rem;
       font-weight: 800;
-      margin-top: 5px;
+      margin-top: 6px;
+      border: 1px solid rgba(14, 165, 233, 0.25);
     }
 
     .action-controls {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
     .status-select, .date-input, .input-field {
-      padding: 10px 14px;
+      padding: 11px 16px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       color: #fff;
       font-size: 0.85rem;
       outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .status-select:focus, .date-input:focus, .input-field:focus {
+      border-color: var(--accent);
     }
 
     .btn {
-      padding: 10px 16px;
-      border-radius: 12px;
+      padding: 11px 18px;
+      border-radius: 14px;
       border: none;
       font-weight: 800;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
       transition: all 0.2s ease;
     }
 
     .btn-delete { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
-    .btn-delete:hover { background: var(--danger); color: #fff; }
+    .btn-delete:hover { background: var(--danger); color: #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+    
     .btn-edit { background: rgba(14, 165, 233, 0.15); color: var(--info); border: 1px solid rgba(14, 165, 233, 0.3); }
-    .btn-edit:hover { background: var(--info); color: #fff; }
-    .btn-save { background: var(--success); color: #fff; }
+    .btn-edit:hover { background: var(--info); color: #fff; box-shadow: 0 0 15px rgba(14, 165, 233, 0.4); }
+    
+    .btn-save { background: var(--success); color: #fff; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3); }
+    .btn-save:hover { background: #16a34a; transform: translateY(-2px); }
 
     .form-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 24px;
-      padding: 28px;
-      max-width: 820px;
+      padding: 32px;
+      max-width: 860px;
       margin: 0 auto;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
     }
 
-    .form-group { margin-bottom: 18px; }
-    .form-group label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px; }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
     .size-checkboxes { display: flex; gap: 10px; flex-wrap: wrap; }
     .size-chip {
       display: flex; align-items: center; gap: 6px; background: var(--surface);
-      padding: 8px 14px; border-radius: 10px; font-size: 0.82rem; border: 1px solid var(--border); cursor: pointer;
+      padding: 9px 16px; border-radius: 12px; font-size: 0.85rem; border: 1px solid var(--border); cursor: pointer;
+      transition: all 0.2s;
     }
+    .size-chip:hover { border-color: var(--accent); }
     .size-chip input { accent-color: var(--accent); }
 
     .spec-row, .gallery-image-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
-    .spec-row { display: grid; grid-template-columns: 1fr 1fr 40px; }
+    .spec-row { display: grid; grid-template-columns: 1fr 1fr 42px; }
 
     .btn-secondary-action {
       background: var(--surface); border: 1px solid var(--border); color: var(--text);
-      padding: 10px 16px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      padding: 11px 16px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      transition: background 0.2s;
     }
+    .btn-secondary-action:hover { background: rgba(255,255,255,0.05); }
 
     .btn-upload {
       background: rgba(2, 132, 199, 0.2); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.4);
-      padding: 10px 14px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer;
-      white-space: nowrap;
+      padding: 11px 16px; border-radius: 12px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      white-space: nowrap; transition: background 0.2s;
     }
+    .btn-upload:hover { background: rgba(2, 132, 199, 0.35); }
 
     .btn-submit {
-      width: 100%; padding: 15px; background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #0b0b0f; border: none; border-radius: 14px; font-weight: 800; font-size: 0.95rem; cursor: pointer;
+      width: 100%; padding: 16px; background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0b0b0f; border: none; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer;
+      box-shadow: 0 4px 20px var(--glow-accent); transition: all 0.2s;
     }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 25px var(--glow-accent); }
 
     .analytics-card {
-      background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 24px;
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
     .empty-state {
-      text-align: center; padding: 50px 20px; background: var(--card-bg);
+      text-align: center; padding: 60px 20px; background: var(--card-bg);
       border-radius: 20px; border: 1px dashed var(--border); color: var(--text-muted); font-size: 0.95rem;
     }
   </style>
@@ -289,10 +347,10 @@
   <!-- Top Navigation Bar -->
   <nav>
     <div class="logo">
-      <i class="fa-solid fa-cart-shopping"></i> CartPrime Seller Dashboard
+      <i class="fa-solid fa-cart-shopping"></i> CartPrime Master Dashboard
     </div>
     <div class="user-profile-badge">
-      <i class="fa-solid fa-user-check" style="color: var(--accent);"></i>
+      <i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i>
       <span id="activeUserDisplay">Loading User...</span>
     </div>
   </nav>
@@ -329,31 +387,31 @@
       <button class="tab-btn active" data-tab="tab-add-product"><i class="fa-solid fa-circle-plus"></i> <span id="formTitleText">Add New Product</span></button>
       <button class="tab-btn" data-tab="tab-products"><i class="fa-solid fa-list-check"></i> Manage Products (List View)</button>
       <button class="tab-btn" data-tab="tab-orders"><i class="fa-solid fa-truck-fast"></i> Orders & Delivery Status</button>
-      <button class="tab-btn" data-tab="tab-analytics"><i class="fa-solid fa-chart-line"></i> Analytics</button>
+      <button class="tab-btn" data-tab="tab-analytics"><i class="fa-solid fa-chart-line"></i> Sales Analytics</button>
     </div>
 
     <!-- TAB 1: ADD / EDIT PRODUCT -->
     <div class="tab-content active" id="tab-add-product">
       <div class="form-card">
-        <h3 id="formHeading" style="margin-bottom: 6px;"><i class="fa-solid fa-circle-plus" style="color: var(--accent);"></i> Add New Product</h3>
-        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 20px;">Publish or update products directly in your store</p>
+        <h3 id="formHeading" style="margin-bottom: 6px; font-size: 1.2rem;"><i class="fa-solid fa-circle-plus" style="color: var(--accent);"></i> Add New Product</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 24px;">Publish or update catalog items directly in your store inventory.</p>
         
         <form id="adminProductForm">
           <input type="hidden" id="editingProductId" value="">
 
           <div class="form-group">
             <label>PRODUCT NAME / SHORT TITLE (`name` & `title`)</label>
-            <input type="text" id="pName" class="input-field" placeholder="e.g. Universal Power Adapter Plug" required>
+            <input type="text" id="pName" class="input-field" placeholder="e.g. Universal Power Adapter Plug" required style="width: 100%;">
           </div>
 
           <div class="form-group">
             <label>FULL DISPLAY TITLE (`fullTitle`)</label>
-            <input type="text" id="pFullTitle" class="input-field" placeholder="Full descriptive title displayed on product details page">
+            <input type="text" id="pFullTitle" class="input-field" placeholder="Full descriptive title displayed on product details page" style="width: 100%;">
           </div>
 
           <div class="form-group">
             <label>CATEGORY (`category`)</label>
-            <select id="pCategory" class="input-field" style="background: var(--surface);" required>
+            <select id="pCategory" class="input-field" style="background: var(--surface); width: 100%;" required>
               <option value="">SELECT CATEGORY</option>
               <option value="Gadgets">Gadgets</option>
               <option value="Fashion">Fashion</option>
@@ -377,28 +435,28 @@
           <div class="grid-2">
             <div class="form-group">
               <label>MRP (₹ STRIKE-THROUGH PRICE - `mrp`)</label>
-              <input type="number" id="pMrp" class="input-field" placeholder="e.g. 800" required>
+              <input type="number" id="pMrp" class="input-field" placeholder="e.g. 800" required style="width: 100%;">
             </div>
             <div class="form-group">
               <label>SELLING PRICE (₹ - `price`)</label>
-              <input type="number" id="pPrice" class="input-field" placeholder="e.g. 450" required>
+              <input type="number" id="pPrice" class="input-field" placeholder="e.g. 450" required style="width: 100%;">
             </div>
           </div>
 
           <div class="grid-2">
             <div class="form-group">
               <label>SHIPPED FROM (`shippedFrom`)</label>
-              <input type="text" id="pShippedFrom" class="input-field" value="Meesho">
+              <input type="text" id="pShippedFrom" class="input-field" value="Meesho" style="width: 100%;">
             </div>
             <div class="form-group">
               <label>ESTIMATED DELIVERY (DAYS - `deliveryDays`)</label>
-              <input type="number" id="pDeliveryDays" class="input-field" value="7">
+              <input type="number" id="pDeliveryDays" class="input-field" value="7" style="width: 100%;">
             </div>
           </div>
 
           <div class="form-group">
             <label>PRODUCT DESCRIPTION (`desc`)</label>
-            <textarea id="pDesc" class="input-field" rows="3" placeholder="• Enter features with bullet points..."></textarea>
+            <textarea id="pDesc" class="input-field" rows="3" placeholder="• Enter features with bullet points..." style="width: 100%; resize: vertical;"></textarea>
           </div>
 
           <!-- Specifications Section -->
@@ -419,7 +477,7 @@
             <label>PRODUCT GALLERY IMAGES (`images` array)</label>
             <div id="galleryContainer">
               <div class="gallery-image-row">
-                <input type="url" class="input-field gallery-url" placeholder="IMAGE URL 1" required>
+                <input type="url" class="input-field gallery-url" placeholder="IMAGE URL 1" required style="flex:1;">
                 <input type="file" class="file-input" accept="image/*" style="display: none;" onchange="uploadImageToImgBB(this)">
                 <button type="button" class="btn-upload" onclick="this.previousElementSibling.click()"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</button>
               </div>
@@ -430,14 +488,14 @@
           <div class="grid-2">
             <div class="form-group">
               <label>RETURN POLICY (`return`)</label>
-              <select id="pReturnPolicy" class="input-field" style="background: var(--surface);">
+              <select id="pReturnPolicy" class="input-field" style="background: var(--surface); width: 100%;">
                 <option value="true">Available (7 Days)</option>
                 <option value="false">No Returns Allowed</option>
               </select>
             </div>
             <div class="form-group">
               <label>CASH ON DELIVERY (`cod`)</label>
-              <select id="pCod" class="input-field" style="background: var(--surface);">
+              <select id="pCod" class="input-field" style="background: var(--surface); width: 100%;">
                 <option value="true">COD Available</option>
                 <option value="false">Online Payment Only</option>
               </select>
@@ -447,23 +505,23 @@
           <div class="grid-2">
             <div class="form-group">
               <label>STORE VISIBILITY (`showOnHome`)</label>
-              <select id="pVisibility" class="input-field" style="background: var(--surface);">
+              <select id="pVisibility" class="input-field" style="background: var(--surface); width: 100%;">
                 <option value="true">Show on Home & Search</option>
                 <option value="false">Search Only (Hidden from Home)</option>
               </select>
             </div>
             <div class="form-group">
               <label>STOCK STATUS (`outOfStock`)</label>
-              <select id="pStock" class="input-field" style="background: var(--surface);">
+              <select id="pStock" class="input-field" style="background: var(--surface); width: 100%;">
                 <option value="false">In Stock</option>
                 <option value="true">Out of Stock</option>
               </select>
             </div>
           </div>
 
-          <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <div style="display: flex; gap: 12px; margin-top: 25px;">
             <button type="submit" class="btn-submit" id="submitBtnText">SAVE PRODUCT</button>
-            <button type="button" id="cancelEditBtn" class="btn" style="background: var(--surface); color: var(--text); display: none; padding: 15px;" onclick="resetProductForm()">Cancel</button>
+            <button type="button" id="cancelEditBtn" class="btn" style="background: var(--surface); color: var(--text); display: none; padding: 15px 24px;" onclick="resetProductForm()">Cancel</button>
           </div>
         </form>
       </div>
@@ -486,11 +544,11 @@
     <!-- TAB 4: SALES ANALYTICS -->
     <div class="tab-content" id="tab-analytics">
       <div class="analytics-card">
-        <h3 style="font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-          <i class="fa-solid fa-chart-line" style="color: var(--accent);"></i> Revenue Growth & Order Trends
+        <h3 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-chart-line" style="color: var(--accent);"></i> Daily Order Volume & Performance
         </h3>
-        <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Visual representation of daily order volume and performance.</p>
-        <div style="position: relative; width: 100%; height: 300px; margin-top: 15px;">
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Visual analytics tracking incoming order activity day by day.</p>
+        <div style="position: relative; width: 100%; height: 320px; margin-top: 20px;">
           <canvas id="salesChart"></canvas>
         </div>
       </div>
@@ -542,23 +600,30 @@
       salesChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels.length > 0 ? labels : ['No Data'],
+          labels: labels.length > 0 ? labels : ['No Activity'],
           datasets: [{
-            label: 'Orders per Day',
+            label: 'Orders Count',
             data: dataValues.length > 0 ? dataValues : [0],
             borderColor: '#f59e0b',
-            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            backgroundColor: 'rgba(245, 158, 11, 0.12)',
             borderWidth: 3,
             fill: true,
-            tension: 0.4
+            tension: 0.4,
+            pointBackgroundColor: '#f59e0b',
+            pointBorderColor: '#0f131f',
+            pointBorderWidth: 2,
+            pointRadius: 5
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', weight: '700' } } }
+          },
           scales: {
-            x: { ticks: { color: '#94a3b8' } },
-            y: { ticks: { color: '#94a3b8', stepSize: 1 } }
+            x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8' } },
+            y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8', stepSize: 1 } }
           }
         }
       });
@@ -622,7 +687,7 @@
       const div = document.createElement('div');
       div.className = 'gallery-image-row';
       div.innerHTML = `
-        <input type="url" class="input-field gallery-url" placeholder="IMAGE URL ${count}" value="${url}" required>
+        <input type="url" class="input-field gallery-url" placeholder="IMAGE URL ${count}" value="${url}" required style="flex:1;">
         <input type="file" class="file-input" accept="image/*" style="display: none;" onchange="uploadImageToImgBB(this)">
         <button type="button" class="btn-upload" onclick="this.previousElementSibling.click()"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</button>
         <button type="button" class="btn-secondary-action" onclick="this.parentElement.remove()" style="color:#ef4444;"><i class="fa-solid fa-xmark"></i></button>
@@ -697,7 +762,7 @@
       document.getElementById('cancelEditBtn').style.display = "none";
     };
 
-    // 2. LISTEN AND DISPLAY PRODUCTS IN LIST VIEW (WITH VIEWS DISPLAY)
+    // 2. LISTEN AND DISPLAY PRODUCTS IN LIST VIEW
     onValue(ref(db, `seller-products/${loggedUserPhone}`), (snapshot) => {
       const grid = document.getElementById('productsGrid');
       if (!snapshot.exists()) {
@@ -713,7 +778,6 @@
       Object.keys(products).forEach(id => {
         const item = products[id];
         myCount++;
-        const encodedItem = encodeURIComponent(JSON.stringify(item));
         const itemViews = item.views || 0;
 
         const card = document.createElement('div');
@@ -723,12 +787,12 @@
             <img src="${item.images ? item.images[0] : ''}" class="list-item-img" alt="Product">
             <div class="list-item-info">
               <h4>${item.name || item.title}</h4>
-              <p>Category: <b>${item.category || 'General'}</b> | Price: <b style="color:var(--accent)">₹${item.price}</b> <span style="text-decoration:line-through; font-size:0.7rem; color:var(--text-muted)">₹${item.mrp}</span></p>
+              <p>Category: <b>${item.category || 'General'}</b> | Price: <b style="color:var(--accent)">₹${item.price}</b> <span style="text-decoration:line-through; font-size:0.75rem; color:var(--text-muted)">₹${item.mrp}</span></p>
               <div class="views-badge"><i class="fa-solid fa-eye"></i> ${itemViews} Views</div>
             </div>
           </div>
           <div class="action-controls">
-            <button class="btn btn-edit" onclick="editProduct('${id}', '${encodedItem}')"><i class="fa-solid fa-pen"></i> Edit</button>
+            <button class="btn btn-edit" onclick="editProductData('${id}', ${encodeURIComponent(JSON.stringify(item))})"><i class="fa-solid fa-pen"></i> Edit</button>
             <button class="btn btn-delete" onclick="deleteProduct('${id}')"><i class="fa-solid fa-trash"></i> Delete</button>
           </div>
         `;
@@ -738,13 +802,58 @@
       document.getElementById('statMyProducts').textContent = myCount;
     });
 
+    window.editProductData = function(id, item) {
+      document.getElementById('editingProductId').value = id;
+      document.getElementById('formHeading').innerHTML = '<i class="fa-solid fa-pen-to-square" style="color: var(--accent);"></i> Edit Product';
+      document.getElementById('submitBtnText').textContent = "UPDATE PRODUCT";
+      document.getElementById('cancelEditBtn').style.display = "inline-flex";
+
+      document.getElementById('pName').value = item.name || "";
+      document.getElementById('pFullTitle').value = item.fullTitle || "";
+      document.getElementById('pCategory').value = item.category || "";
+      document.getElementById('pPrice').value = item.price || "";
+      document.getElementById('pMrp').value = item.mrp || "";
+      document.getElementById('pShippedFrom').value = item.shippedFrom || "Meesho";
+      document.getElementById('pDeliveryDays').value = item.deliveryDays || "7";
+      document.getElementById('pDesc').value = item.desc || "";
+      document.getElementById('pReturnPolicy').value = String(item.return);
+      document.getElementById('pCod').value = String(item.cod);
+      document.getElementById('pVisibility').value = String(item.showOnHome);
+      document.getElementById('pStock').value = String(item.outOfStock);
+
+      // Sizes checkboxes
+      document.querySelectorAll('input[name="sizes"]').forEach(cb => {
+        cb.checked = item.sizes && item.sizes.includes(cb.value);
+      });
+
+      // Specifications
+      const specContainer = document.getElementById('specContainer');
+      specContainer.innerHTML = "";
+      if (item.specs) {
+        Object.keys(item.specs).forEach(k => addSpecRow(k, item.specs[k]));
+      }
+      if (specContainer.children.length === 0) addSpecRow("", "");
+
+      // Gallery Images
+      const galleryContainer = document.getElementById('galleryContainer');
+      galleryContainer.innerHTML = "";
+      if (item.images && item.images.length > 0) {
+        item.images.forEach(url => addGalleryRow(url));
+      } else {
+        addGalleryRow("");
+      }
+
+      // Switch to add/edit tab
+      document.querySelector('[data-tab="tab-add-product"]').click();
+    };
+
     window.deleteProduct = (id) => {
       if (confirm("Are you sure you want to delete this product?")) {
         remove(ref(db, `seller-products/${loggedUserPhone}/${id}`));
       }
     };
 
-    // 3. LISTEN & DISPLAY ORDERS WITH STATUS & DELIVERY DATE CONTROLS
+    // 3. LISTEN & DISPLAY ORDERS WITH STATUS, DATE & REVENUE ANALYTICS
     const ordersRef = ref(db, `seller-orders/${loggedUserPhone}`);
     onValue(ordersRef, (snapshot) => {
       const grid = document.getElementById('ordersGrid');
@@ -771,8 +880,9 @@
           const priceNum = parseFloat(String(order.price || 0).replace(/[^0-9.]/g, '')) || 0;
           totalRev += priceNum;
 
-          const orderDate = order.date || 'Recent';
-          chartDatesMap[orderDate] = (chartDatesMap[orderDate] || 0) + 1;
+          // Group order counts by date (or formatted date string)
+          const rawDate = order.timestamp ? new Date(order.timestamp).toISOString().split('T')[0] : (order.date || 'Recent Orders');
+          chartDatesMap[rawDate] = (chartDatesMap[rawDate] || 0) + 1;
 
           const currentStatus = order.status || 'Order Confirmed';
           const currentDeliveryDate = order.deliveryDate || '';
@@ -782,9 +892,10 @@
           card.innerHTML = `
             <div class="list-item-main">
               <div class="list-item-info">
-                <h4>ORDER #${orderId.substring(0,8)} - ₹${order.price}</h4>
+                <h4>ORDER #${orderId.substring(0,8).toUpperCase()} - <span style="color:var(--accent);">₹${order.price}</span></h4>
                 <p>Item: <b>${order.productName || 'Cart Item'}</b></p>
                 <p>Customer: <b>+91 ${phone}</b> | Address: ${order.address || 'N/A'}</p>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;"><i class="fa-regular fa-clock"></i> Date: ${rawDate}</p>
               </div>
             </div>
             <div class="action-controls">
@@ -816,7 +927,7 @@
         status: statusVal,
         deliveryDate: dateVal
       }).then(() => {
-        alert("Order updated successfully!");
+        alert("Order status & delivery date updated successfully!");
       }).catch(err => {
         alert("Error updating order: " + err.message);
       });
