@@ -1,8 +1,14 @@
 {
-  "rewrites": [
+  "cleanUrls": true,
+  "headers": [
     {
-      "source": "/((?!maintenance.html|_next/static|_next/image|favicon.ico).*)",
-      "destination": "/maintenance.html"
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ]
 }
