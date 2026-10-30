@@ -3468,16 +3468,24 @@ window.updatePayoutStatus = async (requestPathKey, newStatus) => {
 
 window.updateAffiliateStatus = async (requestId, userId, newStatus) => {
     try {
+        const isApproved = newStatus === 'Approved';
+
+        // 1. Update the earn partner application status
         await update(ref(db, `earn_partners/${requestId}`), { 
             status: newStatus,
             updatedAt: new Date().toISOString()
         });
 
-        if (userId && userId !== 'undefined' && userId !== '') {
-            await update(ref(db, `users/${userId}`), {
-                isAffiliate: newStatus === 'Approved',
+        // 2. Identify the target user ID (fallback to requestId if userId is missing)
+        const targetUid = (userId && userId !== 'undefined' && userId !== '') ? userId : requestId;
+
+        if (targetUid) {
+            // 3. Update the user's profile record so they are fully verified across the store and database
+            await update(ref(db, `users/${targetUid}`), {
+                isAffiliate: isApproved,
+                verified: isApproved,
                 affiliateStatus: newStatus
-            }).catch(err => console.log("User status update skipped/failed:", err));
+            });
         }
 
         Swal.fire({
@@ -3489,9 +3497,11 @@ window.updateAffiliateStatus = async (requestId, userId, newStatus) => {
             timer: 2000
         });
     } catch (error) {
+        console.error("Affiliate status update error:", error);
         Swal.fire('Error', 'Action failed: ' + error.message, 'error');
     }
 };
+
 
 onValue(ref(db, 'earn_partners'), snap => {
     const list = document.getElementById('affiliateRequestList');
