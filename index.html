@@ -60,10 +60,10 @@ body {
   -webkit-tap-highlight-color: transparent; transition: background-color 0.3s ease, color 0.3s ease; 
 } 
 
-button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notification-icon-btn, .budget-card, .shelf-card, .header-myshop-btn, .buy-btn, .seller-cta-button { 
+button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notification-icon-btn, .budget-card, .shelf-card, .buy-btn { 
   touch-action: manipulation; user-select: none; -webkit-tap-highlight-color: transparent; cursor: pointer;
 } 
-button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notification-icon-btn:active, .budget-card:active, .shelf-card:active, .header-myshop-btn:active, .buy-btn:active, .seller-cta-button:active { 
+button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notification-icon-btn:active, .budget-card:active, .shelf-card:active, .buy-btn:active { 
   transform: scale(0.96) !important; 
 } 
 
@@ -108,16 +108,8 @@ nav {
   padding: 2px; border: 2px solid var(--card-bg); box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
 }
 
-/* Profile chip & Header My Shop Button Styling */
+/* Profile chip */
 .header-profile-wrap { display: flex; align-items: center; gap: 6px; }
-.header-myshop-btn {
-  display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: #0b0b0f; font-weight: 800; font-size: 0.75rem; padding: 6px 10px; border-radius: 40px; text-decoration: none;
-  border: 1px solid var(--accent-border); box-shadow: 0 0 10px var(--accent-glow); transition: all 0.2s ease; height: 38px;
-  white-space: nowrap; flex-shrink: 0;
-}
-.header-myshop-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
-
 .profile-chip {
   display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1.5px solid var(--border);
   padding: 3px 10px 3px 3px; border-radius: 40px; cursor: pointer; transition: all 0.2s ease;
@@ -594,7 +586,6 @@ nav {
   nav { padding: 8px 4%; flex-wrap: wrap; justify-content: space-between; gap: 6px; } 
   .logo { font-size: 1.1rem; order: 1; gap: 6px; } 
   .nav-right { order: 2; gap: 6px; flex-shrink: 0; } 
-  .header-myshop-btn { padding: 5px 8px; font-size: 0.7rem; height: 34px; gap: 4px; }
   .profile-chip { padding: 2px 8px 2px 2px; max-width: 125px; height: 34px; gap: 5px; }
   .profile-avatar { width: 28px; height: 28px; font-size: 0.75rem; }
   .profile-name { font-size: 0.7rem; }
@@ -651,8 +642,6 @@ nav {
 @media (max-width: 360px) {
   .logo div { font-size: 0.95rem; }
   .profile-chip { max-width: 82px; padding-right: 6px; }
-  .header-myshop-btn span { display: none; }
-  .header-myshop-btn { padding: 6px 8px; }
   .edit-profile-btn { display: none; }
   .otp-secure-field { letter-spacing: 6px; font-size: 1.3rem; }
   .shelf-card { flex: 0 0 135px; max-width: 135px; }
@@ -662,60 +651,6 @@ nav {
   .profile-info { display: none; }
   .profile-chip { padding: 2px; max-width: 36px; }
   .nav-right { gap: 4px; }
-}
-
-.seller-cta-section { padding: 6px 6% 12px; width: 100%; }
-.seller-cta-card {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-  padding: 16px 18px; border: 1.5px solid rgba(245,158,11,.42); border-radius: 18px;
-  background: linear-gradient(125deg, var(--surface), var(--card-bg));
-  box-shadow: 0 8px 24px rgba(0,0,0,.05);
-  width: 100%;
-}
-.seller-cta-copy { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
-.seller-cta-icon {
-  width: 44px; height: 44px; flex-shrink: 0; border-radius: 13px; display: flex; align-items: center;
-  justify-content: center; font-size: 1.25rem; color: #111; background: linear-gradient(135deg,#fbbf24,#f59e0b);
-  box-shadow: 0 0 14px rgba(245,158,11,.25);
-}
-.seller-cta-copy h3 { font-size: 1rem; font-weight: 800; margin-bottom: 3px; color: var(--text-main); }
-.seller-cta-copy p { font-size: 0.78rem; line-height: 1.45; color: var(--text-muted); }
-.seller-cta-button {
-  border: none; border-radius: 12px; padding: 11px 16px; font-weight: 800; font-size: 0.84rem; cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: #111;
-  background: linear-gradient(135deg,#fbbf24,#f59e0b); box-shadow: 0 4px 14px rgba(245,158,11,.22); flex-shrink: 0;
-}
-.seller-cta-button:hover { filter: brightness(1.04); transform: translateY(-1px); }
-.seller-status-note {
-  padding: 10px 12px; margin: 2px 0 12px; border-radius: 10px; background: var(--surface);
-  border: 1px solid var(--border); color: var(--text-muted); font-size: 0.76rem; line-height: 1.4;
-}
-.seller-field-label { display:block; font-size:0.72rem; font-weight:800; color:var(--text-muted); margin:0 0 5px; }
-.seller-readonly { opacity:.88; cursor:not-allowed; }
-
-#sellerModal .modal-card {
-  max-width: 450px;
-  width: 92%;
-  max-height: 88vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 18px;
-}
-@media (max-width: 600px) {
-  .seller-cta-section { padding-left: 4%; padding-right: 4%; }
-  .seller-cta-card { padding: 14px; gap: 12px; }
-  .seller-cta-copy { align-items: flex-start; }
-  .seller-cta-copy h3 { font-size: 0.92rem; }
-  .seller-cta-copy p { font-size: 0.72rem; }
-  .seller-cta-button { width: 100%; }
-  
-  #sellerModal .modal-card {
-    width: 95%;
-    max-height: 86vh;
-    padding: 14px;
-    border-radius: 16px;
-    margin: 10px;
-  }
 }
 </style> 
 
@@ -764,12 +699,8 @@ nav {
       <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
     </div>
     
-    <!-- Profile Chip & My Shop Button Group -->
+    <!-- Profile Chip -->
     <div class="header-profile-wrap">
-      <a href="seller.html" id="headerMyShopBtn" class="header-myshop-btn" style="display: none;" title="My Shop Dashboard">
-        <i class="fa-solid fa-store"></i> <span>My Shop</span>
-      </a>
-
       <div class="profile-chip signed-out" id="profileChip" title="Sign in">
         <div class="profile-avatar" id="navProfileAvatar"><i class="fa-solid fa-user"></i></div>
         <div class="profile-info">
@@ -859,13 +790,6 @@ nav {
       </div> 
     </form> 
 
-    <!-- My Shop Button inside Profile modal -->
-    <div id="myShopSection" style="display: none; margin-top: 10px;">
-      <a href="seller-admin.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 11px; border-radius: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0b0b0f; font-weight: 800; font-size: 0.88rem; text-decoration: none; box-shadow: 0 4px 14px rgba(245,158,11,.3);">
-        <i class="fa-solid fa-store"></i> My Shop Dashboard
-      </a>
-    </div>
-
     <div id="logoutSection" style="display: none; margin-top: 12px;">
       <button type="button" id="logoutBtn" style="width: 100%; padding: 11px; border-radius: 12px; border: 1px solid #ef4444; background: rgba(239, 68, 68, 0.08); color: #ef4444; font-weight: 700; cursor: pointer;">
         <i class="fa-solid fa-right-from-bracket"></i> Logout of CartPrime
@@ -887,79 +811,33 @@ nav {
         <i class="fa-solid fa-hand-holding-dollar"></i>
       </div>
       <div>
-        <h3 style="margin: 0 0 2px 0; font-size: 1.1rem; font-weight: 800;">CartPrime Partner Program</h3>
-        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">Earn commissions on every referral</p>
+        <h3 style="margin: 0 0 2px 0; font-size: 1.1rem; font-weight: 800;" id="earnModalMainTitle">CartPrime Partner Program</h3>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;" id="earnModalMainSub">Earn commissions on every referral</p>
       </div>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 6px; margin: 12px 0; background: var(--surface); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);">
-      <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Instant Free Registration</div>
-      <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Direct UPI / Bank Payouts</div>
-      <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Real-time Commission Dashboard</div>
+    <div id="earnContentContainer">
+      <div style="display: flex; flex-direction: column; gap: 6px; margin: 12px 0; background: var(--surface); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Instant Free Registration</div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Direct UPI / Bank Payouts</div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Real-time Commission Dashboard</div>
+      </div>
+
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;" id="earnSubText">Enter your WhatsApp or mobile number to check your partnership eligibility status.</p> 
+
+      <form id="earnForm" class="modal-form" style="margin-top: 0;"> 
+        <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
+        <input type="text" id="partnerName" class="modal-input" placeholder="Full Name" style="display: none;"> 
+        <input type="text" id="partnerUpi" class="modal-input" placeholder="UPI ID / GPay Number for Payouts" style="display: none;"> 
+        
+        <div class="modal-btn-group"> 
+          <button type="button" id="closeEarnModal" style="flex:1; padding:11px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button> 
+          <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Check Eligibility</button> 
+        </div> 
+      </form> 
     </div>
-
-    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;" id="earnSubText">Enter your WhatsApp or mobile number to check your partnership eligibility status.</p> 
-
-    <form id="earnForm" class="modal-form" style="margin-top: 0;"> 
-      <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
-      <input type="text" id="partnerName" class="modal-input" placeholder="Full Name" style="display: none;"> 
-      <input type="text" id="partnerUpi" class="modal-input" placeholder="UPI ID / GPay Number for Payouts" style="display: none;"> 
-      
-      <div class="modal-btn-group"> 
-        <button type="button" id="closeEarnModal" style="flex:1; padding:11px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button> 
-        <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Check Eligibility</button> 
-      </div> 
-    </form> 
   </div> 
 </div> 
-
-<!-- Seller Profile Modal -->
-<div id="sellerModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="sellerModalTitle">
-  <div class="modal-card">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-      <div class="seller-cta-icon"><i class="fa-solid fa-store"></i></div>
-      <div>
-        <h3 id="sellerModalTitle" style="margin:0 0 2px; font-size:1.1rem; font-weight:800;">Create Seller Profile</h3>
-        <p style="font-size:0.75rem; color:var(--text-muted); margin:0;">Register your interest in listing products on CartPrime.</p>
-      </div>
-    </div>
-    <div id="sellerStatusNote" class="seller-status-note" role="status">Your account details will be filled in automatically.</div>
-    <form id="sellerForm" class="modal-form" autocomplete="on">
-      <label class="seller-field-label" for="sellerNameInput">YOUR NAME</label>
-      <input type="text" id="sellerNameInput" class="modal-input seller-readonly" placeholder="Sign in to load your name" autocomplete="name" readonly required>
-
-      <label class="seller-field-label" for="sellerPhoneInput">REGISTERED MOBILE NUMBER</label>
-      <input type="tel" id="sellerPhoneInput" class="modal-input seller-readonly" placeholder="Sign in to load your number" inputmode="numeric" readonly required>
-
-      <label class="seller-field-label" for="sellerEmailInput">EMAIL ID</label>
-      <input type="email" id="sellerEmailInput" class="modal-input" placeholder="e.g. yourname@gmail.com" autocomplete="email" inputmode="email" maxlength="120" required>
-
-      <label class="seller-field-label" for="sellerStoreNameInput">SHOP / BUSINESS NAME</label>
-      <input type="text" id="sellerStoreNameInput" class="modal-input" placeholder="Your shop or business name" maxlength="100" required>
-
-      <label class="seller-field-label" for="sellerCategoryInput">PRODUCT CATEGORY</label>
-      <select id="sellerCategoryInput" class="modal-input" required>
-        <option value="">Select product category</option>
-        <option value="Electronics & Gadgets">Electronics & Gadgets</option>
-        <option value="Fashion & Clothing">Fashion & Clothing</option>
-        <option value="Watches & Accessories">Watches & Accessories</option>
-        <option value="Home & Kitchen">Home & Kitchen</option>
-        <option value="Beauty & Personal Care">Beauty & Personal Care</option>
-        <option value="Toys & Baby Products">Toys & Baby Products</option>
-        <option value="Other">Other</option>
-      </select>
-
-      <label class="seller-field-label" for="sellerProductDetailsInput">WHAT PRODUCTS WOULD YOU LIKE TO ADD?</label>
-      <textarea id="sellerProductDetailsInput" class="modal-input" placeholder="Briefly describe your products, price range, etc." rows="3" maxlength="1500" style="resize:vertical; min-height:80px;" required></textarea>
-
-      <div class="modal-btn-group">
-        <button type="button" id="closeSellerModal" style="flex:1; padding:11px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button>
-        <button type="submit" class="modal-btn-submit" id="sellerSubmitBtn"><i class="fa-solid fa-floppy-disk"></i> Save Seller Profile</button>
-      </div>
-    </form>
-    <p style="font-size:0.68rem; line-height:1.4; color:var(--text-muted); margin-top:10px;">Submitting this form saves your seller profile and product interest. Product listings are not published automatically; CartPrime may review the request first.</p>
-  </div>
-</div>
 
 <!-- Contact Us Modal -->
 <div id="contactModal" class="modal-overlay"> 
@@ -1045,22 +923,6 @@ nav {
     </div> 
   </div> 
 </div> 
-
-<!-- Seller Registration CTA -->
-<section class="seller-cta-section" id="sellerCtaSection" aria-label="Sell on CartPrime">
-  <div class="seller-cta-card">
-    <div class="seller-cta-copy">
-      <div class="seller-cta-icon"><i class="fa-solid fa-store"></i></div>
-      <div>
-        <h3>Have products to sell? Join CartPrime</h3>
-        <p>Create your seller profile and tell us what products you would like to list. Your name and mobile number will be filled from your account.</p>
-      </div>
-    </div>
-    <button type="button" class="seller-cta-button" id="sellerCtaBtn">
-      <i class="fa-solid fa-user-plus"></i> Become a Seller <i class="fa-solid fa-arrow-right"></i>
-    </button>
-  </div>
-</section>
 
 <!-- Budget Deals Zone Box -->
 <div class="budget-box-section">
@@ -1164,8 +1026,8 @@ nav {
     <span id="bottomOrdersBadge" class="badge" style="display:none;">0</span>
   </a>
   <div id="bottomEarnBtn" class="bottom-nav-item">
-    <i class="fa-solid fa-wallet"></i>
-    <span>Earn</span>
+    <i class="fa-solid fa-wallet" id="bottomEarnIcon"></i>
+    <span id="bottomEarnText">Earn</span>
     <span id="bottomEarnBadge" class="badge" style="display:none;">0</span>
   </div>
   <div id="bottomContactBtn" class="bottom-nav-item">
@@ -1375,7 +1237,7 @@ nav {
     setTimeout(() => { modalElement.style.display = 'none'; }, 300);
   }
 
-  // --- EARN MODAL LOGIC & EVENT LISTENERS ---
+  // --- EARN / AFFILIATE MODAL LOGIC & PARTNER STATUS CHECK ---
   const earnModal = document.getElementById('earnModal');
   const earnForm = document.getElementById('earnForm');
   const partnerPhoneInput = document.getElementById('partnerPhone');
@@ -1384,14 +1246,143 @@ nav {
   const closeEarnModal = document.getElementById('closeEarnModal');
   const earnSubmitBtn = document.getElementById('earnSubmitBtn');
   const earnSubText = document.getElementById('earnSubText');
+  const earnContentContainer = document.getElementById('earnContentContainer');
+  const earnModalMainTitle = document.getElementById('earnModalMainTitle');
+  const earnModalMainSub = document.getElementById('earnModalMainSub');
+  const bottomEarnText = document.getElementById('bottomEarnText');
+  const bottomEarnIcon = document.getElementById('bottomEarnIcon');
+
+  function checkPartnerStatusAndUpdateUI() {
+    const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    if (!partnerPhone) {
+      if (bottomEarnText) bottomEarnText.textContent = "Earn";
+      if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-wallet";
+      return;
+    }
+
+    get(ref(db, `earn_partners/${partnerPhone}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        localStorage.setItem('partnerPhone', partnerPhone);
+        localStorage.setItem('partnerName', data.name || 'Partner');
+        localStorage.setItem('partnerId', data.partnerId || partnerPhone);
+        if (bottomEarnText) bottomEarnText.textContent = "Dashboard";
+        if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-chart-line";
+      } else {
+        if (bottomEarnText) bottomEarnText.textContent = "Earn";
+        if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-wallet";
+      }
+    }).catch(() => {});
+  }
+
+  checkPartnerStatusAndUpdateUI();
 
   function openEarnModal() {
     if (!earnModal) return;
-    const userPhone = localStorage.getItem('userPhone') || '';
-    const userName = localStorage.getItem('userName') || '';
-    if (partnerPhoneInput && userPhone) partnerPhoneInput.value = userPhone;
-    if (partnerNameInput && userName) partnerNameInput.value = userName;
+    const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    
+    if (partnerPhone) {
+      get(ref(db, `earn_partners/${partnerPhone}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          // Already registered as partner -> Show Dashboard View inside Modal
+          earnModalMainTitle.textContent = "Partner Dashboard";
+          earnModalMainSub.textContent = `ID: ${data.partnerId || partnerPhone}`;
+          earnContentContainer.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 10px; margin: 10px 0 16px 0;">
+              <div style="background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">PARTNER NAME</div>
+                <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);">${data.name || 'Partner'}</div>
+              </div>
+              <div style="background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">REGISTERED PHONE / UPI</div>
+                <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);">+91 ${data.phone || partnerPhone}</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" id="closeActiveEarnModal" style="flex:1; padding:11px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text-main); font-weight:700; cursor:pointer;">Close</button>
+              <button type="button" id="copyPartnerLinkBtn" class="modal-btn-submit" style="flex:1;"><i class="fa-solid fa-share-nodes"></i> Share & Earn</button>
+            </div>
+          `;
+          openModal(earnModal);
+          
+          document.getElementById('closeActiveEarnModal').onclick = () => closeModal(earnModal);
+          document.getElementById('copyPartnerLinkBtn').onclick = () => {
+            const shareUrl = `${window.location.origin}/?ref=${data.partnerId || partnerPhone}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+              showCustomAlert("Link Copied!", "Your affiliate referral link has been copied to clipboard.", true);
+              closeModal(earnModal);
+            });
+          };
+          return;
+        } else {
+          showRegistrationFormInModal(partnerPhone);
+        }
+      }).catch(() => {
+        showRegistrationFormInModal(partnerPhone);
+      });
+    } else {
+      showRegistrationFormInModal("");
+    }
+  }
+
+  function showRegistrationFormInModal(defaultPhone = "") {
+    earnModalMainTitle.textContent = "CartPrime Partner Program";
+    earnModalMainSub.textContent = "Earn commissions on every referral";
+    earnContentContainer.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 6px; margin: 12px 0; background: var(--surface); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Instant Free Registration</div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Direct UPI / Bank Payouts</div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Real-time Commission Dashboard</div>
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Enter your WhatsApp or mobile number to register for our affiliate program.</p> 
+      <form id="earnForm" class="modal-form" style="margin-top: 0;"> 
+        <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" value="${defaultPhone}" required> 
+        <div class="modal-btn-group"> 
+          <button type="button" id="closeEarnModal" style="flex:1; padding:11px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button> 
+          <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Register Now</button> 
+        </div> 
+      </form>
+    `;
     openModal(earnModal);
+
+    document.getElementById('closeEarnModal').onclick = () => closeModal(earnModal);
+    document.getElementById('earnForm').onsubmit = (e) => {
+      e.preventDefault();
+      const phoneVal = document.getElementById('partnerPhone').value.trim().replace(/[^0-9]/g, '');
+      if (!phoneVal || phoneVal.length !== 10) {
+        showCustomAlert("Invalid Number", "Please enter a valid 10-digit mobile/WhatsApp number.", false);
+        return;
+      }
+      
+      const submitBtn = document.getElementById('earnSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering...';
+
+      const partnerRef = ref(db, `earn_partners/${phoneVal}`);
+      const newPartnerId = 'CP_' + Math.floor(100000 + Math.random() * 900000);
+      const defaultName = localStorage.getItem('userName') || 'CartPrime Partner';
+      
+      set(partnerRef, {
+        phone: phoneVal,
+        name: defaultName,
+        partnerId: newPartnerId,
+        joinedAt: Date.now(),
+        status: 'active'
+      }).then(() => {
+        localStorage.setItem('partnerPhone', phoneVal);
+        localStorage.setItem('partnerName', defaultName);
+        localStorage.setItem('partnerId', newPartnerId);
+        closeModal(earnModal);
+        checkPartnerStatusAndUpdateUI();
+        showCustomAlert("Registration Successful", "You are now registered as a CartPrime Partner! Start sharing items to earn.", true);
+        updateBadges(auth.currentUser);
+      }).catch(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Register Now';
+        showCustomAlert("Error", "Could not complete registration. Please try again.", false);
+      });
+    };
   }
 
   document.addEventListener('click', (e) => {
@@ -1400,61 +1391,6 @@ nav {
       openEarnModal();
     }
   });
-
-  if (closeEarnModal) {
-    closeEarnModal.addEventListener('click', () => closeModal(earnModal));
-  }
-
-  if (earnForm) {
-    earnForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const phoneVal = partnerPhoneInput ? partnerPhoneInput.value.trim().replace(/[^0-9]/g, '') : '';
-      if (!phoneVal || phoneVal.length !== 10) {
-        showCustomAlert("Invalid Number", "Please enter a valid 10-digit mobile/WhatsApp number.", false);
-        return;
-      }
-      
-      earnSubmitBtn.disabled = true;
-      earnSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
-
-      const partnerRef = ref(db, `earn_partners/${phoneVal}`);
-      get(partnerRef).then((snapshot) => {
-        earnSubmitBtn.disabled = false;
-        earnSubmitBtn.innerHTML = 'Check Eligibility';
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          localStorage.setItem('partnerPhone', phoneVal);
-          localStorage.setItem('partnerName', data.name || 'Partner');
-          localStorage.setItem('partnerId', data.partnerId || phoneVal);
-          closeModal(earnModal);
-          showCustomAlert("Active Partner", `Welcome back, ${data.name || 'Partner'}! Your partner account is active.`, true);
-          updateBadges(auth.currentUser);
-        } else {
-          // Register new partner instantly
-          const newPartnerId = 'CP_' + Math.floor(100000 + Math.random() * 900000);
-          const defaultName = localStorage.getItem('userName') || 'CartPrime Partner';
-          set(partnerRef, {
-            phone: phoneVal,
-            name: defaultName,
-            partnerId: newPartnerId,
-            joinedAt: Date.now(),
-            status: 'active'
-          }).then(() => {
-            localStorage.setItem('partnerPhone', phoneVal);
-            localStorage.setItem('partnerName', defaultName);
-            localStorage.setItem('partnerId', newPartnerId);
-            closeModal(earnModal);
-            showCustomAlert("Registration Successful", "You are now registered as a CartPrime Partner! Start sharing items to earn.", true);
-            updateBadges(auth.currentUser);
-          });
-        }
-      }).catch(() => {
-        earnSubmitBtn.disabled = false;
-        earnSubmitBtn.innerHTML = 'Check Eligibility';
-        showCustomAlert("Error", "Could not check eligibility. Please try again.", false);
-      });
-    });
-  }
   // ------------------------------------------
 
   const profileChip = document.getElementById('profileChip');
@@ -1476,8 +1412,6 @@ nav {
   const welcomeBenefitsBox = document.getElementById('welcomeBenefitsBox');
   const logoutSection = document.getElementById('logoutSection');
   const logoutBtn = document.getElementById('logoutBtn');
-  const myShopSection = document.getElementById('myShopSection');
-  const headerMyShopBtn = document.getElementById('headerMyShopBtn');
 
   const phoneInputGroup = document.getElementById('phoneInputGroup');
   const otpInputGroup = document.getElementById('otpInputGroup');
@@ -1493,39 +1427,6 @@ nav {
 
   let notificationsData = {}; 
   let localNotifications = {}; 
-
-  function checkUserSellerStatus() {
-    const userPhone = localStorage.getItem('userPhone');
-    const sellerCtaSection = document.getElementById('sellerCtaSection');
-    if (!userPhone) {
-      if (sellerCtaSection) sellerCtaSection.style.display = 'block';
-      if (myShopSection) myShopSection.style.display = 'none';
-      if (headerMyShopBtn) headerMyShopBtn.style.display = 'none';
-      return;
-    }
-
-    onValue(ref(db, `seller/${userPhone}`), (snapshot) => {
-      if (snapshot.exists()) {
-        const sellerData = snapshot.val();
-        const status = (sellerData.status || "").toLowerCase();
-        if (status === 'approved') {
-          if (sellerCtaSection) sellerCtaSection.style.display = 'none';
-          if (headerMyShopBtn) headerMyShopBtn.style.display = 'inline-flex';
-          if (myShopSection) myShopSection.style.display = 'block';
-        } else {
-          if (sellerCtaSection) sellerCtaSection.style.display = 'block';
-          if (headerMyShopBtn) headerMyShopBtn.style.display = 'none';
-          if (myShopSection) myShopSection.style.display = 'none';
-        }
-      } else {
-        if (sellerCtaSection) sellerCtaSection.style.display = 'block';
-        if (headerMyShopBtn) headerMyShopBtn.style.display = 'none';
-        if (myShopSection) myShopSection.style.display = 'none';
-      }
-    });
-  }
-
-  checkUserSellerStatus();
 
   function isNotificationUnread(item) {
     if (!item) return false;
@@ -1689,7 +1590,6 @@ nav {
     profileChip.addEventListener('click', () => {
       const userPhone = localStorage.getItem('userPhone');
       if (userPhone) {
-        checkUserSellerStatus();
         userWelcomePhone.value = userPhone;
         userWelcomePhone.readOnly = true;
         userWelcomeName.value = localStorage.getItem('userName') || "";
@@ -1755,6 +1655,7 @@ nav {
       localStorage.removeItem('partnerId');
       closeModal(welcomeModal);
       updateHeaderProfileUI();
+      checkPartnerStatusAndUpdateUI();
       showCustomAlert("Logged Out", "You have been logged out securely.", true);
       setTimeout(() => { window.location.reload(); }, 1000);
     });
@@ -1771,7 +1672,6 @@ nav {
     nameInputGroup.style.display = 'none';
     if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'flex';
     if (logoutSection) logoutSection.style.display = 'none';
-    if (myShopSection) myShopSection.style.display = 'none';
     welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Continue Securely';
     welcomeModalTitle.textContent = "Secure Sign-In";
     welcomeModalSub.textContent = "Quick passwordless sign-in with instant OTP";
@@ -1781,7 +1681,6 @@ nav {
   if (!storedUserPhone) {
     if (closeWelcomeModal) closeWelcomeModal.style.display = "none";
     if (logoutSection) logoutSection.style.display = "none";
-    if (myShopSection) myShopSection.style.display = 'none';
     resetRegistrationForm();
     openModal(welcomeModal);
   }
@@ -1900,7 +1799,7 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
-            checkUserSellerStatus();
+            checkPartnerStatusAndUpdateUI();
             monitorSingleDeviceSession();
             showCustomAlert("Welcome Back!", `Signed in successfully as ${pendingExistingName}`, true);
             updateBadges(auth.currentUser);
@@ -1911,7 +1810,7 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
-            checkUserSellerStatus();
+            checkPartnerStatusAndUpdateUI();
             showCustomAlert("Welcome Back!", `Signed in successfully as ${pendingExistingName}`, true);
             updateBadges(auth.currentUser);
             resetRegistrationForm();
@@ -1948,7 +1847,7 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
-            checkUserSellerStatus();
+            checkPartnerStatusAndUpdateUI();
             monitorSingleDeviceSession();
             showCustomAlert("Profile Created!", `Welcome to CartPrime, ${name}!`, true);
             updateBadges(auth.currentUser);
@@ -1959,7 +1858,7 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
-            checkUserSellerStatus();
+            checkPartnerStatusAndUpdateUI();
             showCustomAlert("Profile Saved!", `Welcome to CartPrime, ${name}!`, true);
             updateBadges(auth.currentUser);
             resetRegistrationForm();
@@ -1990,145 +1889,10 @@ nav {
     toastCloseBtn.onclick = () => { toastModal.style.display = 'none'; };
   }
 
-  const sellerCtaBtn = document.getElementById('sellerCtaBtn');
-  const sellerModal = document.getElementById('sellerModal');
-  const sellerForm = document.getElementById('sellerForm');
-  const sellerNameInput = document.getElementById('sellerNameInput');
-  const sellerPhoneInput = document.getElementById('sellerPhoneInput');
-  const sellerEmailInput = document.getElementById('sellerEmailInput');
-  const sellerStoreNameInput = document.getElementById('sellerStoreNameInput');
-  const sellerCategoryInput = document.getElementById('sellerCategoryInput');
-  const sellerProductDetailsInput = document.getElementById('sellerProductDetailsInput');
-  const sellerStatusNote = document.getElementById('sellerStatusNote');
-  const sellerSubmitBtn = document.getElementById('sellerSubmitBtn');
-  const closeSellerModalBtn = document.getElementById('closeSellerModal');
-  let sellerFormSaving = false;
-
-  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-  function setSellerStatus(message) { if (sellerStatusNote) sellerStatusNote.textContent = message; }
-
-  async function openSellerRegistration() {
-    const phone = (localStorage.getItem('userPhone') || '').replace(/\D/g, '');
-    const name = (localStorage.getItem('userName') || '').trim();
-
-    if (phone.length !== 10 || !name) {
-      if (typeof resetRegistrationForm === 'function') resetRegistrationForm();
-      if (closeWelcomeModal) closeWelcomeModal.style.display = 'block';
-      openModal(welcomeModal);
-      showCustomAlert('Sign In Required', 'Please sign in to CartPrime first. Then choose “Become a Seller” again.', false);
-      return;
-    }
-
-    if (sellerForm) sellerForm.reset();
-    sellerNameInput.value = name;
-    sellerPhoneInput.value = phone;
-    sellerSubmitBtn.disabled = true;
-    sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading Profile...';
-    setSellerStatus('Checking whether you already have a seller profile...');
-    openModal(sellerModal);
-
-    try {
-      const sellerSnapshot = await get(ref(db, `seller/${phone}`));
-      if (sellerSnapshot.exists()) {
-        const savedSeller = sellerSnapshot.val() || {};
-        sellerEmailInput.value = savedSeller.email || '';
-        sellerStoreNameInput.value = savedSeller.storeName || '';
-        sellerCategoryInput.value = savedSeller.productCategory || '';
-        sellerProductDetailsInput.value = savedSeller.productDescription || '';
-        const status = savedSeller.status || 'Pending';
-        setSellerStatus(`Seller profile found. Current status: ${status}. You can update your email, shop and product details below.`);
-        sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Seller Profile';
-      } else {
-        setSellerStatus('Your name and mobile number were filled from your CartPrime account. Enter your email ID and complete the details to create your seller profile.');
-        sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Seller Profile';
-      }
-    } catch (error) {
-      console.error('Could not read seller profile:', error);
-      setSellerStatus('Could not load an existing seller profile. You may still try to submit.');
-      sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Seller Profile';
-    } finally {
-      sellerSubmitBtn.disabled = false;
-    }
-  }
-
-  if (sellerCtaBtn) sellerCtaBtn.addEventListener('click', openSellerRegistration);
-  if (closeSellerModalBtn) {
-    closeSellerModalBtn.addEventListener('click', () => {
-      closeModal(sellerModal);
-      if (sellerForm) sellerForm.reset();
-      setSellerStatus('Your account details will be filled in automatically.');
-    });
-  }
-
-  if (sellerForm) {
-    sellerForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (sellerFormSaving) return;
-
-      const phone = (localStorage.getItem('userPhone') || '').replace(/\D/g, '');
-      const name = (localStorage.getItem('userName') || '').trim();
-      const email = sellerEmailInput.value.trim().toLowerCase();
-      const storeName = sellerStoreNameInput.value.trim();
-      const productCategory = sellerCategoryInput.value;
-      const productDescription = sellerProductDetailsInput.value.trim();
-
-      if (phone.length !== 10 || !name) {
-        showCustomAlert('Sign In Required', 'Please sign in to your CartPrime account before creating a seller profile.', false);
-        closeModal(sellerModal);
-        if (closeWelcomeModal) closeWelcomeModal.style.display = 'block';
-        openModal(welcomeModal);
-        return;
-      }
-      if (!email || !EMAIL_REGEX.test(email)) {
-        showCustomAlert('Valid Email Required', 'Please enter a valid email ID (example: name@gmail.com).', false);
-        sellerEmailInput.focus();
-        return;
-      }
-      if (!storeName || !productCategory || !productDescription) {
-        showCustomAlert('Details Required', 'Please enter your shop name, product category, and product details.', false);
-        return;
-      }
-
-      sellerFormSaving = true;
-      sellerSubmitBtn.disabled = true;
-      sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-      setSellerStatus('Saving seller profile to CartPrime...');
-
-      try {
-        const sellerRef = ref(db, `seller/${phone}`);
-        const oldSnapshot = await get(sellerRef);
-        const oldData = oldSnapshot.exists() ? (oldSnapshot.val() || {}) : {};
-        const now = Date.now();
-        const profileData = {
-          name, phone, email, storeName, productCategory, productDescription,
-          status: oldData.status || 'Pending',
-          createdAt: oldData.createdAt || now,
-          updatedAt: now,
-          source: 'CartPrime website seller registration'
-        };
-
-        if (oldSnapshot.exists()) { await update(sellerRef, profileData); } 
-        else { await set(sellerRef, profileData); }
-
-        const statusText = profileData.status;
-        closeModal(sellerModal);
-        checkUserSellerStatus();
-        showCustomAlert(oldSnapshot.exists() ? 'Seller Profile Updated' : 'Seller Profile Created', `Your seller details were saved successfully.\nStatus: ${statusText}`, true);
-      } catch (error) {
-        console.error('Seller profile save failed:', error);
-        const details = error && error.message ? error.message : 'Unknown error';
-        setSellerStatus(`Could not save the seller profile: ${details}`);
-        showCustomAlert('Could Not Save Seller Profile', `Could not save your seller profile.\n\n${details}`, false);
-      } finally {
-        sellerFormSaving = false;
-        sellerSubmitBtn.disabled = false;
-        sellerSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Seller Profile';
-      }
-    });
-  }
-
   function getEarnBannerHtml() {
+    const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    const isRegistered = !!localStorage.getItem('partnerPhone');
+    
     return `
       <div class="earn-ad-section">
         <div class="earn-ad-banner">
@@ -2139,8 +1903,8 @@ nav {
               <div class="earn-ad-badge"><i class="fa-solid fa-fire"></i> CartPrime Partner Program</div>
               <div class="earn-ad-free-tag"><i class="fa-solid fa-circle-check"></i> 100% Free • ₹0 Investment</div>
             </div>
-            <h2 class="earn-ad-title">You Earn at Home <span>₹30,000+</span> Earn</h2>
-            <p class="earn-ad-desc">Share CartPrime Products on WhatsApp and Social Media easily. Get a higher cash commission on each order!</p>
+            <h2 class="earn-ad-title">${isRegistered ? 'Partner Dashboard Active' : 'You Earn at Home <span>₹30,000+</span> Earn'}</h2>
+            <p class="earn-ad-desc">${isRegistered ? 'Your affiliate account is active. Click below to view your dashboard or share referral links.' : 'Share CartPrime Products on WhatsApp and Social Media easily. Get a higher cash commission on each order!'}</p>
             <div class="earn-features-grid">
               <div class="earn-feature-card"><strong style="color: #fbbf24;">₹0 Investment</strong><span>Without Investment</span></div>
               <div class="earn-feature-card"><strong style="color: #4ade80;">Up to 25%</strong><span>High Commission</span></div>
@@ -2149,7 +1913,7 @@ nav {
             </div>
             <div class="earn-ad-actions">
               <button type="button" class="earn-ad-cta-btn" id="heroEarnAdBtn">
-                <i class="fa-solid fa-hand-holding-dollar"></i><span>Register now / Start Earning</span><i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
+                <i class="fa-solid fa-hand-holding-dollar"></i><span>${isRegistered ? 'Open Partner Dashboard' : 'Register now / Start Earning'}</span><i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
               </button>
               <button type="button" class="earn-ad-info-btn" id="earnHowItWorksBtn">
                 <i class="fa-solid fa-circle-question" style="color: #fbbf24;"></i><span>How It Works</span>
