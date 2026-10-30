@@ -3473,6 +3473,7 @@ window.updateAffiliateStatus = async (requestId, userId, newStatus) => {
         // 1. Update the earn partner application status
         await update(ref(db, `earn_partners/${requestId}`), { 
             status: newStatus,
+            verified: true,
             updatedAt: new Date().toISOString()
         });
 
