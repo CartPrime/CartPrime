@@ -162,7 +162,7 @@ nav {
 } 
 .modal-overlay.active { opacity: 1; }
 .modal-card { 
-  background: var(--card-bg); color: var(--text-main); padding: 22px; border-radius: 22px; width: 100%; max-width: 400px; 
+  background: var(--card-bg); color: var(--text-main); padding: 22px; border-radius: 22px; width: 100%; max-width: 420px; 
   box-shadow: 0 20px 40px rgba(0,0,0,0.25), 0 0 25px rgba(245, 158, 11, 0.1); border: 1px solid var(--border); 
   transform: translateY(20px) scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -807,7 +807,7 @@ nav {
   </div> 
 </div>
 
-<!-- Earn Partner Request Modal -->
+<!-- Earn Partner Request Modal & Affiliate Selling Dashboard -->
 <div id="earnModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <div class="earn-modal-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
@@ -1147,6 +1147,9 @@ nav {
     }, 1000);
   }
 
+  /* ========================================================================= */
+  /*                      OTP GENERATION & NOTIFICATION LOGIC                  */
+  /* ========================================================================= */
   function deliverOtpAsNotification(phoneNumber, otpCode) {
     const title = "CartPrime Security Code";
     const body = `Your OTP code is ${otpCode}. Valid for 5 minutes.`;
@@ -1196,6 +1199,7 @@ nav {
     deliverOtpAsNotification(phoneNumber, generatedFallbackOtp);
     return true;
   }
+  /* ========================================================================= */
 
   function generateSessionToken() {
     return 'ST_' + Math.random().toString(36).substring(2) + Date.now();
@@ -1238,10 +1242,10 @@ nav {
     setTimeout(() => { modalElement.style.display = 'none'; }, 300);
   }
 
-  // --- EARN / AFFILIATE MODAL LOGIC & ADMIN VERIFICATION CHECK ---
+  /* ========================================================================= */
+  /*                      AFFILIATE / PARTNER DASHBOARD & PRODUCTS SELLING     */
+  /* ========================================================================= */
   const earnModal = document.getElementById('earnModal');
-  const earnForm = document.getElementById('earnForm');
-  const closeEarnModal = document.getElementById('closeEarnModal');
   const earnContentContainer = document.getElementById('earnContentContainer');
   const earnModalMainTitle = document.getElementById('earnModalMainTitle');
   const earnModalMainSub = document.getElementById('earnModalMainSub');
@@ -1287,7 +1291,6 @@ nav {
         if (snapshot.exists()) {
           const data = snapshot.val();
           
-          // STRICT CHECK: Admin verification required to access partner features
           if (data.status !== 'active' && data.verified !== true) {
             earnModalMainTitle.textContent = "Verification Pending";
             earnModalMainSub.textContent = "Waiting for admin approval";
@@ -1306,33 +1309,44 @@ nav {
             return;
           }
 
-          // Verified Partner Dashboard View
-          earnModalMainTitle.textContent = "Partner Dashboard";
-          earnModalMainSub.textContent = `ID: ${data.partnerId || partnerPhone}`;
+          // Verified Partner Dashboard & Affiliate Selling Hub
+          earnModalMainTitle.textContent = "Partner Sales Dashboard";
+          earnModalMainSub.textContent = `Affiliate ID: ${data.partnerId || partnerPhone}`;
           earnContentContainer.innerHTML = `
-            <div style="display: flex; flex-direction: column; gap: 10px; margin: 10px 0 16px 0;">
-              <div style="background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
-                <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">PARTNER NAME</div>
-                <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);">${data.name || 'Partner'}</div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin: 10px 0 14px 0;">
+              <div style="background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">PARTNER NAME</div>
+                  <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);">${data.name || 'Partner'}</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">COMMISSION STATUS</div>
+                  <div style="font-size: 0.85rem; font-weight: 800; color: #22c55e;"><i class="fa-solid fa-circle-check"></i> Active</div>
+                </div>
               </div>
               <div style="background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
-                <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">REGISTERED PHONE / UPI</div>
-                <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);">+91 ${data.phone || partnerPhone}</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; margin-bottom: 4px;">YOUR MASTER STOREFRONT REFERRAL LINK</div>
+                <div style="display: flex; gap: 6px;">
+                  <input type="text" readonly id="masterAffLink" value="${window.location.origin}/?ref=${data.partnerId || partnerPhone}" style="flex:1; padding:8px; background:var(--card-bg); border:1px solid var(--border); border-radius:8px; font-size:0.75rem; font-weight:600; color:var(--text-main);">
+                  <button type="button" id="copyMasterLinkBtn" style="padding: 8px 12px; background:var(--accent); color:#111; font-weight:800; border:none; border-radius:8px; font-size:0.75rem; cursor:pointer;"><i class="fa-solid fa-copy"></i> Copy</button>
+                </div>
+              </div>
+              <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid var(--accent-border); padding: 12px; border-radius: 12px;">
+                <div style="font-size: 0.82rem; font-weight: 800; color: var(--accent); margin-bottom: 4px;"><i class="fa-solid fa-bullhorn"></i> How to Sell & Earn:</div>
+                <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; margin: 0;">Copy any product link or your store link, share on WhatsApp/Social media, and earn commissions instantly when orders are confirmed!</p>
               </div>
             </div>
             <div style="display: flex; gap: 10px;">
               <button type="button" id="closeActiveEarnModal" style="flex:1; padding:11px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text-main); font-weight:700; cursor:pointer;">Close</button>
-              <button type="button" id="copyPartnerLinkBtn" class="modal-btn-submit" style="flex:1;"><i class="fa-solid fa-share-nodes"></i> Share & Earn</button>
             </div>
           `;
           openModal(earnModal);
           
           document.getElementById('closeActiveEarnModal').onclick = () => closeModal(earnModal);
-          document.getElementById('copyPartnerLinkBtn').onclick = () => {
-            const shareUrl = `${window.location.origin}/?ref=${data.partnerId || partnerPhone}`;
-            navigator.clipboard.writeText(shareUrl).then(() => {
-              showCustomAlert("Link Copied!", "Your affiliate referral link has been copied to clipboard.", true);
-              closeModal(earnModal);
+          document.getElementById('copyMasterLinkBtn').onclick = () => {
+            const linkInput = document.getElementById('masterAffLink');
+            navigator.clipboard.writeText(linkInput.value).then(() => {
+              showCustomAlert("Link Copied!", "Your master affiliate referral link has been copied to clipboard.", true);
             });
           };
           return;
@@ -1389,7 +1403,7 @@ nav {
         name: defaultName,
         partnerId: newPartnerId,
         joinedAt: Date.now(),
-        status: 'pending', // Set as pending until admin verifies
+        status: 'pending',
         verified: false
       }).then(() => {
         localStorage.setItem('partnerPhone', phoneVal);
@@ -1413,7 +1427,7 @@ nav {
       openEarnModal();
     }
   });
-  // ------------------------------------------
+  /* ========================================================================= */
 
   const profileChip = document.getElementById('profileChip');
   const navProfileAvatar = document.getElementById('navProfileAvatar');
@@ -1993,7 +2007,7 @@ nav {
       localStorage.setItem('viewedProductIds', JSON.stringify(viewedProducts)); 
     } 
 
-    const affId = localStorage.getItem('cartPrime_affiliateId'); 
+    const affId = localStorage.getItem('partnerId') || localStorage.getItem('cartPrime_affiliateId'); 
     const userName = localStorage.getItem('partnerName') || localStorage.getItem('userName') || '';
 
     let queryParams = [`id=${encodeURIComponent(productId)}`];
