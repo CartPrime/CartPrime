@@ -236,20 +236,20 @@ nav {
 .mark-read-btn { border: none; color: #b45309; font-size: 0.7rem; font-weight: 700; cursor: pointer; padding: 3px 8px; border-radius: 6px; background: var(--accent-soft); margin-top: 4px; }
 .no-notif { text-align: center; padding: 25px 10px; color: var(--text-muted); font-size: 0.82rem; font-weight: 600; }
 
-/* Custom In-Page Notification for Realistic OTP Simulation */
+/* Gorgeous Realistic Mobile App Push Notification Banner */
 .otp-inpage-notif {
-  position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-120px);
-  background: var(--card-bg); border: 1.5px solid var(--accent); border-radius: 16px; padding: 14px 18px;
-  display: flex; align-items: center; gap: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.25), 0 0 25px var(--accent-glow);
-  z-index: 12000; max-width: 94%; width: 400px; opacity: 0; pointer-events: none;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-140px);
+  background: var(--card-bg); border: 1.5px solid var(--accent); border-radius: 20px; padding: 14px 18px;
+  display: flex; align-items: center; gap: 14px; box-shadow: 0 20px 45px rgba(0,0,0,0.28), 0 0 30px var(--accent-glow);
+  z-index: 12000; max-width: 92%; width: 420px; opacity: 0; pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
 }
 .otp-inpage-notif.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
-.otp-inpage-notif .n-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; box-shadow: 0 0 12px var(--accent-glow); }
+.otp-inpage-notif .n-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #0b0b0f; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; box-shadow: 0 0 15px var(--accent-glow); }
 .otp-inpage-notif .n-body { flex: 1; min-width: 0; }
-.otp-inpage-notif .n-title { font-size: 0.85rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; }
+.otp-inpage-notif .n-title { font-size: 0.85rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
 .otp-inpage-notif .n-time { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; }
-.otp-inpage-notif .n-msg { font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; margin-top: 2px; }
+.otp-inpage-notif .n-msg { font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; }
 .otp-inpage-notif .n-close { background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; padding: 4px; }
 
 /* Custom Toast Modal */
@@ -289,18 +289,25 @@ nav {
 .suggestion-item h4 { font-size: 0.82rem; font-weight: 600; margin: 0; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
 .suggestion-item p { font-size: 0.72rem; color: #d97706; font-weight: 700; margin: 0; } 
 
-/* Hero Section */
-.hero { padding: 20px 6% 10px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 18px; } 
-.hero-text h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -1.2px; line-height: 1.15; color: var(--text-main); } 
-.hero-text h1 span, .hero-text h1:nth-child(2) { text-shadow: 0 0 24px var(--accent-glow); }
-.hero-text p { color: var(--text-muted); margin-top: 6px; font-size: 0.92rem; font-weight: 500; } 
-.trust-stats { display: flex; align-items: center; gap: 14px; background: var(--surface); padding: 10px 16px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); } 
-.stat-item { display: flex; align-items: center; gap: 8px; } 
-.stat-item i { font-size: 1.25rem; color: #f59e0b; filter: drop-shadow(0 0 6px var(--accent-glow)); } 
+/* Gorgeous Upgraded Hero Section */
+.hero { padding: 24px 6% 14px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 18px; } 
+.hero-text { max-width: 580px; }
+.hero-badge-pill {
+  display: inline-flex; align-items: center; gap: 6px; background: var(--accent-soft); color: var(--accent);
+  border: 1px solid var(--accent-border); padding: 5px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 800;
+  margin-bottom: 12px; text-transform: uppercase; box-shadow: 0 0 12px var(--accent-glow);
+}
+.hero-text h1 { font-size: 2.6rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; color: var(--text-main); } 
+.hero-text h1 span { color: var(--accent); text-shadow: 0 0 24px var(--accent-glow-strong); }
+.hero-text p { color: var(--text-muted); margin-top: 10px; font-size: 0.98rem; font-weight: 500; line-height: 1.5; } 
+
+.trust-stats { display: flex; align-items: center; gap: 14px; background: var(--surface); padding: 12px 18px; border-radius: 18px; border: 1.5px solid var(--border); box-shadow: 0 8px 25px rgba(0,0,0,0.04); } 
+.stat-item { display: flex; align-items: center; gap: 10px; } 
+.stat-item i { font-size: 1.35rem; color: #f59e0b; filter: drop-shadow(0 0 8px var(--accent-glow)); } 
 .stat-info { display: flex; flex-direction: column; } 
-.stat-info strong { font-size: 0.84rem; font-weight: 800; color: var(--text-main); } 
-.stat-info span { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; } 
-.stat-divider { width: 1px; height: 22px; background: var(--border); } 
+.stat-info strong { font-size: 0.88rem; font-weight: 800; color: var(--text-main); } 
+.stat-info span { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; } 
+.stat-divider { width: 1px; height: 26px; background: var(--border); } 
 
 /* Trust Bar */
 .trust-bar-section { padding: 6px 6% 10px 6%; } 
@@ -594,9 +601,9 @@ nav {
   .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin-top: 2px; } 
   .search-container input { padding: 8px 12px 8px 34px; font-size: 0.82rem; border-radius: 12px; } 
   
-  .hero { padding: 14px 4% 4px; flex-direction: column; align-items: flex-start; gap: 10px; } 
-  .hero-text h1 { font-size: 1.6rem; } 
-  .trust-stats { width: 100%; justify-content: space-around; padding: 8px; } 
+  .hero { padding: 16px 4% 6px; flex-direction: column; align-items: flex-start; gap: 12px; } 
+  .hero-text h1 { font-size: 1.85rem; } 
+  .trust-stats { width: 100%; justify-content: space-around; padding: 10px; } 
   
   .trust-bar-section { padding: 4px 4%; } 
   .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 8px; } 
@@ -681,12 +688,12 @@ nav {
 <!-- Hidden Container for Firebase reCAPTCHA Invisible Verification -->
 <div id="recaptcha-container"></div>
 
-<!-- Realistic In-page OTP Simulation Notification Banner -->
+<!-- Gorgeous Native-Style In-App Push Notification for OTP Simulation -->
 <div id="otpInPageNotif" class="otp-inpage-notif">
   <div class="n-icon"><i class="fa-solid fa-message-sms"></i></div>
   <div class="n-body">
     <div class="n-title">
-      <span>CartPrime Messages</span>
+      <span>CartPrime Security</span>
       <span class="n-time">Just now</span>
     </div>
     <div class="n-msg" id="otpInPageNotifMsg">Your OTP code is 482910. Valid for 5 minutes.</div>
@@ -865,16 +872,18 @@ nav {
   </div> 
 </div>
 
-<!-- Hero Section -->
+<!-- Upgraded Modern Hero Section -->
 <header class="hero"> 
   <div class="hero-text"> 
-    <h1>Welcome To <br> CartPrime </h1> 
-    <h1 style="color: #f59e0b;">Online Shop</h1> 
-    <p>100% Verified & Quality Shopping Store.</p> 
+    <div class="hero-badge-pill">
+      <i class="fa-solid fa-certificate"></i> Verified & Trusted Marketplace
+    </div>
+    <h1>Welcome to <br><span>CartPrime</span> Online Store</h1> 
+    <p>Discover 100% verified, high-quality products with express shipping and secure buyer protection.</p> 
   </div> 
   <div class="trust-stats"> 
     <div class="stat-item"> 
-     <i class="fa-sharp fa-solid fa-shield-halved" style="color: rgb(254, 152, 0);"></i>
+      <i class="fa-sharp fa-solid fa-shield-halved"></i>
       <div class="stat-info"> 
         <strong>100% Verified</strong> 
         <span>Trusted Store</span> 
@@ -1148,7 +1157,7 @@ nav {
   /*                      OTP GENERATION & NOTIFICATION LOGIC                  */
   /* ========================================================================= */
   function deliverOtpAsNotification(phoneNumber, otpCode) {
-    const title = "CartPrime Security Code";
+    const title = "CartPrime Verification Code";
     const body = `Your OTP code is ${otpCode}. Valid for 5 minutes.`;
     showInPageNotifBanner(body);
 
