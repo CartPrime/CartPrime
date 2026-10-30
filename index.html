@@ -236,20 +236,21 @@ nav {
 .mark-read-btn { border: none; color: #b45309; font-size: 0.7rem; font-weight: 700; cursor: pointer; padding: 3px 8px; border-radius: 6px; background: var(--accent-soft); margin-top: 4px; }
 .no-notif { text-align: center; padding: 25px 10px; color: var(--text-muted); font-size: 0.82rem; font-weight: 600; }
 
-/* Custom In-Page Notification for Instant OTP */
+/* Custom In-Page Notification for Realistic OTP Simulation */
 .otp-inpage-notif {
-  position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-100px);
-  background: var(--card-bg); border: 1.5px solid var(--accent); border-radius: 16px; padding: 12px 16px;
-  display: flex; align-items: center; gap: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.2), 0 0 20px var(--accent-glow);
-  z-index: 12000; max-width: 92%; width: 380px; opacity: 0; pointer-events: none;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-120px);
+  background: var(--card-bg); border: 1.5px solid var(--accent); border-radius: 16px; padding: 14px 18px;
+  display: flex; align-items: center; gap: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.25), 0 0 25px var(--accent-glow);
+  z-index: 12000; max-width: 94%; width: 400px; opacity: 0; pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
 }
 .otp-inpage-notif.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
-.otp-inpage-notif .n-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.otp-inpage-notif .n-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; box-shadow: 0 0 12px var(--accent-glow); }
 .otp-inpage-notif .n-body { flex: 1; min-width: 0; }
-.otp-inpage-notif .n-title { font-size: 0.82rem; font-weight: 800; color: var(--text-main); }
-.otp-inpage-notif .n-msg { font-size: 0.74rem; color: var(--text-muted); line-height: 1.3; }
-.otp-inpage-notif .n-close { background: none; border: none; color: var(--text-muted); font-size: 1rem; cursor: pointer; padding: 4px; }
+.otp-inpage-notif .n-title { font-size: 0.85rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; }
+.otp-inpage-notif .n-time { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; }
+.otp-inpage-notif .n-msg { font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; margin-top: 2px; }
+.otp-inpage-notif .n-close { background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; padding: 4px; }
 
 /* Custom Toast Modal */
 .custom-toast-overlay {
@@ -680,12 +681,15 @@ nav {
 <!-- Hidden Container for Firebase reCAPTCHA Invisible Verification -->
 <div id="recaptcha-container"></div>
 
-<!-- In-page fallback system notification banner for OTP -->
+<!-- Realistic In-page OTP Simulation Notification Banner -->
 <div id="otpInPageNotif" class="otp-inpage-notif">
-  <div class="n-icon"><i class="fa-solid fa-shield-halved"></i></div>
+  <div class="n-icon"><i class="fa-solid fa-message-sms"></i></div>
   <div class="n-body">
-    <div class="n-title" id="otpInPageNotifTitle">CartPrime Security Code</div>
-    <div class="n-msg" id="otpInPageNotifMsg"></div>
+    <div class="n-title">
+      <span>CartPrime Messages</span>
+      <span class="n-time">Just now</span>
+    </div>
+    <div class="n-msg" id="otpInPageNotifMsg">Your OTP code is 482910. Valid for 5 minutes.</div>
   </div>
   <button type="button" class="n-close" id="otpInPageNotifClose"><i class="fa-solid fa-xmark"></i></button>
 </div>
@@ -1145,8 +1149,8 @@ nav {
 
   function deliverOtpAsNotification(phoneNumber, otpCode) {
     const title = "CartPrime Security Code";
-    const body = `Your OTP for +91 ${phoneNumber} is ${otpCode}. Valid for 5 minutes.`;
-    showInPageNotifBanner(title, body);
+    const body = `Your OTP code is ${otpCode}. Valid for 5 minutes.`;
+    showInPageNotifBanner(body);
 
     if ("Notification" in window && Notification.permission === "granted") {
       try {
@@ -1162,20 +1166,18 @@ nav {
   }
 
   let inPageNotifTimeout = null;
-  function showInPageNotifBanner(title, message) {
+  function showInPageNotifBanner(message) {
     const banner = document.getElementById('otpInPageNotif');
-    const titleEl = document.getElementById('otpInPageNotifTitle');
-    const msgEl = document.getElementById('otpInPageNotifMsg');
-    if (!banner || !titleEl || !msgEl) return;
+    const msgEl = banner ? banner.querySelector('.n-msg') : null;
+    if (!banner || !msgEl) return;
 
-    titleEl.textContent = title;
     msgEl.textContent = message;
     banner.classList.add('show');
 
     clearTimeout(inPageNotifTimeout);
     inPageNotifTimeout = setTimeout(() => {
       banner.classList.remove('show');
-    }, 7000);
+    }, 6000);
   }
 
   (function initInPageNotifClose() {
@@ -1192,7 +1194,6 @@ nav {
   async function sendFreeOtpPlatform(phoneNumber) {
     generatedFallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
     deliverOtpAsNotification(phoneNumber, generatedFallbackOtp);
-    showCustomAlert("OTP Sent", `A 6-digit code has been sent to your notifications for +91 ${phoneNumber}.`, true);
     return true;
   }
 
@@ -1237,15 +1238,10 @@ nav {
     setTimeout(() => { modalElement.style.display = 'none'; }, 300);
   }
 
-  // --- EARN / AFFILIATE MODAL LOGIC & PARTNER STATUS CHECK ---
+  // --- EARN / AFFILIATE MODAL LOGIC & ADMIN VERIFICATION CHECK ---
   const earnModal = document.getElementById('earnModal');
   const earnForm = document.getElementById('earnForm');
-  const partnerPhoneInput = document.getElementById('partnerPhone');
-  const partnerNameInput = document.getElementById('partnerName');
-  const partnerUpiInput = document.getElementById('partnerUpi');
   const closeEarnModal = document.getElementById('closeEarnModal');
-  const earnSubmitBtn = document.getElementById('earnSubmitBtn');
-  const earnSubText = document.getElementById('earnSubText');
   const earnContentContainer = document.getElementById('earnContentContainer');
   const earnModalMainTitle = document.getElementById('earnModalMainTitle');
   const earnModalMainSub = document.getElementById('earnModalMainSub');
@@ -1263,11 +1259,16 @@ nav {
     get(ref(db, `earn_partners/${partnerPhone}`)).then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
-        localStorage.setItem('partnerPhone', partnerPhone);
-        localStorage.setItem('partnerName', data.name || 'Partner');
-        localStorage.setItem('partnerId', data.partnerId || partnerPhone);
-        if (bottomEarnText) bottomEarnText.textContent = "Dashboard";
-        if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-chart-line";
+        if (data.status === 'active' || data.verified === true) {
+          localStorage.setItem('partnerPhone', partnerPhone);
+          localStorage.setItem('partnerName', data.name || 'Partner');
+          localStorage.setItem('partnerId', data.partnerId || partnerPhone);
+          if (bottomEarnText) bottomEarnText.textContent = "Dashboard";
+          if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-chart-line";
+        } else {
+          if (bottomEarnText) bottomEarnText.textContent = "Pending";
+          if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-clock-rotate-left";
+        }
       } else {
         if (bottomEarnText) bottomEarnText.textContent = "Earn";
         if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-wallet";
@@ -1285,7 +1286,27 @@ nav {
       get(ref(db, `earn_partners/${partnerPhone}`)).then((snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
-          // Already registered as partner -> Show Dashboard View inside Modal
+          
+          // STRICT CHECK: Admin verification required to access partner features
+          if (data.status !== 'active' && data.verified !== true) {
+            earnModalMainTitle.textContent = "Verification Pending";
+            earnModalMainSub.textContent = "Waiting for admin approval";
+            earnContentContainer.innerHTML = `
+              <div style="text-align: center; padding: 20px 0;">
+                <div style="width: 55px; height: 55px; background: rgba(245, 158, 11, 0.12); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 12px auto; box-shadow: 0 0 15px var(--accent-glow);">
+                  <i class="fa-solid fa-hourglass-half"></i>
+                </div>
+                <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 6px;">Your Request is Under Review</h4>
+                <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px;">Admin verification is pending for number +91 ${partnerPhone}. You will get access as soon as the admin verifies your account.</p>
+                <button type="button" id="closePendingEarnModal" style="width: 100%; padding: 11px; border-radius: 12px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border); font-weight: 700; cursor: pointer;">Close</button>
+              </div>
+            `;
+            openModal(earnModal);
+            document.getElementById('closePendingEarnModal').onclick = () => closeModal(earnModal);
+            return;
+          }
+
+          // Verified Partner Dashboard View
           earnModalMainTitle.textContent = "Partner Dashboard";
           earnModalMainSub.textContent = `ID: ${data.partnerId || partnerPhone}`;
           earnContentContainer.innerHTML = `
@@ -1333,14 +1354,14 @@ nav {
       <div style="display: flex; flex-direction: column; gap: 6px; margin: 12px 0; background: var(--surface); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);">
         <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Instant Free Registration</div>
         <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Direct UPI / Bank Payouts</div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Real-time Commission Dashboard</div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Requires Admin Verification</div>
       </div>
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Enter your WhatsApp or mobile number to register for our affiliate program.</p> 
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Enter your WhatsApp or mobile number to submit your partner request to admin.</p> 
       <form id="earnForm" class="modal-form" style="margin-top: 0;"> 
         <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" value="${defaultPhone}" required> 
         <div class="modal-btn-group"> 
           <button type="button" id="closeEarnModal" style="flex:1; padding:11px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button> 
-          <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Register Now</button> 
+          <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Submit Request</button> 
         </div> 
       </form>
     `;
@@ -1357,7 +1378,7 @@ nav {
       
       const submitBtn = document.getElementById('earnSubmitBtn');
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering...';
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
 
       const partnerRef = ref(db, `earn_partners/${phoneVal}`);
       const newPartnerId = 'CP_' + Math.floor(100000 + Math.random() * 900000);
@@ -1368,19 +1389,20 @@ nav {
         name: defaultName,
         partnerId: newPartnerId,
         joinedAt: Date.now(),
-        status: 'active'
+        status: 'pending', // Set as pending until admin verifies
+        verified: false
       }).then(() => {
         localStorage.setItem('partnerPhone', phoneVal);
         localStorage.setItem('partnerName', defaultName);
         localStorage.setItem('partnerId', newPartnerId);
         closeModal(earnModal);
         checkPartnerStatusAndUpdateUI();
-        showCustomAlert("Registration Successful", "You are now registered as a CartPrime Partner! Start sharing items to earn.", true);
+        showCustomAlert("Request Submitted", "Your partner registration request has been sent for admin verification.", true);
         updateBadges(auth.currentUser);
       }).catch(() => {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Register Now';
-        showCustomAlert("Error", "Could not complete registration. Please try again.", false);
+        submitBtn.innerHTML = 'Submit Request';
+        showCustomAlert("Error", "Could not submit request. Please try again.", false);
       });
     };
   }
