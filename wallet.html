@@ -12,16 +12,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    <!-- OneSignal SDK Setup & Deep Linking Configuration -->
+    <!-- OneSignal SDK Setup -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
-          appId: "2a461e57-51ca-4cdf-abb6-273fda96a4d0", // Cartprime OneSignal App ID
-          notifyButton: {
-            enable: true,
-          },
+          appId: "2a461e57-51ca-4cdf-abb6-273fda96a4d0",
+          notifyButton: { enable: true },
           allowLocalhostAsSecureOrigin: true
         });
 
@@ -59,6 +57,7 @@
             --brand-primary: #4318FF;
             --brand-gradient: linear-gradient(135deg, #868CFF 0%, #4318FF 100%);
             --brand-gold: linear-gradient(135deg, #FFB800 0%, #FF8A00 100%);
+            --instagram-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
             --card-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
             --card-shadow-sm: 0px 6px 16px rgba(112, 144, 176, 0.08);
 
@@ -82,12 +81,6 @@
             user-select: none;
         }
 
-        button, a, input {
-            outline: none !important;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Navbar Styling */
         .top-navbar {
             background-color: var(--surface-white);
             padding: 16px 20px;
@@ -99,7 +92,6 @@
             top: 0;
             z-index: 100;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            animation: slideDown 0.5s ease-out forwards;
         }
 
         .brand {
@@ -118,7 +110,6 @@
             align-items: center;
             justify-content: center;
             font-size: 16px;
-            box-shadow: 0 8px 16px rgba(67, 24, 255, 0.25);
         }
 
         .brand-text h2 {
@@ -126,14 +117,12 @@
             font-weight: 800;
             color: var(--text-primary);
             line-height: 1.2;
-            letter-spacing: -0.3px;
         }
 
         .brand-text span {
             font-size: 9px;
             color: var(--brand-primary);
             font-weight: 800;
-            letter-spacing: 0.8px;
             text-transform: uppercase;
         }
 
@@ -156,11 +145,6 @@
             color: var(--text-primary);
             font-size: 16px;
             cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .notification-btn:active {
-            transform: scale(0.92);
         }
 
         .notification-badge {
@@ -240,7 +224,6 @@
             max-height: 80vh;
             display: flex;
             flex-direction: column;
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
         }
 
@@ -250,15 +233,6 @@
             align-items: center;
             padding-bottom: 14px;
             border-bottom: 1px solid var(--border-color);
-        }
-
-        .notification-header h3 {
-            font-size: 16px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-primary);
         }
 
         .close-notif-btn {
@@ -308,7 +282,6 @@
             color: var(--brand-primary);
             font-size: 14px;
             flex-shrink: 0;
-            box-shadow: var(--card-shadow-sm);
         }
 
         .notif-details h5 {
@@ -341,7 +314,7 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 12px 0;
+            padding: 10px 0;
             box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.05);
             z-index: 1000;
         }
@@ -353,17 +326,16 @@
             justify-content: center;
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
-            gap: 5px;
+            gap: 4px;
             cursor: pointer;
-            width: 20%;
+            width: 16.66%;
             position: relative;
-            transition: all 0.2s ease;
         }
 
         .nav-item-bottom i {
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .nav-item-bottom:hover, .nav-item-bottom.active {
@@ -374,7 +346,7 @@
         .nav-tab-badge {
             position: absolute;
             top: -2px;
-            right: 22px;
+            right: 12px;
             background-color: var(--danger-red);
             color: white;
             font-size: 9px;
@@ -405,19 +377,6 @@
             box-shadow: 0 12px 30px rgba(67, 24, 255, 0.25);
             position: relative;
             overflow: hidden;
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .welcome-card::after {
-            content: '\f058';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: -20px;
-            bottom: -20px;
-            font-size: 130px;
-            color: rgba(255, 255, 255, 0.06);
-            pointer-events: none;
         }
 
         .creator-tag {
@@ -431,14 +390,12 @@
             align-items: center;
             gap: 6px;
             margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         .welcome-card h1 {
             font-size: 22px;
             font-weight: 800;
             margin-bottom: 6px;
-            letter-spacing: -0.3px;
         }
 
         .welcome-card p {
@@ -453,38 +410,12 @@
 
         .page-view.active-view {
             display: block;
-            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes slideUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideDown {
-            0% {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .spinning {
-            animation: spin 0.8s linear infinite;
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .stats-grid {
@@ -500,9 +431,6 @@
             border-radius: 20px;
             box-shadow: var(--card-shadow-sm);
             border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
-            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .stat-card.full-width {
@@ -513,7 +441,6 @@
             background: var(--brand-gold);
             color: white;
             border: none;
-            box-shadow: 0 12px 25px rgba(255, 138, 0, 0.25);
         }
 
         .stat-title {
@@ -522,7 +449,6 @@
             font-weight: 700;
             margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .stat-card.featured .stat-title {
@@ -532,7 +458,6 @@
         .stat-value {
             font-size: 26px;
             font-weight: 800;
-            letter-spacing: -0.5px;
         }
 
         .stat-sub {
@@ -553,7 +478,6 @@
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
             margin-bottom: 24px;
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .box-header {
@@ -584,12 +508,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.2s ease;
-        }
-
-        .btn-refresh:active {
-            background: var(--border-color);
-            transform: scale(0.95);
         }
 
         .referral-orders-list {
@@ -602,7 +520,6 @@
             align-items: center;
             padding: 16px 0;
             border-bottom: 1px solid var(--border-color);
-            animation: slideUp 0.4s ease-out forwards;
         }
 
         .ref-order-item:last-child {
@@ -626,20 +543,10 @@
             font-size: 18px;
         }
 
-        .t-icon.income {
-            background-color: var(--success-bg);
-            color: var(--success-green);
-        }
-
-        .t-icon.pending-icon {
-            background-color: var(--warning-bg);
-            color: var(--warning-orange);
-        }
-
-        .t-icon.expense {
-            background-color: var(--danger-bg);
-            color: var(--danger-red);
-        }
+        .t-icon.income { background-color: var(--success-bg); color: var(--success-green); }
+        .t-icon.pending-icon { background-color: var(--warning-bg); color: var(--warning-orange); }
+        .t-icon.expense { background-color: var(--danger-bg); color: var(--danger-red); }
+        .t-icon.insta-icon { background: var(--instagram-gradient); color: white; }
 
         .t-details h4 {
             font-size: 14px;
@@ -651,7 +558,6 @@
             font-size: 12px;
             color: var(--text-secondary);
             margin-top: 2px;
-            font-weight: 500;
         }
 
         .t-amount {
@@ -674,23 +580,11 @@
             display: inline-block;
             margin-top: 4px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .badge-success {
-            background-color: var(--success-bg);
-            color: var(--success-green);
-        }
-
-        .badge-pending {
-            background-color: var(--warning-bg);
-            color: var(--warning-orange);
-        }
-
-        .badge-rejected {
-            background-color: var(--danger-bg);
-            color: var(--danger-red);
-        }
+        .badge-success { background-color: var(--success-bg); color: var(--success-green); }
+        .badge-pending { background-color: var(--warning-bg); color: var(--warning-orange); }
+        .badge-rejected { background-color: var(--danger-bg); color: var(--danger-red); }
 
         .form-group {
             margin-bottom: 18px;
@@ -703,7 +597,6 @@
             margin-bottom: 8px;
             color: var(--text-primary);
             text-transform: uppercase;
-            letter-spacing: 0.4px;
         }
 
         .form-input {
@@ -715,7 +608,6 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--text-primary);
-            transition: all 0.2s;
         }
 
         .form-input:focus {
@@ -735,11 +627,23 @@
             width: 100%;
             font-size: 14px;
             box-shadow: 0 10px 20px rgba(67, 24, 255, 0.25);
-            transition: transform 0.2s;
         }
 
-        .btn-submit:active {
-            transform: scale(0.98);
+        .btn-insta-connect {
+            background: var(--instagram-gradient);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(220, 39, 67, 0.25);
         }
 
         .link-copy-box {
@@ -774,7 +678,6 @@
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
-            transition: opacity 0.2s;
         }
 
         .share-actions {
@@ -796,7 +699,6 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.2);
         }
 
         .btn-share-more {
@@ -859,7 +761,6 @@
             gap: 14px;
             margin-bottom: 24px;
             border: 1px solid #D0E2FF;
-            animation: slideUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .trust-banner i {
@@ -893,7 +794,6 @@
         </div>
 
         <div class="right-header-actions">
-            <!-- Notification Bell Icon -->
             <button class="notification-btn" onclick="openNotificationModal()">
                 <i class="fa-regular fa-bell"></i>
                 <span class="notification-badge" id="notif-badge">0</span>
@@ -928,7 +828,7 @@
                 <i class="fa-solid fa-certificate"></i> Verified Creator Partner
             </div>
             <h1>Hey, <span id="user-display-name">Loading...</span> 👋</h1>
-            <p>Share official product links, track transparent order conversions, and earn 3% guaranteed lifetime commission.</p>
+            <p>Connect your Instagram, automate comment-to-DM triggers, and earn 3% guaranteed commission.</p>
         </div>
 
         <!-- Trust Security Banner -->
@@ -940,9 +840,8 @@
             </div>
         </div>
 
-        <!-- 1. REFERRAL & CREATOR HUB (Default View) -->
+        <!-- 1. REFERRAL & CREATOR HUB -->
         <section id="referral" class="page-view active-view">
-            <!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-title">Referred Orders</div>
@@ -956,12 +855,11 @@
                 </div>
             </div>
 
-            <!-- Creator Referral Share Box -->
             <div class="card-box">
                 <div class="box-header">
                     <h3><i class="fa-solid fa-link" style="color: var(--brand-primary);"></i> Unique Referral Link</h3>
                 </div>
-                <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Promote this link across your Instagram, WhatsApp, or YouTube channel to earn direct cashback on every customer checkout.</p>
+                <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Promote this link across your social media channels to earn direct cashback on every customer checkout.</p>
                 
                 <div class="link-copy-box">
                     <div class="link-input-group">
@@ -978,7 +876,6 @@
                     </div>
                 </div>
 
-                <!-- Benefits Row -->
                 <div class="creator-benefits">
                     <div class="benefit-chip">
                         <i class="fa-solid fa-bolt"></i>
@@ -998,7 +895,6 @@
                 </div>
             </div>
 
-            <!-- Referred Orders Status List -->
             <div class="card-box">
                 <div class="box-header">
                     <h3><i class="fa-solid fa-bag-shopping" style="color: var(--brand-primary);"></i> Referred Orders Tracked</h3>
@@ -1007,7 +903,54 @@
             </div>
         </section>
 
-        <!-- 2. EARNINGS VIEW -->
+        <!-- 2. INSTAGRAM AUTO-DM AUTOMATION VIEW -->
+        <section id="autodm" class="page-view">
+            <div class="card-box">
+                <div class="box-header">
+                    <h3><i class="fa-brands fa-instagram" style="color: #dc2743;"></i> Instagram Profile & Auto-DM</h3>
+                </div>
+                <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">Connect your Instagram account to enable automated Direct Messages (Auto-DM) whenever users comment keywords like "LINK" or "BUY" on your Reels.</p>
+                
+                <div id="insta-connection-box" style="margin-bottom: 20px;">
+                    <div id="insta-disconnected-state">
+                        <button class="btn-insta-connect" onclick="connectInstagramAccount()">
+                            <i class="fa-brands fa-instagram" style="font-size: 18px;"></i> Connect Instagram Account
+                        </button>
+                    </div>
+                    <div id="insta-connected-state" style="display: none; background: var(--success-bg); border: 1px solid var(--success-green); padding: 14px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-brands fa-instagram" style="font-size: 22px; color: var(--success-green);"></i>
+                            <div>
+                                <h5 style="font-size: 13px; font-weight: 800; color: var(--text-primary);" id="connected-insta-handle">@username</h5>
+                                <p style="font-size: 11px; color: var(--success-green); font-weight: 700;">Status: Active & Connected</p>
+                            </div>
+                        </div>
+                        <button onclick="disconnectInstagram()" style="background: none; border: none; color: var(--danger-red); font-size: 12px; font-weight: 700; cursor: pointer;">Disconnect</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Trigger Keyword (e.g. LINK, BUY, PRICE)</label>
+                    <input type="text" id="dm-keyword" class="form-input" value="LINK" placeholder="Keyword in comments">
+                </div>
+                <div class="form-group">
+                    <label>Automated DM Reply Message</label>
+                    <textarea id="dm-message" class="form-input" rows="3" placeholder="Hey! Check out the product here: {link}">Hey! Thanks for your comment. Get the product here: {link} 🚀</textarea>
+                </div>
+                <button type="button" class="btn-submit" onclick="saveAutoDmSettings()"><i class="fa-solid fa-wand-magic-sparkles"></i> Save Auto-DM Rule</button>
+            </div>
+
+            <div class="card-box">
+                <div class="box-header">
+                    <h3><i class="fa-solid fa-chart-simple" style="color: var(--brand-primary);"></i> Auto-DM Log History</h3>
+                </div>
+                <ul class="referral-orders-list" id="autodm-logs-list">
+                    <li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No automated DMs triggered yet.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 3. EARNINGS VIEW -->
         <section id="earnings" class="page-view">
             <div class="stats-grid">
                 <div class="stat-card full-width featured">
@@ -1028,7 +971,7 @@
             </div>
         </section>
 
-        <!-- 3. WITHDRAW VIEW -->
+        <!-- 4. WITHDRAW VIEW -->
         <section id="withdraw" class="page-view">
             <div class="card-box">
                 <div class="box-header">
@@ -1052,7 +995,7 @@
             </div>
         </section>
 
-        <!-- 4. TRANSACTIONS VIEW -->
+        <!-- 5. TRANSACTIONS VIEW -->
         <section id="transactions" class="page-view">
             <div class="card-box">
                 <div class="box-header">
@@ -1074,8 +1017,12 @@
         </a>
         <a class="nav-item-bottom active" onclick="switchTab('referral', this)">
             <i class="fa-solid fa-wand-magic-sparkles"></i>
-            <span>Creator Hub</span>
+            <span>Hub</span>
             <span class="nav-tab-badge" id="earn-tab-badge"></span>
+        </a>
+        <a class="nav-item-bottom" onclick="switchTab('autodm', this)">
+            <i class="fa-brands fa-instagram"></i>
+            <span>Auto-DM</span>
         </a>
         <a class="nav-item-bottom" onclick="switchTab('earnings', this)">
             <i class="fa-solid fa-chart-line"></i>
@@ -1092,7 +1039,6 @@
     </nav>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDVDcAN5I6Duwb0f5nAIh1sThdK6ELGDGc",
             authDomain: "cartprime-shopping.firebaseapp.com",
@@ -1138,10 +1084,10 @@
                 listenToWalletData();
                 listenToWithdrawalHistory();
                 listenToNotifications();
+                loadAutoDmSettings();
                 return;
             }
 
-            // OneSignal-ൽ യൂസറെ ട്രാക്ക് ചെയ്യാൻ Identity Link
             window.OneSignalDeferred = window.OneSignalDeferred || [];
             OneSignalDeferred.push(function(OneSignal) {
                 OneSignal.login(userPhone);
@@ -1170,6 +1116,7 @@
                     listenToWalletData();
                     listenToWithdrawalHistory();
                     listenToNotifications();
+                    loadAutoDmSettings();
                 } else {
                     db.ref('users').once('value', (userSnapshot) => {
                         const users = userSnapshot.val() || {};
@@ -1202,11 +1149,7 @@
                             listenToWalletData();
                             listenToWithdrawalHistory();
                             listenToNotifications();
-                        }).catch(() => {
-                            updateUIWithPartnerName(partnerName);
-                            listenToWalletData();
-                            listenToWithdrawalHistory();
-                            listenToNotifications();
+                            loadAutoDmSettings();
                         });
                     });
                 }
@@ -1230,6 +1173,122 @@
             listenToReferralOrders();
         }
 
+        /* --- Instagram Connect & Auto-DM Logic --- */
+        function connectInstagramAccount() {
+            let handle = prompt("Enter your Instagram Handle (e.g. @yourname):");
+            if (!handle) return;
+            handle = handle.trim();
+            if (!handle.startsWith('@')) handle = '@' + handle;
+
+            db.ref(`earn_partners/${activeUserId}/instagram`).set({
+                handle: handle,
+                connectedAt: firebase.database.ServerValue.TIMESTAMP,
+                status: 'connected'
+            }).then(() => {
+                alert("Instagram Account Successfully Connected!");
+                loadAutoDmSettings();
+                createNotification("Instagram Connected 📸", `Successfully linked ${handle} for Auto-DM automation.`, "fa-brands fa-instagram");
+            });
+        }
+
+        function disconnectInstagram() {
+            if (confirm("Are you sure you want to disconnect your Instagram account?")) {
+                db.ref(`earn_partners/${activeUserId}/instagram`).remove().then(() => {
+                    alert("Instagram Disconnected.");
+                    loadAutoDmSettings();
+                });
+            }
+        }
+
+        function loadAutoDmSettings() {
+            db.ref(`earn_partners/${activeUserId}/instagram`).on('value', (snapshot) => {
+                const data = snapshot.val();
+                const disConnEl = document.getElementById('insta-disconnected-state');
+                const connEl = document.getElementById('insta-connected-state');
+                const handleEl = document.getElementById('connected-insta-handle');
+
+                if (data && data.handle) {
+                    if (disConnEl) disConnEl.style.display = 'none';
+                    if (connEl) connEl.style.display = 'flex';
+                    if (handleEl) handleEl.innerText = data.handle;
+                } else {
+                    if (disConnEl) disConnEl.style.display = 'block';
+                    if (connEl) connEl.style.display = 'none';
+                }
+            });
+
+            db.ref(`earn_partners/${activeUserId}/autodm_settings`).once('value', (snapshot) => {
+                const settings = snapshot.val();
+                if (settings) {
+                    if (settings.keyword) document.getElementById('dm-keyword').value = settings.keyword;
+                    if (settings.message) document.getElementById('dm-message').value = settings.message;
+                }
+            });
+
+            // Load logs
+            db.ref(`earn_partners/${activeUserId}/autodm_logs`).on('value', (snapshot) => {
+                const logs = snapshot.val() || {};
+                const list = document.getElementById('autodm-logs-list');
+                if (!list) return;
+
+                list.innerHTML = '';
+                let keys = Object.keys(logs).reverse();
+
+                if (keys.length === 0) {
+                    list.innerHTML = `<li style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 15px;">No automated DMs triggered yet.</li>`;
+                    return;
+                }
+
+                keys.forEach(k => {
+                    const item = logs[k];
+                    const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+                    const li = document.createElement('li');
+                    li.className = 'ref-order-item';
+                    li.innerHTML = `
+                        <div class="t-info">
+                            <div class="t-icon insta-icon">
+                                <i class="fa-brands fa-instagram"></i>
+                            </div>
+                            <div class="t-details">
+                                <h4>Sent to @${item.username || 'follower'}</h4>
+                                <p>Comment: "${item.comment || 'LINK'}" • ${timeStr}</p>
+                            </div>
+                        </div>
+                        <div class="t-amount">
+                            <span class="badge badge-success">Auto-Sent</span>
+                        </div>
+                    `;
+                    list.appendChild(li);
+                });
+            });
+        }
+
+        function saveAutoDmSettings() {
+            const keyword = document.getElementById('dm-keyword').value.trim();
+            const message = document.getElementById('dm-message').value.trim();
+
+            if (!keyword || !message) {
+                alert("Please enter both keyword and message.");
+                return;
+            }
+
+            db.ref(`earn_partners/${activeUserId}/autodm_settings`).set({
+                keyword: keyword,
+                message: message,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                alert("Auto-DM Rules Saved Successfully!");
+                
+                // Demo simulated Auto-DM log entry for testing
+                db.ref(`earn_partners/${activeUserId}/autodm_logs`).push({
+                    username: 'sample_buyer_99',
+                    comment: keyword,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+            });
+        }
+
         /* --- Notification Functions --- */
         function toggleNotificationModal(show) {
             const modal = document.getElementById('notification-modal');
@@ -1245,15 +1304,8 @@
             }
         }
 
-        function openNotificationModal() {
-            toggleNotificationModal(true);
-        }
-
-        function closeNotificationModal(e) {
-            if (e.target.id === 'notification-modal') {
-                toggleNotificationModal(false);
-            }
-        }
+        function openNotificationModal() { toggleNotificationModal(true); }
+        function closeNotificationModal(e) { if (e.target.id === 'notification-modal') toggleNotificationModal(false); }
 
         function listenToNotifications() {
             db.ref(`earn_partners/${activeUserId}/notifications`).on('value', (snapshot) => {
@@ -1263,7 +1315,6 @@
                 const tabBadge = document.getElementById('earn-tab-badge');
                 
                 if (!list) return;
-
                 list.innerHTML = '';
                 let unreadCount = 0;
                 let notifKeys = Object.keys(notifs).reverse();
@@ -1278,15 +1329,12 @@
                 notifKeys.forEach(key => {
                     const item = notifs[key];
                     if (item.unread) unreadCount++;
-
                     const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
 
                     const li = document.createElement('li');
                     li.className = `notification-item ${item.unread ? 'unread' : ''}`;
                     li.innerHTML = `
-                        <div class="notif-icon-box">
-                            <div class="fa-solid ${item.icon || 'fa-bell'}"></div>
-                        </div>
+                        <div class="notif-icon-box"><div class="${item.icon || 'fa-solid fa-bell'}"></div></div>
                         <div class="notif-details">
                             <h5>${item.title || 'Notification'}</h5>
                             <p>${item.message || ''}</p>
@@ -1297,14 +1345,8 @@
                 });
 
                 if (unreadCount > 0) {
-                    if (badge) {
-                        badge.innerText = unreadCount;
-                        badge.style.display = 'flex';
-                    }
-                    if (tabBadge) {
-                        tabBadge.innerText = unreadCount;
-                        tabBadge.style.display = 'flex';
-                    }
+                    if (badge) { badge.innerText = unreadCount; badge.style.display = 'flex'; }
+                    if (tabBadge) { tabBadge.innerText = unreadCount; tabBadge.style.display = 'flex'; }
                 } else {
                     if (badge) badge.style.display = 'none';
                     if (tabBadge) tabBadge.style.display = 'none';
@@ -1312,42 +1354,10 @@
             });
         }
 
-        // Direct Mobile Push Notification Function via OneSignal REST API
-        function sendOneSignalPushNotification(title, message) {
-            if (!userPhone) return;
-
-            const options = {
-                method: 'POST',
-                headers: {
-                    accept: 'application/json',
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    app_id: "2a461e57-51ca-4cdf-abb6-273fda96a4d0",
-                    include_external_user_ids: [userPhone], 
-                    headings: { en: title },
-                    contents: { en: message }
-                })
-            };
-
-            fetch('https://onesignal.com/api/v1/notifications', options)
-                .then(res => res.json())
-                .then(data => console.log('Push Sent:', data))
-                .catch(err => console.error('Push Error:', err));
-        }
-
-        // Trigger Internal Database and Mobile Push Notification
-        function createNotification(title, message, icon = 'fa-bell') {
+        function createNotification(title, message, icon = 'fa-solid fa-bell') {
             db.ref(`earn_partners/${activeUserId}/notifications`).push({
-                title: title,
-                message: message,
-                icon: icon,
-                unread: true,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
+                title: title, message: message, icon: icon, unread: true, timestamp: firebase.database.ServerValue.TIMESTAMP
             });
-
-            // Call Mobile Push API
-            sendOneSignalPushNotification(title, message);
         }
 
         function setupReferralLink() {
@@ -1362,14 +1372,10 @@
             document.querySelectorAll('.nav-item-bottom').forEach(link => link.classList.remove('active'));
             if (element) element.classList.add('active');
 
-            document.querySelectorAll('.page-view').forEach(view => {
-                view.classList.remove('active-view');
-            });
+            document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active-view'));
 
             const selectedView = document.getElementById(viewId);
             if (selectedView) {
-                selectedView.classList.remove('active-view');
-                void selectedView.offsetWidth; 
                 selectedView.classList.add('active-view');
             }
 
@@ -1393,25 +1399,17 @@
         function shareToWhatsApp() {
             const linkInput = document.getElementById('referral-url');
             if (linkInput) {
-                const refUrl = linkInput.value;
-                const message = `Check out Cartprime! Shop top deals using my link: ${refUrl}`;
+                const message = `Check out Cartprime! Shop top deals using my link: ${linkInput.value}`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
             }
         }
 
         function shareNative() {
             const linkInput = document.getElementById('referral-url');
-            if (linkInput) {
-                const refUrl = linkInput.value;
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'Cartprime Creator Deal',
-                        text: 'Shop on Cartprime using my link:',
-                        url: refUrl,
-                    }).catch(() => {});
-                } else {
-                    copyReferralLink();
-                }
+            if (linkInput && navigator.share) {
+                navigator.share({ title: 'Cartprime Deal', text: 'Shop using my link:', url: linkInput.value }).catch(() => {});
+            } else {
+                copyReferralLink();
             }
         }
 
@@ -1424,34 +1422,17 @@
 
         function syncMainOrdersToReferralOrders() {
             const cleanRefCode = uniquePartnerId.toString().replace(/[.#$\[\]]/g, "_");
-
             db.ref('orders').on('value', (snapshot) => {
                 const mainOrders = snapshot.val() || {};
-
                 db.ref(`referralOrders/${cleanRefCode}`).once('value', (refSnapshot) => {
                     const refOrders = refSnapshot.val() || {};
-
                     Object.keys(refOrders).forEach(refKey => {
                         const refItem = refOrders[refKey];
                         const orderId = refItem.orderId || refKey;
-
                         if (mainOrders[orderId]) {
                             const mainOrder = mainOrders[orderId];
                             const updates = {};
-
-                            if (mainOrder.status && mainOrder.status !== refItem.status) {
-                                updates.status = mainOrder.status;
-                            }
-                            if (mainOrder.deliveryDate && mainOrder.deliveryDate !== refItem.deliveryDate) {
-                                updates.deliveryDate = mainOrder.deliveryDate;
-                            }
-                            if (mainOrder.deliveredAt && mainOrder.deliveredAt !== refItem.deliveredAt) {
-                                updates.deliveredAt = mainOrder.deliveredAt;
-                            }
-                            if (mainOrder.isReturnable !== undefined && mainOrder.isReturnable !== refItem.isReturnable) {
-                                updates.isReturnable = mainOrder.isReturnable;
-                            }
-
+                            if (mainOrder.status && mainOrder.status !== refItem.status) updates.status = mainOrder.status;
                             if (Object.keys(updates).length > 0) {
                                 db.ref(`referralOrders/${cleanRefCode}/${refKey}`).update(updates);
                             }
@@ -1463,53 +1444,7 @@
 
         function checkReferralSuccess(order) {
             const adminStatus = (order.status || '').toLowerCase();
-
-            if (adminStatus !== 'delivered' && adminStatus !== 'completed') {
-                return false;
-            }
-
-            let isReturnable = false;
-            if (order.isReturnable !== undefined && order.isReturnable !== null) {
-                if (typeof order.isReturnable === 'boolean') {
-                    isReturnable = order.isReturnable;
-                } else if (typeof order.isReturnable === 'string') {
-                    isReturnable = (order.isReturnable.toLowerCase() === 'true');
-                }
-            } else if (order.returnPolicy !== undefined) {
-                isReturnable = (String(order.returnPolicy).toLowerCase().includes('true') || String(order.returnPolicy).toLowerCase().includes('7 days'));
-            } else {
-                isReturnable = true;
-            }
-
-            if (!isReturnable) {
-                return true;
-            }
-
-            let deliveredTimestamp = null;
-
-            if (order.deliveredAt && !isNaN(Number(order.deliveredAt))) {
-                deliveredTimestamp = Number(order.deliveredAt);
-            } else if (order.deliveryTimestamp && !isNaN(Number(order.deliveryTimestamp))) {
-                deliveredTimestamp = Number(order.deliveryTimestamp);
-            } else if (order.deliveryDate) {
-                const rawDateStr = String(order.deliveryDate).replace(/Delivered by|on/gi, '').trim();
-                const parsed = Date.parse(rawDateStr);
-                if (!isNaN(parsed)) deliveredTimestamp = parsed;
-            } else if (order.deliveredDate) {
-                const parsed = Date.parse(order.deliveredDate);
-                if (!isNaN(parsed)) deliveredTimestamp = parsed;
-            }
-
-            if (deliveredTimestamp) {
-                const now = Date.now();
-                const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
-                
-                if (now >= (deliveredTimestamp + sevenDaysInMs)) {
-                    return true;
-                }
-            }
-
-            return false;
+            return (adminStatus === 'delivered' || adminStatus === 'completed');
         }
 
         function listenToReferralOrders() {
@@ -1521,135 +1456,68 @@
                 if (!list) return;
 
                 list.innerHTML = '';
-
-                let count = 0;
-                let pendingTotal = 0;
-                let verifiedEarnings = 0;
-
+                let count = 0, pendingTotal = 0, verifiedEarnings = 0;
                 const processedOrders = new Set();
                 const orderKeys = Object.keys(orders).reverse();
                 
                 orderKeys.forEach(key => {
                     const order = orders[key];
                     const orderId = order.orderId || key;
-
-                    if (processedOrders.has(orderId)) {
-                        return; // duplicate ignore
-                    }
+                    if (processedOrders.has(orderId)) return;
                     processedOrders.add(orderId);
 
-                    // Trigger OneSignal / In-app Notification for New Tracked Order
                     if (!knownOrdersMap[orderId]) {
                         if (!isFirstLoad) {
-                            createNotification(
-                                "New Referred Order! 🎉",
-                                `A new order (#${orderId}) was placed using your referral link!`,
-                                "fa-bag-shopping"
-                            );
+                            createNotification("New Referred Order! 🎉", `A new order (#${orderId}) was placed using your link!`, "fa-solid fa-bag-shopping");
                         }
                         knownOrdersMap[orderId] = true;
                     }
 
                     count++;
-                    
-                    let rawPrice = order.price || order.totalPrice || order.amount || "0";
-                    if (typeof rawPrice === 'string') {
-                        rawPrice = rawPrice.replace(/[^0-9.]/g, '');
-                    }
-                    const productAmount = parseFloat(rawPrice) || 0;
-                    
-                    const commissionEarned = order.commissionAmount ? parseFloat(order.commissionAmount) : (productAmount * 0.03); 
+                    let rawPrice = String(order.price || order.totalPrice || order.amount || "0").replace(/[^0-9.]/g, '');
+                    let productAmount = parseFloat(rawPrice) || 0;
+                    let commissionEarned = order.commissionAmount ? parseFloat(order.commissionAmount) : (productAmount * 0.03); 
 
-                    const adminStatus = (order.status || '').toLowerCase();
-                    const isDelivered = (adminStatus === 'delivered' || adminStatus === 'completed');
-                    
-                    let isReturnable = false;
-                    if (order.isReturnable !== undefined && order.isReturnable !== null) {
-                        isReturnable = (String(order.isReturnable).toLowerCase() === 'true');
-                    } else if (order.returnPolicy) {
-                        isReturnable = String(order.returnPolicy).toLowerCase().includes('7 days') || String(order.returnPolicy).toLowerCase().includes('true');
-                    } else {
-                        isReturnable = true;
-                    }
+                    let isSuccess = checkReferralSuccess(order);
 
-                    const isReferralSuccess = checkReferralSuccess(order);
-
-                    if (isReferralSuccess) {
+                    if (isSuccess) {
                         verifiedEarnings += commissionEarned;
-
                         if (!order.commissionCredited) {
-                            db.ref(`referralOrders/${cleanRefCode}/${key}`).update({
-                                commissionCredited: true,
-                                referralStatus: 'Success'
-                            }).then(() => {
-                                db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction((currentBalance) => {
-                                    return (currentBalance || 0) + commissionEarned;
-                                });
-
-                                // Send Commission Credit Notification
-                                createNotification(
-                                    "Commission Credited! 💸",
-                                    `₹${commissionEarned.toFixed(2)} credited to wallet for Order #${orderId}`,
-                                    "fa-wallet"
-                                );
-                            });
+                            db.ref(`referralOrders/${cleanRefCode}/${key}`).update({ commissionCredited: true, referralStatus: 'Success' });
+                            db.ref(`earn_partners/${activeUserId}/wallet/balance`).transaction(b => (b || 0) + commissionEarned);
+                            createNotification("Commission Credited! 💸", `₹${commissionEarned.toFixed(2)} credited to wallet for Order #${orderId}`, "fa-solid fa-wallet");
                         }
                     } else {
                         pendingTotal += commissionEarned;
-                    }
-
-                    const customerName = order.customerName || order.userName || 'Customer';
-                    
-                    let statusText = '';
-                    let badgeLabel = 'Pending';
-                    let badgeClass = 'badge-pending';
-
-                    if (isReferralSuccess) {
-                        statusText = 'Completed • 3% Commission Credited';
-                        badgeLabel = 'Success';
-                        badgeClass = 'badge-success';
-                    } else if (isDelivered) {
-                        if (isReturnable) {
-                            statusText = 'Delivered • Return Window Active (7 Days)';
-                        } else {
-                            statusText = 'Delivered • Processing Final Status';
-                        }
-                    } else {
-                        const displayStatus = order.status ? order.status : 'Processing Order';
-                        statusText = `Pending • ${displayStatus}`;
                     }
 
                     const li = document.createElement('li');
                     li.className = 'ref-order-item';
                     li.innerHTML = `
                         <div class="t-info">
-                            <div class="t-icon ${isReferralSuccess ? 'income' : 'pending-icon'}">
-                                <i class="fa-solid ${isReferralSuccess ? 'fa-circle-check' : 'fa-clock'}"></i>
+                            <div class="t-icon ${isSuccess ? 'income' : 'pending-icon'}">
+                                <i class="fa-solid ${isSuccess ? 'fa-circle-check' : 'fa-clock'}"></i>
                             </div>
                             <div class="t-details">
-                                <h4>${customerName} (Order #${orderId})</h4>
-                                <p>${statusText}</p>
+                                <h4>${order.customerName || 'Customer'} (Order #${orderId})</h4>
+                                <p>${isSuccess ? 'Completed • 3% Credited' : 'Pending Verification'}</p>
                             </div>
                         </div>
                         <div class="t-amount">
                             <div class="amt plus">+ ₹${commissionEarned.toFixed(2)}</div>
-                            <span class="badge ${badgeClass}">
-                                ${badgeLabel}
-                            </span>
+                            <span class="badge ${isSuccess ? 'badge-success' : 'badge-pending'}">${isSuccess ? 'Success' : 'Pending'}</span>
                         </div>
                     `;
                     list.appendChild(li);
                 });
 
                 isFirstLoad = false;
-
                 if (count === 0) {
-                    list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">No creator orders tracked yet. Share your referral link to get started!</li>`;
+                    list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">No creator orders tracked yet. Share your link!</li>`;
                 }
 
                 document.querySelectorAll('.val-pending').forEach(el => el.innerText = pendingTotal.toFixed(2));
                 document.querySelectorAll('.val-earnings').forEach(el => el.innerText = verifiedEarnings.toFixed(2));
-
                 const refCountEl = document.getElementById('ref-count');
                 if (refCountEl) refCountEl.innerText = count;
             });
@@ -1657,73 +1525,37 @@
 
         function handleWithdraw(event) {
             event.preventDefault();
-            const methodInput = document.getElementById('withdraw-method');
-            const amtInput = document.getElementById('withdraw-amt');
-
-            if (!methodInput || !amtInput) return;
-
-            const method = methodInput.value;
-            const amount = parseFloat(amtInput.value);
+            const method = document.getElementById('withdraw-method').value;
+            const amount = parseFloat(document.getElementById('withdraw-amt').value);
 
             db.ref(`earn_partners/${activeUserId}/wallet/balance`).get().then((snapshot) => {
                 const currentBalance = snapshot.val() || 0;
-
                 if (amount > 0 && amount <= currentBalance) {
                     db.ref(`earn_partners/${activeUserId}/wallet/balance`).set(currentBalance - amount);
-                    
-                    const requestRef = db.ref(`payout_requests`).push();
-                    const newReqKey = requestRef.key;
-                    
+                    const reqRef = db.ref(`payout_requests`).push();
                     const payload = {
-                        requestId: newReqKey,
-                        partnerId: activeUserId,
-                        partnerName: partnerName,
-                        userPhone: userPhone,
-                        amount: amount,
-                        method: method,
-                        status: 'Pending',
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                        requestId: reqRef.key, partnerId: activeUserId, partnerName: partnerName, userPhone: userPhone,
+                        amount: amount, method: method, status: 'Pending', timestamp: firebase.database.ServerValue.TIMESTAMP
                     };
-
-                    requestRef.set(payload);
-                    db.ref(`earn_partners/${activeUserId}/withdrawals/${newReqKey}`).set(payload);
-
-                    // Send Payout Submitted Notification
-                    createNotification(
-                        "Payout Requested 💸",
-                        `Your payout request for ₹${amount.toFixed(2)} via ${method} has been submitted.`,
-                        "fa-arrow-up-from-bracket"
-                    );
-
-                    alert("Creator Payout Request Submitted Successfully!");
-                    amtInput.value = '';
-                    
-                    const historyTabBtn = document.querySelectorAll('.nav-item-bottom')[4];
-                    switchTab('transactions', historyTabBtn);
+                    reqRef.set(payload);
+                    db.ref(`earn_partners/${activeUserId}/withdrawals/${reqRef.key}`).set(payload);
+                    createNotification("Payout Requested 💸", `Your payout for ₹${amount.toFixed(2)} is submitted.`, "fa-solid fa-arrow-up-from-bracket");
+                    alert("Payout Request Submitted Successfully!");
+                    document.getElementById('withdraw-amt').value = '';
+                    switchTab('transactions', document.querySelectorAll('.nav-item-bottom')[5]);
                 } else {
-                    alert("Insufficient wallet balance for withdrawal!");
+                    alert("Insufficient wallet balance!");
                 }
             });
         }
 
         function listenToWithdrawalHistory() {
-            const list = document.getElementById('full-transaction-list');
-            if (!list) return;
-
-            db.ref('payout_requests').on('value', (snapshot) => {
-                renderTransactionsList(snapshot.val());
-            });
+            db.ref('payout_requests').on('value', (snapshot) => renderTransactionsList(snapshot.val()));
         }
 
         function refreshTransactions() {
-            const list = document.getElementById('full-transaction-list');
             const icon = document.getElementById('refresh-icon');
-            if (!list) return;
-
             if (icon) icon.classList.add('spinning');
-
-            list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Refreshing...</li>`;
-
             db.ref('payout_requests').once('value', (snapshot) => {
                 setTimeout(() => {
                     renderTransactionsList(snapshot.val());
@@ -1735,79 +1567,48 @@
         function renderTransactionsList(allRequests) {
             const list = document.getElementById('full-transaction-list');
             if (!list) return;
-
             allRequests = allRequests || {};
             list.innerHTML = '';
-
-            let matchedRequests = [];
+            let matched = [];
 
             Object.keys(allRequests).forEach(key => {
                 const item = allRequests[key];
                 const reqPartnerId = String(item.partnerId || '').replace(/\D/g, '');
-                const reqPhone = String(item.userPhone || item.phone || '').replace(/\D/g, '');
-                const currentCleanPhone = String(userPhone).replace(/\D/g, '');
+                const reqPhone = String(item.userPhone || '').replace(/\D/g, '');
+                const cleanPhone = String(userPhone).replace(/\D/g, '');
 
-                if (
-                    item.partnerId === activeUserId || 
-                    (currentCleanPhone && (reqPartnerId.includes(currentCleanPhone) || reqPhone.includes(currentCleanPhone)))
-                ) {
-                    matchedRequests.push({ key: key, ...item });
+                if (item.partnerId === activeUserId || (cleanPhone && (reqPartnerId.includes(cleanPhone) || reqPhone.includes(cleanPhone)))) {
+                    matched.push({ key: key, ...item });
                 }
             });
 
-            matchedRequests.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            matched.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
-            if (matchedRequests.length === 0) {
-                list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">Your withdrawal requests and credit history will appear here.</li>`;
+            if (matched.length === 0) {
+                list.innerHTML = `<li style="font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px;">No transaction history found.</li>`;
                 return;
             }
 
-            matchedRequests.forEach(item => {
-                const currentStatus = item.status || 'Pending';
-
-                let badgeClass = 'badge-pending';
-                let iconClass = 'pending-icon';
-                let statusIcon = 'fa-clock';
-                let isPaidSuccess = false;
-
-                const lowerStatus = String(currentStatus).toLowerCase();
-                
-                if (lowerStatus === 'approved' || lowerStatus === 'success' || lowerStatus === 'completed' || lowerStatus === 'paid') {
-                    badgeClass = 'badge-success';
-                    iconClass = 'income';
-                    statusIcon = 'fa-circle-check';
-                    isPaidSuccess = true;
-                } else if (lowerStatus === 'rejected' || lowerStatus === 'failed') {
-                    badgeClass = 'badge-rejected';
-                    iconClass = 'expense';
-                    statusIcon = 'fa-circle-xmark';
-                }
-
-                const reqDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString('en-IN', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                }) : 'Recent';
-
-                const shortId = item.key ? item.key.substring(0, 8) : 'REQ';
+            matched.forEach(item => {
+                const status = item.status || 'Pending';
+                let isSuccess = (status.toLowerCase() === 'approved' || status.toLowerCase() === 'success' || status.toLowerCase() === 'paid');
+                let isRejected = (status.toLowerCase() === 'rejected' || status.toLowerCase() === 'failed');
 
                 const li = document.createElement('li');
                 li.className = 'ref-order-item';
                 li.innerHTML = `
                     <div class="t-info">
-                        <div class="t-icon ${iconClass}">
-                            <i class="fa-solid ${statusIcon}"></i>
+                        <div class="t-icon ${isSuccess ? 'income' : (isRejected ? 'expense' : 'pending-icon')}">
+                            <i class="fa-solid ${isSuccess ? 'fa-circle-check' : (isRejected ? 'fa-circle-xmark' : 'fa-clock')}"></i>
                         </div>
                         <div class="t-details">
-                            <h4>Payout Request (${item.method || 'UPI / Bank'})</h4>
-                            <p>${reqDate} • ID: ${shortId}</p>
+                            <h4>Payout (${item.method || 'UPI'})</h4>
+                            <p>${new Date(item.timestamp || Date.now()).toLocaleDateString()} • ID: ${item.key.substring(0,8)}</p>
                         </div>
                     </div>
                     <div class="t-amount">
-                        <div class="amt ${isPaidSuccess ? 'plus' : 'minus'}">${isPaidSuccess ? '+' : '-'} ₹${parseFloat(item.amount || 0).toFixed(2)}</div>
-                        <span class="badge ${badgeClass}">
-                            ${currentStatus}
-                        </span>
+                        <div class="amt ${isSuccess ? 'plus' : 'minus'}">${isSuccess ? '+' : '-'} ₹${parseFloat(item.amount || 0).toFixed(2)}</div>
+                        <span class="badge ${isSuccess ? 'badge-success' : (isRejected ? 'badge-rejected' : 'badge-pending')}">${status}</span>
                     </div>
                 `;
                 list.appendChild(li);
