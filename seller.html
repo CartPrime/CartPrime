@@ -1257,7 +1257,7 @@
       } else {
         const newOrdersCache = snapshot.val();
 
-        // Detect new order and send Email Notification
+        // Detect new order and send Email Notification & Median OneSignal Notification
         if (!isInitialLoad) {
           Object.keys(newOrdersCache).forEach(phone => {
             Object.keys(newOrdersCache[phone]).forEach(orderId => {
@@ -1279,6 +1279,17 @@
                   newOrder.productImage || newOrder.image || "",
                   newOrder.description || ""
                 );
+
+                // Median OneSignal Push Notification Integration
+                if (window.median && window.median.onesignal) {
+                  window.median.onesignal.sendNotification({
+                    headings: { en: "പുതിയ ഓർഡർ ലഭിച്ചു! 📦" },
+                    contents: { en: `Order #${orderId.substring(0,6)} - ₹${newOrder.price} എത്തിയിട്ടുണ്ട്.` },
+                    data: { 
+                      targetUrl: window.location.href 
+                    }
+                  });
+                }
               }
             });
           });
