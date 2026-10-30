@@ -807,7 +807,7 @@ nav {
   </div> 
 </div>
 
-<!-- Earn Partner Request Modal & Affiliate Selling Dashboard -->
+<!-- Earn Partner Request Modal -->
 <div id="earnModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <div class="earn-modal-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
@@ -824,19 +824,16 @@ nav {
       <div style="display: flex; flex-direction: column; gap: 6px; margin: 12px 0; background: var(--surface); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);">
         <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Instant Free Registration</div>
         <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Direct UPI / Bank Payouts</div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Real-time Commission Dashboard</div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Access to Wallet & Dashboard on Approval</div>
       </div>
 
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;" id="earnSubText">Enter your WhatsApp or mobile number to check your partnership eligibility status.</p> 
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;" id="earnSubText">Enter your WhatsApp or mobile number to submit your partner request to admin.</p> 
 
       <form id="earnForm" class="modal-form" style="margin-top: 0;"> 
         <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
-        <input type="text" id="partnerName" class="modal-input" placeholder="Full Name" style="display: none;"> 
-        <input type="text" id="partnerUpi" class="modal-input" placeholder="UPI ID / GPay Number for Payouts" style="display: none;"> 
-        
         <div class="modal-btn-group"> 
           <button type="button" id="closeEarnModal" style="flex:1; padding:11px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button> 
-          <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Check Eligibility</button> 
+          <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Submit Request</button> 
         </div> 
       </form> 
     </div>
@@ -1243,7 +1240,7 @@ nav {
   }
 
   /* ========================================================================= */
-  /*                      AFFILIATE / PARTNER DASHBOARD & PRODUCTS SELLING     */
+  /*               AFFILIATE PARTNER STATUS & WALLET REDIRECT                  */
   /* ========================================================================= */
   const earnModal = document.getElementById('earnModal');
   const earnContentContainer = document.getElementById('earnContentContainer');
@@ -1267,8 +1264,8 @@ nav {
           localStorage.setItem('partnerPhone', partnerPhone);
           localStorage.setItem('partnerName', data.name || 'Partner');
           localStorage.setItem('partnerId', data.partnerId || partnerPhone);
-          if (bottomEarnText) bottomEarnText.textContent = "Dashboard";
-          if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-chart-line";
+          if (bottomEarnText) bottomEarnText.textContent = "Wallet";
+          if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-wallet";
         } else {
           if (bottomEarnText) bottomEarnText.textContent = "Pending";
           if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-clock-rotate-left";
@@ -1283,7 +1280,6 @@ nav {
   checkPartnerStatusAndUpdateUI();
 
   function openEarnModal() {
-    if (!earnModal) return;
     const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
     
     if (partnerPhone) {
@@ -1291,7 +1287,15 @@ nav {
         if (snapshot.exists()) {
           const data = snapshot.val();
           
-          if (data.status !== 'active' && data.verified !== true) {
+          if (data.status === 'active' || data.verified === true) {
+            localStorage.setItem('partnerPhone', partnerPhone);
+            localStorage.setItem('partnerName', data.name || 'Partner');
+            localStorage.setItem('partnerId', data.partnerId || partnerPhone);
+            window.location.href = "/wallet";
+            return;
+          }
+
+          if (earnModal) {
             earnModalMainTitle.textContent = "Verification Pending";
             earnModalMainSub.textContent = "Waiting for admin approval";
             earnContentContainer.innerHTML = `
@@ -1300,55 +1304,13 @@ nav {
                   <i class="fa-solid fa-hourglass-half"></i>
                 </div>
                 <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 6px;">Your Request is Under Review</h4>
-                <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px;">Admin verification is pending for number +91 ${partnerPhone}. You will get access as soon as the admin verifies your account.</p>
+                <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px;">Admin verification is pending for number +91 ${partnerPhone}. Once approved, you will be automatically granted access to your Wallet & Dashboard.</p>
                 <button type="button" id="closePendingEarnModal" style="width: 100%; padding: 11px; border-radius: 12px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border); font-weight: 700; cursor: pointer;">Close</button>
               </div>
             `;
             openModal(earnModal);
             document.getElementById('closePendingEarnModal').onclick = () => closeModal(earnModal);
-            return;
           }
-
-          // Verified Partner Dashboard & Affiliate Selling Hub
-          earnModalMainTitle.textContent = "Partner Sales Dashboard";
-          earnModalMainSub.textContent = `Affiliate ID: ${data.partnerId || partnerPhone}`;
-          earnContentContainer.innerHTML = `
-            <div style="display: flex; flex-direction: column; gap: 10px; margin: 10px 0 14px 0;">
-              <div style="background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                  <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">PARTNER NAME</div>
-                  <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);">${data.name || 'Partner'}</div>
-                </div>
-                <div style="text-align: right;">
-                  <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">COMMISSION STATUS</div>
-                  <div style="font-size: 0.85rem; font-weight: 800; color: #22c55e;"><i class="fa-solid fa-circle-check"></i> Active</div>
-                </div>
-              </div>
-              <div style="background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
-                <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; margin-bottom: 4px;">YOUR MASTER STOREFRONT REFERRAL LINK</div>
-                <div style="display: flex; gap: 6px;">
-                  <input type="text" readonly id="masterAffLink" value="${window.location.origin}/?ref=${data.partnerId || partnerPhone}" style="flex:1; padding:8px; background:var(--card-bg); border:1px solid var(--border); border-radius:8px; font-size:0.75rem; font-weight:600; color:var(--text-main);">
-                  <button type="button" id="copyMasterLinkBtn" style="padding: 8px 12px; background:var(--accent); color:#111; font-weight:800; border:none; border-radius:8px; font-size:0.75rem; cursor:pointer;"><i class="fa-solid fa-copy"></i> Copy</button>
-                </div>
-              </div>
-              <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid var(--accent-border); padding: 12px; border-radius: 12px;">
-                <div style="font-size: 0.82rem; font-weight: 800; color: var(--accent); margin-bottom: 4px;"><i class="fa-solid fa-bullhorn"></i> How to Sell & Earn:</div>
-                <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; margin: 0;">Copy any product link or your store link, share on WhatsApp/Social media, and earn commissions instantly when orders are confirmed!</p>
-              </div>
-            </div>
-            <div style="display: flex; gap: 10px;">
-              <button type="button" id="closeActiveEarnModal" style="flex:1; padding:11px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text-main); font-weight:700; cursor:pointer;">Close</button>
-            </div>
-          `;
-          openModal(earnModal);
-          
-          document.getElementById('closeActiveEarnModal').onclick = () => closeModal(earnModal);
-          document.getElementById('copyMasterLinkBtn').onclick = () => {
-            const linkInput = document.getElementById('masterAffLink');
-            navigator.clipboard.writeText(linkInput.value).then(() => {
-              showCustomAlert("Link Copied!", "Your master affiliate referral link has been copied to clipboard.", true);
-            });
-          };
           return;
         } else {
           showRegistrationFormInModal(partnerPhone);
@@ -1362,6 +1324,7 @@ nav {
   }
 
   function showRegistrationFormInModal(defaultPhone = "") {
+    if (!earnModal) return;
     earnModalMainTitle.textContent = "CartPrime Partner Program";
     earnModalMainSub.textContent = "Earn commissions on every referral";
     earnContentContainer.innerHTML = `
@@ -1926,7 +1889,6 @@ nav {
   }
 
   function getEarnBannerHtml() {
-    const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
     const isRegistered = !!localStorage.getItem('partnerPhone');
     
     return `
@@ -1939,8 +1901,8 @@ nav {
               <div class="earn-ad-badge"><i class="fa-solid fa-fire"></i> CartPrime Partner Program</div>
               <div class="earn-ad-free-tag"><i class="fa-solid fa-circle-check"></i> 100% Free • ₹0 Investment</div>
             </div>
-            <h2 class="earn-ad-title">${isRegistered ? 'Partner Dashboard Active' : 'You Earn at Home <span>₹30,000+</span> Earn'}</h2>
-            <p class="earn-ad-desc">${isRegistered ? 'Your affiliate account is active. Click below to view your dashboard or share referral links.' : 'Share CartPrime Products on WhatsApp and Social Media easily. Get a higher cash commission on each order!'}</p>
+            <h2 class="earn-ad-title">${isRegistered ? 'Partner Wallet & Dashboard' : 'You Earn at Home <span>₹30,000+</span> Earn'}</h2>
+            <p class="earn-ad-desc">${isRegistered ? 'Your partner account is active. Click below to open your Wallet and manage your earnings.' : 'Share CartPrime Products on WhatsApp and Social Media easily. Get a higher cash commission on each order!'}</p>
             <div class="earn-features-grid">
               <div class="earn-feature-card"><strong style="color: #fbbf24;">₹0 Investment</strong><span>Without Investment</span></div>
               <div class="earn-feature-card"><strong style="color: #4ade80;">Up to 25%</strong><span>High Commission</span></div>
@@ -1949,7 +1911,7 @@ nav {
             </div>
             <div class="earn-ad-actions">
               <button type="button" class="earn-ad-cta-btn" id="heroEarnAdBtn">
-                <i class="fa-solid fa-hand-holding-dollar"></i><span>${isRegistered ? 'Open Partner Dashboard' : 'Register now / Start Earning'}</span><i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
+                <i class="fa-solid fa-wallet"></i><span>${isRegistered ? 'Open Wallet' : 'Register now / Start Earning'}</span><i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
               </button>
               <button type="button" class="earn-ad-info-btn" id="earnHowItWorksBtn">
                 <i class="fa-solid fa-circle-question" style="color: #fbbf24;"></i><span>How It Works</span>
