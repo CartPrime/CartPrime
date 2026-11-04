@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>My Orders | CartPrime</title>
 
-    <!-- Shopping Bag Favicon (SVG Data URI) -->
+    <!-- Shopping Bag Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%230b0b0f'/><path d='M17 8h-1.5c0-1.93-1.57-3.5-3.5-3.5S8.5 6.07 8.5 8H7c-.83 0-1.5.67-1.5 1.5v8C5.5 18.33 6.17 19 7 19h10c.83 0 1.5-.67 1.5-1.5v-8C18.5 8.67 17.83 8 17 8zm-5-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm5 11.5H7v-8h10v8z' fill='%23f59e0b'/></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%230b0b0f'/><path d='M17 8h-1.5c0-1.93-1.57-3.5-3.5-3.5S8.5 6.07 8.5 8H7c-.83 0-1.5.67-1.5 1.5v8C5.5 18.33 6.17 19 7 19h10c.83 0 1.5-.67 1.5-1.5v-8C18.5 8.67 17.83 8 17 8zm-5-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm5 11.5H7v-8h10v8z' fill='%23f59e0b'/></svg>">
 
@@ -134,6 +134,112 @@
             max-width: 760px;
             margin: 0 auto;
             padding: 16px;
+        }
+
+        /* Phone Lookup Bar (Prime Card) */
+        .phone-tracker-card {
+            background: var(--white);
+            border: 1.5px solid var(--border-color);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .phone-display-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .phone-display-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .phone-icon-pill {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--accent-soft);
+            color: var(--accent-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            border: 1px solid var(--accent-border);
+        }
+
+        .phone-meta-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .phone-meta-val {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .btn-phone-action {
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-phone-action:hover {
+            background: #e2e8f0;
+        }
+
+        /* Phone Input Prompt Box */
+        .phone-input-box {
+            margin-top: 10px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-color);
+            display: none;
+        }
+
+        .phone-input-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .phone-input-field {
+            flex: 1;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border-color);
+            font-size: 0.9rem;
+            font-weight: 700;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .phone-input-field:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-submit-phone {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
         }
 
         /* Search Box */
@@ -584,7 +690,7 @@
         /* Empty State */
         .empty-orders-view {
             text-align: center;
-            padding: 50px 20px;
+            padding: 45px 20px;
             background: var(--white);
             border-radius: 20px;
             border: 1px solid var(--border-color);
@@ -592,8 +698,8 @@
         }
 
         .empty-icon-wrap {
-            width: 76px;
-            height: 76px;
+            width: 72px;
+            height: 72px;
             margin: 0 auto 16px;
             border-radius: 50%;
             background: var(--accent-soft);
@@ -601,18 +707,18 @@
             align-items: center;
             justify-content: center;
             color: var(--accent-dark);
-            font-size: 2rem;
+            font-size: 1.8rem;
         }
 
         .empty-orders-view h3 {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 800;
             color: var(--primary);
             margin-bottom: 8px;
         }
 
         .empty-orders-view p {
-            font-size: 0.88rem;
+            font-size: 0.86rem;
             color: var(--text-muted);
             max-width: 360px;
             margin: 0 auto 20px;
@@ -749,7 +855,34 @@
     </header>
 
     <main class="main-container">
-        <!-- Search Orders -->
+        <!-- Phone Number Verification / Switch Bar -->
+        <div class="phone-tracker-card">
+            <div class="phone-display-row">
+                <div class="phone-display-info">
+                    <div class="phone-icon-pill"><i class="fa-solid fa-phone"></i></div>
+                    <div>
+                        <div class="phone-meta-label">Tracking Phone</div>
+                        <div class="phone-meta-val" id="activePhoneDisplay">Checking...</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-phone-action" id="btnTogglePhoneInput" onclick="togglePhoneInput()">
+                    <i class="fa-solid fa-pen-to-square"></i> Change
+                </button>
+            </div>
+
+            <!-- Expandable Phone Input Field -->
+            <div class="phone-input-box" id="phoneInputBox">
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">
+                    Enter the 10-digit mobile number you used during checkout:
+                </div>
+                <div class="phone-input-row">
+                    <input type="tel" id="userMobileInput" class="phone-input-field" maxlength="10" placeholder="e.g. 9876543210" autocomplete="tel">
+                    <button type="button" class="btn-submit-phone" onclick="submitPhoneNumber()">View Orders</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
         <div class="search-box-wrap">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="orderSearchInput" class="search-input" placeholder="Search by Product Name or Order ID..." autocomplete="off">
@@ -767,7 +900,8 @@
 
         <!-- Orders List Container -->
         <div id="ordersList">
-            <div style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem;">
+            <!-- Loading Indicator with safe auto-dismiss -->
+            <div id="loadingIndicator" style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem;">
                 <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 10px;"></i>
                 <div>Loading your orders...</div>
             </div>
@@ -792,8 +926,7 @@
         import { getDatabase, ref, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         // ==========================================
-        // ⚠️ CARTPRIME FIREBASE CONFIGURATION
-        // നിങ്ങളുടെ യഥാർത്ഥ Firebase Config നിലനിർത്തുക
+        // ⚠️ CARTPRIME FIREBASE CONFIG
         // ==========================================
         const fallbackConfig = {
             apiKey: "AIzaSyDummyKeyReplaceIfYourProjectUsesCustomAuth",
@@ -809,14 +942,13 @@
                                JSON.parse(localStorage.getItem('cartprime_firebase_config') || 'null') || 
                                fallbackConfig;
 
-        // Initialize Firebase safely
         let app, auth, db;
         try {
             app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
             auth = getAuth(app);
             db = getDatabase(app);
         } catch (e) {
-            console.warn("Firebase Init notice:", e.message);
+            console.warn("Firebase Init note:", e.message);
         }
 
         const SUPPORT_WHATSAPP = "919000000000"; 
@@ -825,12 +957,20 @@
         // Guaranteed Inline SVG Fallback
         const DEFAULT_FALLBACK_SVG = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20120%20120%22%20width%3D%22120%22%20height%3D%22120%22%3E%3Crect%20width%3D%22120%22%20height%3D%22120%22%20fill%3D%22%23f1f5f9%22%2F%3E%3Cpath%20d%3D%22M76%2042h-6c0-7.7-6.3-14-14-14s-14%206.3-14%2014h-6c-3.3%200-6%202.7-6%206v32c0%203.3%202.7%206%206%206h40c3.3%200%206-2.7%206-6V48c0-3.3-2.7-6-6-6zm-20-8c4.4%200%208%203.6%208%208h-16c0-4.4%203.6-8%208-8zm20%2046H42V48h40v32z%22%20fill%3D%22%23f59e0b%22%2F%3E%3C%2Fsvg%3E";
 
-        let allOrders = [];
+        let rawAllOrders = [];
+        let displayedOrders = [];
         let filteredOrders = [];
         let activeFilter = 'all';
         let searchQuery = '';
-        let currentUser = null;
+        let currentPhone = '';
         let productsCache = {};
+
+        // Safe Clean Phone Helper
+        function normalizePhone(val) {
+            if (!val) return '';
+            const digits = String(val).replace(/\D/g, '');
+            return digits.length >= 10 ? digits.slice(-10) : digits;
+        }
 
         // Safe Image Extractor
         function extractItemImage(item, order) {
@@ -851,17 +991,14 @@
                     if (first) {
                         if (typeof first.image === 'string' && first.image.trim()) return first.image.trim();
                         if (typeof first.productImage === 'string' && first.productImage.trim()) return first.productImage.trim();
-                        if (typeof first.img === 'string' && first.img.trim()) return first.img.trim();
                     }
                 }
             }
-            // Check products cache
             const pid = (item && (item.id || item.productId)) || (order && (order.productId || order.id));
             if (pid && productsCache[pid]) {
                 const p = productsCache[pid];
                 if (p.image) return p.image;
                 if (p.productImage) return p.productImage;
-                if (Array.isArray(p.images) && p.images[0]) return p.images[0];
             }
             return DEFAULT_FALLBACK_SVG;
         }
@@ -897,10 +1034,10 @@
                    d1.getDate() === d2.getDate();
         }
 
-        // Check if Admin set "Today Arriving" / "Arriving Today" / "Out for Delivery"
+        // Check if Admin marked "Today Arriving" / "Arriving Today" / "Out for Delivery"
         function checkIsOutForDelivery(order) {
             if (!order) return false;
-            const searchPool = [
+            const textPool = [
                 order.status,
                 order.trackingStatus,
                 order.deliveryStatus,
@@ -913,13 +1050,13 @@
             ].filter(Boolean).map(s => String(s).toLowerCase()).join(' ');
 
             if (
-                searchPool.includes('today arriving') ||
-                searchPool.includes('arriving today') ||
-                searchPool.includes('today delivery') ||
-                searchPool.includes('delivery today') ||
-                searchPool.includes('out for delivery') ||
-                searchPool.includes('out_for_delivery') ||
-                searchPool.includes('out-for-delivery')
+                textPool.includes('today arriving') ||
+                textPool.includes('arriving today') ||
+                textPool.includes('today delivery') ||
+                textPool.includes('delivery today') ||
+                textPool.includes('out for delivery') ||
+                textPool.includes('out_for_delivery') ||
+                textPool.includes('out-for-delivery')
             ) {
                 return true;
             }
@@ -933,7 +1070,7 @@
             return false;
         }
 
-        // Determine Effective Status
+        // Effective Status
         function getEffectiveStatus(order) {
             const raw = String(order.status || '').toLowerCase().trim();
             if (raw === 'delivered') return 'delivered';
@@ -954,7 +1091,7 @@
             return raw || 'placed';
         }
 
-        // Return Eligibility Check (Hides button if return period expired)
+        // Return Eligibility Check: Automatically HIDES button if period expired
         function getReturnEligibility(order) {
             if (!order) return { eligible: false, hasPolicy: false, isExpired: true, daysLeft: 0 };
 
@@ -1003,131 +1140,156 @@
             return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
         }
 
-        function cleanPhone(p) {
-            if (!p) return '';
-            return String(p).replace(/\D/g, '').slice(-10);
-        }
-
-        // Preload Products Cache in background (Non-blocking)
-        async function preloadProductsCache() {
-            if (!db) return;
-            try {
-                const prodRef = ref(db, 'products');
-                const snap = await get(prodRef);
-                if (snap.exists()) {
-                    const data = snap.val();
-                    Object.keys(data).forEach(k => {
-                        const p = data[k];
-                        if (p) {
-                            productsCache[k] = p;
-                            if (p.id) productsCache[p.id] = p;
-                            if (p.name) productsCache[p.name.toLowerCase().trim()] = p;
-                            if (p.title) productsCache[p.title.toLowerCase().trim()] = p;
-                        }
-                    });
-                }
-            } catch (e) {}
-        }
-
-        // Load Local Orders as instant cache
-        function loadLocalOrders() {
-            const storageKeys = ['cartprime_orders', 'orders', 'my_orders', 'user_orders', 'cartprime_recent_orders'];
-            for (const key of storageKeys) {
+        // Read all local storage orders safely
+        function scanAllLocalOrders() {
+            const orders = [];
+            const keys = ['cartprime_orders', 'orders', 'my_orders', 'user_orders', 'cartprime_recent_orders'];
+            for (const k of keys) {
                 try {
-                    const raw = localStorage.getItem(key);
+                    const raw = localStorage.getItem(k);
                     if (raw) {
                         const parsed = JSON.parse(raw);
-                        let arr = Array.isArray(parsed) ? parsed : Object.values(parsed);
-                        if (arr && arr.length > 0) return arr;
+                        const arr = Array.isArray(parsed) ? parsed : Object.values(parsed);
+                        arr.forEach(o => {
+                            if (o && (o.id || o.orderId || o.items || o.totalAmount)) {
+                                orders.push(o);
+                            }
+                        });
                     }
-                } catch (e) {}
+                } catch(e) {}
             }
-            return [];
+            return orders;
         }
 
-        // Live Orders Fetch from Firebase Realtime Database
-        function setupLiveFirebaseOrders() {
-            if (!db) return;
-            try {
-                const ordersRef = ref(db, 'orders');
-                onValue(ordersRef, (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        const list = [];
-                        Object.keys(data).forEach(k => {
-                            const ord = data[k];
-                            if (ord) {
-                                ord.id = ord.id || k;
-                                list.push(ord);
-                            }
-                        });
-
-                        // Smart Customer Filter
-                        const currentPhone = cleanPhone(
-                            (currentUser && currentUser.phoneNumber) ||
-                            localStorage.getItem('cartprime_user_phone') ||
-                            localStorage.getItem('customerPhone') ||
-                            localStorage.getItem('user_phone') ||
-                            ''
-                        );
-
-                        let finalOrders = list;
-                        if (currentPhone) {
-                            const matching = list.filter(o => {
-                                const oPhone = cleanPhone(o.customerPhone || o.phone || (o.shippingAddress && o.shippingAddress.phone));
-                                return oPhone && oPhone === currentPhone;
-                            });
-                            // If phone matching orders exist, show them; otherwise show all
-                            if (matching.length > 0) {
-                                finalOrders = matching;
-                            }
-                        }
-
-                        // Sort newest first
-                        finalOrders.sort((a, b) => {
-                            const da = parseDateSafe(a.date || a.createdAt) || new Date(0);
-                            const db = parseDateSafe(b.date || b.createdAt) || new Date(0);
-                            return db - da;
-                        });
-
-                        allOrders = finalOrders;
-
-                        try {
-                            localStorage.setItem('cartprime_orders', JSON.stringify(allOrders));
-                        } catch(e) {}
-
-                        updateCounts();
-                        applyFilters();
-                    } else {
-                        // Empty in DB, check local
-                        if (!allOrders.length) {
-                            allOrders = loadLocalOrders();
-                            updateCounts();
-                            applyFilters();
-                        }
-                    }
-                }, (err) => {
-                    console.warn("Firebase orders read error:", err);
-                    if (!allOrders.length) {
-                        allOrders = loadLocalOrders();
-                        updateCounts();
-                        applyFilters();
-                    }
-                });
-            } catch (err) {
-                console.warn("Firebase listener exception:", err);
+        // Get saved customer phone
+        function detectCustomerPhone() {
+            const phoneKeys = ['cartprime_user_phone', 'customerPhone', 'user_phone', 'phone', 'checkout_phone'];
+            for (const k of phoneKeys) {
+                const val = localStorage.getItem(k);
+                if (val && normalizePhone(val).length >= 10) {
+                    return normalizePhone(val);
+                }
             }
+            return '';
+        }
+
+        // Update Phone Header Bar UI
+        function updatePhoneHeaderUI() {
+            const displayEl = document.getElementById('activePhoneDisplay');
+            const inputBox = document.getElementById('phoneInputBox');
+            const btnToggle = document.getElementById('btnTogglePhoneInput');
+
+            if (currentPhone) {
+                displayEl.innerHTML = `+91 ${currentPhone}`;
+                inputBox.style.display = 'none';
+                btnToggle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Change`;
+            } else {
+                displayEl.innerHTML = `<span style="color: var(--accent-dark);">No Phone Set</span>`;
+                inputBox.style.display = 'block';
+                btnToggle.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Enter Phone`;
+            }
+        }
+
+        // Toggle phone input display
+        window.togglePhoneInput = function() {
+            const inputBox = document.getElementById('phoneInputBox');
+            if (inputBox.style.display === 'block') {
+                inputBox.style.display = 'none';
+            } else {
+                inputBox.style.display = 'block';
+                const inputField = document.getElementById('userMobileInput');
+                inputField.value = currentPhone || '';
+                inputField.focus();
+            }
+        };
+
+        // Submit Phone Number Handler
+        window.submitPhoneNumber = function() {
+            const inputField = document.getElementById('userMobileInput');
+            const clean = normalizePhone(inputField.value);
+
+            if (!clean || clean.length < 10) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Enter Valid Mobile Number',
+                    text: 'Please enter a valid 10-digit mobile number to view orders.',
+                    confirmButtonColor: '#0b0b0f'
+                });
+                return;
+            }
+
+            currentPhone = clean;
+            localStorage.setItem('cartprime_user_phone', clean);
+            updatePhoneHeaderUI();
+            processAndRenderOrders();
+        };
+
+        // Filter by Phone & Render
+        function processAndRenderOrders() {
+            // Dismiss Loading
+            const loader = document.getElementById('loadingIndicator');
+            if (loader) loader.style.display = 'none';
+
+            // Gather all orders
+            const localOrders = scanAllLocalOrders();
+            const map = new Map();
+
+            // Insert local orders
+            localOrders.forEach(o => {
+                const id = o.id || o.orderId || Math.random().toString();
+                map.set(String(id), o);
+            });
+
+            // Insert raw DB orders
+            rawAllOrders.forEach(o => {
+                const id = o.id || o.orderId || Math.random().toString();
+                map.set(String(id), o);
+            });
+
+            const merged = Array.from(map.values());
+
+            // Filter by Customer Phone Number
+            if (currentPhone) {
+                displayedOrders = merged.filter(ord => {
+                    const p1 = normalizePhone(ord.customerPhone);
+                    const p2 = normalizePhone(ord.phone);
+                    const p3 = normalizePhone(ord.customerMobile);
+                    const p4 = normalizePhone(ord.mobile);
+                    const p5 = normalizePhone(ord.shippingAddress && (ord.shippingAddress.phone || ord.shippingAddress.mobile));
+                    const p6 = normalizePhone(ord.address && (ord.address.phone || ord.address.mobile));
+
+                    return (p1 && p1 === currentPhone) ||
+                           (p2 && p2 === currentPhone) ||
+                           (p3 && p3 === currentPhone) ||
+                           (p4 && p4 === currentPhone) ||
+                           (p5 && p5 === currentPhone) ||
+                           (p6 && p6 === currentPhone);
+                });
+            } else {
+                // If phone is not entered yet, show all available orders
+                displayedOrders = merged;
+            }
+
+            // Sort newest first
+            displayedOrders.sort((a, b) => {
+                const da = parseDateSafe(a.date || a.createdAt) || new Date(0);
+                const db = parseDateSafe(b.date || b.createdAt) || new Date(0);
+                return db - da;
+            });
+
+            updateCounts();
+            applyFilters();
         }
 
         // Update Counter Badges
         function updateCounts() {
-            const counts = { all: allOrders.length, placed: 0, shipped: 0, out_for_delivery: 0, delivered: 0, cancelled: 0 };
-            allOrders.forEach(ord => {
+            const counts = { all: displayedOrders.length, placed: 0, shipped: 0, out_for_delivery: 0, delivered: 0, cancelled: 0 };
+            displayedOrders.forEach(ord => {
                 const st = getEffectiveStatus(ord);
                 if (counts[st] !== undefined) counts[st]++;
             });
 
-            document.getElementById('ordersCountBadge').textContent = allOrders.length;
+            document.getElementById('ordersCountBadge').textContent = displayedOrders.length;
             document.getElementById('count-all').textContent = counts.all;
             document.getElementById('count-placed').textContent = counts.placed;
             document.getElementById('count-shipped').textContent = counts.shipped;
@@ -1138,7 +1300,7 @@
 
         // Apply Filters & Search
         function applyFilters() {
-            filteredOrders = allOrders.filter(ord => {
+            filteredOrders = displayedOrders.filter(ord => {
                 const effStatus = getEffectiveStatus(ord);
                 const filterMatch = (activeFilter === 'all') || (effStatus === activeFilter);
                 if (!filterMatch) return false;
@@ -1164,10 +1326,15 @@
                             <i class="fa-solid fa-box-open"></i>
                         </div>
                         <h3>No Orders Found</h3>
-                        <p>${searchQuery ? 'No orders match your search keyword.' : 'Looks like you haven’t placed any orders yet. Discover our top products today!'}</p>
-                        <a href="index.html" class="meesho-btn meesho-btn-accent" style="display: inline-flex; margin: 0 auto;">
-                            <i class="fa-solid fa-bag-shopping"></i> Start Shopping
-                        </a>
+                        <p>${currentPhone ? `No orders found for <strong>+91 ${currentPhone}</strong>. Make sure this is the number used during checkout.` : 'Please enter your 10-digit mobile number above to view your orders.'}</p>
+                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                            <button type="button" class="meesho-btn meesho-btn-outline" onclick="togglePhoneInput()">
+                                <i class="fa-solid fa-phone"></i> Change Number
+                            </button>
+                            <a href="index.html" class="meesho-btn meesho-btn-accent">
+                                <i class="fa-solid fa-bag-shopping"></i> Start Shopping
+                            </a>
+                        </div>
                     </div>
                 `;
                 return;
@@ -1209,7 +1376,7 @@
                     progressWidth = '0%';
                 }
 
-                // Return Eligibility Check: Automatically HIDES if return period expired
+                // Return Eligibility Check: Automatically HIDES button if period expired
                 const returnInfo = getReturnEligibility(order);
                 const canReturn = (effStatus === 'delivered' && returnInfo.hasPolicy && !returnInfo.isExpired);
 
@@ -1317,7 +1484,7 @@
 
         // View Order Details Modal
         window.viewOrderDetails = function(orderId) {
-            const order = allOrders.find(o => String(o.id || o.orderId) === String(orderId));
+            const order = displayedOrders.find(o => String(o.id || o.orderId) === String(orderId));
             if (!order) return;
 
             const effStatus = getEffectiveStatus(order);
@@ -1420,7 +1587,7 @@
 
         // Return Request Flow
         window.requestReturnOrder = function(orderId) {
-            const order = allOrders.find(o => String(o.id || o.orderId) === String(orderId));
+            const order = displayedOrders.find(o => String(o.id || o.orderId) === String(orderId));
             if (!order) return;
 
             const returnInfo = getReturnEligibility(order);
@@ -1477,10 +1644,6 @@
                         order.status = 'return_requested';
                         order.returnReason = reason;
 
-                        try {
-                            localStorage.setItem('cartprime_orders', JSON.stringify(allOrders));
-                        } catch (e) {}
-
                         Swal.fire({
                             icon: 'success',
                             title: 'Return Request Submitted!',
@@ -1520,12 +1683,8 @@
                             });
                         }
 
-                        const ord = allOrders.find(o => String(o.id || o.orderId) === String(orderId));
+                        const ord = displayedOrders.find(o => String(o.id || o.orderId) === String(orderId));
                         if (ord) ord.status = 'cancelled';
-
-                        try {
-                            localStorage.setItem('cartprime_orders', JSON.stringify(allOrders));
-                        } catch (e) {}
 
                         Swal.fire({
                             icon: 'success',
@@ -1544,28 +1703,69 @@
             });
         };
 
+        // Preload Products Cache
+        async function preloadProductsCache() {
+            if (!db) return;
+            try {
+                const prodRef = ref(db, 'products');
+                const snap = await get(prodRef);
+                if (snap.exists()) {
+                    const data = snap.val();
+                    Object.keys(data).forEach(k => {
+                        const p = data[k];
+                        if (p) {
+                            productsCache[k] = p;
+                            if (p.id) productsCache[p.id] = p;
+                            if (p.name) productsCache[p.name.toLowerCase().trim()] = p;
+                            if (p.title) productsCache[p.title.toLowerCase().trim()] = p;
+                        }
+                    });
+                }
+            } catch(e) {}
+        }
+
+        // Setup Firebase Orders
+        function setupFirebaseOrders() {
+            if (!db) return;
+            try {
+                const ordersRef = ref(db, 'orders');
+                onValue(ordersRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const list = [];
+                        Object.keys(data).forEach(k => {
+                            const ord = data[k];
+                            if (ord) {
+                                ord.id = ord.id || k;
+                                list.push(ord);
+                            }
+                        });
+                        rawAllOrders = list;
+                    }
+                    processAndRenderOrders();
+                }, (err) => {
+                    console.warn("Firebase Read Note:", err);
+                    processAndRenderOrders();
+                });
+            } catch (e) {
+                processAndRenderOrders();
+            }
+        }
+
         // Initialization
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Initial fast load from local cache
-            const cached = loadLocalOrders();
-            if (cached.length > 0) {
-                allOrders = cached;
-                updateCounts();
-                applyFilters();
-            }
+            // 1. Detect Customer Phone
+            currentPhone = detectCustomerPhone();
+            updatePhoneHeaderUI();
 
-            // 2. Preload products cache in background
+            // 2. Safe Auto-Dismiss Loading: Max 800ms
+            setTimeout(() => {
+                processAndRenderOrders();
+            }, 800);
+
+            // 3. Preload Products & Start Firebase
             preloadProductsCache();
-
-            // 3. Setup Firebase Live Orders Sync
-            if (auth) {
-                onAuthStateChanged(auth, (user) => {
-                    currentUser = user;
-                    setupLiveFirebaseOrders();
-                });
-            } else {
-                setupLiveFirebaseOrders();
-            }
+            setupFirebaseOrders();
 
             // 4. Filter chips
             document.querySelectorAll('.filter-chip').forEach(btn => {
