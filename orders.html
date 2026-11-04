@@ -53,7 +53,7 @@
             padding-bottom: 60px;
         }
 
-        /* Top Sticky Navbar */
+        /* Sticky Top Navbar */
         .top-navbar {
             position: sticky;
             top: 0;
@@ -136,30 +136,28 @@
             padding: 16px;
         }
 
-        /* Phone Lookup Bar (Prime Card) */
-        .phone-tracker-card {
+        /* Auto-detected Logged-In User Strip */
+        .user-login-strip {
             background: var(--white);
             border: 1.5px solid var(--border-color);
             border-radius: 14px;
-            padding: 14px 16px;
+            padding: 12px 16px;
             margin-bottom: 14px;
             box-shadow: var(--shadow-sm);
-        }
-
-        .phone-display-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
-        }
-
-        .phone-display-info {
-            display: flex;
-            align-items: center;
             gap: 12px;
         }
 
-        .phone-icon-pill {
+        .user-login-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .user-avatar-pill {
             width: 38px;
             height: 38px;
             border-radius: 10px;
@@ -170,23 +168,36 @@
             justify-content: center;
             font-size: 1rem;
             border: 1px solid var(--accent-border);
+            flex-shrink: 0;
         }
 
-        .phone-meta-label {
-            font-size: 0.72rem;
+        .user-meta-sub {
+            font-size: 0.7rem;
             color: var(--text-muted);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .phone-meta-val {
+        .user-meta-phone {
             font-size: 0.95rem;
             font-weight: 800;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .btn-phone-action {
+        .verified-badge {
+            font-size: 0.7rem;
+            color: var(--success);
+            background: var(--success-soft);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .btn-switch-account {
             background: #f1f5f9;
             border: 1px solid var(--border-color);
             padding: 6px 12px;
@@ -196,50 +207,11 @@
             color: var(--primary);
             cursor: pointer;
             transition: all 0.2s;
-        }
-
-        .btn-phone-action:hover {
-            background: #e2e8f0;
-        }
-
-        /* Phone Input Prompt Box */
-        .phone-input-box {
-            margin-top: 10px;
-            padding-top: 12px;
-            border-top: 1px dashed var(--border-color);
-            display: none;
-        }
-
-        .phone-input-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        .phone-input-field {
-            flex: 1;
-            padding: 10px 12px;
-            border-radius: 10px;
-            border: 1.5px solid var(--border-color);
-            font-size: 0.9rem;
-            font-weight: 700;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .phone-input-field:focus {
-            border-color: var(--accent);
-        }
-
-        .btn-submit-phone {
-            background: var(--primary);
-            color: var(--white);
-            border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
             white-space: nowrap;
+        }
+
+        .btn-switch-account:hover {
+            background: #e2e8f0;
         }
 
         /* Search Box */
@@ -720,7 +692,7 @@
         .empty-orders-view p {
             font-size: 0.86rem;
             color: var(--text-muted);
-            max-width: 360px;
+            max-width: 380px;
             margin: 0 auto 20px;
             line-height: 1.5;
         }
@@ -855,31 +827,20 @@
     </header>
 
     <main class="main-container">
-        <!-- Phone Number Verification / Switch Bar -->
-        <div class="phone-tracker-card">
-            <div class="phone-display-row">
-                <div class="phone-display-info">
-                    <div class="phone-icon-pill"><i class="fa-solid fa-phone"></i></div>
-                    <div>
-                        <div class="phone-meta-label">Tracking Phone</div>
-                        <div class="phone-meta-val" id="activePhoneDisplay">Checking...</div>
+        <!-- Home Page Login Account Detection Strip -->
+        <div class="user-login-strip" id="userLoginStrip">
+            <div class="user-login-left">
+                <div class="user-avatar-pill"><i class="fa-solid fa-user-check"></i></div>
+                <div style="min-width: 0;">
+                    <div class="user-meta-sub">Logged In Mobile</div>
+                    <div class="user-meta-phone" id="userLoginPhoneDisplay">
+                        <span>Detecting login...</span>
                     </div>
                 </div>
-                <button type="button" class="btn-phone-action" id="btnTogglePhoneInput" onclick="togglePhoneInput()">
-                    <i class="fa-solid fa-pen-to-square"></i> Change
-                </button>
             </div>
-
-            <!-- Expandable Phone Input Field -->
-            <div class="phone-input-box" id="phoneInputBox">
-                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">
-                    Enter the 10-digit mobile number you used during checkout:
-                </div>
-                <div class="phone-input-row">
-                    <input type="tel" id="userMobileInput" class="phone-input-field" maxlength="10" placeholder="e.g. 9876543210" autocomplete="tel">
-                    <button type="button" class="btn-submit-phone" onclick="submitPhoneNumber()">View Orders</button>
-                </div>
-            </div>
+            <button type="button" class="btn-switch-account" onclick="promptSwitchNumber()">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i> Switch
+            </button>
         </div>
 
         <!-- Search Bar -->
@@ -900,7 +861,6 @@
 
         <!-- Orders List Container -->
         <div id="ordersList">
-            <!-- Loading Indicator with safe auto-dismiss -->
             <div id="loadingIndicator" style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem;">
                 <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 10px;"></i>
                 <div>Loading your orders...</div>
@@ -925,10 +885,11 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // ==========================================
-        // ⚠️ CARTPRIME FIREBASE CONFIG
-        // ==========================================
-        const fallbackConfig = {
+        // ============================================================
+        // ⚠️ CARTPRIME FIREBASE CONFIGURATION
+        // നിങ്ങളുടെ index.html-ൽ ഉള്ള അതേ Firebase credentials ഇവിടെയും പ്രവർത്തിക്കും
+        // ============================================================
+        const defaultFirebaseConfig = {
             apiKey: "AIzaSyDummyKeyReplaceIfYourProjectUsesCustomAuth",
             authDomain: "cartprime-app.firebaseapp.com",
             databaseURL: "https://cartprime-app-default-rtdb.firebaseio.com",
@@ -940,7 +901,7 @@
 
         const firebaseConfig = window.firebaseConfig || 
                                JSON.parse(localStorage.getItem('cartprime_firebase_config') || 'null') || 
-                               fallbackConfig;
+                               defaultFirebaseConfig;
 
         let app, auth, db;
         try {
@@ -957,19 +918,70 @@
         // Guaranteed Inline SVG Fallback
         const DEFAULT_FALLBACK_SVG = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20120%20120%22%20width%3D%22120%22%20height%3D%22120%22%3E%3Crect%20width%3D%22120%22%20height%3D%22120%22%20fill%3D%22%23f1f5f9%22%2F%3E%3Cpath%20d%3D%22M76%2042h-6c0-7.7-6.3-14-14-14s-14%206.3-14%2014h-6c-3.3%200-6%202.7-6%206v32c0%203.3%202.7%206%206%206h40c3.3%200%206-2.7%206-6V48c0-3.3-2.7-6-6-6zm-20-8c4.4%200%208%203.6%208%208h-16c0-4.4%203.6-8%208-8zm20%2046H42V48h40v32z%22%20fill%3D%22%23f59e0b%22%2F%3E%3C%2Fsvg%3E";
 
-        let rawAllOrders = [];
+        let dbOrdersList = [];
         let displayedOrders = [];
         let filteredOrders = [];
         let activeFilter = 'all';
         let searchQuery = '';
-        let currentPhone = '';
+        let loggedInPhone = '';
         let productsCache = {};
 
-        // Safe Clean Phone Helper
+        // Normalize Phone to last 10 digits
         function normalizePhone(val) {
             if (!val) return '';
             const digits = String(val).replace(/\D/g, '');
             return digits.length >= 10 ? digits.slice(-10) : digits;
+        }
+
+        // ============================================================
+        // 1. AUTO-DETECT HOME PAGE LOGGED-IN NUMBER
+        // ============================================================
+        function detectHomePageLoggedInPhone() {
+            // 1. Check direct keys
+            const directKeys = [
+                'cartprime_user_phone', 'cartprime_phone', 'user_phone', 'userPhone', 
+                'customerPhone', 'phone', 'userMobile', 'cartprime_mobile', 'user'
+            ];
+            for (const key of directKeys) {
+                const val = localStorage.getItem(key);
+                if (val) {
+                    const norm = normalizePhone(val);
+                    if (norm.length >= 10) return norm;
+                }
+            }
+
+            // 2. Check JSON objects in localStorage (cartprime_user, user, profile, currentUser)
+            const objKeys = ['cartprime_user', 'user', 'currentUser', 'authUser', 'profile', 'cartprimeUser'];
+            for (const key of objKeys) {
+                try {
+                    const raw = localStorage.getItem(key);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (parsed && typeof parsed === 'object') {
+                            const p = parsed.phone || parsed.phoneNumber || parsed.mobile || parsed.userPhone;
+                            if (p && normalizePhone(p).length >= 10) {
+                                return normalizePhone(p);
+                            }
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            // 3. Check Firebase Auth session cached by index.html in localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.startsWith('firebase:authUser:')) {
+                    try {
+                        const u = JSON.parse(localStorage.getItem(k));
+                        if (u && (u.phoneNumber || u.phone)) {
+                            const p = normalizePhone(u.phoneNumber || u.phone);
+                            if (p.length >= 10) return p;
+                        }
+                    } catch(e) {}
+                }
+            }
+
+            return '';
         }
 
         // Safe Image Extractor
@@ -1034,7 +1046,7 @@
                    d1.getDate() === d2.getDate();
         }
 
-        // Check if Admin marked "Today Arriving" / "Arriving Today" / "Out for Delivery"
+        // Check if Admin set "Today Arriving" / "Arriving Today" / "Out for Delivery"
         function checkIsOutForDelivery(order) {
             if (!order) return false;
             const textPool = [
@@ -1140,117 +1152,51 @@
             return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
         }
 
-        // Read all local storage orders safely
-        function scanAllLocalOrders() {
-            const orders = [];
-            const keys = ['cartprime_orders', 'orders', 'my_orders', 'user_orders', 'cartprime_recent_orders'];
-            for (const k of keys) {
-                try {
-                    const raw = localStorage.getItem(k);
-                    if (raw) {
-                        const parsed = JSON.parse(raw);
-                        const arr = Array.isArray(parsed) ? parsed : Object.values(parsed);
-                        arr.forEach(o => {
-                            if (o && (o.id || o.orderId || o.items || o.totalAmount)) {
-                                orders.push(o);
-                            }
-                        });
+        // Update Top Strip UI
+        function updateAccountStripUI() {
+            const el = document.getElementById('userLoginPhoneDisplay');
+            if (loggedInPhone) {
+                el.innerHTML = `+91 ${loggedInPhone} <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified</span>`;
+            } else {
+                el.innerHTML = `<span style="color: var(--accent-dark);">Not Logged In (Click Switch)</span>`;
+            }
+        }
+
+        // Switch Number Modal
+        window.promptSwitchNumber = function() {
+            Swal.fire({
+                title: 'Enter Mobile Number',
+                text: 'Enter the mobile number you logged in with on the Home page:',
+                input: 'tel',
+                inputValue: loggedInPhone || '',
+                inputPlaceholder: '10-digit mobile number',
+                showCancelButton: true,
+                confirmButtonText: 'View Orders',
+                confirmButtonColor: '#0b0b0f',
+                cancelButtonColor: '#64748b',
+                inputValidator: (value) => {
+                    const norm = normalizePhone(value);
+                    if (!norm || norm.length < 10) {
+                        return 'Please enter a valid 10-digit mobile number!';
                     }
-                } catch(e) {}
-            }
-            return orders;
-        }
-
-        // Get saved customer phone
-        function detectCustomerPhone() {
-            const phoneKeys = ['cartprime_user_phone', 'customerPhone', 'user_phone', 'phone', 'checkout_phone'];
-            for (const k of phoneKeys) {
-                const val = localStorage.getItem(k);
-                if (val && normalizePhone(val).length >= 10) {
-                    return normalizePhone(val);
                 }
-            }
-            return '';
-        }
-
-        // Update Phone Header Bar UI
-        function updatePhoneHeaderUI() {
-            const displayEl = document.getElementById('activePhoneDisplay');
-            const inputBox = document.getElementById('phoneInputBox');
-            const btnToggle = document.getElementById('btnTogglePhoneInput');
-
-            if (currentPhone) {
-                displayEl.innerHTML = `+91 ${currentPhone}`;
-                inputBox.style.display = 'none';
-                btnToggle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Change`;
-            } else {
-                displayEl.innerHTML = `<span style="color: var(--accent-dark);">No Phone Set</span>`;
-                inputBox.style.display = 'block';
-                btnToggle.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Enter Phone`;
-            }
-        }
-
-        // Toggle phone input display
-        window.togglePhoneInput = function() {
-            const inputBox = document.getElementById('phoneInputBox');
-            if (inputBox.style.display === 'block') {
-                inputBox.style.display = 'none';
-            } else {
-                inputBox.style.display = 'block';
-                const inputField = document.getElementById('userMobileInput');
-                inputField.value = currentPhone || '';
-                inputField.focus();
-            }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    loggedInPhone = normalizePhone(result.value);
+                    localStorage.setItem('cartprime_user_phone', loggedInPhone);
+                    updateAccountStripUI();
+                    filterAndRenderOrders();
+                }
+            });
         };
 
-        // Submit Phone Number Handler
-        window.submitPhoneNumber = function() {
-            const inputField = document.getElementById('userMobileInput');
-            const clean = normalizePhone(inputField.value);
-
-            if (!clean || clean.length < 10) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Enter Valid Mobile Number',
-                    text: 'Please enter a valid 10-digit mobile number to view orders.',
-                    confirmButtonColor: '#0b0b0f'
-                });
-                return;
-            }
-
-            currentPhone = clean;
-            localStorage.setItem('cartprime_user_phone', clean);
-            updatePhoneHeaderUI();
-            processAndRenderOrders();
-        };
-
-        // Filter by Phone & Render
-        function processAndRenderOrders() {
-            // Dismiss Loading
+        // Filter Database Orders by Logged In Phone
+        function filterAndRenderOrders() {
             const loader = document.getElementById('loadingIndicator');
             if (loader) loader.style.display = 'none';
 
-            // Gather all orders
-            const localOrders = scanAllLocalOrders();
-            const map = new Map();
-
-            // Insert local orders
-            localOrders.forEach(o => {
-                const id = o.id || o.orderId || Math.random().toString();
-                map.set(String(id), o);
-            });
-
-            // Insert raw DB orders
-            rawAllOrders.forEach(o => {
-                const id = o.id || o.orderId || Math.random().toString();
-                map.set(String(id), o);
-            });
-
-            const merged = Array.from(map.values());
-
-            // Filter by Customer Phone Number
-            if (currentPhone) {
-                displayedOrders = merged.filter(ord => {
+            if (loggedInPhone && dbOrdersList.length) {
+                displayedOrders = dbOrdersList.filter(ord => {
                     const p1 = normalizePhone(ord.customerPhone);
                     const p2 = normalizePhone(ord.phone);
                     const p3 = normalizePhone(ord.customerMobile);
@@ -1258,16 +1204,16 @@
                     const p5 = normalizePhone(ord.shippingAddress && (ord.shippingAddress.phone || ord.shippingAddress.mobile));
                     const p6 = normalizePhone(ord.address && (ord.address.phone || ord.address.mobile));
 
-                    return (p1 && p1 === currentPhone) ||
-                           (p2 && p2 === currentPhone) ||
-                           (p3 && p3 === currentPhone) ||
-                           (p4 && p4 === currentPhone) ||
-                           (p5 && p5 === currentPhone) ||
-                           (p6 && p6 === currentPhone);
+                    return (p1 && p1 === loggedInPhone) ||
+                           (p2 && p2 === loggedInPhone) ||
+                           (p3 && p3 === loggedInPhone) ||
+                           (p4 && p4 === loggedInPhone) ||
+                           (p5 && p5 === loggedInPhone) ||
+                           (p6 && p6 === loggedInPhone);
                 });
             } else {
-                // If phone is not entered yet, show all available orders
-                displayedOrders = merged;
+                // If not logged in or no match, show all orders
+                displayedOrders = dbOrdersList;
             }
 
             // Sort newest first
@@ -1281,7 +1227,7 @@
             applyFilters();
         }
 
-        // Update Counter Badges
+        // Update Counts
         function updateCounts() {
             const counts = { all: displayedOrders.length, placed: 0, shipped: 0, out_for_delivery: 0, delivered: 0, cancelled: 0 };
             displayedOrders.forEach(ord => {
@@ -1298,7 +1244,7 @@
             document.getElementById('count-cancelled').textContent = counts.cancelled;
         }
 
-        // Apply Filters & Search
+        // Apply Filter & Search
         function applyFilters() {
             filteredOrders = displayedOrders.filter(ord => {
                 const effStatus = getEffectiveStatus(ord);
@@ -1315,7 +1261,7 @@
             renderOrders();
         }
 
-        // Render Orders List
+        // Render Orders
         function renderOrders() {
             const container = document.getElementById('ordersList');
 
@@ -1326,10 +1272,10 @@
                             <i class="fa-solid fa-box-open"></i>
                         </div>
                         <h3>No Orders Found</h3>
-                        <p>${currentPhone ? `No orders found for <strong>+91 ${currentPhone}</strong>. Make sure this is the number used during checkout.` : 'Please enter your 10-digit mobile number above to view your orders.'}</p>
+                        <p>${loggedInPhone ? `No orders found for <strong>+91 ${loggedInPhone}</strong>. If your orders are under another number, click Switch Account.` : 'Please log in on the Home page or switch account to view orders.'}</p>
                         <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                            <button type="button" class="meesho-btn meesho-btn-outline" onclick="togglePhoneInput()">
-                                <i class="fa-solid fa-phone"></i> Change Number
+                            <button type="button" class="meesho-btn meesho-btn-outline" onclick="promptSwitchNumber()">
+                                <i class="fa-solid fa-arrow-right-arrow-left"></i> Switch Number
                             </button>
                             <a href="index.html" class="meesho-btn meesho-btn-accent">
                                 <i class="fa-solid fa-bag-shopping"></i> Start Shopping
@@ -1376,7 +1322,7 @@
                     progressWidth = '0%';
                 }
 
-                // Return Eligibility Check: Automatically HIDES button if period expired
+                // Return Eligibility Check: Automatically HIDES if period expired
                 const returnInfo = getReturnEligibility(order);
                 const canReturn = (effStatus === 'delivered' && returnInfo.hasPolicy && !returnInfo.isExpired);
 
@@ -1464,7 +1410,7 @@
                                 </button>
                             ` : ''}
 
-                            <!-- Return button hides automatically when return period expires -->
+                            <!-- Return button automatically hides when 7 days expire -->
                             ${canReturn ? `
                                 <button type="button" class="meesho-return-btn" onclick="window.requestReturnOrder('${orderId}')">
                                     <i class="fa-solid fa-rotate-left"></i> Return
@@ -1482,7 +1428,7 @@
             container.innerHTML = html;
         }
 
-        // View Order Details Modal
+        // View Order Details
         window.viewOrderDetails = function(orderId) {
             const order = displayedOrders.find(o => String(o.id || o.orderId) === String(orderId));
             if (!order) return;
@@ -1703,7 +1649,62 @@
             });
         };
 
-        // Preload Products Cache
+        // ============================================================
+        // 2. FETCH FROM DATABASE 'orders' NODE
+        // ============================================================
+        function listenToDatabaseOrders() {
+            if (!db) {
+                fallbackLocalOrders();
+                return;
+            }
+
+            try {
+                const ordersRef = ref(db, 'orders');
+                onValue(ordersRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const list = [];
+                        Object.keys(data).forEach(k => {
+                            const o = data[k];
+                            if (o) {
+                                o.id = o.id || k;
+                                list.push(o);
+                            }
+                        });
+                        dbOrdersList = list;
+                    } else {
+                        dbOrdersList = [];
+                    }
+                    filterAndRenderOrders();
+                }, (error) => {
+                    console.warn("DB read note:", error.message);
+                    fallbackLocalOrders();
+                });
+            } catch (err) {
+                console.warn("DB listener error:", err.message);
+                fallbackLocalOrders();
+            }
+        }
+
+        function fallbackLocalOrders() {
+            const keys = ['cartprime_orders', 'orders', 'my_orders', 'user_orders'];
+            for (const k of keys) {
+                try {
+                    const raw = localStorage.getItem(k);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        const arr = Array.isArray(parsed) ? parsed : Object.values(parsed);
+                        if (arr && arr.length) {
+                            dbOrdersList = arr;
+                            break;
+                        }
+                    }
+                } catch(e) {}
+            }
+            filterAndRenderOrders();
+        }
+
+        // Preload Products Cache (Images)
         async function preloadProductsCache() {
             if (!db) return;
             try {
@@ -1724,50 +1725,41 @@
             } catch(e) {}
         }
 
-        // Setup Firebase Orders
-        function setupFirebaseOrders() {
-            if (!db) return;
-            try {
-                const ordersRef = ref(db, 'orders');
-                onValue(ordersRef, (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        const list = [];
-                        Object.keys(data).forEach(k => {
-                            const ord = data[k];
-                            if (ord) {
-                                ord.id = ord.id || k;
-                                list.push(ord);
-                            }
-                        });
-                        rawAllOrders = list;
-                    }
-                    processAndRenderOrders();
-                }, (err) => {
-                    console.warn("Firebase Read Note:", err);
-                    processAndRenderOrders();
-                });
-            } catch (e) {
-                processAndRenderOrders();
-            }
-        }
-
-        // Initialization
+        // ============================================================
+        // INITIALIZATION
+        // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Detect Customer Phone
-            currentPhone = detectCustomerPhone();
-            updatePhoneHeaderUI();
+            // 1. Auto-detect Logged In Number from Home Page
+            loggedInPhone = detectHomePageLoggedInPhone();
+            updateAccountStripUI();
 
-            // 2. Safe Auto-Dismiss Loading: Max 800ms
-            setTimeout(() => {
-                processAndRenderOrders();
-            }, 800);
+            // 2. Firebase Auth listener (if home page uses Firebase Auth)
+            if (auth) {
+                onAuthStateChanged(auth, (user) => {
+                    if (user && user.phoneNumber) {
+                        const p = normalizePhone(user.phoneNumber);
+                        if (p) {
+                            loggedInPhone = p;
+                            updateAccountStripUI();
+                            if (dbOrdersList.length) filterAndRenderOrders();
+                        }
+                    }
+                });
+            }
 
-            // 3. Preload Products & Start Firebase
+            // 3. Start reading database node 'orders'
             preloadProductsCache();
-            setupFirebaseOrders();
+            listenToDatabaseOrders();
 
-            // 4. Filter chips
+            // Safety timeout: Never stay stuck on spinner
+            setTimeout(() => {
+                const loader = document.getElementById('loadingIndicator');
+                if (loader && loader.style.display !== 'none') {
+                    filterAndRenderOrders();
+                }
+            }, 1000);
+
+            // Filter chips
             document.querySelectorAll('.filter-chip').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
@@ -1777,7 +1769,7 @@
                 });
             });
 
-            // 5. Search box
+            // Search input
             const searchInput = document.getElementById('orderSearchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
