@@ -376,7 +376,7 @@
             border-radius: 6px;
         }
 
-        /* Stepper Tracker */
+        /* Stepper Progress Bar */
         .stepper-wrap {
             padding: 12px 16px 14px;
             background: #fafbfc;
@@ -464,7 +464,7 @@
             font-weight: 700;
         }
 
-        /* Delivery Note Strip */
+        /* Delivery Announcement Strip */
         .delivery-note-strip {
             margin: 8px 16px 0;
             padding: 8px 12px;
@@ -766,7 +766,12 @@
         </div>
 
         <!-- Orders List Container -->
-        <div id="ordersList"></div>
+        <div id="ordersList">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 10px;"></i>
+                <div>Loading your orders...</div>
+            </div>
+        </div>
     </main>
 
     <!-- Details Modal -->
@@ -780,8 +785,40 @@
         </div>
     </div>
 
-    <!-- Main Logic Script (Self-contained, Fast, Non-blocking) -->
-    <script>
+    <!-- Firebase SDK & Main Script -->
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // ==========================================
+        // ⚠️ CARTPRIME FIREBASE CONFIGURATION
+        // നിങ്ങളുടെ യഥാർത്ഥ Firebase Config നിലനിർത്തുക
+        // ==========================================
+        const fallbackConfig = {
+            apiKey: "AIzaSyDummyKeyReplaceIfYourProjectUsesCustomAuth",
+            authDomain: "cartprime-app.firebaseapp.com",
+            databaseURL: "https://cartprime-app-default-rtdb.firebaseio.com",
+            projectId: "cartprime-app",
+            storageBucket: "cartprime-app.appspot.com",
+            messagingSenderId: "1029384756",
+            appId: "1:1029384756:web:abcd1234efgh5678"
+        };
+
+        const firebaseConfig = window.firebaseConfig || 
+                               JSON.parse(localStorage.getItem('cartprime_firebase_config') || 'null') || 
+                               fallbackConfig;
+
+        // Initialize Firebase safely
+        let app, auth, db;
+        try {
+            app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getDatabase(app);
+        } catch (e) {
+            console.warn("Firebase Init notice:", e.message);
+        }
+
         const SUPPORT_WHATSAPP = "919000000000"; 
         const DEFAULT_RETURN_DAYS = 7;
 
@@ -792,6 +829,8 @@
         let filteredOrders = [];
         let activeFilter = 'all';
         let searchQuery = '';
+        let currentUser = null;
+        let productsCache = {};
 
         // Safe Image Extractor
         function extractItemImage(item, order) {
@@ -815,6 +854,14 @@
                         if (typeof first.img === 'string' && first.img.trim()) return first.img.trim();
                     }
                 }
+            }
+            // Check products cache
+            const pid = (item && (item.id || item.productId)) || (order && (order.productId || order.id));
+            if (pid && productsCache[pid]) {
+                const p = productsCache[pid];
+                if (p.image) return p.image;
+                if (p.productImage) return p.productImage;
+                if (Array.isArray(p.images) && p.images[0]) return p.images[0];
             }
             return DEFAULT_FALLBACK_SVG;
         }
@@ -850,7 +897,7 @@
                    d1.getDate() === d2.getDate();
         }
 
-        // Check if Admin marked "Today Arriving" / "Arriving Today" / "Out for Delivery"
+        // Check if Admin set "Today Arriving" / "Arriving Today" / "Out for Delivery"
         function checkIsOutForDelivery(order) {
             if (!order) return false;
             const searchPool = [
@@ -956,7 +1003,33 @@
             return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
         }
 
-        // Load Orders From Local Storage (Instant 0ms Load)
+        function cleanPhone(p) {
+            if (!p) return '';
+            return String(p).replace(/\D/g, '').slice(-10);
+        }
+
+        // Preload Products Cache in background (Non-blocking)
+        async function preloadProductsCache() {
+            if (!db) return;
+            try {
+                const prodRef = ref(db, 'products');
+                const snap = await get(prodRef);
+                if (snap.exists()) {
+                    const data = snap.val();
+                    Object.keys(data).forEach(k => {
+                        const p = data[k];
+                        if (p) {
+                            productsCache[k] = p;
+                            if (p.id) productsCache[p.id] = p;
+                            if (p.name) productsCache[p.name.toLowerCase().trim()] = p;
+                            if (p.title) productsCache[p.title.toLowerCase().trim()] = p;
+                        }
+                    });
+                }
+            } catch (e) {}
+        }
+
+        // Load Local Orders as instant cache
         function loadLocalOrders() {
             const storageKeys = ['cartprime_orders', 'orders', 'my_orders', 'user_orders', 'cartprime_recent_orders'];
             for (const key of storageKeys) {
@@ -965,15 +1038,85 @@
                     if (raw) {
                         const parsed = JSON.parse(raw);
                         let arr = Array.isArray(parsed) ? parsed : Object.values(parsed);
-                        if (arr && arr.length > 0) {
-                            return arr;
-                        }
+                        if (arr && arr.length > 0) return arr;
                     }
-                } catch (e) {
-                    console.warn("Storage read note for", key, e);
-                }
+                } catch (e) {}
             }
             return [];
+        }
+
+        // Live Orders Fetch from Firebase Realtime Database
+        function setupLiveFirebaseOrders() {
+            if (!db) return;
+            try {
+                const ordersRef = ref(db, 'orders');
+                onValue(ordersRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const list = [];
+                        Object.keys(data).forEach(k => {
+                            const ord = data[k];
+                            if (ord) {
+                                ord.id = ord.id || k;
+                                list.push(ord);
+                            }
+                        });
+
+                        // Smart Customer Filter
+                        const currentPhone = cleanPhone(
+                            (currentUser && currentUser.phoneNumber) ||
+                            localStorage.getItem('cartprime_user_phone') ||
+                            localStorage.getItem('customerPhone') ||
+                            localStorage.getItem('user_phone') ||
+                            ''
+                        );
+
+                        let finalOrders = list;
+                        if (currentPhone) {
+                            const matching = list.filter(o => {
+                                const oPhone = cleanPhone(o.customerPhone || o.phone || (o.shippingAddress && o.shippingAddress.phone));
+                                return oPhone && oPhone === currentPhone;
+                            });
+                            // If phone matching orders exist, show them; otherwise show all
+                            if (matching.length > 0) {
+                                finalOrders = matching;
+                            }
+                        }
+
+                        // Sort newest first
+                        finalOrders.sort((a, b) => {
+                            const da = parseDateSafe(a.date || a.createdAt) || new Date(0);
+                            const db = parseDateSafe(b.date || b.createdAt) || new Date(0);
+                            return db - da;
+                        });
+
+                        allOrders = finalOrders;
+
+                        try {
+                            localStorage.setItem('cartprime_orders', JSON.stringify(allOrders));
+                        } catch(e) {}
+
+                        updateCounts();
+                        applyFilters();
+                    } else {
+                        // Empty in DB, check local
+                        if (!allOrders.length) {
+                            allOrders = loadLocalOrders();
+                            updateCounts();
+                            applyFilters();
+                        }
+                    }
+                }, (err) => {
+                    console.warn("Firebase orders read error:", err);
+                    if (!allOrders.length) {
+                        allOrders = loadLocalOrders();
+                        updateCounts();
+                        applyFilters();
+                    }
+                });
+            } catch (err) {
+                console.warn("Firebase listener exception:", err);
+            }
         }
 
         // Update Counter Badges
@@ -1066,7 +1209,7 @@
                     progressWidth = '0%';
                 }
 
-                // Return Eligibility Check: Button is ONLY shown if returnable AND not expired
+                // Return Eligibility Check: Automatically HIDES if return period expired
                 const returnInfo = getReturnEligibility(order);
                 const canReturn = (effStatus === 'delivered' && returnInfo.hasPolicy && !returnInfo.isExpired);
 
@@ -1154,7 +1297,7 @@
                                 </button>
                             ` : ''}
 
-                            <!-- Return button is automatically hidden if return period expired -->
+                            <!-- Return button hides automatically when return period expires -->
                             ${canReturn ? `
                                 <button type="button" class="meesho-return-btn" onclick="window.requestReturnOrder('${orderId}')">
                                     <i class="fa-solid fa-rotate-left"></i> Return
@@ -1172,7 +1315,7 @@
             container.innerHTML = html;
         }
 
-        // View Order Details
+        // View Order Details Modal
         window.viewOrderDetails = function(orderId) {
             const order = allOrders.find(o => String(o.id || o.orderId) === String(orderId));
             if (!order) return;
@@ -1317,27 +1460,40 @@
                     const comment = document.getElementById('swalReturnComment').value;
                     return { reason, comment };
                 }
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    const { reason } = result.value;
-                    order.status = 'return_requested';
-                    order.returnReason = reason;
-
-                    // Save local state
+                    const { reason, comment } = result.value;
                     try {
-                        localStorage.setItem('cartprime_orders', JSON.stringify(allOrders));
-                    } catch (e) {}
+                        if (db) {
+                            const ordRef = ref(db, `orders/${orderId}`);
+                            await update(ordRef, {
+                                status: 'return_requested',
+                                returnReason: reason,
+                                returnComment: comment || '',
+                                returnRequestedAt: new Date().toISOString()
+                            });
+                        }
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Return Request Submitted!',
-                        text: 'Our team will review your return request and contact you shortly.',
-                        confirmButtonColor: '#0b0b0f'
-                    });
+                        order.status = 'return_requested';
+                        order.returnReason = reason;
 
-                    closeOrderModal();
-                    updateCounts();
-                    applyFilters();
+                        try {
+                            localStorage.setItem('cartprime_orders', JSON.stringify(allOrders));
+                        } catch (e) {}
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Return Request Submitted!',
+                            text: 'Our team will review your request shortly.',
+                            confirmButtonColor: '#0b0b0f'
+                        });
+
+                        closeOrderModal();
+                        updateCounts();
+                        applyFilters();
+                    } catch (e) {
+                        Swal.fire({ icon: 'error', title: 'Error', text: e.message });
+                    }
                 }
             });
         };
@@ -1353,46 +1509,65 @@
                 cancelButtonColor: '#64748b',
                 confirmButtonText: 'Yes, Cancel Order',
                 cancelButtonText: 'Keep Order'
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    const ord = allOrders.find(o => String(o.id || o.orderId) === String(orderId));
-                    if (ord) ord.status = 'cancelled';
-
                     try {
-                        localStorage.setItem('cartprime_orders', JSON.stringify(allOrders));
-                    } catch (e) {}
+                        if (db) {
+                            const ordRef = ref(db, `orders/${orderId}`);
+                            await update(ordRef, {
+                                status: 'cancelled',
+                                cancelledAt: new Date().toISOString()
+                            });
+                        }
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Order Cancelled',
-                        text: 'Your order has been cancelled successfully.',
-                        confirmButtonColor: '#0b0b0f'
-                    });
+                        const ord = allOrders.find(o => String(o.id || o.orderId) === String(orderId));
+                        if (ord) ord.status = 'cancelled';
 
-                    closeOrderModal();
-                    updateCounts();
-                    applyFilters();
+                        try {
+                            localStorage.setItem('cartprime_orders', JSON.stringify(allOrders));
+                        } catch (e) {}
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Cancelled',
+                            text: 'Your order has been cancelled successfully.',
+                            confirmButtonColor: '#0b0b0f'
+                        });
+
+                        closeOrderModal();
+                        updateCounts();
+                        applyFilters();
+                    } catch (e) {
+                        Swal.fire({ icon: 'error', title: 'Error', text: e.message });
+                    }
                 }
             });
         };
 
-        // Initialize immediately without blocking
+        // Initialization
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Instant Local Orders Load
-            const localList = loadLocalOrders();
-            if (localList.length > 0) {
-                allOrders = localList;
-                allOrders.sort((a, b) => {
-                    const da = parseDateSafe(a.date || a.createdAt) || new Date(0);
-                    const db = parseDateSafe(b.date || b.createdAt) || new Date(0);
-                    return db - da;
-                });
+            // 1. Initial fast load from local cache
+            const cached = loadLocalOrders();
+            if (cached.length > 0) {
+                allOrders = cached;
+                updateCounts();
+                applyFilters();
             }
 
-            updateCounts();
-            applyFilters();
+            // 2. Preload products cache in background
+            preloadProductsCache();
 
-            // 2. Filter buttons
+            // 3. Setup Firebase Live Orders Sync
+            if (auth) {
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    setupLiveFirebaseOrders();
+                });
+            } else {
+                setupLiveFirebaseOrders();
+            }
+
+            // 4. Filter chips
             document.querySelectorAll('.filter-chip').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
@@ -1402,7 +1577,7 @@
                 });
             });
 
-            // 3. Search box
+            // 5. Search box
             const searchInput = document.getElementById('orderSearchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
