@@ -58,7 +58,7 @@
             position: sticky;
             top: 0;
             z-index: 50;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
@@ -136,7 +136,7 @@
             padding: 16px;
         }
 
-        /* Search & Filter Bar */
+        /* Search Box */
         .search-box-wrap {
             position: relative;
             margin-bottom: 14px;
@@ -218,7 +218,7 @@
             color: var(--text-main);
         }
 
-        /* Meesho Style Order Card */
+        /* Order Card */
         .order-card {
             background: var(--white);
             border-radius: 16px;
@@ -311,7 +311,7 @@
             border: 1px solid #d8b4fe;
         }
 
-        /* Card Body (Item Preview) */
+        /* Card Body */
         .order-card-body {
             padding: 16px;
             display: flex;
@@ -355,12 +355,6 @@
             gap: 10px;
         }
 
-        .order-item-meta span {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
         .order-price-row {
             display: flex;
             align-items: baseline;
@@ -382,7 +376,7 @@
             border-radius: 6px;
         }
 
-        /* Meesho Stepper Bar */
+        /* Stepper Tracker */
         .stepper-wrap {
             padding: 12px 16px 14px;
             background: #fafbfc;
@@ -470,7 +464,7 @@
             font-weight: 700;
         }
 
-        /* Delivery Announcement Strip */
+        /* Delivery Note Strip */
         .delivery-note-strip {
             margin: 8px 16px 0;
             padding: 8px 12px;
@@ -500,7 +494,7 @@
             color: var(--text-main);
         }
 
-        /* Action Buttons Strip */
+        /* Action Buttons */
         .order-card-actions {
             padding: 12px 16px;
             border-top: 1px solid var(--border-color);
@@ -587,19 +581,19 @@
             background: #fee2e2;
         }
 
-        /* Empty Orders State */
+        /* Empty State */
         .empty-orders-view {
             text-align: center;
             padding: 50px 20px;
             background: var(--white);
             border-radius: 20px;
             border: 1px solid var(--border-color);
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .empty-icon-wrap {
-            width: 80px;
-            height: 80px;
+            width: 76px;
+            height: 76px;
             margin: 0 auto 16px;
             border-radius: 50%;
             background: var(--accent-soft);
@@ -620,32 +614,9 @@
         .empty-orders-view p {
             font-size: 0.88rem;
             color: var(--text-muted);
-            max-width: 380px;
+            max-width: 360px;
             margin: 0 auto 20px;
             line-height: 1.5;
-        }
-
-        /* Loading Skeleton */
-        .skeleton-card {
-            background: var(--white);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .skeleton-line {
-            height: 14px;
-            background: #e2e8f0;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            animation: skeleton-pulse 1.5s infinite;
-        }
-
-        @keyframes skeleton-pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
         }
 
         /* Modal Styles */
@@ -675,28 +646,16 @@
             border-radius: 24px 24px 0 0;
             overflow-y: auto;
             box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @media (min-width: 640px) {
             .order-modal-sheet {
                 border-radius: 20px;
-                animation: popIn 0.25s ease-out;
             }
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        @keyframes popIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
         .modal-header {
-            padding: 18px 20px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
@@ -771,7 +730,7 @@
 </head>
 <body>
 
-    <!-- Top Sticky Header -->
+    <!-- Header Navbar -->
     <header class="top-navbar">
         <div class="nav-inner">
             <div class="nav-left">
@@ -796,7 +755,7 @@
             <input type="text" id="orderSearchInput" class="search-input" placeholder="Search by Product Name or Order ID..." autocomplete="off">
         </div>
 
-        <!-- Filter Chips (Meesho Style) -->
+        <!-- Filter Chips -->
         <div class="filter-scroll-container">
             <button class="filter-chip active" data-filter="all">All <span class="chip-count" id="count-all">0</span></button>
             <button class="filter-chip" data-filter="placed">Placed <span class="chip-count" id="count-placed">0</span></button>
@@ -807,100 +766,32 @@
         </div>
 
         <!-- Orders List Container -->
-        <div id="ordersList">
-            <!-- Loading Skeleton -->
-            <div class="skeleton-card">
-                <div class="skeleton-line" style="width: 40%;"></div>
-                <div style="display: flex; gap: 12px; margin: 14px 0;">
-                    <div style="width: 70px; height: 70px; background: #e2e8f0; border-radius: 12px;"></div>
-                    <div style="flex: 1;">
-                        <div class="skeleton-line" style="width: 85%;"></div>
-                        <div class="skeleton-line" style="width: 60%;"></div>
-                        <div class="skeleton-line" style="width: 30%;"></div>
-                    </div>
-                </div>
-                <div class="skeleton-line" style="width: 100%; height: 20px;"></div>
-            </div>
-        </div>
+        <div id="ordersList"></div>
     </main>
 
-    <!-- Detailed Order Bottom Sheet / Modal -->
+    <!-- Details Modal -->
     <div class="order-modal-backdrop" id="orderDetailsModal" onclick="closeOrderModal(event)">
         <div class="order-modal-sheet" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h4 id="modalOrderTitle">Order Details</h4>
                 <button type="button" class="modal-close-btn" onclick="closeOrderModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="modal-body" id="modalOrderBody">
-                <!-- Injected via JavaScript -->
-            </div>
+            <div class="modal-body" id="modalOrderBody"></div>
         </div>
     </div>
 
-    <!-- Firebase SDK (Modular) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-        // CartPrime Standard Support WhatsApp
+    <!-- Main Logic Script (Self-contained, Fast, Non-blocking) -->
+    <script>
         const SUPPORT_WHATSAPP = "919000000000"; 
         const DEFAULT_RETURN_DAYS = 7;
 
-        // Fallback Inline SVG (Never breaks even if external host fails)
+        // Guaranteed Inline SVG Fallback
         const DEFAULT_FALLBACK_SVG = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20120%20120%22%20width%3D%22120%22%20height%3D%22120%22%3E%3Crect%20width%3D%22120%22%20height%3D%22120%22%20fill%3D%22%23f1f5f9%22%2F%3E%3Cpath%20d%3D%22M76%2042h-6c0-7.7-6.3-14-14-14s-14%206.3-14%2014h-6c-3.3%200-6%202.7-6%206v32c0%203.3%202.7%206%206%206h40c3.3%200%206-2.7%206-6V48c0-3.3-2.7-6-6-6zm-20-8c4.4%200%208%203.6%208%208h-16c0-4.4%203.6-8%208-8zm20%2046H42V48h40v32z%22%20fill%3D%22%23f59e0b%22%2F%3E%3C%2Fsvg%3E";
 
-        // Firebase Configuration (Standard CartPrime Database)
-        const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyReplaceIfYourProjectUsesCustomAuth",
-            authDomain: "cartprime-app.firebaseapp.com",
-            databaseURL: "https://cartprime-app-default-rtdb.firebaseio.com",
-            projectId: "cartprime-app",
-            storageBucket: "cartprime-app.appspot.com",
-            messagingSenderId: "1029384756",
-            appId: "1:1029384756:web:abcd1234efgh5678"
-        };
-
-        // Initialize Firebase
-        let app, auth, db;
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getDatabase(app);
-        } catch (e) {
-            console.warn("Firebase initialized with local fallback:", e);
-        }
-
-        // Global State
         let allOrders = [];
         let filteredOrders = [];
         let activeFilter = 'all';
         let searchQuery = '';
-        let currentUser = null;
-        let productsCache = {}; // Cache to resolve missing images
-
-        // Cache Products from DB to fix any missing order images
-        async function preloadProductsCache() {
-            if (!db) return;
-            try {
-                const prodRef = ref(db, 'products');
-                const snap = await get(prodRef);
-                if (snap.exists()) {
-                    const data = snap.val();
-                    Object.keys(data).forEach(k => {
-                        const p = data[k];
-                        if (p) {
-                            productsCache[k] = p;
-                            if (p.id) productsCache[p.id] = p;
-                            if (p.name) productsCache[p.name.toLowerCase().trim()] = p;
-                            if (p.title) productsCache[p.title.toLowerCase().trim()] = p;
-                        }
-                    });
-                }
-            } catch (err) {
-                console.log("Product pre-fetch note:", err.message);
-            }
-        }
 
         // Safe Image Extractor
         function extractItemImage(item, order) {
@@ -909,7 +800,7 @@
                 if (typeof item.productImage === 'string' && item.productImage.trim()) return item.productImage.trim();
                 if (typeof item.img === 'string' && item.img.trim()) return item.img.trim();
                 if (typeof item.thumbnail === 'string' && item.thumbnail.trim()) return item.thumbnail.trim();
-                if (Array.isArray(item.images) && item.images.length && typeof item.images[0] === 'string') return item.images[0];
+                if (Array.isArray(item.images) && item.images.length && typeof item.images[0] === 'string') return item.images[0].trim();
             }
             if (order) {
                 if (typeof order.image === 'string' && order.image.trim()) return order.image.trim();
@@ -918,23 +809,12 @@
                 if (typeof order.thumbnail === 'string' && order.thumbnail.trim()) return order.thumbnail.trim();
                 if (Array.isArray(order.items) && order.items.length) {
                     const first = order.items[0];
-                    const sub = extractItemImage(first, null);
-                    if (sub && sub !== DEFAULT_FALLBACK_SVG) return sub;
+                    if (first) {
+                        if (typeof first.image === 'string' && first.image.trim()) return first.image.trim();
+                        if (typeof first.productImage === 'string' && first.productImage.trim()) return first.productImage.trim();
+                        if (typeof first.img === 'string' && first.img.trim()) return first.img.trim();
+                    }
                 }
-            }
-            // Match from cached products
-            const pid = (item && (item.id || item.productId)) || (order && (order.productId || order.id));
-            if (pid && productsCache[pid]) {
-                const p = productsCache[pid];
-                if (p.image) return p.image;
-                if (p.productImage) return p.productImage;
-                if (Array.isArray(p.images) && p.images[0]) return p.images[0];
-            }
-            const ptitle = (item && (item.title || item.name)) || (order && (order.productTitle || order.title));
-            if (ptitle && productsCache[ptitle.toLowerCase().trim()]) {
-                const p = productsCache[ptitle.toLowerCase().trim()];
-                if (p.image) return p.image;
-                if (p.productImage) return p.productImage;
             }
             return DEFAULT_FALLBACK_SVG;
         }
@@ -942,18 +822,23 @@
         // Safe Date Parser
         function parseDateSafe(val) {
             if (!val) return null;
-            if (typeof val === 'number') return new Date(val);
+            if (val instanceof Date && !isNaN(val.getTime())) return val;
+            if (typeof val === 'number') {
+                const d = new Date(val);
+                return isNaN(d.getTime()) ? null : d;
+            }
             if (typeof val === 'string') {
-                const parsed = new Date(val);
-                if (!isNaN(parsed.getTime())) return parsed;
-                // Try DD/MM/YYYY or DD-MM-YYYY
-                const parts = val.split(/[-/]/);
-                if (parts.length === 3) {
-                    const d = parseInt(parts[0], 10);
-                    const m = parseInt(parts[1], 10) - 1;
-                    const y = parseInt(parts[2], 10);
-                    const test = new Date(y, m, d);
-                    if (!isNaN(test.getTime())) return test;
+                const trimmed = val.trim();
+                if (!trimmed) return null;
+                const d = new Date(trimmed);
+                if (!isNaN(d.getTime())) return d;
+                const match = trimmed.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+                if (match) {
+                    const day = parseInt(match[1], 10);
+                    const month = parseInt(match[2], 10) - 1;
+                    const year = parseInt(match[3], 10);
+                    const testDate = new Date(year, month, day);
+                    if (!isNaN(testDate.getTime())) return testDate;
                 }
             }
             return null;
@@ -965,7 +850,7 @@
                    d1.getDate() === d2.getDate();
         }
 
-        // Check if Admin set "Today Arriving" / "Arriving Today" / "Out for Delivery"
+        // Check if Admin marked "Today Arriving" / "Arriving Today" / "Out for Delivery"
         function checkIsOutForDelivery(order) {
             if (!order) return false;
             const searchPool = [
@@ -992,7 +877,6 @@
                 return true;
             }
 
-            // Check if expected delivery matches today's date
             if (order.deliveryDate || order.expectedDelivery) {
                 const d = parseDateSafe(order.deliveryDate || order.expectedDelivery);
                 if (d && isSameCalendarDay(d, new Date())) {
@@ -1002,7 +886,7 @@
             return false;
         }
 
-        // Effective Status Determiner
+        // Determine Effective Status
         function getEffectiveStatus(order) {
             const raw = String(order.status || '').toLowerCase().trim();
             if (raw === 'delivered') return 'delivered';
@@ -1010,7 +894,6 @@
             if (raw === 'returned') return 'returned';
             if (raw === 'return_requested') return 'return_requested';
 
-            // Out for Delivery if today arriving is specified by admin
             if (checkIsOutForDelivery(order)) {
                 return 'out_for_delivery';
             }
@@ -1024,31 +907,31 @@
             return raw || 'placed';
         }
 
-        // Return Eligibility & Expiry Calculation
+        // Return Eligibility Check (Hides button if return period expired)
         function getReturnEligibility(order) {
-            // Check if item explicitly does not have return policy
+            if (!order) return { eligible: false, hasPolicy: false, isExpired: true, daysLeft: 0 };
+
+            const policyStr = String(order.returnPolicy || order.return_policy || '').toLowerCase();
             const hasNoReturn = (order.isReturnable === false) ||
                                 (order.hasReturnPolicy === false) ||
                                 (order.returnEligible === false) ||
-                                (String(order.returnPolicy || '').toLowerCase().includes('no return')) ||
-                                (String(order.returnPolicy || '').toLowerCase().includes('non-returnable'));
+                                policyStr.includes('no return') ||
+                                policyStr.includes('non-returnable') ||
+                                policyStr.includes('not returnable');
 
             if (hasNoReturn) {
                 return { eligible: false, hasPolicy: false, isExpired: true, daysLeft: 0 };
             }
 
-            // If already returned or requested
-            if (order.status === 'returned' || order.status === 'return_requested' || order.returnStatus) {
+            const statusStr = String(order.status || '').toLowerCase();
+            if (statusStr === 'returned' || statusStr === 'return_requested' || order.returnStatus) {
                 return { eligible: false, hasPolicy: true, isExpired: true, isRequested: true, daysLeft: 0 };
             }
 
             const returnDaysLimit = parseInt(order.returnDays || order.returnPeriod || DEFAULT_RETURN_DAYS, 10);
-            
-            // Delivery Date Base
             const baseDate = parseDateSafe(order.deliveredDate || order.deliveredAt || order.deliveryDate || order.date || order.createdAt);
-            
+
             if (!baseDate) {
-                // If order is delivered but exact date missing, allow default period
                 return { eligible: true, hasPolicy: true, isExpired: false, daysLeft: returnDaysLimit };
             }
 
@@ -1067,73 +950,30 @@
             };
         }
 
-        // Format Date Helper
         function formatDatePretty(val) {
             const d = parseDateSafe(val);
             if (!d) return 'Recently';
             return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
         }
 
-        // Load Orders from Firebase or LocalStorage
-        function loadOrders() {
-            let loaded = false;
-
-            // 1. Try Firebase if available
-            if (db) {
-                const ordersRef = ref(db, 'orders');
-                onValue(ordersRef, (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        const list = [];
-                        Object.keys(data).forEach(key => {
-                            const ord = data[key];
-                            if (ord) {
-                                ord.id = ord.id || key;
-                                // Filter by current user if logged in
-                                if (!currentUser || ord.userId === currentUser.uid || ord.customerPhone === currentUser.phoneNumber) {
-                                    list.push(ord);
-                                }
-                            }
-                        });
-
-                        // Sort newest first
-                        list.sort((a, b) => {
-                            const da = parseDateSafe(a.date || a.createdAt) || new Date(0);
-                            const db = parseDateSafe(b.date || b.createdAt) || new Date(0);
-                            return db - da;
-                        });
-
-                        allOrders = list;
-                        loaded = true;
-                        updateCounts();
-                        applyFilters();
-                    } else {
-                        checkLocalOrders();
+        // Load Orders From Local Storage (Instant 0ms Load)
+        function loadLocalOrders() {
+            const storageKeys = ['cartprime_orders', 'orders', 'my_orders', 'user_orders', 'cartprime_recent_orders'];
+            for (const key of storageKeys) {
+                try {
+                    const raw = localStorage.getItem(key);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        let arr = Array.isArray(parsed) ? parsed : Object.values(parsed);
+                        if (arr && arr.length > 0) {
+                            return arr;
+                        }
                     }
-                }, (error) => {
-                    console.warn("Firebase fetch note, falling back to local:", error);
-                    checkLocalOrders();
-                });
-            } else {
-                checkLocalOrders();
-            }
-        }
-
-        // Local Storage Fallback
-        function checkLocalOrders() {
-            try {
-                const saved = localStorage.getItem('cartprime_orders') || localStorage.getItem('orders');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    allOrders = Array.isArray(parsed) ? parsed : Object.values(parsed);
-                } else {
-                    allOrders = [];
+                } catch (e) {
+                    console.warn("Storage read note for", key, e);
                 }
-            } catch (e) {
-                allOrders = [];
             }
-            updateCounts();
-            applyFilters();
+            return [];
         }
 
         // Update Counter Badges
@@ -1153,17 +993,14 @@
             document.getElementById('count-cancelled').textContent = counts.cancelled;
         }
 
-        // Apply Filter & Search
+        // Apply Filters & Search
         function applyFilters() {
             filteredOrders = allOrders.filter(ord => {
                 const effStatus = getEffectiveStatus(ord);
-                // Filter Match
                 const filterMatch = (activeFilter === 'all') || (effStatus === activeFilter);
-
-                // Search Match
                 if (!filterMatch) return false;
-                if (!searchQuery) return true;
 
+                if (!searchQuery) return true;
                 const q = searchQuery.toLowerCase();
                 const oid = String(ord.id || ord.orderId || '').toLowerCase();
                 const title = String(ord.productTitle || ord.title || (ord.items && ord.items[0]?.title) || '').toLowerCase();
@@ -1204,7 +1041,6 @@
                 const formattedDate = formatDatePretty(order.date || order.createdAt);
                 const orderId = order.id || order.orderId || 'CP-ORD';
 
-                // Stepper Progress Width & Steps
                 let progressWidth = '15%';
                 let step1 = 'completed', step2 = '', step3 = '', step4 = '';
 
@@ -1230,12 +1066,10 @@
                     progressWidth = '0%';
                 }
 
-                // Return Eligibility Check
+                // Return Eligibility Check: Button is ONLY shown if returnable AND not expired
                 const returnInfo = getReturnEligibility(order);
-                // Return button is ONLY rendered if order is delivered, has return policy, AND return period is NOT expired
                 const canReturn = (effStatus === 'delivered' && returnInfo.hasPolicy && !returnInfo.isExpired);
 
-                // Status Badge Content
                 let badgeHtml = '';
                 if (effStatus === 'out_for_delivery') {
                     badgeHtml = `<span class="status-badge out-delivery"><i class="fa-solid fa-truck-fast"></i> Out for Delivery • Arriving Today</span>`;
@@ -1253,7 +1087,6 @@
                     badgeHtml = `<span class="status-badge returned"><i class="fa-solid fa-rotate-left"></i> ${effStatus}</span>`;
                 }
 
-                // Delivery Note
                 let noteHtml = '';
                 if (effStatus === 'out_for_delivery') {
                     noteHtml = `<div class="delivery-note-strip out"><i class="fa-solid fa-bolt"></i> Order is out for delivery and will reach you today!</div>`;
@@ -1321,6 +1154,7 @@
                                 </button>
                             ` : ''}
 
+                            <!-- Return button is automatically hidden if return period expired -->
                             ${canReturn ? `
                                 <button type="button" class="meesho-return-btn" onclick="window.requestReturnOrder('${orderId}')">
                                     <i class="fa-solid fa-rotate-left"></i> Return
@@ -1338,7 +1172,7 @@
             container.innerHTML = html;
         }
 
-        // Open Order Details Modal
+        // View Order Details
         window.viewOrderDetails = function(orderId) {
             const order = allOrders.find(o => String(o.id || o.orderId) === String(orderId));
             if (!order) return;
@@ -1351,7 +1185,6 @@
             const modalBody = document.getElementById('modalOrderBody');
             modalTitle.textContent = `Order #${orderId}`;
 
-            // Items list HTML
             let itemsHtml = '';
             const items = (order.items && order.items.length) ? order.items : [order];
             items.forEach(it => {
@@ -1371,7 +1204,6 @@
                 `;
             });
 
-            // Delivery Address formatted
             const addr = order.shippingAddress || order.address || {};
             const addressString = typeof addr === 'string' ? addr : `
                 <strong>${addr.name || order.customerName || 'Customer'}</strong><br>
@@ -1381,7 +1213,6 @@
             `;
 
             modalBody.innerHTML = `
-                <!-- Tracking Status Banner -->
                 <div style="padding: 12px; border-radius: 12px; margin-bottom: 16px; background: ${effStatus === 'out_for_delivery' ? '#fffbeb' : '#f8fafc'}; border: 1px solid ${effStatus === 'out_for_delivery' ? '#fde68a' : '#e2e8f0'}; display: flex; align-items: center; justify-content: space-between;">
                     <div>
                         <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Current Status</div>
@@ -1394,23 +1225,16 @@
                     </div>
                 </div>
 
-                <!-- Products in Order -->
                 <div class="detail-section">
                     <div class="detail-section-title">Items Ordered</div>
-                    <div class="detail-box">
-                        ${itemsHtml}
-                    </div>
+                    <div class="detail-box">${itemsHtml}</div>
                 </div>
 
-                <!-- Delivery Address -->
                 <div class="detail-section">
                     <div class="detail-section-title">Delivery Address</div>
-                    <div class="detail-box" style="font-size: 0.86rem; line-height: 1.5;">
-                        ${addressString}
-                    </div>
+                    <div class="detail-box" style="font-size: 0.86rem; line-height: 1.5;">${addressString}</div>
                 </div>
 
-                <!-- Price Details -->
                 <div class="detail-section">
                     <div class="detail-section-title">Payment Summary</div>
                     <div class="detail-box">
@@ -1423,7 +1247,6 @@
                     </div>
                 </div>
 
-                <!-- Modal Actions -->
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     ${effStatus === 'placed' ? `
                         <button type="button" class="meesho-btn meesho-btn-danger" style="flex: 1; justify-content: center;" onclick="window.requestCancelOrder('${orderId}')">
@@ -1489,50 +1312,32 @@
                 cancelButtonText: 'Cancel',
                 confirmButtonColor: '#f59e0b',
                 cancelButtonColor: '#64748b',
-                customClass: {
-                    confirmButton: 'text-dark'
-                },
                 preConfirm: () => {
                     const reason = document.getElementById('swalReturnReason').value;
                     const comment = document.getElementById('swalReturnComment').value;
                     return { reason, comment };
                 }
-            }).then(async (result) => {
+            }).then((result) => {
                 if (result.isConfirmed) {
-                    const { reason, comment } = result.value;
+                    const { reason } = result.value;
+                    order.status = 'return_requested';
+                    order.returnReason = reason;
+
+                    // Save local state
                     try {
-                        if (db) {
-                            const ordRef = ref(db, `orders/${orderId}`);
-                            await update(ordRef, {
-                                status: 'return_requested',
-                                returnReason: reason,
-                                returnComment: comment || '',
-                                returnRequestedAt: new Date().toISOString()
-                            });
-                        }
+                        localStorage.setItem('cartprime_orders', JSON.stringify(allOrders));
+                    } catch (e) {}
 
-                        // Local update
-                        order.status = 'return_requested';
-                        order.returnReason = reason;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Return Request Submitted!',
+                        text: 'Our team will review your return request and contact you shortly.',
+                        confirmButtonColor: '#0b0b0f'
+                    });
 
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Return Request Submitted!',
-                            text: 'Our team will review your return request and contact you within 24 hours.',
-                            confirmButtonColor: '#0b0b0f'
-                        });
-
-                        closeOrderModal();
-                        updateCounts();
-                        applyFilters();
-                    } catch (err) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Failed to Submit',
-                            text: err.message,
-                            confirmButtonColor: '#0b0b0f'
-                        });
-                    }
+                    closeOrderModal();
+                    updateCounts();
+                    applyFilters();
                 }
             });
         };
@@ -1548,57 +1353,46 @@
                 cancelButtonColor: '#64748b',
                 confirmButtonText: 'Yes, Cancel Order',
                 cancelButtonText: 'Keep Order'
-            }).then(async (result) => {
+            }).then((result) => {
                 if (result.isConfirmed) {
+                    const ord = allOrders.find(o => String(o.id || o.orderId) === String(orderId));
+                    if (ord) ord.status = 'cancelled';
+
                     try {
-                        if (db) {
-                            const ordRef = ref(db, `orders/${orderId}`);
-                            await update(ordRef, {
-                                status: 'cancelled',
-                                cancelledAt: new Date().toISOString()
-                            });
-                        }
+                        localStorage.setItem('cartprime_orders', JSON.stringify(allOrders));
+                    } catch (e) {}
 
-                        const ord = allOrders.find(o => String(o.id || o.orderId) === String(orderId));
-                        if (ord) ord.status = 'cancelled';
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Order Cancelled',
+                        text: 'Your order has been cancelled successfully.',
+                        confirmButtonColor: '#0b0b0f'
+                    });
 
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Order Cancelled',
-                            text: 'Your order has been cancelled successfully.',
-                            confirmButtonColor: '#0b0b0f'
-                        });
-
-                        closeOrderModal();
-                        updateCounts();
-                        applyFilters();
-                    } catch (e) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Cancellation Failed',
-                            text: e.message,
-                            confirmButtonColor: '#0b0b0f'
-                        });
-                    }
+                    closeOrderModal();
+                    updateCounts();
+                    applyFilters();
                 }
             });
         };
 
-        // Event Listeners for Filters & Search
-        document.addEventListener('DOMContentLoaded', async () => {
-            await preloadProductsCache();
-
-            // Auth State Listener
-            if (auth) {
-                onAuthStateChanged(auth, (user) => {
-                    currentUser = user;
-                    loadOrders();
+        // Initialize immediately without blocking
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Instant Local Orders Load
+            const localList = loadLocalOrders();
+            if (localList.length > 0) {
+                allOrders = localList;
+                allOrders.sort((a, b) => {
+                    const da = parseDateSafe(a.date || a.createdAt) || new Date(0);
+                    const db = parseDateSafe(b.date || b.createdAt) || new Date(0);
+                    return db - da;
                 });
-            } else {
-                loadOrders();
             }
 
-            // Filter Chip Click
+            updateCounts();
+            applyFilters();
+
+            // 2. Filter buttons
             document.querySelectorAll('.filter-chip').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
@@ -1608,7 +1402,7 @@
                 });
             });
 
-            // Search Input
+            // 3. Search box
             const searchInput = document.getElementById('orderSearchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
