@@ -175,7 +175,7 @@
                     </div>
                 </div>
                 <h3 class="text-xl font-extrabold text-slate-900 mb-1">Order Placed Successfully!</h3>
-                <p class="text-xs text-slate-500 mb-4">Your order has been confirmed & email sent.</p>
+                <p class="text-xs text-slate-500 mb-4">Your order has been confirmed.</p>
                 <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
                     <div class="bg-green-500 h-full w-full animate-pulse"></div>
                 </div>
@@ -187,7 +187,7 @@
     <!-- Header -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
         <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="index.html" class="text-slate-600 hover:text-amber-500 transition-colors p-1">
+            <a href="index.html" class="text-slate-600 hover:text-amber-500 transition-colors p-1" onclick="if(window.history.length > 1){ window.history.back(); return false; }">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
             </a>
             <div class="flex items-center gap-2">
@@ -230,12 +230,12 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label>
                     <input type="text" id="custName" placeholder="Enter your full name" class="input-style">
-                    <p id="custNameHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1"><i class="fa-solid fa-pen"></i> Auto-filled from your account</p>
+                    <p id="custNameHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1"><i class="fa-solid fa-circle-check text-emerald-500"></i> Auto-filled from your account</p>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Mobile Number *</label>
                     <input type="tel" id="custPhone" placeholder="10-digit mobile number" maxlength="10" class="input-style">
-                    <p id="custPhoneHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1"><i class="fa-solid fa-pen"></i> Auto-filled from your account</p>
+                    <p id="custPhoneHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1"><i class="fa-solid fa-circle-check text-emerald-500"></i> Auto-filled from your account</p>
                 </div>
             </div>
 
@@ -424,33 +424,148 @@
             }, { timeout: 10000 });
         };
 
+        /* ========================================================================= */
+        /*               AUTOMATIC NAME & PHONE AUTO-FILL SYSTEM                    */
+        /* ========================================================================= */
         const cleanPhone = (val) => val ? val.toString().replace(/\D/g, '').slice(-10) : "";
 
-        const autoFillUserDetails = async (user) => {
+        const applyAutoFilledDetails = (name, phone) => {
             const nameInput = document.getElementById('custName');
             const phoneInput = document.getElementById('custPhone');
-            if (!nameInput || !phoneInput) return;
+            const nameHint = document.getElementById('custNameHint');
+            const phoneHint = document.getElementById('custPhoneHint');
 
-            if (user.displayName) nameInput.value = user.displayName;
-            if (user.phoneNumber) phoneInput.value = cleanPhone(user.phoneNumber);
-
-            try {
-                const snap = await get(ref(db, `users/${user.uid}`));
-                if (snap.exists()) {
-                    const d = snap.val() || {};
-                    if (d.name && !nameInput.value) nameInput.value = d.name;
-                    if (d.phone && !phoneInput.value) phoneInput.value = cleanPhone(d.phone);
+            if (name && nameInput && !nameInput.value) {
+                nameInput.value = name;
+                if (nameHint) nameHint.classList.remove('hidden');
+            }
+            if (phone && phoneInput && !phoneInput.value) {
+                const cleaned = cleanPhone(phone);
+                if (cleaned.length === 10) {
+                    phoneInput.value = cleaned;
+                    if (phoneHint) phoneHint.classList.remove('hidden');
                 }
-            } catch (e) {}
+            }
         };
+
+        const autoFillSavedAddress = (addr) => {
+            if (!addr) return;
+            const setIfEmpty = (id, val) => {
+                const el = document.getElementById(id);
+                if (el && val && !el.value) el.value = val;
+            };
+            setIfEmpty('house', addr.house);
+            setIfEmpty('area', addr.area);
+            setIfEmpty('city', addr.city);
+            if (addr.state) {
+                const stateSelect = document.getElementById('state');
+                if (stateSelect && !stateSelect.value) {
+                    stateSelect.value = addr.state;
+                }
+            }
+            setIfEmpty('pincode', addr.pin || addr.pincode);
+        };
+
+        // 1. Instant local storage retrieval (runs immediately upon page load)
+        const autoFillFromLocalStorage = () => {
+            const savedName = localStorage.getItem('userName') || 
+                              localStorage.getItem('cartPrime_Name') || 
+                              localStorage.getItem('cartPrime_LastOrderName') || '';
+
+            const savedPhone = localStorage.getItem('userPhone') || 
+                               localStorage.getItem('cartPrime_Phone') || 
+                               localStorage.getItem('cartPrime_LastOrderPhone') || '';
+
+            applyAutoFilledDetails(savedName, savedPhone);
+
+            const savedAddrJson = localStorage.getItem('cartPrime_SavedAddress');
+            if (savedAddrJson) {
+                try {
+                    const addr = JSON.parse(savedAddrJson);
+                    autoFillSavedAddress(addr);
+                } catch (e) {}
+            }
+        };
+
+        autoFillFromLocalStorage();
+
+        // 2. Fetch from Firebase database for extra reliability
+        const fetchAndFillFromDatabase = async (phone, uid) => {
+            if (!phone && !uid) return;
+
+            // Fetch from users/${phone}
+            if (phone) {
+                try {
+                    const userSnap = await get(ref(db, `users/${phone}`));
+                    if (userSnap.exists()) {
+                        const uData = userSnap.val() || {};
+                        applyAutoFilledDetails(uData.name, uData.phone || phone);
+                        if (uData.address) autoFillSavedAddress(uData.address);
+                    }
+                } catch (e) {}
+
+                // Check recent order under orders/${phone} to auto-complete address if empty
+                try {
+                    const orderSnap = await get(ref(db, `orders/${phone}`));
+                    if (orderSnap.exists()) {
+                        const ordersObj = orderSnap.val();
+                        const orderKeys = Object.keys(ordersObj);
+                        if (orderKeys.length > 0) {
+                            const lastOrder = ordersObj[orderKeys[orderKeys.length - 1]];
+                            if (lastOrder) {
+                                applyAutoFilledDetails(lastOrder.customerName || lastOrder.name, phone);
+                                if (lastOrder.addressDetails) {
+                                    autoFillSavedAddress(lastOrder.addressDetails);
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            // Fetch from users/${uid}
+            if (uid) {
+                try {
+                    const uidSnap = await get(ref(db, `users/${uid}`));
+                    if (uidSnap.exists()) {
+                        const uData = uidSnap.val() || {};
+                        applyAutoFilledDetails(uData.name, uData.phone);
+                        if (uData.address) autoFillSavedAddress(uData.address);
+                    }
+                } catch (e) {}
+            }
+        };
+
+        const activePhone = cleanPhone(localStorage.getItem('userPhone') || localStorage.getItem('cartPrime_Phone'));
+        if (activePhone) {
+            fetchAndFillFromDatabase(activePhone, null);
+        }
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserId = user.uid;
                 currentUserEmail = user.email;
-                autoFillUserDetails(user);
+                const phone = cleanPhone(user.phoneNumber) || cleanPhone(localStorage.getItem('userPhone'));
+                applyAutoFilledDetails(user.displayName, phone);
+                fetchAndFillFromDatabase(phone, user.uid);
             }
         });
+
+        // Hide auto-fill hint badge if user manually edits
+        const nameInputEl = document.getElementById('custName');
+        const phoneInputEl = document.getElementById('custPhone');
+        if (nameInputEl) {
+            nameInputEl.addEventListener('input', () => {
+                const hint = document.getElementById('custNameHint');
+                if (hint) hint.classList.add('hidden');
+            });
+        }
+        if (phoneInputEl) {
+            phoneInputEl.addEventListener('input', () => {
+                const hint = document.getElementById('custPhoneHint');
+                if (hint) hint.classList.add('hidden');
+            });
+        }
 
         window.changeQuantity = (index, delta) => {
             if (!orderInfo) return;
@@ -504,7 +619,7 @@
                 let qty = parseInt(orderInfo.quantity) || 1;
                 finalPriceToPay = unitPrice * qty;
 
-                previewHtml = `
+                previewHtml += `
                 <div class="prod-item-row">
                     <img src="${orderInfo.productImage}" alt="Product">
                     <div style="flex: 1; min-width: 0;">
@@ -566,7 +681,7 @@
 
                     let sellerPhone = orderInfo.addedByPhone || orderInfo.sellerPhone || orderInfo.addedBy || null;
 
-                    // If sellerPhone is not directly in pendingOrder, try checking seller-products path
+                    // If sellerPhone is not directly in pendingOrder, check seller-products folder
                     if (!sellerPhone && orderInfo.productId) {
                         try {
                             const sellerSnap = await get(ref(db, `seller-products`));
@@ -584,7 +699,14 @@
                         customerName: fields.name, 
                         customerPhone: fields.phone, 
                         phone: fields.phone, 
-                        address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state}, India - ${fields.pin}`, 
+                        address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state}, India - ${fields.pin}`,
+                        addressDetails: {
+                            house: fields.house,
+                            area: fields.area,
+                            city: fields.city,
+                            state: fields.state,
+                            pin: fields.pin
+                        },
                         transactionId: 'COD', 
                         date: now.toISOString().split('T')[0], 
                         createdAt: now.toISOString(),
@@ -618,7 +740,38 @@
                         finalOrder.price = (unitPrice * q).toLocaleString('en-IN');
                     }
 
-                    // Determine database storage path: seller-orders/{sellerPhone} if seller product, else orders
+                    // Save customer details into localStorage for all future checkouts
+                    localStorage.setItem('userName', fields.name);
+                    localStorage.setItem('userPhone', fields.phone);
+                    localStorage.setItem('cartPrime_Name', fields.name);
+                    localStorage.setItem('cartPrime_Phone', fields.phone);
+                    localStorage.setItem('cartPrime_LastOrderName', fields.name);
+                    localStorage.setItem('cartPrime_LastOrderPhone', fields.phone);
+                    localStorage.setItem('cartPrime_SavedAddress', JSON.stringify({
+                        house: fields.house,
+                        area: fields.area,
+                        city: fields.city,
+                        state: fields.state,
+                        pin: fields.pin
+                    }));
+
+                    // Update address in Firebase profile under users/${fields.phone}
+                    try {
+                        update(ref(db, `users/${fields.phone}`), {
+                            name: fields.name,
+                            phone: fields.phone,
+                            address: {
+                                house: fields.house,
+                                area: fields.area,
+                                city: fields.city,
+                                state: fields.state,
+                                pin: fields.pin
+                            },
+                            lastOrderAt: Date.now()
+                        });
+                    } catch(e) {}
+
+                    // Save order to seller-orders or main orders path
                     let saveOrderPromise;
                     if (sellerPhone && sellerPhone !== "Admin" && sellerPhone !== "undefined") {
                         saveOrderPromise = set(ref(db, `seller-orders/${sellerPhone}/${fields.phone}/${orderId}`), finalOrder);
