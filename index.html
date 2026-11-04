@@ -63,7 +63,7 @@ body {
   -webkit-tap-highlight-color: transparent; transition: background-color 0.3s ease, color 0.3s ease; 
 } 
 
-button, .category-btn, .icon-btn, .cookie-btn, .earn-btn, .bottom-nav-item, .profile-chip, .notification-icon-btn, .budget-card, .shelf-card, .buy-btn, .admin-portal-btn { 
+button, .category-btn, .icon-btn, .cookie-btn, .bottom-nav-item, .profile-chip, .notification-icon-btn, .budget-card, .shelf-card, .buy-btn, .admin-portal-btn { 
   touch-action: manipulation; user-select: none; -webkit-tap-highlight-color: transparent; cursor: pointer;
 } 
 button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, .profile-chip:active, .notification-icon-btn:active, .budget-card:active, .shelf-card:active, .buy-btn:active, .admin-portal-btn:active { 
@@ -74,8 +74,8 @@ button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, 
 nav { 
   display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; position: sticky; top: 0; 
   background: var(--nav-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); z-index: 1000; 
-  border-bottom: 1px solid var(--border); gap: 14px; transition: all 0.3s ease; 
-  flex-wrap: wrap; box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  border-bottom: 1px solid var(--border); gap: 16px; transition: all 0.3s ease; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 } 
 .logo { 
   font-weight: 800; font-size: 1.35rem; letter-spacing: -0.8px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; 
@@ -85,7 +85,8 @@ nav {
   color: var(--accent); font-size: 1.25rem; filter: drop-shadow(0 0 10px var(--accent-glow));
 } 
 .logo span { color: var(--accent); font-weight: 800; } 
-.search-container { flex: 1; max-width: 480px; position: relative; min-width: 220px; } 
+
+.search-container { flex: 1; max-width: 520px; position: relative; min-width: 200px; } 
 .search-container input { 
   width: 100%; padding: 11px 16px 11px 42px; border-radius: 16px; border: 1.5px solid var(--border); background: var(--surface); 
   color: var(--text-main); outline: none; transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1); font-size: 0.88rem; font-weight: 500;
@@ -96,11 +97,10 @@ nav {
   box-shadow: 0 0 20px var(--accent-glow), 0 4px 12px rgba(245,158,11,0.15) !important; 
 } 
 .search-container i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.95rem; } 
+
 .nav-right { display: flex; align-items: center; gap: 10px; position: relative; flex-shrink: 0; } 
 
-/* ======================================================== */
-/*               ADMIN ROLE SPECIFIC BUTTON UI              */
-/* ======================================================== */
+/* Admin Portal Button */
 .admin-portal-btn {
   display: inline-flex; align-items: center; gap: 7px;
   background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
@@ -124,6 +124,7 @@ nav {
   100% { transform: scale(0.9); opacity: 0.7; }
 }
 
+/* Notifications Button */
 .notification-icon-btn {
   width: 38px; height: 38px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--border);
   display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer;
@@ -138,12 +139,12 @@ nav {
   padding: 2px; border: 2px solid var(--card-bg); box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
 }
 
-/* Profile Chip */
-.header-profile-wrap { display: flex; align-items: center; gap: 6px; }
+/* Profile Chip - Clean Top Position */
+.header-profile-wrap { display: flex; align-items: center; }
 .profile-chip {
   display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1.5px solid var(--border);
   padding: 3px 12px 3px 3px; border-radius: 40px; cursor: pointer; transition: all 0.2s ease;
-  max-width: 180px; min-width: 0; height: 38px; flex-shrink: 1;
+  max-width: 180px; min-width: 0; height: 38px; flex-shrink: 0;
 }
 .profile-chip:hover { border-color: var(--accent); box-shadow: 0 0 14px var(--accent-glow); }
 .profile-avatar {
@@ -151,7 +152,7 @@ nav {
   display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;
   text-transform: uppercase; flex-shrink: 0; box-shadow: 0 0 8px var(--accent-glow);
 }
-.profile-chip.signed-out .profile-avatar { background: var(--primary); color: var(--bg); box-shadow: none; font-size: 0.75rem; }
+.profile-chip.signed-out .profile-avatar { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); box-shadow: none; font-size: 0.78rem; }
 .profile-info { display: flex; flex-direction: column; overflow: hidden; min-width: 0; line-height: 1.15; }
 .profile-name {
   font-size: 0.75rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 4px; min-width: 0;
@@ -162,7 +163,7 @@ nav {
 }
 .edit-profile-btn { color: var(--text-muted); font-size: 0.6rem; flex-shrink: 0; }
 
-/* Bottom Nav */
+/* Bottom Navigation */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; height: calc(65px + env(safe-area-inset-bottom, 0px)); 
   padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--nav-bg); backdrop-filter: blur(18px);
@@ -266,7 +267,7 @@ nav {
 .mark-read-btn { border: none; color: #b45309; font-size: 0.72rem; font-weight: 700; cursor: pointer; padding: 4px 9px; border-radius: 8px; background: var(--accent-soft); margin-top: 5px; }
 .no-notif { text-align: center; padding: 30px 10px; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
 
-/* Push Notification Simulator */
+/* In-App OTP Notification */
 .otp-inpage-notif {
   position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-140px);
   background: var(--card-bg); border: 1.5px solid var(--accent); border-radius: 20px; padding: 14px 18px;
@@ -493,7 +494,7 @@ nav {
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease; 
   min-width: 0; box-sizing: border-box;
 } 
-.card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 16px 30px rgba(0,0,0,0.08), 0 0 20px var(--accent-glow); } 
+.card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 16px 30px rgba(0, 0, 0, 0.08), 0 0 20px var(--accent-glow); } 
 .card .image-box { width: 100%; height: 160px; border-radius: 14px; overflow: hidden; background: var(--surface); margin-bottom: 10px; position: relative; } 
 .card img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.4s ease; padding: 6px; } 
 .card:hover img { transform: scale(1.05); }
@@ -534,47 +535,6 @@ nav {
 .buy-btn:hover:not(:disabled) { background: var(--accent); color: #111111; box-shadow: 0 0 18px var(--accent-glow-strong); }
 .buy-btn:hover:not(:disabled) i { color: #111111; }
 .buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; } 
-
-/* Earn Money Ad Banner */
-.in-between-earn-ad-wrap { width: 100%; padding: 4px 0; }
-.earn-ad-section { padding: 0 5%; }
-.earn-ad-banner {
-  background: linear-gradient(135deg, #0b0b0f 0%, #151922 55%, #1e293b 100%);
-  border: 1.5px solid rgba(245, 158, 11, 0.45); border-radius: 22px; padding: 20px 22px; position: relative; overflow: hidden;
-  box-shadow: 0 14px 35px -5px rgba(0, 0, 0, 0.35), 0 0 25px rgba(245, 158, 11, 0.16); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.earn-ad-banner:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 18px 40px -5px rgba(0, 0, 0, 0.45), 0 0 30px rgba(245, 158, 11, 0.3); }
-.earn-ad-watermark { position: absolute; right: -15px; bottom: -25px; font-size: 7.5rem; color: rgba(245, 158, 11, 0.06); pointer-events: none; line-height: 1; }
-.earn-ad-watermark-secondary { position: absolute; right: 130px; top: -20px; font-size: 5rem; color: rgba(245, 158, 11, 0.04); pointer-events: none; }
-.earn-ad-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
-.earn-ad-badge {
-  display: inline-flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.16); color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.4); padding: 5px 12px; border-radius: 26px; font-size: 0.7rem; font-weight: 800;
-  text-transform: uppercase; box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
-}
-.earn-ad-free-tag { color: #4ade80; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 5px; }
-.earn-ad-title { color: #ffffff; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.4px; line-height: 1.25; margin-bottom: 6px; }
-.earn-ad-title span { color: var(--accent); text-shadow: 0 0 16px var(--accent-glow); }
-.earn-ad-desc { color: #94a3b8; font-size: 0.84rem; line-height: 1.5; max-width: 620px; margin-bottom: 16px; }
-.earn-features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
-.earn-feature-card {
-  background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(51, 65, 85, 0.7); border-radius: 14px; padding: 10px 8px;
-  text-align: center; backdrop-filter: blur(8px); min-width: 0;
-}
-.earn-feature-card strong { display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 3px; }
-.earn-feature-card span { display: block; font-size: 0.68rem; color: #94a3b8; font-weight: 600; }
-.earn-ad-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.earn-ad-cta-btn {
-  background: linear-gradient(135deg, #f59e0b, #d97706); color: #0b0b0f; padding: 12px 20px; border-radius: 14px;
-  font-size: 0.88rem; font-weight: 800; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); transition: all 0.25s ease;
-}
-.earn-ad-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(245, 158, 11, 0.7); background: linear-gradient(135deg, #fbbf24, #f59e0b); }
-.earn-ad-info-btn {
-  background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(71, 85, 105, 0.6); color: #e2e8f0; padding: 12px 18px;
-  border-radius: 14px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-}
-.earn-ad-info-btn:hover { background: #334155; color: #ffffff; }
 
 .empty-state-box {
   margin: 10px 5%; text-align: center; padding: 45px 20px; background: var(--surface); border-radius: 20px;
@@ -623,13 +583,13 @@ nav {
 @media (max-width: 768px) { 
   nav { padding: 10px 4%; flex-wrap: wrap; justify-content: space-between; gap: 8px; } 
   .logo { font-size: 1.15rem; order: 1; gap: 6px; } 
-  .nav-right { order: 2; gap: 6px; flex-shrink: 0; } 
+  .nav-right { order: 2; gap: 8px; flex-shrink: 0; margin-left: auto; } 
   .admin-portal-btn { padding: 5px 10px; font-size: 0.72rem; }
-  .profile-chip { padding: 2px 8px 2px 2px; max-width: 120px; height: 35px; gap: 5px; }
+  .profile-chip { padding: 3px 10px 3px 3px; max-width: 135px; height: 36px; gap: 6px; }
   .profile-avatar { width: 28px; height: 28px; font-size: 0.75rem; }
   .profile-name { font-size: 0.72rem; }
   .profile-phone { display: none; }
-  .search-container { order: 3; flex-basis: 100%; max-width: 100%; margin-top: 4px; } 
+  .search-container { order: 3; flex-basis: 100%; max-width: 100%; width: 100%; margin-top: 4px; } 
   .search-container input { padding: 9px 14px 9px 36px; font-size: 0.84rem; border-radius: 14px; } 
   
   .hero { padding: 18px 4% 8px; flex-direction: column; align-items: flex-start; gap: 14px; } 
@@ -663,14 +623,6 @@ nav {
   .card .price { font-size: 0.95rem; }
   .card .buy-btn { padding: 8px; font-size: 0.75rem; min-height: 35px; }
 
-  .earn-ad-section { padding: 0 4%; }
-  .earn-ad-banner { padding: 16px; border-radius: 18px; }
-  .earn-ad-title { font-size: 1.15rem; }
-  .earn-ad-desc { font-size: 0.78rem; margin-bottom: 12px; }
-  .earn-features-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
-  .earn-ad-actions { gap: 8px; width: 100%; flex-direction: column; }
-  .earn-ad-cta-btn, .earn-ad-info-btn { width: 100%; justify-content: center; padding: 11px; }
-
   .category-bar { padding: 4px 4% 8px 4%; gap: 7px; } 
   .category-btn { padding: 8px 16px; font-size: 0.78rem; min-height: 36px; } 
   .banner-section { padding: 6px 4%; } 
@@ -678,11 +630,17 @@ nav {
   .safe-checkout-box { margin: 12px 4% 20px; padding: 16px; }
 } 
 
+@media (max-width: 480px) {
+  .profile-chip {
+    padding: 0; width: 38px; height: 38px; border-radius: 50%; justify-content: center;
+  }
+  .profile-info { display: none; }
+  .profile-avatar { width: 100%; height: 100%; box-shadow: none; }
+}
+
 @media (max-width: 360px) {
   .logo div { font-size: 0.98rem; }
-  .profile-chip { max-width: 80px; padding-right: 4px; }
   .admin-portal-btn span:not(.admin-pulse-dot) { display: none; }
-  .edit-profile-btn { display: none; }
   .otp-secure-field { letter-spacing: 6px; font-size: 1.35rem; }
   .shelf-card { flex: 0 0 138px; max-width: 138px; }
 }
@@ -696,7 +654,7 @@ nav {
       if (productId) {
         const productUrl = new URL("/product-details", window.location.origin);
         productUrl.searchParams.set("id", productId);
-        ["ref", "aff", "name", "phone", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]
+        ["name", "phone", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]
           .forEach((key) => {
             const value = params.get(key);
             if (value) productUrl.searchParams.set(key, value);
@@ -730,8 +688,16 @@ nav {
 <!-- Navigation Bar -->
 <nav> 
   <div id="navLogo" class="logo"><i class="fa-solid fa-cart-shopping"></i><div>CART<span>PRIME</span></div></div> 
+
+  <!-- Search Input Center -->
+  <div class="search-container"> 
+    <i class="fa fa-search"></i> 
+    <input type="text" id="searchInput" placeholder="Search verified products, gadgets, fashion..." autocomplete="off"> 
+    <div id="searchSuggestions" class="search-suggestions-box"></div> 
+  </div> 
+
+  <!-- Navigation Right Zone -->
   <div class="nav-right"> 
-    
     <!-- ADMIN ROLE SPECIAL BUTTON (Visible only when role === 'admin') -->
     <a href="admin.html" id="adminPortalBtn" class="admin-portal-btn" style="display: none;" title="Go to Admin Panel">
       <i class="fa-solid fa-shield-halved"></i>
@@ -747,7 +713,7 @@ nav {
     
     <!-- Profile Chip -->
     <div class="header-profile-wrap">
-      <div class="profile-chip signed-out" id="profileChip" title="Sign in">
+      <div class="profile-chip signed-out" id="profileChip" title="Sign in / Profile">
         <div class="profile-avatar" id="navProfileAvatar"><i class="fa-solid fa-user"></i></div>
         <div class="profile-info">
           <span class="profile-name" id="navProfileName"><span class="profile-name-text">Sign In</span></span>
@@ -755,12 +721,6 @@ nav {
         </div>
       </div>
     </div>
-  </div> 
-
-  <div class="search-container"> 
-    <i class="fa fa-search"></i> 
-    <input type="text" id="searchInput" placeholder="Search verified products, gadgets, fashion..." autocomplete="off"> 
-    <div id="searchSuggestions" class="search-suggestions-box"></div> 
   </div> 
 </nav> 
 
@@ -777,7 +737,7 @@ nav {
   </div>
 </div>
 
-<!-- TRUSTED 100% SECURE USER LOGIN & REGISTRATION MODAL -->
+<!-- TRUSTED 100% SECURE USER LOGIN & PROFILE MODAL -->
 <div id="userWelcomeModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <div class="login-header-zone">
@@ -849,39 +809,6 @@ nav {
   </div> 
 </div>
 
-<!-- Earn Partner Request Modal -->
-<div id="earnModal" class="modal-overlay"> 
-  <div class="modal-card"> 
-    <div class="earn-modal-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-      <div style="width: 44px; height: 44px; background: var(--accent-soft); color: var(--accent); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; box-shadow: 0 0 14px var(--accent-glow);">
-        <i class="fa-solid fa-hand-holding-dollar"></i>
-      </div>
-      <div>
-        <h3 style="margin: 0 0 2px 0; font-size: 1.15rem; font-weight: 800;" id="earnModalMainTitle">CartPrime Partner Program</h3>
-        <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;" id="earnModalMainSub">Earn commissions on every referral</p>
-      </div>
-    </div>
-
-    <div id="earnContentContainer">
-      <div style="display: flex; flex-direction: column; gap: 7px; margin: 12px 0; background: var(--surface); padding: 12px 14px; border-radius: 14px; border: 1px solid var(--border);">
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Instant Free Registration</div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Direct UPI / Bank Payouts</div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Access to Wallet & Dashboard on Approval</div>
-      </div>
-
-      <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px;" id="earnSubText">Enter your WhatsApp or mobile number to submit your partner request to admin.</p> 
-
-      <form id="earnForm" class="modal-form" style="margin-top: 0;"> 
-        <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" required> 
-        <div class="modal-btn-group"> 
-          <button type="button" id="closeEarnModal" style="flex:1; padding:12px; border-radius:14px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:700; cursor:pointer;">Cancel</button> 
-          <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Submit Request</button> 
-        </div> 
-      </form> 
-    </div>
-  </div> 
-</div> 
-
 <!-- Contact Us Modal -->
 <div id="contactModal" class="modal-overlay"> 
   <div class="modal-card"> 
@@ -899,7 +826,7 @@ nav {
       </a>
       <div id="customerCareBtn" class="contact-option">
         <i class="fa-solid fa-headset" style="color: #22c55e; font-size: 1.15rem;"></i>
-        <span>Customer care & Complaints</span>
+        <span>Customer care & Complaints (WhatsApp)</span>
       </div>
     </div>
 
@@ -1054,7 +981,7 @@ nav {
 <!-- WhatsApp Floating Button -->
 <a href="https://wa.me/919744559527?text=Hi%20CartPrime%2C%20I%20need%20help" target="_blank" rel="noopener noreferrer" class="wa-float" title="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 
-<!-- Bottom Navigation Bar -->
+<!-- Bottom Navigation Bar (With Dedicated Profile Tab) -->
 <div class="bottom-nav">
   <a href="/" class="bottom-nav-item active">
     <i class="fa-solid fa-house"></i>
@@ -1070,10 +997,9 @@ nav {
     <span>Orders</span>
     <span id="bottomOrdersBadge" class="badge" style="display:none;">0</span>
   </a>
-  <div id="bottomEarnBtn" class="bottom-nav-item">
-    <i class="fa-solid fa-wallet" id="bottomEarnIcon"></i>
-    <span id="bottomEarnText">Earn</span>
-    <span id="bottomEarnBadge" class="badge" style="display:none;">0</span>
+  <div id="bottomProfileBtn" class="bottom-nav-item">
+    <i class="fa-regular fa-user" id="bottomProfileIcon"></i>
+    <span id="bottomProfileText">Profile</span>
   </div>
   <div id="bottomContactBtn" class="bottom-nav-item">
     <i class="fa-solid fa-headset"></i>
@@ -1161,7 +1087,6 @@ nav {
       return;
     }
 
-    // 1. Check in 'users/{phone}' for role === 'admin'
     const userRef = ref(db, `users/${phone}`);
     get(userRef).then((snapshot) => {
       if (snapshot.exists()) {
@@ -1172,12 +1097,10 @@ nav {
         }
       }
 
-      // 2. Fallback check in 'admins/{phone}' or 'admin/admins/{phone}'
       get(ref(db, `admins/${phone}`)).then((adminSnap) => {
         if (adminSnap.exists() && (adminSnap.val() === true || adminSnap.val().role === 'admin' || adminSnap.val().status === 'active')) {
           showAdminButton();
         } else {
-          // 3. Fallback check in 'admin_users/{phone}'
           get(ref(db, `admin_users/${phone}`)).then((admUserSnap) => {
             if (admUserSnap.exists()) {
               showAdminButton();
@@ -1203,7 +1126,6 @@ nav {
     }
   }
 
-  // Initial Check for logged-in user admin role
   const initialPhone = localStorage.getItem('userPhone');
   if (initialPhone) {
     checkAdminRole(initialPhone);
@@ -1317,9 +1239,6 @@ nav {
             localStorage.removeItem('userName');
             localStorage.removeItem('userPhone');
             localStorage.removeItem('sessionToken');
-            localStorage.removeItem('partnerPhone');
-            localStorage.removeItem('partnerName');
-            localStorage.removeItem('partnerId');
             showCustomAlert("Session Expired", "You have been logged in from another device. Please log in again.", false);
             setTimeout(() => { window.location.reload(); }, 1800);
           }
@@ -1343,161 +1262,10 @@ nav {
   }
 
   /* ========================================================================= */
-  /*               AFFILIATE PARTNER STATUS & WALLET REDIRECT                  */
-  /* ========================================================================= */
-  const earnModal = document.getElementById('earnModal');
-  const earnContentContainer = document.getElementById('earnContentContainer');
-  const earnModalMainTitle = document.getElementById('earnModalMainTitle');
-  const earnModalMainSub = document.getElementById('earnModalMainSub');
-  const bottomEarnText = document.getElementById('bottomEarnText');
-  const bottomEarnIcon = document.getElementById('bottomEarnIcon');
-
-  function checkPartnerStatusAndUpdateUI() {
-    const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-    if (!partnerPhone) {
-      if (bottomEarnText) bottomEarnText.textContent = "Earn";
-      if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-wallet";
-      return;
-    }
-
-    get(ref(db, `earn_partners/${partnerPhone}`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        if (data.status === 'active' || data.verified === true) {
-          localStorage.setItem('partnerPhone', partnerPhone);
-          localStorage.setItem('partnerName', data.name || 'Partner');
-          localStorage.setItem('partnerId', data.partnerId || partnerPhone);
-          if (bottomEarnText) bottomEarnText.textContent = "Wallet";
-          if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-wallet";
-        } else {
-          if (bottomEarnText) bottomEarnText.textContent = "Pending";
-          if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-clock-rotate-left";
-        }
-      } else {
-        if (bottomEarnText) bottomEarnText.textContent = "Earn";
-        if (bottomEarnIcon) bottomEarnIcon.className = "fa-solid fa-wallet";
-      }
-    }).catch(() => {});
-  }
-
-  checkPartnerStatusAndUpdateUI();
-
-  function openEarnModal() {
-    const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-    
-    if (partnerPhone) {
-      get(ref(db, `earn_partners/${partnerPhone}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          
-          if (data.status === 'active' || data.verified === true) {
-            localStorage.setItem('partnerPhone', partnerPhone);
-            localStorage.setItem('partnerName', data.name || 'Partner');
-            localStorage.setItem('partnerId', data.partnerId || partnerPhone);
-            window.location.href = "/wallet";
-            return;
-          }
-
-          if (earnModal) {
-            earnModalMainTitle.textContent = "Verification Pending";
-            earnModalMainSub.textContent = "Waiting for admin approval";
-            earnContentContainer.innerHTML = `
-              <div style="text-align: center; padding: 20px 0;">
-                <div style="width: 55px; height: 55px; background: rgba(245, 158, 11, 0.12); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 12px auto; box-shadow: 0 0 15px var(--accent-glow);">
-                  <i class="fa-solid fa-hourglass-half"></i>
-                </div>
-                <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 6px;">Your Request is Under Review</h4>
-                <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px;">Admin verification is pending for number +91 ${partnerPhone}. Once approved, you will be automatically granted access to your Wallet & Dashboard.</p>
-                <button type="button" id="closePendingEarnModal" style="width: 100%; padding: 11px; border-radius: 12px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border); font-weight: 700; cursor: pointer;">Close</button>
-              </div>
-            `;
-            openModal(earnModal);
-            document.getElementById('closePendingEarnModal').onclick = () => closeModal(earnModal);
-          }
-          return;
-        } else {
-          showRegistrationFormInModal(partnerPhone);
-        }
-      }).catch(() => {
-        showRegistrationFormInModal(partnerPhone);
-      });
-    } else {
-      showRegistrationFormInModal("");
-    }
-  }
-
-  function showRegistrationFormInModal(defaultPhone = "") {
-    if (!earnModal) return;
-    earnModalMainTitle.textContent = "CartPrime Partner Program";
-    earnModalMainSub.textContent = "Earn commissions on every referral";
-    earnContentContainer.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 6px; margin: 12px 0; background: var(--surface); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);">
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Instant Free Registration</div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Direct UPI / Bank Payouts</div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-check" style="color:#22c55e;"></i> Requires Admin Verification</div>
-      </div>
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Enter your WhatsApp or mobile number to submit your partner request to admin.</p> 
-      <form id="earnForm" class="modal-form" style="margin-top: 0;"> 
-        <input type="tel" id="partnerPhone" class="modal-input" placeholder="Mobile / WhatsApp Number" value="${defaultPhone}" required> 
-        <div class="modal-btn-group"> 
-          <button type="button" id="closeEarnModal" style="flex:1; padding:11px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text-main); font-weight:600; cursor:pointer;">Cancel</button> 
-          <button type="submit" class="modal-btn-submit" id="earnSubmitBtn">Submit Request</button> 
-        </div> 
-      </form>
-    `;
-    openModal(earnModal);
-
-    document.getElementById('closeEarnModal').onclick = () => closeModal(earnModal);
-    document.getElementById('earnForm').onsubmit = (e) => {
-      e.preventDefault();
-      const phoneVal = document.getElementById('partnerPhone').value.trim().replace(/[^0-9]/g, '');
-      if (!phoneVal || phoneVal.length !== 10) {
-        showCustomAlert("Invalid Number", "Please enter a valid 10-digit mobile/WhatsApp number.", false);
-        return;
-      }
-      
-      const submitBtn = document.getElementById('earnSubmitBtn');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
-
-      const partnerRef = ref(db, `earn_partners/${phoneVal}`);
-      const newPartnerId = 'CP_' + Math.floor(100000 + Math.random() * 900000);
-      const defaultName = localStorage.getItem('userName') || 'CartPrime Partner';
-      
-      set(partnerRef, {
-        phone: phoneVal,
-        name: defaultName,
-        partnerId: newPartnerId,
-        joinedAt: Date.now(),
-        status: 'Pending',
-        verified: false
-      }).then(() => {
-        localStorage.setItem('partnerPhone', phoneVal);
-        localStorage.setItem('partnerName', defaultName);
-        localStorage.setItem('partnerId', newPartnerId);
-        closeModal(earnModal);
-        checkPartnerStatusAndUpdateUI();
-        showCustomAlert("Request Submitted", "Your partner registration request has been sent for admin verification.", true);
-        updateBadges(auth.currentUser);
-      }).catch(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Submit Request';
-        showCustomAlert("Error", "Could not submit request. Please try again.", false);
-      });
-    };
-  }
-
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('#heroEarnAdBtn, #earnHowItWorksBtn, #bottomEarnBtn');
-    if (btn) {
-      openEarnModal();
-    }
-  });
-
-  /* ========================================================================= */
   /*                             PROFILE & AUTH                                */
   /* ========================================================================= */
   const profileChip = document.getElementById('profileChip');
+  const bottomProfileBtn = document.getElementById('bottomProfileBtn');
   const navProfileAvatar = document.getElementById('navProfileAvatar');
   const navProfileName = document.getElementById('navProfileName');
   const navProfilePhone = document.getElementById('navProfilePhone');
@@ -1573,14 +1341,14 @@ nav {
   }
 
   function listenNotifications() {
-    const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+    const phone = localStorage.getItem('userPhone');
     if (!phone) {
       notificationsData = {};
       refreshNotifUI();
       return;
     }
 
-    const notifRef = ref(db, `earn_partners/${phone}/notifications`);
+    const notifRef = ref(db, `users/${phone}/notifications`);
     onValue(notifRef, (snapshot) => {
       notificationsData = snapshot.exists() ? snapshot.val() : {};
       refreshNotifUI();
@@ -1631,11 +1399,11 @@ nav {
           return;
         }
 
-        const phone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
+        const phone = localStorage.getItem('userPhone');
         if (phone) {
           delete notificationsData[notifId];
           renderNotifications();
-          remove(ref(db, `earn_partners/${phone}/notifications/${notifId}`));
+          remove(ref(db, `users/${phone}/notifications/${notifId}`));
         }
       });
     });
@@ -1667,11 +1435,14 @@ nav {
 
     if (profileChip) {
       profileChip.classList.toggle('signed-out', !signedIn);
-      profileChip.title = signedIn ? `${displayName} - tap to edit profile` : 'Sign in';
+      profileChip.title = signedIn ? `${displayName} - tap to view profile` : 'Sign in';
     }
     if (navProfileAvatar) {
-      if (signedIn) { navProfileAvatar.textContent = displayName.charAt(0).toUpperCase(); }
-      else { navProfileAvatar.innerHTML = '<i class="fa-solid fa-user"></i>'; }
+      if (signedIn) { 
+        navProfileAvatar.textContent = displayName.charAt(0).toUpperCase(); 
+      } else { 
+        navProfileAvatar.innerHTML = '<i class="fa-solid fa-user"></i>'; 
+      }
     }
     if (navProfileName) {
       navProfileName.textContent = '';
@@ -1685,35 +1456,53 @@ nav {
         navProfileName.appendChild(pen);
       }
     }
-    if (navProfilePhone) navProfilePhone.textContent = signedIn ? `+91 ${phone}` : 'Tap to sign in';
+    if (navProfilePhone) {
+      navProfilePhone.textContent = signedIn ? `+91 ${phone}` : 'Tap to sign in';
+    }
+
+    // Update Bottom Navigation Profile Item
+    const bottomProfileText = document.getElementById('bottomProfileText');
+    const bottomProfileIcon = document.getElementById('bottomProfileIcon');
+    if (bottomProfileText) {
+      bottomProfileText.textContent = signedIn ? (name ? name.split(' ')[0] : 'Profile') : 'Profile';
+    }
+    if (bottomProfileIcon) {
+      bottomProfileIcon.className = signedIn ? 'fa-solid fa-user' : 'fa-regular fa-user';
+    }
   }
 
   updateHeaderProfileUI();
 
+  function handleProfileClick() {
+    const userPhone = localStorage.getItem('userPhone');
+    if (userPhone) {
+      userWelcomePhone.value = userPhone;
+      userWelcomePhone.readOnly = true;
+      userWelcomeName.value = localStorage.getItem('userName') || "";
+      phoneInputGroup.style.display = 'block';
+      otpInputGroup.style.display = 'none';
+      nameInputGroup.style.display = 'block';
+      registrationStep = 3;
+      welcomeModalTitle.textContent = "Your Profile";
+      welcomeModalSub.textContent = "Manage and update your account details";
+      if (welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
+      welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
+      if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
+      if (logoutSection) logoutSection.style.display = "block";
+      openModal(welcomeModal);
+    } else {
+      resetRegistrationForm();
+      if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
+      openModal(welcomeModal);
+    }
+  }
+
   if (profileChip) {
-    profileChip.addEventListener('click', () => {
-      const userPhone = localStorage.getItem('userPhone');
-      if (userPhone) {
-        userWelcomePhone.value = userPhone;
-        userWelcomePhone.readOnly = true;
-        userWelcomeName.value = localStorage.getItem('userName') || "";
-        phoneInputGroup.style.display = 'block';
-        otpInputGroup.style.display = 'none';
-        nameInputGroup.style.display = 'block';
-        registrationStep = 3;
-        welcomeModalTitle.textContent = "Edit Your Profile";
-        welcomeModalSub.textContent = "Update your account details below.";
-        if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
-        welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
-        if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
-        if (logoutSection) logoutSection.style.display = "block";
-        openModal(welcomeModal);
-      } else {
-        resetRegistrationForm();
-        if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
-        openModal(welcomeModal);
-      }
-    });
+    profileChip.addEventListener('click', handleProfileClick);
+  }
+
+  if (bottomProfileBtn) {
+    bottomProfileBtn.addEventListener('click', handleProfileClick);
   }
 
   if (closeWelcomeModal) {
@@ -1754,16 +1543,12 @@ nav {
       localStorage.removeItem('userName');
       localStorage.removeItem('userPhone');
       localStorage.removeItem('sessionToken');
-      localStorage.removeItem('partnerPhone');
-      localStorage.removeItem('partnerName');
-      localStorage.removeItem('partnerId');
       
       const adminBtn = document.getElementById('adminPortalBtn');
       if (adminBtn) adminBtn.style.display = 'none';
 
       closeModal(welcomeModal);
       updateHeaderProfileUI();
-      checkPartnerStatusAndUpdateUI();
       showCustomAlert("Logged Out", "You have been logged out securely.", true);
       setTimeout(() => { window.location.reload(); }, 1000);
     });
@@ -1778,7 +1563,7 @@ nav {
     phoneInputGroup.style.display = 'block';
     otpInputGroup.style.display = 'none';
     nameInputGroup.style.display = 'none';
-    if(welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'flex';
+    if (welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'flex';
     if (logoutSection) logoutSection.style.display = 'none';
     welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Continue Securely';
     welcomeModalTitle.textContent = "Secure Sign-In";
@@ -1907,7 +1692,6 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
-            checkPartnerStatusAndUpdateUI();
             checkAdminRole(pendingPhone);
             monitorSingleDeviceSession();
             showCustomAlert("Welcome Back!", `Signed in successfully as ${pendingExistingName}`, true);
@@ -1919,7 +1703,6 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
-            checkPartnerStatusAndUpdateUI();
             checkAdminRole(pendingPhone);
             showCustomAlert("Welcome Back!", `Signed in successfully as ${pendingExistingName}`, true);
             updateBadges(auth.currentUser);
@@ -1957,7 +1740,6 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
-            checkPartnerStatusAndUpdateUI();
             checkAdminRole(phone);
             monitorSingleDeviceSession();
             showCustomAlert("Profile Created!", `Welcome to CartPrime, ${name}!`, true);
@@ -1969,7 +1751,6 @@ nav {
             welcomeForm.style.display = 'flex';
             updateHeaderProfileUI();
             listenNotifications();
-            checkPartnerStatusAndUpdateUI();
             checkAdminRole(phone);
             showCustomAlert("Profile Saved!", `Welcome to CartPrime, ${name}!`, true);
             updateBadges(auth.currentUser);
@@ -2001,39 +1782,22 @@ nav {
     toastCloseBtn.onclick = () => { toastModal.style.display = 'none'; };
   }
 
-  function getEarnBannerHtml() {
-    const isRegistered = !!localStorage.getItem('partnerPhone');
-    
-    return `
-      <div class="earn-ad-section">
-        <div class="earn-ad-banner">
-          <i class="fa-solid fa-sack-dollar earn-ad-watermark"></i>
-          <i class="fa-solid fa-coins earn-ad-watermark-secondary"></i>
-          <div style="position: relative; z-index: 2;">
-            <div class="earn-ad-header">
-              <div class="earn-ad-badge"><i class="fa-solid fa-fire"></i> CartPrime Partner Program</div>
-              <div class="earn-ad-free-tag"><i class="fa-solid fa-circle-check"></i> 100% Free • ₹0 Investment</div>
-            </div>
-            <h2 class="earn-ad-title">${isRegistered ? 'Partner Wallet & Dashboard' : 'You Earn at Home <span>₹30,000+</span> Earn'}</h2>
-            <p class="earn-ad-desc">${isRegistered ? 'Your partner account is active. Click below to open your Wallet and manage your earnings.' : 'Share CartPrime Products on WhatsApp and Social Media easily. Get a higher cash commission on each order!'}</p>
-            <div class="earn-features-grid">
-              <div class="earn-feature-card"><strong style="color: #fbbf24;">₹0 Investment</strong><span>Without Investment</span></div>
-              <div class="earn-feature-card"><strong style="color: #4ade80;">Up to 25%</strong><span>High Commission</span></div>
-              <div class="earn-feature-card"><strong style="color: #38bdf8;">Weekly Payout</strong><span>Direct UPI / Bank</span></div>
-              <div class="earn-feature-card"><strong style="color: #c084fc;">COD Delivery</strong><span>Free delivery</span></div>
-            </div>
-            <div class="earn-ad-actions">
-              <button type="button" class="earn-ad-cta-btn" id="heroEarnAdBtn">
-                <i class="fa-solid fa-wallet"></i><span>${isRegistered ? 'Open Wallet' : 'Register now / Start Earning'}</span><i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
-              </button>
-              <button type="button" class="earn-ad-info-btn" id="earnHowItWorksBtn">
-                <i class="fa-solid fa-circle-question" style="color: #fbbf24;"></i><span>How It Works</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+  /* Contact Us Modal Handlers */
+  const bottomContactBtn = document.getElementById('bottomContactBtn');
+  const contactModal = document.getElementById('contactModal');
+  const closeContactModal = document.getElementById('closeContactModal');
+  const customerCareBtn = document.getElementById('customerCareBtn');
+
+  if (bottomContactBtn && contactModal) {
+    bottomContactBtn.addEventListener('click', () => openModal(contactModal));
+  }
+  if (closeContactModal && contactModal) {
+    closeContactModal.addEventListener('click', () => closeModal(contactModal));
+  }
+  if (customerCareBtn) {
+    customerCareBtn.addEventListener('click', () => {
+      window.location.href = "https://wa.me/919744559527?text=Hi%20CartPrime%2C%20I%20have%20a%20query%20or%20complaint";
+    });
   }
 
   let allProducts = []; 
@@ -2082,14 +1846,7 @@ nav {
       localStorage.setItem('viewedProductIds', JSON.stringify(viewedProducts)); 
     } 
 
-    const affId = localStorage.getItem('partnerId') || localStorage.getItem('cartPrime_affiliateId'); 
-    const userName = localStorage.getItem('partnerName') || localStorage.getItem('userName') || '';
-
-    let queryParams = [`id=${encodeURIComponent(productId)}`];
-    if (affId) queryParams.push(`ref=${encodeURIComponent(affId)}`);
-    if (userName) queryParams.push(`name=${encodeURIComponent(userName)}`);
-
-    const finalUrl = `/product-details?${queryParams.join('&')}`;
+    const finalUrl = `/product-details?id=${encodeURIComponent(productId)}`;
 
     if (viewedProducts.length >= 5 && !visitCounted) { 
       const visitsRef = ref(db, 'admin/visits'); 
@@ -2164,7 +1921,6 @@ nav {
   function updateBadges(user) { 
     const bottomWishlistBadge = document.getElementById('bottomWishlistBadge'); 
     const bottomOrdersBadge = document.getElementById('bottomOrdersBadge'); 
-    const bottomEarnBadge = document.getElementById('bottomEarnBadge');
 
     if (user) { 
       onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => { 
@@ -2196,57 +1952,6 @@ nav {
     } else if (bottomOrdersBadge) { 
       bottomOrdersBadge.style.display = 'none';
     } 
-
-    const partnerPhone = localStorage.getItem('partnerPhone') || localStorage.getItem('userPhone');
-    const partnerId = localStorage.getItem('partnerId');
-
-    if (partnerPhone || partnerId) {
-      const directRefPath = partnerPhone ? ref(db, `ReferralOrders/${partnerPhone}`) : null;
-      if (directRefPath) {
-        onValue(directRefPath, (snapshot) => {
-          let directCount = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
-          if (directCount > 0 && bottomEarnBadge) {
-            bottomEarnBadge.textContent = directCount;
-            bottomEarnBadge.style.display = 'flex';
-          } else {
-            onValue(ref(db, 'ReferralOrders'), (allRefOrdersSnap) => {
-              let totalCount = 0;
-              if (allRefOrdersSnap.exists()) {
-                allRefOrdersSnap.forEach(childSnap => {
-                  const val = childSnap.val();
-                  if (
-                    childSnap.key === partnerPhone ||
-                    childSnap.key === partnerId ||
-                    (val && (val.partnerPhone === partnerPhone || val.partnerId === partnerId || val.ref === partnerId || val.affiliateId === partnerId))
-                  ) {
-                    if (typeof val === 'object' && !val.orderId && !val.price) {
-                      totalCount += Object.keys(val).length;
-                    } else { totalCount++; }
-                  }
-                });
-              }
-
-              if (totalCount > 0 && bottomEarnBadge) {
-                bottomEarnBadge.textContent = totalCount;
-                bottomEarnBadge.style.display = 'flex';
-              } else {
-                onValue(ref(db, `earn_orders/${partnerPhone}`), (earnSnap) => {
-                  let earnOrdersCount = earnSnap.exists() ? Object.keys(earnSnap.val()).length : 0;
-                  onValue(ref(db, `wallet/${partnerPhone}/orders`), (walletSnap) => {
-                    let walletCount = walletSnap.exists() ? Object.keys(walletSnap.val()).length : 0;
-                    let finalEarnCount = Math.max(earnOrdersCount, walletCount);
-                    if (finalEarnCount > 0 && bottomEarnBadge) {
-                      bottomEarnBadge.textContent = finalEarnCount;
-                      bottomEarnBadge.style.display = 'flex';
-                    } else if (bottomEarnBadge) { bottomEarnBadge.style.display = 'none'; }
-                  });
-                });
-              }
-            });
-          }
-        });
-      } else if (bottomEarnBadge) { bottomEarnBadge.style.display = 'none'; }
-    } else if (bottomEarnBadge) { bottomEarnBadge.style.display = 'none'; }
   } 
 
   function updateWishlistUIAndBadge() { 
@@ -2600,7 +2305,6 @@ nav {
           <button class="shelf-view-all-btn" onclick="window.resetToAll()"><i class="fa-solid fa-rotate-left" style="margin-right: 4px;"></i> Show All</button>
         </div>
         <div class="grid" id="focusedProductGrid"></div>
-        <div style="margin-top: 20px;">${getEarnBannerHtml()}</div>
       `;
 
       container.appendChild(focusedSection);
@@ -2620,7 +2324,6 @@ nav {
     });
 
     const categoryNames = Object.keys(categoriesMap);
-    let shelfCounter = 0;
 
     const trendingProducts = visibleProducts.filter(p => {
       const pr = parseFloat(p.price?.toString().replace(/,/g, '') || 0);
@@ -2631,32 +2334,13 @@ nav {
 
     const trendingShelf = createShelfElement("shelf-trending", "🔥 Trending & Top Offers", "fa-fire", "#ef4444", topOffers, "All");
     container.appendChild(trendingShelf);
-    shelfCounter++;
-
-    let earnBannerInserted = false;
 
     categoryNames.forEach((catName, cIdx) => {
       const catProducts = categoriesMap[catName];
       const iconData = getCategoryIconData(catName);
       const catShelf = createShelfElement(`shelf-cat-${cIdx}`, `${catName}`, iconData.icon, iconData.color, catProducts, catName);
       container.appendChild(catShelf);
-      shelfCounter++;
-
-      if (!earnBannerInserted && shelfCounter >= 2) {
-        const bannerContainer = document.createElement('div');
-        bannerContainer.className = 'in-between-earn-ad-wrap';
-        bannerContainer.innerHTML = getEarnBannerHtml();
-        container.appendChild(bannerContainer);
-        earnBannerInserted = true;
-      }
     });
-
-    if (!earnBannerInserted) {
-      const bannerContainer = document.createElement('div');
-      bannerContainer.className = 'in-between-earn-ad-wrap';
-      bannerContainer.innerHTML = getEarnBannerHtml();
-      container.appendChild(bannerContainer);
-    }
 
     const exploreSection = document.createElement('div');
     exploreSection.style.width = '100%';
