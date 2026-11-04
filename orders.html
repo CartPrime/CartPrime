@@ -296,7 +296,7 @@
             color: var(--text-main);
         }
 
-        /* Meesho Order Card */
+        /* Order Card */
         .order-card {
             background: var(--white);
             border-radius: 16px;
@@ -398,8 +398,8 @@
         }
 
         .order-item-img {
-            width: 72px;
-            height: 72px;
+            width: 76px;
+            height: 76px;
             border-radius: 12px;
             object-fit: cover;
             border: 1px solid var(--border-color);
@@ -886,7 +886,7 @@
         import { getDatabase, ref, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         // ============================================================
-        // 🎯 EXACT FIREBASE CONFIGURATION (From your Realtime Database)
+        // 🎯 EXACT FIREBASE CONFIGURATION
         // ============================================================
         const FIREBASE_RTDB_URL = "https://cartprime-shopping-default-rtdb.firebaseio.com";
 
@@ -927,11 +927,8 @@
             return digits.length >= 10 ? digits.slice(-10) : digits;
         }
 
-        // ============================================================
-        // 1. AUTO-DETECT HOME PAGE LOGGED IN PHONE
-        // ============================================================
+        // Detect Home Page Logged-in Phone
         function detectHomePageLoggedInPhone() {
-            // Direct keys
             const directKeys = [
                 'cartprime_user_phone', 'cartprime_phone', 'user_phone', 'userPhone', 
                 'customerPhone', 'phone', 'userMobile', 'cartprime_mobile', 'user'
@@ -944,7 +941,6 @@
                 }
             }
 
-            // JSON user objects (cartprime_user, user, profile)
             const objKeys = ['cartprime_user', 'user', 'currentUser', 'authUser', 'profile', 'cartprimeUser'];
             for (const key of objKeys) {
                 try {
@@ -961,7 +957,6 @@
                 } catch(e) {}
             }
 
-            // Firebase Auth session in localStorage
             for (let i = 0; i < localStorage.length; i++) {
                 const k = localStorage.key(i);
                 if (k && k.startsWith('firebase:authUser:')) {
@@ -978,34 +973,65 @@
             return '';
         }
 
-        // Safe Image Extractor
-        function extractItemImage(item, order) {
-            if (item) {
-                if (typeof item.image === 'string' && item.image.trim()) return item.image.trim();
-                if (typeof item.productImage === 'string' && item.productImage.trim()) return item.productImage.trim();
-                if (typeof item.img === 'string' && item.img.trim()) return item.img.trim();
-                if (typeof item.thumbnail === 'string' && item.thumbnail.trim()) return item.thumbnail.trim();
-                if (Array.isArray(item.images) && item.images.length && typeof item.images[0] === 'string') return item.images[0].trim();
+        // Extract Items List from any Order (Array or Object)
+        function getOrderItemsList(order) {
+            if (!order) return [];
+            const candidates = [order.items, order.cart, order.products, order.orderItems, order.itemList, order.product];
+            for (const c of candidates) {
+                if (!c) continue;
+                if (Array.isArray(c) && c.length > 0) return c;
+                if (typeof c === 'object') {
+                    const vals = Object.values(c).filter(v => v && typeof v === 'object');
+                    if (vals.length > 0) return vals;
+                    if (c.title || c.productTitle || c.name || c.price || c.image) return [c];
+                }
             }
-            if (order) {
-                if (typeof order.image === 'string' && order.image.trim()) return order.image.trim();
-                if (typeof order.productImage === 'string' && order.productImage.trim()) return order.productImage.trim();
-                if (typeof order.img === 'string' && order.img.trim()) return order.img.trim();
-                if (typeof order.thumbnail === 'string' && order.thumbnail.trim()) return order.thumbnail.trim();
-                if (Array.isArray(order.items) && order.items.length) {
-                    const first = order.items[0];
-                    if (first) {
-                        if (typeof first.image === 'string' && first.image.trim()) return first.image.trim();
-                        if (typeof first.productImage === 'string' && first.productImage.trim()) return first.productImage.trim();
+            return [order];
+        }
+
+        // Robust Image Extractor (Solves "ithil image illa")
+        function extractItemImage(item, order) {
+            // 1. Direct candidates from item and order
+            const candidates = [
+                item?.image, item?.imageUrl, item?.img, item?.productImage, item?.thumbnail, item?.photo, item?.src,
+                order?.image, order?.imageUrl, order?.img, order?.productImage, order?.thumbnail, order?.photo, order?.src
+            ];
+
+            for (const url of candidates) {
+                if (typeof url === 'string' && url.trim().length > 5) {
+                    const clean = url.trim();
+                    if (clean.startsWith('http://') || clean.startsWith('https://') || clean.startsWith('data:image/')) {
+                        return clean;
                     }
                 }
             }
-            const pid = (item && (item.id || item.productId)) || (order && (order.productId || order.id));
+
+            // 2. Search inside order items if given order
+            if (order) {
+                const items = getOrderItemsList(order);
+                for (const it of items) {
+                    if (it && it !== item) {
+                        const sub = extractItemImage(it, null);
+                        if (sub && sub !== DEFAULT_FALLBACK_SVG) return sub;
+                    }
+                }
+            }
+
+            // 3. Search in productsCache
+            const pid = item?.id || item?.productId || order?.productId || order?.id;
             if (pid && productsCache[pid]) {
                 const p = productsCache[pid];
-                if (p.image) return p.image;
-                if (p.productImage) return p.productImage;
+                const pImg = p.image || p.imageUrl || p.img || p.productImage || (Array.isArray(p.images) && p.images[0]);
+                if (pImg) return pImg;
             }
+
+            const title = item?.title || item?.productTitle || item?.name || order?.productTitle || order?.title;
+            if (title && productsCache[title.toLowerCase().trim()]) {
+                const p = productsCache[title.toLowerCase().trim()];
+                const pImg = p.image || p.imageUrl || p.img || p.productImage || (Array.isArray(p.images) && p.images[0]);
+                if (pImg) return pImg;
+            }
+
             return DEFAULT_FALLBACK_SVG;
         }
 
@@ -1040,9 +1066,7 @@
                    d1.getDate() === d2.getDate();
         }
 
-        // ============================================================
-        // 2. OUT FOR DELIVERY (Today Arriving / Today's Delivery Date)
-        // ============================================================
+        // Check Out for Delivery (Today Arriving / Today Date)
         function checkIsOutForDelivery(order) {
             if (!order) return false;
             const textPool = [
@@ -1069,7 +1093,6 @@
                 return true;
             }
 
-            // If delivery date matches today's date
             if (order.deliveryDate || order.expectedDelivery) {
                 const d = parseDateSafe(order.deliveryDate || order.expectedDelivery);
                 if (d && isSameCalendarDay(d, new Date())) {
@@ -1100,9 +1123,7 @@
             return raw || 'placed';
         }
 
-        // ============================================================
-        // 3. RETURN ELIGIBILITY (Auto-hide if 7 days expired)
-        // ============================================================
+        // Return Eligibility Check: Auto-hides after 7 days
         function getReturnEligibility(order) {
             if (!order) return { eligible: false, hasPolicy: false, isExpired: true, daysLeft: 0 };
 
@@ -1189,9 +1210,7 @@
             });
         };
 
-        // ============================================================
-        // 4. EXTRACT ORDERS FROM DATABASE STRUCTURE (orders -> phone -> orderId)
-        // ============================================================
+        // Parse Orders from Database Structure
         function parseOrdersFromDatabase(data) {
             const orders = [];
             if (!data || typeof data !== 'object') return orders;
@@ -1200,14 +1219,9 @@
                 const val = data[key];
                 if (!val || typeof val !== 'object') return;
 
-                // Check if val is an order directly
                 if (val.customerPhone || val.address || val.createdAt || val.date || val.deliveryDate) {
-                    orders.push({
-                        ...val,
-                        id: val.id || key
-                    });
+                    orders.push({ ...val, id: val.id || key });
                 } else {
-                    // val is an object of orders under a phone number (e.g. orders/7356587790/{orderId})
                     const phoneKey = normalizePhone(key);
                     Object.keys(val).forEach(orderId => {
                         const order = val[orderId];
@@ -1225,22 +1239,16 @@
             return orders;
         }
 
-        // ============================================================
-        // 5. FETCH ORDERS FROM FIREBASE (REST + REALTIME)
-        // ============================================================
+        // Fetch Orders
         async function fetchOrders() {
             const loader = document.getElementById('loadingIndicator');
 
-            // 1. Instant REST Fetch (Loads in ~200ms)
             try {
-                // If phone is available, try direct orders/${phone}.json first
-                let fetchedData = null;
                 if (loggedInPhone) {
                     const resDirect = await fetch(`${FIREBASE_RTDB_URL}/orders/${loggedInPhone}.json`);
                     if (resDirect.ok) {
-                        fetchedData = await resDirect.json();
+                        const fetchedData = await resDirect.json();
                         if (fetchedData) {
-                            // Container of orders for this phone
                             const list = [];
                             Object.keys(fetchedData).forEach(oId => {
                                 const ord = fetchedData[oId];
@@ -1256,7 +1264,6 @@
                     }
                 }
 
-                // If not found or general fetch, fetch full orders.json
                 if (!dbAllOrders.length) {
                     const resAll = await fetch(`${FIREBASE_RTDB_URL}/orders.json`);
                     if (resAll.ok) {
@@ -1271,7 +1278,6 @@
                 console.log("REST fetch note:", err.message);
             }
 
-            // 2. Realtime Listener via Firebase SDK
             if (db) {
                 try {
                     const ordersRef = ref(db, 'orders');
@@ -1281,13 +1287,10 @@
                             dbAllOrders = parseOrdersFromDatabase(data);
                             renderMatchingOrders();
                         }
-                    }, (e) => {
-                        console.warn("RTDB listener note:", e.message);
                     });
                 } catch(e) {}
             }
 
-            // Dismiss Loader
             setTimeout(() => {
                 if (loader) loader.style.display = 'none';
                 renderMatchingOrders();
@@ -1315,7 +1318,6 @@
                 displayedOrders = dbAllOrders;
             }
 
-            // Sort newest first
             displayedOrders.sort((a, b) => {
                 const da = parseDateSafe(a.date || a.createdAt) || new Date(0);
                 const db = parseDateSafe(b.date || b.createdAt) || new Date(0);
@@ -1326,7 +1328,6 @@
             applyFilters();
         }
 
-        // Update Counts
         function updateCounts() {
             const counts = { all: displayedOrders.length, placed: 0, shipped: 0, out_for_delivery: 0, delivered: 0, cancelled: 0 };
             displayedOrders.forEach(ord => {
@@ -1343,7 +1344,6 @@
             document.getElementById('count-cancelled').textContent = counts.cancelled;
         }
 
-        // Apply Filters & Search
         function applyFilters() {
             filteredOrders = displayedOrders.filter(ord => {
                 const effStatus = getEffectiveStatus(ord);
@@ -1388,9 +1388,10 @@
             let html = '';
             filteredOrders.forEach(order => {
                 const effStatus = getEffectiveStatus(order);
-                const firstItem = (order.items && order.items.length) ? order.items[0] : order;
+                const itemsList = getOrderItemsList(order);
+                const firstItem = itemsList[0] || order;
                 const imgUrl = extractItemImage(firstItem, order);
-                const title = firstItem.title || firstItem.productTitle || order.productTitle || 'CartPrime Order Item';
+                const title = firstItem.title || firstItem.productTitle || order.productTitle || 'CartPrime Product';
                 const price = order.totalAmount || order.total || order.price || (firstItem.price * (firstItem.quantity || 1)) || 0;
                 const qty = firstItem.quantity || firstItem.qty || 1;
                 const formattedDate = formatDatePretty(order.date || order.createdAt);
@@ -1421,7 +1422,6 @@
                     progressWidth = '0%';
                 }
 
-                // Return Eligibility Check: Automatically HIDES button if period expired
                 const returnInfo = getReturnEligibility(order);
                 const canReturn = (effStatus === 'delivered' && returnInfo.hasPolicy && !returnInfo.isExpired);
 
@@ -1469,7 +1469,7 @@
                                 <div class="order-item-meta">
                                     <span><i class="fa-solid fa-layer-group"></i> Qty: ${qty}</span>
                                     ${firstItem.size ? `<span><i class="fa-solid fa-ruler"></i> Size: ${firstItem.size}</span>` : ''}
-                                    ${order.items && order.items.length > 1 ? `<span style="color: var(--accent-dark); font-weight:700;">+${order.items.length - 1} more items</span>` : ''}
+                                    ${itemsList.length > 1 ? `<span style="color: var(--accent-dark); font-weight:700;">+${itemsList.length - 1} more items</span>` : ''}
                                 </div>
                                 <div class="order-price-row">
                                     <span class="order-price">₹${Number(price).toLocaleString('en-IN')}</span>
@@ -1527,7 +1527,7 @@
             container.innerHTML = html;
         }
 
-        // View Order Details Modal
+        // View Order Details
         window.viewOrderDetails = function(orderId) {
             const order = displayedOrders.find(o => String(o.id || o.orderId) === String(orderId));
             if (!order) return;
@@ -1541,7 +1541,7 @@
             modalTitle.textContent = `Order #${orderId}`;
 
             let itemsHtml = '';
-            const items = (order.items && order.items.length) ? order.items : [order];
+            const items = getOrderItemsList(order);
             items.forEach(it => {
                 const itImg = extractItemImage(it, order);
                 const itTitle = it.title || it.productTitle || order.productTitle || 'Item';
@@ -1630,7 +1630,37 @@
             }
         };
 
-        // Return Request Flow
+        // Helper to convert Image File to compressed Base64
+        function convertImageFileToBase64(file) {
+            return new Promise((resolve) => {
+                if (!file) return resolve('');
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const maxDim = 600;
+                        let w = img.width, h = img.height;
+                        if (w > maxDim || h > maxDim) {
+                            if (w > h) { h = (h * maxDim) / w; w = maxDim; }
+                            else { w = (w * maxDim) / h; h = maxDim; }
+                        }
+                        canvas.width = w; canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', 0.75));
+                    };
+                    img.onerror = () => resolve(e.target.result);
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ============================================================
+        // 6. ENHANCED RETURN REQUEST (UPI ID, Email ID, Optional Image)
+        // ============================================================
         window.requestReturnOrder = function(orderId) {
             const order = displayedOrders.find(o => String(o.id || o.orderId) === String(orderId));
             if (!order) return;
@@ -1646,54 +1676,124 @@
                 return;
             }
 
+            const detectedEmail = localStorage.getItem('cartprime_user_email') || localStorage.getItem('customerEmail') || '';
+
             Swal.fire({
-                title: 'Return Product',
+                title: 'Request Return',
                 html: `
-                    <div style="text-align: left; font-size: 0.9rem;">
-                        <label style="font-weight: 700; display: block; margin-bottom: 6px;">Please select reason for return:</label>
-                        <select id="swalReturnReason" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #cbd5e1; margin-bottom: 12px; outline: none; font-size: 0.88rem;">
-                            <option value="Defective or Damaged Product">Defective or Damaged Product</option>
-                            <option value="Different Item Delivered">Different Item Delivered</option>
+                    <div style="text-align: left; font-size: 0.88rem; color: #1e293b;">
+                        <!-- Return Reason -->
+                        <label style="font-weight: 700; display: block; margin-bottom: 4px;">Reason for Return <span style="color:#ef4444;">*</span></label>
+                        <select id="swalReturnReason" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #cbd5e1; margin-bottom: 12px; font-size: 0.88rem; outline: none;">
+                            <option value="">-- Select Reason --</option>
+                            <option value="Defective / Damaged Product">Defective / Damaged Product</option>
+                            <option value="Wrong Item Delivered">Wrong Item Delivered</option>
                             <option value="Quality Not As Expected">Quality Not As Expected</option>
                             <option value="Size / Fit Issue">Size / Fit Issue</option>
+                            <option value="Color / Design Mismatch">Color / Design Mismatch</option>
                             <option value="Other">Other Reason</option>
                         </select>
-                        <label style="font-weight: 700; display: block; margin-bottom: 6px;">Additional details (optional):</label>
-                        <textarea id="swalReturnComment" placeholder="Explain the issue..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 0.88rem; outline: none; height: 70px; resize: none;"></textarea>
+
+                        <!-- UPI ID -->
+                        <label style="font-weight: 700; display: block; margin-bottom: 4px;">Refund UPI ID <span style="color:#ef4444;">*</span></label>
+                        <input type="text" id="swalReturnUpi" placeholder="e.g. ${loggedInPhone || '7356587790'}@upi or name@oksbi" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #cbd5e1; margin-bottom: 4px; font-size: 0.88rem; outline: none;" />
+                        <div style="font-size: 0.72rem; color: #64748b; margin-bottom: 12px;">Refund will be credited to this UPI ID after pickup inspection.</div>
+
+                        <!-- Email ID -->
+                        <label style="font-weight: 700; display: block; margin-bottom: 4px;">Email ID <span style="color:#ef4444;">*</span></label>
+                        <input type="email" id="swalReturnEmail" value="${detectedEmail}" placeholder="e.g. yourname@gmail.com" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #cbd5e1; margin-bottom: 4px; font-size: 0.88rem; outline: none;" />
+                        <div style="font-size: 0.72rem; color: #64748b; margin-bottom: 12px;">For return pickup updates & refund confirmation receipt.</div>
+
+                        <!-- Product Photo (Optional) -->
+                        <label style="font-weight: 700; display: block; margin-bottom: 4px;">Product Photo <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">(Optional)</span></label>
+                        <input type="file" id="swalReturnImgFile" accept="image/*" style="width: 100%; font-size: 0.82rem; padding: 8px; border: 1.5px dashed #cbd5e1; border-radius: 10px; background: #f8fafc; margin-bottom: 4px;" />
+                        <div style="font-size: 0.72rem; color: #64748b; margin-bottom: 12px;">Attach a picture showing the issue if you wish.</div>
+
+                        <!-- Additional Comments -->
+                        <label style="font-weight: 700; display: block; margin-bottom: 4px;">Additional Details <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">(Optional)</span></label>
+                        <textarea id="swalReturnComment" placeholder="Explain the problem..." style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.88rem; outline: none; height: 60px; resize: none;"></textarea>
                     </div>
                 `,
                 showCancelButton: true,
-                confirmButtonText: 'Submit Return',
+                confirmButtonText: 'Submit Return Request',
                 cancelButtonText: 'Cancel',
                 confirmButtonColor: '#f59e0b',
                 cancelButtonColor: '#64748b',
-                preConfirm: () => {
+                preConfirm: async () => {
                     const reason = document.getElementById('swalReturnReason').value;
-                    const comment = document.getElementById('swalReturnComment').value;
-                    return { reason, comment };
+                    const upi = document.getElementById('swalReturnUpi').value.trim();
+                    const email = document.getElementById('swalReturnEmail').value.trim();
+                    const comment = document.getElementById('swalReturnComment').value.trim();
+                    const imgFileInput = document.getElementById('swalReturnImgFile');
+
+                    if (!reason) {
+                        Swal.showValidationMessage('Please select a reason for return!');
+                        return false;
+                    }
+                    if (!upi || upi.length < 4) {
+                        Swal.showValidationMessage('Please enter a valid Refund UPI ID!');
+                        return false;
+                    }
+                    if (!email || !email.includes('@') || !email.includes('.')) {
+                        Swal.showValidationMessage('Please enter a valid Email ID!');
+                        return false;
+                    }
+
+                    let imgBase64 = '';
+                    if (imgFileInput && imgFileInput.files && imgFileInput.files[0]) {
+                        imgBase64 = await convertImageFileToBase64(imgFileInput.files[0]);
+                    }
+
+                    return { reason, upi, email, comment, imgBase64 };
                 }
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    const { reason, comment } = result.value;
+                    const { reason, upi, email, comment, imgBase64 } = result.value;
                     try {
-                        const phonePath = order.customerPhone ? `${order.customerPhone}/${orderId}` : orderId;
+                        const targetPhone = order.customerPhone ? normalizePhone(order.customerPhone) : loggedInPhone;
+                        const phonePath = targetPhone ? `${targetPhone}/${orderId}` : orderId;
+
+                        const returnPayload = {
+                            status: 'return_requested',
+                            returnReason: reason,
+                            returnUpiId: upi,
+                            returnEmail: email,
+                            returnImage: imgBase64 || '',
+                            returnComment: comment || '',
+                            returnRequestedAt: new Date().toISOString()
+                        };
+
                         if (db) {
                             const ordRef = ref(db, `orders/${phonePath}`);
-                            await update(ordRef, {
-                                status: 'return_requested',
-                                returnReason: reason,
-                                returnComment: comment || '',
-                                returnRequestedAt: new Date().toISOString()
-                            });
+                            await update(ordRef, returnPayload);
                         }
 
+                        // Also push via REST to guarantee immediate DB write
+                        try {
+                            await fetch(`${FIREBASE_RTDB_URL}/orders/${phonePath}.json`, {
+                                method: 'PATCH',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(returnPayload)
+                            });
+                        } catch(e) {}
+
+                        // Update local object
                         order.status = 'return_requested';
                         order.returnReason = reason;
+                        order.returnUpiId = upi;
+                        order.returnEmail = email;
+                        order.returnImage = imgBase64;
 
                         Swal.fire({
                             icon: 'success',
                             title: 'Return Request Submitted!',
-                            text: 'Our team will review your request shortly.',
+                            html: `
+                                <div style="font-size: 0.9rem; line-height: 1.5; text-align: center;">
+                                    Your return request has been submitted successfully.<br>
+                                    Refund will be credited to <strong>${upi}</strong> upon pickup inspection.<br>
+                                    Updates sent to <strong>${email}</strong>.
+                                </div>
+                            `,
                             confirmButtonColor: '#0b0b0f'
                         });
 
@@ -1701,7 +1801,7 @@
                         updateCounts();
                         applyFilters();
                     } catch (e) {
-                        Swal.fire({ icon: 'error', title: 'Error', text: e.message });
+                        Swal.fire({ icon: 'error', title: 'Error', text: e.message, confirmButtonColor: '#0b0b0f' });
                     }
                 }
             });
@@ -1722,7 +1822,9 @@
                 if (result.isConfirmed) {
                     try {
                         const ord = displayedOrders.find(o => String(o.id || o.orderId) === String(orderId));
-                        const phonePath = (ord && ord.customerPhone) ? `${ord.customerPhone}/${orderId}` : orderId;
+                        const targetPhone = (ord && ord.customerPhone) ? normalizePhone(ord.customerPhone) : loggedInPhone;
+                        const phonePath = targetPhone ? `${targetPhone}/${orderId}` : orderId;
+
                         if (db) {
                             const ordRef = ref(db, `orders/${phonePath}`);
                             await update(ordRef, {
@@ -1730,6 +1832,14 @@
                                 cancelledAt: new Date().toISOString()
                             });
                         }
+
+                        try {
+                            await fetch(`${FIREBASE_RTDB_URL}/orders/${phonePath}.json`, {
+                                method: 'PATCH',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ status: 'cancelled', cancelledAt: new Date().toISOString() })
+                            });
+                        } catch(e) {}
 
                         if (ord) ord.status = 'cancelled';
 
@@ -1775,17 +1885,12 @@
         // INITIALIZATION
         // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Auto-detect Home Page Logged-in Number
             loggedInPhone = detectHomePageLoggedInPhone();
             updateAccountStripUI();
 
-            // 2. Preload products cache
             preloadProductsCache();
-
-            // 3. Fetch from Realtime Database
             fetchOrders();
 
-            // Filter chips
             document.querySelectorAll('.filter-chip').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
@@ -1795,7 +1900,6 @@
                 });
             });
 
-            // Search input
             const searchInput = document.getElementById('orderSearchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
