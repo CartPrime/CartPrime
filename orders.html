@@ -147,6 +147,16 @@
             flex-shrink: 0;
         }
         .dot-delivered { background: #16a34a; box-shadow: 0 0 8px rgba(22, 163, 74, 0.4); }
+        .dot-out { 
+            background: #16a34a; 
+            box-shadow: 0 0 10px rgba(22, 163, 74, 0.6); 
+            animation: pulseOutDot 1.4s infinite; 
+        }
+        @keyframes pulseOutDot {
+            0% { transform: scale(0.95); opacity: 0.75; }
+            50% { transform: scale(1.35); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.75; }
+        }
         .dot-shipped { background: var(--accent); box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
         .dot-pending { background: #0284c7; }
         .dot-cancelled { background: #ef4444; }
@@ -261,6 +271,14 @@
         .tracker-step.active .tracker-dot {
             background: var(--accent);
             box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+        .tracker-step.out-active .tracker-dot {
+            background: #16a34a !important;
+            box-shadow: 0 0 12px rgba(22, 163, 74, 0.6) !important;
+        }
+        .tracker-step.out-active .tracker-label {
+            color: #16a34a !important;
+            font-weight: 800 !important;
         }
         .tracker-step.active .tracker-label {
             color: var(--text-main);
@@ -454,7 +472,7 @@
         <span>100% Verified Orders & 7-Day Easy Replacement Guarantee</span>
     </div>
 
-    <!-- Meesho Style Search Input (Searches orders dynamically) -->
+    <!-- Meesho Style Search Input -->
     <div class="orders-search-box" id="ordersSearchWrap" style="display: none;">
         <i class="fa-solid fa-search"></i>
         <input type="text" id="orderSearchInput" placeholder="Search by product name or order ID...">
@@ -513,7 +531,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Guaranteed Non-Failing Clean CartPrime Gold Shopping Bag SVG (Never gets blocked by Indian ISPs)
+    // Guaranteed Non-Failing Clean CartPrime Gold Shopping Bag SVG
     const DEFAULT_FALLBACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='24' fill='%23f8fafc'/%3E%3Ccircle cx='100' cy='100' r='58' fill='%23fff7e6' stroke='%23fde3a7' stroke-width='2'/%3E%3Cpath d='M135 76h-12c0-12.7-10.3-23-23-23s-23 10.3-23 23H65c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12h70c6.6 0 12-5.4 12-12V88c0-6.6-5.4-12-12-12zm-35-15c7.2 0 13 5.8 13 13H87c0-7.2 5.8-13 13-13zm35 91H65V88h70v64z' fill='%23f59e0b'/%3E%3C/svg%3E";
 
     let activeRef = null;
@@ -521,14 +539,13 @@
     let allOrdersList = [];
     let activePhoneString = "";
 
-    // Live Product Cache (Allows finding real product images even if order didn't directly store the image URL!)
+    // Live Product Cache for Instant Image Resolution
     let productsMapById = {};
     let productsMapByName = {};
 
     function extractImageFromObject(obj) {
         if (!obj) return null;
 
-        // 1. Direct String Properties
         const candidates = [
             obj.image,
             obj.productImage,
@@ -549,7 +566,6 @@
             }
         }
 
-        // 2. Images Array (e.g. images: ["url1", "url2"])
         if (Array.isArray(obj.images) && obj.images.length > 0) {
             for (const item of obj.images) {
                 if (typeof item === 'string' && item.trim().length > 5 && !item.includes('placeholder.com')) {
@@ -563,7 +579,6 @@
             }
         }
 
-        // 3. Nested Product object
         if (obj.product && typeof obj.product === 'object') {
             const nested = extractImageFromObject(obj.product);
             if (nested) return nested;
@@ -572,7 +587,6 @@
         return null;
     }
 
-    // Preload all products from database to cross-reference images
     function initProductImageCache() {
         onValue(ref(db, 'products'), (snapshot) => {
             if (snapshot.exists()) {
@@ -613,15 +627,12 @@
 
     initProductImageCache();
 
-    // Smart Resolver to get the best working Image URL for any order
     function getOrderImage(order) {
         if (!order) return DEFAULT_FALLBACK_IMG;
 
-        // 1. Direct Order Check
         let img = extractImageFromObject(order);
         if (img) return img;
 
-        // 2. Check Order Items
         if (Array.isArray(order.items) && order.items.length > 0) {
             for (const item of order.items) {
                 img = extractImageFromObject(item);
@@ -635,15 +646,12 @@
             }
         }
 
-        // 3. Check Order Product ID in Products Map
         const pId = order.productId || order.id;
         if (pId && productsMapById[pId]) return productsMapById[pId];
 
-        // 4. Check Order Product Name in Products Map
         const pName = (order.productName || '').toLowerCase().trim();
         if (pName && productsMapByName[pName]) return productsMapByName[pName];
 
-        // 5. Partial String Match
         if (pName) {
             for (const [k, v] of Object.entries(productsMapByName)) {
                 if (pName.includes(k) || k.includes(pName)) {
@@ -705,6 +713,59 @@
             }
         }
         return null;
+    }
+
+    /* ========================================================================= */
+    /*           ADMIN 'TODAY ARRIVING' -> 'OUT FOR DELIVERY' DETECTOR           */
+    /* ========================================================================= */
+    function isSameDateAsToday(dateVal) {
+        if (!dateVal) return false;
+        const now = new Date();
+
+        const str = String(dateVal).toLowerCase().trim();
+        if (str.includes('today')) return true;
+
+        const d = parseDateSafe(dateVal);
+        if (d && !isNaN(d.getTime())) {
+            return d.getDate() === now.getDate() &&
+                   d.getMonth() === now.getMonth() &&
+                   d.getFullYear() === now.getFullYear();
+        }
+        return false;
+    }
+
+    // Checks whether admin set "Today Arriving" or status is Out for Delivery
+    function checkIsOutForDelivery(order) {
+        if (!order) return false;
+        const statusLower = (order.status || '').toLowerCase().replace(/[\s\-_]/g, '');
+        const dateLower = (order.deliveryDate || '').toLowerCase().trim();
+
+        // If order is completed or cancelled, respect that
+        if (statusLower === 'delivered' || statusLower === 'cancelled' || statusLower === 'returned' || statusLower === 'returnrequested') {
+            return false;
+        }
+
+        // 1. Status indicates today arriving / out for delivery
+        if (statusLower.includes('todayarriving') || 
+            statusLower.includes('arrivingtoday') || 
+            statusLower.includes('todaydelivery') || 
+            statusLower.includes('deliverytoday') || 
+            statusLower.includes('outfordelivery') || 
+            statusLower.includes('outforcourier')) {
+            return true;
+        }
+
+        // 2. Delivery Date contains "today arriving" or "today"
+        if (dateLower.includes('today') || dateLower.includes('arriving today') || dateLower.includes('today arriving')) {
+            return true;
+        }
+
+        // 3. Delivery Date calendar value is Today
+        if (isSameDateAsToday(order.deliveryDate)) {
+            return true;
+        }
+
+        return false;
     }
 
     const showAlert = (title, text, icon, showConfirm = true) => {
@@ -875,9 +936,9 @@
         `;
     }
 
-    function getTrackerStep(checkStatus) {
+    function getTrackerStep(checkStatus, isOutToday) {
         if (checkStatus === 'delivered') return 4;
-        if (checkStatus === 'outfordelivery') return 3;
+        if (isOutToday || checkStatus === 'outfordelivery') return 3; // Jumps to Out for Delivery!
         if (checkStatus === 'shipped') return 2;
         if (checkStatus === 'cancelled' || checkStatus === 'rejected') return -1;
         if (checkStatus === 'returnrequested' || checkStatus === 'returned') return 5;
@@ -901,7 +962,8 @@
         orders.forEach(order => {
             const displayStatus = order.status || 'Order Confirmed';
             const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
-            const step = getTrackerStep(checkStatus);
+            const isOutToday = checkIsOutForDelivery(order);
+            const step = getTrackerStep(checkStatus, isOutToday);
 
             let dotClass = 'dot-shipped';
             let statusText = displayStatus;
@@ -909,6 +971,9 @@
             if (checkStatus === 'delivered') {
                 dotClass = 'dot-delivered';
                 statusText = order.deliveryDate ? `Delivered on ${order.deliveryDate}` : 'Delivered';
+            } else if (isOutToday) {
+                dotClass = 'dot-out'; // Glowing active green dot
+                statusText = 'Out for Delivery • Arriving Today';
             } else if (checkStatus === 'shipped') {
                 dotClass = 'dot-shipped';
                 statusText = order.deliveryDate ? `Arriving by ${order.deliveryDate}` : 'Shipped • In Transit';
@@ -950,7 +1015,7 @@
                 hasReturnPolicy = isItemReturnable(order);
             }
 
-            // Meesho Step Tracker
+            // Meesho Step Tracker with dynamic Out for Delivery support
             let trackerHtml = '';
             if (step === -1) {
                 trackerHtml = `
@@ -978,7 +1043,7 @@
                         <div class="tracker-line ${step >= 2 ? 'completed' : ''}"></div>
                         <div class="tracker-step ${step >= 2 ? (step === 2 ? 'active' : 'completed') : ''}"><div class="tracker-dot"><i class="fa-solid ${step > 2 ? 'fa-check' : 'fa-truck-fast'}"></i></div><span class="tracker-label">Shipped</span></div>
                         <div class="tracker-line ${step >= 3 ? 'completed' : ''}"></div>
-                        <div class="tracker-step ${step >= 3 ? (step === 3 ? 'active' : 'completed') : ''}"><div class="tracker-dot"><i class="fa-solid ${step > 3 ? 'fa-check' : 'fa-box-open'}"></i></div><span class="tracker-label">Out</span></div>
+                        <div class="tracker-step ${step >= 3 ? (step === 3 ? 'out-active' : 'completed') : ''}"><div class="tracker-dot"><i class="fa-solid ${step > 3 ? 'fa-check' : 'fa-truck-fast'}"></i></div><span class="tracker-label">Out</span></div>
                         <div class="tracker-line ${step >= 4 ? 'completed' : ''}"></div>
                         <div class="tracker-step ${step >= 4 ? 'completed' : ''}"><div class="tracker-dot"><i class="fa-solid fa-house-chimney"></i></div><span class="tracker-label">Delivered</span></div>
                     </div>
@@ -1007,6 +1072,14 @@
                             <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
                         </div>`;
                 }
+            } else if (isOutToday) {
+                actionStripHtml = `
+                    <div class="meesho-action-strip">
+                        <span style="font-size:0.74rem; font-weight:800; color:#16a34a; display:flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-truck-fast"></i> Out for Delivery Today
+                        </span>
+                        <div class="view-details-tag">Track Order <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
+                    </div>`;
             } else if (checkStatus === 'pending' || checkStatus === 'orderconfirmed' || checkStatus === 'confirmed') {
                 actionStripHtml = `
                     <div class="meesho-action-strip">
@@ -1029,7 +1102,7 @@
                     <div class="meesho-card-header">
                         <div class="meesho-status-wrap">
                             <span class="status-dot-indicator ${dotClass}"></span>
-                            <span class="meesho-status-title">${escapeHtml(statusText)}</span>
+                            <span class="meesho-status-title" style="${isOutToday ? 'color:#16a34a;' : ''}">${escapeHtml(statusText)}</span>
                         </div>
                         <span class="meesho-order-id">#${escapeHtml(order.id)}</span>
                     </div>
@@ -1087,6 +1160,7 @@
 
         const rawStatus = order.status || 'Order Confirmed';
         const checkStatus = rawStatus.toLowerCase().replace(/\s+/g, '').trim();
+        const isOutToday = checkIsOutForDelivery(order);
         const isCOD = (order.paymentMethod === 'COD' || order.paymentStatus === 'COD');
         const isPaid = (order.paymentStatus === 'Paid' || order.paymentStatus === 'Success') && !isCOD;
         
@@ -1143,6 +1217,8 @@
         }
 
         const paymentModeText = isCOD ? 'Cash on Delivery (COD)' : (isPaid ? 'Online Paid (Secure)' : 'Pending');
+        const modalStatusDisplay = isOutToday ? 'Out for Delivery (Arriving Today)' : rawStatus;
+        const modalDeliveryDate = isOutToday ? 'Arriving Today' : (order.deliveryDate || 'Will update shortly');
 
         Swal.fire({
             title: `Order Details`,
@@ -1154,8 +1230,8 @@
                     ${itemsListHtml}
 
                     <div class="modal-section-title">Delivery Status</div>
-                    <p><strong>Current Status:</strong> <span style="font-weight:800; color:var(--accent-dark);">${escapeHtml(rawStatus)}</span></p>
-                    <p><strong>Expected Delivery:</strong> <span style="font-weight:700; color:var(--text-main);">${escapeHtml(order.deliveryDate || 'Will update shortly')}</span></p>
+                    <p><strong>Current Status:</strong> <span style="font-weight:800; color:${isOutToday ? '#16a34a' : 'var(--accent-dark)'};">${escapeHtml(modalStatusDisplay)}</span></p>
+                    <p><strong>Expected Delivery:</strong> <span style="font-weight:700; color:${isOutToday ? '#16a34a' : 'var(--text-main)'};">${escapeHtml(modalDeliveryDate)}</span></p>
                     <p><strong>Order Placed Date:</strong> <span style="font-weight:600; color:var(--text-main);">${escapeHtml(order.date || 'N/A')}</span></p>
 
                     <div class="modal-section-title">Delivery Address</div>
