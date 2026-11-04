@@ -144,6 +144,15 @@
             60% { transform: scale(1.1); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
         }
+
+        .addr-card {
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .addr-card.selected {
+            border-color: #f59e0b !important;
+            background-color: #fffbeb !important;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.12);
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen pb-12">
@@ -200,6 +209,7 @@
 
     <main class="max-w-2xl mx-auto px-4 pt-4 space-y-4">
 
+        <!-- Trust Badges -->
         <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-center justify-around text-center text-xs font-semibold text-amber-900">
             <div class="flex items-center gap-1.5"><i class="fa-solid fa-lock text-amber-500"></i><span>100% Secure</span></div>
             <div class="h-4 w-[1px] bg-amber-200"></div>
@@ -208,6 +218,7 @@
             <div class="flex items-center gap-1.5"><i class="fa-solid fa-rotate-left text-amber-500"></i><span>Easy Returns</span></div>
         </div>
 
+        <!-- Order Summary -->
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
             <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <i class="fa-solid fa-cart-shopping text-amber-500"></i> Order Summary
@@ -215,72 +226,116 @@
             <div id="productPreview"></div>
         </div>
 
+        <!-- ========================================================================= -->
+        <!--              MEESHO STYLE DELIVERY ADDRESS SECTION                        -->
+        <!-- ========================================================================= -->
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+            
+            <!-- Section Header -->
             <div class="flex items-center justify-between border-b border-slate-100 pb-2">
                 <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                     <i class="fa-solid fa-location-dot text-amber-500"></i> Delivery Address
                 </h2>
-                <button type="button" onclick="getCurrentLocation()" class="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1.5 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-100 transition-colors">
-                    <i class="fa-solid fa-location-crosshairs"></i>
-                    <span id="locBtnText">Use Current Location</span>
+                <!-- "+ Add New Address" Button (Visible when saved address list is shown) -->
+                <button type="button" id="headerAddNewAddrBtn" onclick="openNewAddressForm()" class="hidden text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1.5 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200 transition-colors">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>+ Add New</span>
                 </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label>
-                    <input type="text" id="custName" placeholder="Enter your full name" class="input-style">
-                    <p id="custNameHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1"><i class="fa-solid fa-circle-check text-emerald-500"></i> Auto-filled from your account</p>
+            <!-- 1. SAVED ADDRESSES LIST VIEW (Meesho Style) -->
+            <div id="savedAddressesListView" class="space-y-3">
+                <div id="addressCardsList" class="space-y-2.5">
+                    <!-- Address cards will be rendered dynamically here -->
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Mobile Number *</label>
-                    <input type="tel" id="custPhone" placeholder="10-digit mobile number" maxlength="10" class="input-style">
-                    <p id="custPhoneHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1"><i class="fa-solid fa-circle-check text-emerald-500"></i> Auto-filled from your account</p>
-                </div>
+
+                <!-- Bottom "+ Add New Address" Card Button -->
+                <button type="button" onclick="openNewAddressForm()" class="w-full py-3 px-4 rounded-xl border-2 border-dashed border-amber-300 bg-amber-50/50 hover:bg-amber-100/70 text-amber-800 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer">
+                    <i class="fa-solid fa-plus-circle text-amber-600 text-sm"></i>
+                    <span>+ Add New Delivery Address</span>
+                </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">House / Flat / Building *</label>
-                    <input type="text" id="house" placeholder="House No, Building Name" class="input-style">
+            <!-- 2. ADD / EDIT ADDRESS FORM (Shown when no address exists or when "+ Add" is clicked) -->
+            <div id="addressFormView" class="hidden space-y-3 pt-1">
+                <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <span id="formModeTitle" class="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-house-chimney text-amber-500"></i> Add New Address
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="getCurrentLocation()" class="text-[11px] font-bold text-amber-700 bg-white px-2.5 py-1 rounded-lg border border-amber-200 flex items-center gap-1 shadow-xs">
+                            <i class="fa-solid fa-location-crosshairs text-amber-500"></i>
+                            <span id="locBtnText">Locate</span>
+                        </button>
+                        <button type="button" id="cancelFormBtn" onclick="cancelAddressForm()" class="hidden text-[11px] font-bold text-slate-600 bg-white px-2.5 py-1 rounded-lg border border-slate-300">
+                            Cancel
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Street / Area / Locality</label>
-                    <input type="text" id="area" placeholder="Area, Landmark" class="input-style">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label>
+                        <input type="text" id="custName" placeholder="Enter your full name" class="input-style">
+                        <p id="custNameHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1"><i class="fa-solid fa-circle-check text-emerald-500"></i> Auto-filled from account</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Mobile Number *</label>
+                        <input type="tel" id="custPhone" placeholder="10-digit mobile number" maxlength="10" class="input-style">
+                        <p id="custPhoneHint" class="hidden text-[10px] font-semibold text-amber-600 mt-1"><i class="fa-solid fa-circle-check text-emerald-500"></i> Auto-filled from account</p>
+                    </div>
                 </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">House / Flat / Building *</label>
+                        <input type="text" id="house" placeholder="House No, Building Name" class="input-style">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Street / Area / Locality</label>
+                        <input type="text" id="area" placeholder="Area, Landmark" class="input-style">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">City / Town *</label>
+                        <input type="text" id="city" placeholder="City" class="input-style">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">State *</label>
+                        <select id="state" class="input-style">
+                            <option value="">Select State</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Pincode *</label>
+                        <input type="text" id="pincode" placeholder="6-digit Pincode" maxlength="6" class="input-style">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Country</label>
+                    <input type="text" id="country" value="India" readonly class="input-style bg-slate-100 text-slate-500 cursor-not-allowed">
+                </div>
+
+                <button type="button" onclick="saveAddressFromForm()" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-black font-extrabold py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-amber-500/20">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span id="saveAddrBtnText">Save & Deliver to this Address</span>
+                </button>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">City / Town *</label>
-                    <input type="text" id="city" placeholder="City" class="input-style">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">State *</label>
-                    <select id="state" class="input-style">
-                        <option value="">Select State</option>
-                        <option value="Kerala">Kerala</option>
-                        <option value="Tamil Nadu">Tamil Nadu</option>
-                        <option value="Karnataka">Karnataka</option>
-                        <option value="Andhra Pradesh">Andhra Pradesh</option>
-                        <option value="Telangana">Telangana</option>
-                        <option value="Maharashtra">Maharashtra</option>
-                        <option value="Delhi">Delhi</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div class="col-span-2 md:col-span-1">
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Pincode *</label>
-                    <input type="text" id="pincode" placeholder="6-digit Pincode" maxlength="6" class="input-style">
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-600 mb-1">Country</label>
-                <input type="text" id="country" value="India" readonly class="input-style bg-slate-100 text-slate-500 cursor-not-allowed">
-            </div>
         </div>
 
+        <!-- Payment Method -->
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
             <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <i class="fa-solid fa-credit-card text-amber-500"></i> Payment Method
@@ -304,7 +359,8 @@
             <p>No advance payment needed — <b>your money stays with you.</b> Check the product at your doorstep, then pay cash only if you're satisfied.</p>
         </div>
 
-        <button onclick="placeOrder()" class="group w-full bg-slate-950 hover:bg-amber-500 active:scale-[0.98] text-white hover:text-black font-bold py-4 rounded-2xl shadow-lg shadow-black/20 transition-all flex items-center justify-center gap-2 text-base mt-2">
+        <!-- Main Place Order Button -->
+        <button onclick="placeOrder()" class="group w-full bg-slate-950 hover:bg-amber-500 active:scale-[0.98] text-white hover:text-black font-bold py-4 rounded-2xl shadow-lg shadow-black/20 transition-all flex items-center justify-center gap-2 text-base mt-2 cursor-pointer">
             <i class="fa-solid fa-bag-shopping text-amber-500 group-hover:text-black"></i>
             <span>Confirm Order (COD)</span>
         </button>
@@ -379,13 +435,293 @@
             });
         };
 
+        const cleanPhone = (val) => val ? val.toString().replace(/\D/g, '').slice(-10) : "";
+
+        /* ========================================================================= */
+        /*              MEESHO-STYLE MULTI-ADDRESS MANAGEMENT SYSTEM                 */
+        /* ========================================================================= */
+        let savedAddresses = [];
+        let selectedAddressId = null;
+        let editingAddressId = null;
+
+        // Load saved addresses from localStorage
+        function loadSavedAddressesFromStorage() {
+            try {
+                const raw = localStorage.getItem('cartPrime_savedAddresses');
+                savedAddresses = raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                savedAddresses = [];
+            }
+
+            // If empty, migrate legacy single address if one existed
+            if (savedAddresses.length === 0) {
+                const legacyAddr = localStorage.getItem('cartPrime_SavedAddress');
+                const legacyName = localStorage.getItem('userName') || localStorage.getItem('cartPrime_Name') || '';
+                const legacyPhone = localStorage.getItem('userPhone') || localStorage.getItem('cartPrime_Phone') || '';
+                if (legacyAddr) {
+                    try {
+                        const parsed = JSON.parse(legacyAddr);
+                        if (parsed.house && parsed.city) {
+                            const newAddr = {
+                                id: 'addr_' + Date.now(),
+                                name: legacyName,
+                                phone: cleanPhone(legacyPhone),
+                                house: parsed.house || '',
+                                area: parsed.area || '',
+                                city: parsed.city || '',
+                                state: parsed.state || '',
+                                pin: parsed.pin || parsed.pincode || '',
+                                isDefault: true
+                            };
+                            savedAddresses.push(newAddr);
+                            saveAddressesToLocalStorage();
+                        }
+                    } catch(e) {}
+                }
+            }
+
+            selectedAddressId = localStorage.getItem('cartPrime_selectedAddressId');
+            if (!selectedAddressId && savedAddresses.length > 0) {
+                selectedAddressId = savedAddresses[0].id;
+            }
+        }
+
+        function saveAddressesToLocalStorage() {
+            localStorage.setItem('cartPrime_savedAddresses', JSON.stringify(savedAddresses));
+            if (selectedAddressId) {
+                localStorage.setItem('cartPrime_selectedAddressId', selectedAddressId);
+            }
+        }
+
+        function syncAddressesToFirebase() {
+            const phone = cleanPhone(localStorage.getItem('userPhone') || localStorage.getItem('cartPrime_Phone'));
+            if (phone && phone.length === 10) {
+                try {
+                    set(ref(db, `users/${phone}/savedAddresses`), savedAddresses);
+                } catch(e) {}
+            }
+        }
+
+        // Render Address Cards List (Meesho Style)
+        function renderAddressCards() {
+            const cardsContainer = document.getElementById('addressCardsList');
+            const listView = document.getElementById('savedAddressesListView');
+            const formView = document.getElementById('addressFormView');
+            const headerAddBtn = document.getElementById('headerAddNewAddrBtn');
+
+            if (!cardsContainer) return;
+
+            if (savedAddresses.length === 0) {
+                listView.classList.add('hidden');
+                formView.classList.remove('hidden');
+                if (headerAddBtn) headerAddBtn.classList.add('hidden');
+                document.getElementById('cancelFormBtn').classList.add('hidden');
+                document.getElementById('formModeTitle').innerHTML = '<i class="fa-solid fa-house-chimney text-amber-500 mr-1.5"></i> Add Delivery Address';
+                return;
+            }
+
+            // Show list view and header "+ Add" button
+            listView.classList.remove('hidden');
+            formView.classList.add('hidden');
+            if (headerAddBtn) headerAddBtn.classList.remove('hidden');
+
+            // Ensure a valid address is selected
+            if (!selectedAddressId || !savedAddresses.some(a => a.id === selectedAddressId)) {
+                selectedAddressId = savedAddresses[0].id;
+                localStorage.setItem('cartPrime_selectedAddressId', selectedAddressId);
+            }
+
+            let html = '';
+            savedAddresses.forEach((addr) => {
+                const isSelected = addr.id === selectedAddressId;
+                html += `
+                <div class="addr-card ${isSelected ? 'selected' : ''} p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 relative cursor-pointer" onclick="selectAddress('${addr.id}')">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <input type="radio" name="selectedAddressRadio" ${isSelected ? 'checked' : ''} class="w-4 h-4 text-amber-500 accent-amber-500 cursor-pointer">
+                            <span class="font-extrabold text-sm text-slate-900">${addr.name}</span>
+                            <span class="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">${addr.phone}</span>
+                        </div>
+                        ${isSelected ? '<span class="bg-amber-500 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs"><i class="fa-solid fa-check"></i> Selected</span>' : ''}
+                    </div>
+
+                    <p class="text-xs text-slate-600 mt-2 pl-6.5 leading-relaxed">
+                        ${addr.house}${addr.area ? ', ' + addr.area : ''}, ${addr.city}, ${addr.state} - <span class="font-bold text-slate-800">${addr.pin}</span>
+                    </p>
+
+                    <div class="flex items-center justify-end gap-3 mt-2.5 pt-2 border-t border-slate-100">
+                        <button type="button" onclick="event.stopPropagation(); editAddress('${addr.id}')" class="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 p-1">
+                            <i class="fa-solid fa-pen-to-square text-[11px]"></i> Edit
+                        </button>
+                        <button type="button" onclick="event.stopPropagation(); deleteAddress('${addr.id}')" class="text-xs font-bold text-red-500 hover:text-red-700 flex items-center gap-1 p-1">
+                            <i class="fa-solid fa-trash-can text-[11px]"></i> Remove
+                        </button>
+                    </div>
+                </div>
+                `;
+            });
+
+            cardsContainer.innerHTML = html;
+        }
+
+        window.selectAddress = (id) => {
+            selectedAddressId = id;
+            localStorage.setItem('cartPrime_selectedAddressId', id);
+            renderAddressCards();
+        };
+
+        window.openNewAddressForm = () => {
+            editingAddressId = null;
+            document.getElementById('formModeTitle').innerHTML = '<i class="fa-solid fa-house-chimney text-amber-500 mr-1.5"></i> Add New Address';
+            document.getElementById('saveAddrBtnText').textContent = 'Save & Deliver to this Address';
+
+            // Auto-fill user name and phone from account
+            const defaultName = localStorage.getItem('userName') || localStorage.getItem('cartPrime_Name') || '';
+            const defaultPhone = cleanPhone(localStorage.getItem('userPhone') || localStorage.getItem('cartPrime_Phone'));
+            
+            document.getElementById('custName').value = defaultName;
+            document.getElementById('custPhone').value = defaultPhone;
+            document.getElementById('house').value = '';
+            document.getElementById('area').value = '';
+            document.getElementById('city').value = '';
+            document.getElementById('state').value = '';
+            document.getElementById('pincode').value = '';
+
+            const nameHint = document.getElementById('custNameHint');
+            const phoneHint = document.getElementById('custPhoneHint');
+            if (nameHint) nameHint.classList.toggle('hidden', !defaultName);
+            if (phoneHint) phoneHint.classList.toggle('hidden', !defaultPhone);
+
+            document.getElementById('savedAddressesListView').classList.add('hidden');
+            document.getElementById('addressFormView').classList.remove('hidden');
+            document.getElementById('cancelFormBtn').classList.toggle('hidden', savedAddresses.length === 0);
+            if (document.getElementById('headerAddNewAddrBtn')) {
+                document.getElementById('headerAddNewAddrBtn').classList.add('hidden');
+            }
+        };
+
+        window.editAddress = (id) => {
+            const addr = savedAddresses.find(a => a.id === id);
+            if (!addr) return;
+
+            editingAddressId = id;
+            document.getElementById('formModeTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-amber-500 mr-1.5"></i> Edit Address';
+            document.getElementById('saveAddrBtnText').textContent = 'Update Address';
+
+            document.getElementById('custName').value = addr.name || '';
+            document.getElementById('custPhone').value = addr.phone || '';
+            document.getElementById('house').value = addr.house || '';
+            document.getElementById('area').value = addr.area || '';
+            document.getElementById('city').value = addr.city || '';
+            document.getElementById('state').value = addr.state || '';
+            document.getElementById('pincode').value = addr.pin || '';
+
+            document.getElementById('custNameHint').classList.add('hidden');
+            document.getElementById('custPhoneHint').classList.add('hidden');
+
+            document.getElementById('savedAddressesListView').classList.add('hidden');
+            document.getElementById('addressFormView').classList.remove('hidden');
+            document.getElementById('cancelFormBtn').classList.remove('hidden');
+            if (document.getElementById('headerAddNewAddrBtn')) {
+                document.getElementById('headerAddNewAddrBtn').classList.add('hidden');
+            }
+        };
+
+        window.cancelAddressForm = () => {
+            if (savedAddresses.length > 0) {
+                document.getElementById('addressFormView').classList.add('hidden');
+                document.getElementById('savedAddressesListView').classList.remove('hidden');
+                if (document.getElementById('headerAddNewAddrBtn')) {
+                    document.getElementById('headerAddNewAddrBtn').classList.remove('hidden');
+                }
+            }
+        };
+
+        window.deleteAddress = (id) => {
+            Swal.fire({
+                title: 'Remove Address?',
+                text: 'Are you sure you want to remove this delivery address?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Remove',
+                cancelButtonText: 'Cancel',
+                customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    savedAddresses = savedAddresses.filter(a => a.id !== id);
+                    if (selectedAddressId === id) {
+                        selectedAddressId = savedAddresses.length > 0 ? savedAddresses[0].id : null;
+                    }
+                    saveAddressesToLocalStorage();
+                    syncAddressesToFirebase();
+                    renderAddressCards();
+                }
+            });
+        };
+
+        window.saveAddressFromForm = () => {
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const house = document.getElementById('house').value.trim();
+            const area = document.getElementById('area').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value.trim();
+            const pin = document.getElementById('pincode').value.trim();
+
+            if (!name || !phone || !house || !city || !state || !pin) {
+                showAlert('Required Fields', 'Please fill all required address fields.', 'warning');
+                return false;
+            }
+            if (cleanPhone(phone).length !== 10) {
+                showAlert('Invalid Mobile', 'Please enter a valid 10-digit mobile number.', 'warning');
+                return false;
+            }
+
+            if (editingAddressId) {
+                const idx = savedAddresses.findIndex(a => a.id === editingAddressId);
+                if (idx !== -1) {
+                    savedAddresses[idx] = {
+                        ...savedAddresses[idx],
+                        name, phone: cleanPhone(phone), house, area, city, state, pin
+                    };
+                    selectedAddressId = editingAddressId;
+                }
+            } else {
+                const newId = 'addr_' + Date.now();
+                savedAddresses.push({
+                    id: newId,
+                    name,
+                    phone: cleanPhone(phone),
+                    house,
+                    area,
+                    city,
+                    state,
+                    pin,
+                    isDefault: savedAddresses.length === 0
+                });
+                selectedAddressId = newId;
+            }
+
+            // Save details to localStorage
+            localStorage.setItem('userName', name);
+            localStorage.setItem('userPhone', cleanPhone(phone));
+            localStorage.setItem('cartPrime_Name', name);
+            localStorage.setItem('cartPrime_Phone', cleanPhone(phone));
+
+            saveAddressesToLocalStorage();
+            syncAddressesToFirebase();
+            renderAddressCards();
+            return true;
+        };
+
+        // Geolocation reverse geocoding
         window.getCurrentLocation = function() {
             const locBtnText = document.getElementById('locBtnText');
             if (!navigator.geolocation) {
                 showAlert('Not Supported', 'Geolocation is not supported by your browser.', 'error');
                 return;
             }
-            locBtnText.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Fetching...`;
+            locBtnText.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i>`;
 
             const setVal = (id, val) => {
                 const el = document.getElementById(id);
@@ -406,7 +742,7 @@
                     const lon = position.coords.longitude;
                     const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
                     const data = await res.json();
-                    locBtnText.textContent = "Use Current Location";
+                    locBtnText.textContent = "Locate";
                     if (data && data.address) {
                         setVal('pincode', data.address.postcode || "");
                         setVal('city', data.address.city || data.address.town || data.address.village || "");
@@ -415,158 +751,50 @@
                         fillState(data.address.state);
                     }
                 } catch (e) {
-                    locBtnText.textContent = "Use Current Location";
+                    locBtnText.textContent = "Locate";
                     showAlert('Error', 'Unable to fetch location details.', 'error');
                 }
             }, () => {
-                locBtnText.textContent = "Use Current Location";
+                locBtnText.textContent = "Locate";
                 showAlert('Error', 'Location permission denied.', 'error');
             }, { timeout: 10000 });
         };
 
-        /* ========================================================================= */
-        /*               AUTOMATIC NAME & PHONE AUTO-FILL SYSTEM                    */
-        /* ========================================================================= */
-        const cleanPhone = (val) => val ? val.toString().replace(/\D/g, '').slice(-10) : "";
+        // Initial address loading
+        loadSavedAddressesFromStorage();
+        renderAddressCards();
 
-        const applyAutoFilledDetails = (name, phone) => {
-            const nameInput = document.getElementById('custName');
-            const phoneInput = document.getElementById('custPhone');
-            const nameHint = document.getElementById('custNameHint');
-            const phoneHint = document.getElementById('custPhoneHint');
-
-            if (name && nameInput && !nameInput.value) {
-                nameInput.value = name;
-                if (nameHint) nameHint.classList.remove('hidden');
-            }
-            if (phone && phoneInput && !phoneInput.value) {
-                const cleaned = cleanPhone(phone);
-                if (cleaned.length === 10) {
-                    phoneInput.value = cleaned;
-                    if (phoneHint) phoneHint.classList.remove('hidden');
+        // Extra database synchronization
+        const syncAddressesFromFirebase = async (phone) => {
+            if (!phone) return;
+            try {
+                const snap = await get(ref(db, `users/${phone}/savedAddresses`));
+                if (snap.exists()) {
+                    const dbAddresses = snap.val();
+                    if (Array.isArray(dbAddresses) && dbAddresses.length > 0) {
+                        savedAddresses = dbAddresses;
+                        saveAddressesToLocalStorage();
+                        renderAddressCards();
+                    }
                 }
-            }
-        };
-
-        const autoFillSavedAddress = (addr) => {
-            if (!addr) return;
-            const setIfEmpty = (id, val) => {
-                const el = document.getElementById(id);
-                if (el && val && !el.value) el.value = val;
-            };
-            setIfEmpty('house', addr.house);
-            setIfEmpty('area', addr.area);
-            setIfEmpty('city', addr.city);
-            if (addr.state) {
-                const stateSelect = document.getElementById('state');
-                if (stateSelect && !stateSelect.value) {
-                    stateSelect.value = addr.state;
-                }
-            }
-            setIfEmpty('pincode', addr.pin || addr.pincode);
-        };
-
-        // 1. Instant local storage retrieval (runs immediately upon page load)
-        const autoFillFromLocalStorage = () => {
-            const savedName = localStorage.getItem('userName') || 
-                              localStorage.getItem('cartPrime_Name') || 
-                              localStorage.getItem('cartPrime_LastOrderName') || '';
-
-            const savedPhone = localStorage.getItem('userPhone') || 
-                               localStorage.getItem('cartPrime_Phone') || 
-                               localStorage.getItem('cartPrime_LastOrderPhone') || '';
-
-            applyAutoFilledDetails(savedName, savedPhone);
-
-            const savedAddrJson = localStorage.getItem('cartPrime_SavedAddress');
-            if (savedAddrJson) {
-                try {
-                    const addr = JSON.parse(savedAddrJson);
-                    autoFillSavedAddress(addr);
-                } catch (e) {}
-            }
-        };
-
-        autoFillFromLocalStorage();
-
-        // 2. Fetch from Firebase database for extra reliability
-        const fetchAndFillFromDatabase = async (phone, uid) => {
-            if (!phone && !uid) return;
-
-            // Fetch from users/${phone}
-            if (phone) {
-                try {
-                    const userSnap = await get(ref(db, `users/${phone}`));
-                    if (userSnap.exists()) {
-                        const uData = userSnap.val() || {};
-                        applyAutoFilledDetails(uData.name, uData.phone || phone);
-                        if (uData.address) autoFillSavedAddress(uData.address);
-                    }
-                } catch (e) {}
-
-                // Check recent order under orders/${phone} to auto-complete address if empty
-                try {
-                    const orderSnap = await get(ref(db, `orders/${phone}`));
-                    if (orderSnap.exists()) {
-                        const ordersObj = orderSnap.val();
-                        const orderKeys = Object.keys(ordersObj);
-                        if (orderKeys.length > 0) {
-                            const lastOrder = ordersObj[orderKeys[orderKeys.length - 1]];
-                            if (lastOrder) {
-                                applyAutoFilledDetails(lastOrder.customerName || lastOrder.name, phone);
-                                if (lastOrder.addressDetails) {
-                                    autoFillSavedAddress(lastOrder.addressDetails);
-                                }
-                            }
-                        }
-                    }
-                } catch (e) {}
-            }
-
-            // Fetch from users/${uid}
-            if (uid) {
-                try {
-                    const uidSnap = await get(ref(db, `users/${uid}`));
-                    if (uidSnap.exists()) {
-                        const uData = uidSnap.val() || {};
-                        applyAutoFilledDetails(uData.name, uData.phone);
-                        if (uData.address) autoFillSavedAddress(uData.address);
-                    }
-                } catch (e) {}
-            }
+            } catch(e) {}
         };
 
         const activePhone = cleanPhone(localStorage.getItem('userPhone') || localStorage.getItem('cartPrime_Phone'));
         if (activePhone) {
-            fetchAndFillFromDatabase(activePhone, null);
+            syncAddressesFromFirebase(activePhone);
         }
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserId = user.uid;
                 currentUserEmail = user.email;
-                const phone = cleanPhone(user.phoneNumber) || cleanPhone(localStorage.getItem('userPhone'));
-                applyAutoFilledDetails(user.displayName, phone);
-                fetchAndFillFromDatabase(phone, user.uid);
+                const p = cleanPhone(user.phoneNumber) || activePhone;
+                if (p) syncAddressesFromFirebase(p);
             }
         });
 
-        // Hide auto-fill hint badge if user manually edits
-        const nameInputEl = document.getElementById('custName');
-        const phoneInputEl = document.getElementById('custPhone');
-        if (nameInputEl) {
-            nameInputEl.addEventListener('input', () => {
-                const hint = document.getElementById('custNameHint');
-                if (hint) hint.classList.add('hidden');
-            });
-        }
-        if (phoneInputEl) {
-            phoneInputEl.addEventListener('input', () => {
-                const hint = document.getElementById('custPhoneHint');
-                if (hint) hint.classList.add('hidden');
-            });
-        }
-
+        // Quantity changer
         window.changeQuantity = (index, delta) => {
             if (!orderInfo) return;
             if (orderInfo.orderType === "Cart" && Array.isArray(orderInfo.items)) {
@@ -648,31 +876,39 @@
         renderOrderPreview();
         document.getElementById('pageLoader').remove();
 
+        // Place Order Handler
         window.placeOrder = () => {
-            const fields = {
-                name: document.getElementById('custName').value.trim(),
-                phone: document.getElementById('custPhone').value.trim(),
-                house: document.getElementById('house').value.trim(),
-                area: document.getElementById('area').value.trim(),
-                city: document.getElementById('city').value.trim(),
-                state: document.getElementById('state').value.trim(),
-                pin: document.getElementById('pincode').value.trim()
+            const formView = document.getElementById('addressFormView');
+            let fields = null;
+
+            // 1. If form view is open, save & validate from form
+            if (!formView.classList.contains('hidden')) {
+                const saved = window.saveAddressFromForm();
+                if (!saved) return;
+            }
+
+            // 2. Retrieve selected address from savedAddresses
+            const selectedAddr = savedAddresses.find(a => a.id === selectedAddressId);
+            if (!selectedAddr) {
+                return showAlert('Address Required', 'Please add and select a delivery address to proceed.', 'warning');
+            }
+
+            fields = {
+                name: selectedAddr.name.trim(),
+                phone: selectedAddr.phone.trim(),
+                house: selectedAddr.house.trim(),
+                area: (selectedAddr.area || '').trim(),
+                city: selectedAddr.city.trim(),
+                state: selectedAddr.state.trim(),
+                pin: selectedAddr.pin.trim()
             };
-
-            if(!fields.name || !fields.phone || !fields.house || !fields.city || !fields.state || !fields.pin) {
-                return showAlert('Address Missing', 'Please fill all required delivery address fields.', 'warning');
-            }
-
-            if (fields.phone.length !== 10) {
-                return showAlert('Invalid Phone', 'Please enter a valid 10-digit phone number.', 'warning');
-            }
 
             Swal.fire({
                 title: 'Confirm Order?', text: "Confirm your order with Cash on Delivery?", icon: 'question',
                 showCancelButton: true, confirmButtonText: 'Yes, Confirm', cancelButtonText: 'Cancel',
                 customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm', cancelButton: 'swal-custom-cancel' }
             }).then(async (res) => {
-                if(res.isConfirmed) {
+                if (res.isConfirmed) {
                     document.getElementById('successAnimationOverlay').classList.remove('hidden');
 
                     const orderId = Date.now(); 
@@ -699,14 +935,8 @@
                         customerName: fields.name, 
                         customerPhone: fields.phone, 
                         phone: fields.phone, 
-                        address: `${fields.house}, ${fields.area}, ${fields.city}, ${fields.state}, India - ${fields.pin}`,
-                        addressDetails: {
-                            house: fields.house,
-                            area: fields.area,
-                            city: fields.city,
-                            state: fields.state,
-                            pin: fields.pin
-                        },
+                        address: `${fields.house}, ${fields.area ? fields.area + ', ' : ''}${fields.city}, ${fields.state}, India - ${fields.pin}`,
+                        addressDetails: fields,
                         transactionId: 'COD', 
                         date: now.toISOString().split('T')[0], 
                         createdAt: now.toISOString(),
@@ -740,33 +970,20 @@
                         finalOrder.price = (unitPrice * q).toLocaleString('en-IN');
                     }
 
-                    // Save customer details into localStorage for all future checkouts
+                    // Save customer details into localStorage
                     localStorage.setItem('userName', fields.name);
                     localStorage.setItem('userPhone', fields.phone);
                     localStorage.setItem('cartPrime_Name', fields.name);
                     localStorage.setItem('cartPrime_Phone', fields.phone);
                     localStorage.setItem('cartPrime_LastOrderName', fields.name);
                     localStorage.setItem('cartPrime_LastOrderPhone', fields.phone);
-                    localStorage.setItem('cartPrime_SavedAddress', JSON.stringify({
-                        house: fields.house,
-                        area: fields.area,
-                        city: fields.city,
-                        state: fields.state,
-                        pin: fields.pin
-                    }));
 
-                    // Update address in Firebase profile under users/${fields.phone}
+                    // Update user profile in Firebase under users/${fields.phone}
                     try {
                         update(ref(db, `users/${fields.phone}`), {
                             name: fields.name,
                             phone: fields.phone,
-                            address: {
-                                house: fields.house,
-                                area: fields.area,
-                                city: fields.city,
-                                state: fields.state,
-                                pin: fields.pin
-                            },
+                            savedAddresses: savedAddresses,
                             lastOrderAt: Date.now()
                         });
                     } catch(e) {}
@@ -780,7 +997,7 @@
                     }
 
                     saveOrderPromise.then(() => {
-                        if(orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
+                        if (orderInfo.orderType === "Cart" && currentUserId) remove(ref(db, `cart/${currentUserId}`));
                         localStorage.removeItem('pendingOrder');
 
                         playSuccessSound();
