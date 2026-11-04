@@ -53,7 +53,7 @@
             padding-bottom: 60px;
         }
 
-        /* Sticky Top Navbar */
+        /* Top Sticky Navbar */
         .top-navbar {
             position: sticky;
             top: 0;
@@ -136,8 +136,8 @@
             padding: 16px;
         }
 
-        /* Auto-detected Logged-In User Strip */
-        .user-login-strip {
+        /* Logged In User Strip */
+        .user-account-strip {
             background: var(--white);
             border: 1.5px solid var(--border-color);
             border-radius: 14px;
@@ -150,7 +150,7 @@
             gap: 12px;
         }
 
-        .user-login-left {
+        .user-account-left {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -296,7 +296,7 @@
             color: var(--text-main);
         }
 
-        /* Order Card */
+        /* Meesho Order Card */
         .order-card {
             background: var(--white);
             border-radius: 16px;
@@ -828,11 +828,11 @@
 
     <main class="main-container">
         <!-- Home Page Login Account Detection Strip -->
-        <div class="user-login-strip" id="userLoginStrip">
-            <div class="user-login-left">
+        <div class="user-account-strip">
+            <div class="user-account-left">
                 <div class="user-avatar-pill"><i class="fa-solid fa-user-check"></i></div>
                 <div style="min-width: 0;">
-                    <div class="user-meta-sub">Logged In Mobile</div>
+                    <div class="user-meta-sub">Logged In Account</div>
                     <div class="user-meta-phone" id="userLoginPhoneDisplay">
                         <span>Detecting login...</span>
                     </div>
@@ -886,22 +886,16 @@
         import { getDatabase, ref, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         // ============================================================
-        // ⚠️ CARTPRIME FIREBASE CONFIGURATION
-        // നിങ്ങളുടെ index.html-ൽ ഉള്ള അതേ Firebase credentials ഇവിടെയും പ്രവർത്തിക്കും
+        // 🎯 EXACT FIREBASE CONFIGURATION (From your Realtime Database)
         // ============================================================
-        const defaultFirebaseConfig = {
-            apiKey: "AIzaSyDummyKeyReplaceIfYourProjectUsesCustomAuth",
-            authDomain: "cartprime-app.firebaseapp.com",
-            databaseURL: "https://cartprime-app-default-rtdb.firebaseio.com",
-            projectId: "cartprime-app",
-            storageBucket: "cartprime-app.appspot.com",
-            messagingSenderId: "1029384756",
-            appId: "1:1029384756:web:abcd1234efgh5678"
-        };
+        const FIREBASE_RTDB_URL = "https://cartprime-shopping-default-rtdb.firebaseio.com";
 
-        const firebaseConfig = window.firebaseConfig || 
-                               JSON.parse(localStorage.getItem('cartprime_firebase_config') || 'null') || 
-                               defaultFirebaseConfig;
+        const firebaseConfig = {
+            databaseURL: FIREBASE_RTDB_URL,
+            projectId: "cartprime-shopping",
+            authDomain: "cartprime-shopping.firebaseapp.com",
+            storageBucket: "cartprime-shopping.appspot.com"
+        };
 
         let app, auth, db;
         try {
@@ -918,7 +912,7 @@
         // Guaranteed Inline SVG Fallback
         const DEFAULT_FALLBACK_SVG = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20120%20120%22%20width%3D%22120%22%20height%3D%22120%22%3E%3Crect%20width%3D%22120%22%20height%3D%22120%22%20fill%3D%22%23f1f5f9%22%2F%3E%3Cpath%20d%3D%22M76%2042h-6c0-7.7-6.3-14-14-14s-14%206.3-14%2014h-6c-3.3%200-6%202.7-6%206v32c0%203.3%202.7%206%206%206h40c3.3%200%206-2.7%206-6V48c0-3.3-2.7-6-6-6zm-20-8c4.4%200%208%203.6%208%208h-16c0-4.4%203.6-8%208-8zm20%2046H42V48h40v32z%22%20fill%3D%22%23f59e0b%22%2F%3E%3C%2Fsvg%3E";
 
-        let dbOrdersList = [];
+        let dbAllOrders = [];
         let displayedOrders = [];
         let filteredOrders = [];
         let activeFilter = 'all';
@@ -934,10 +928,10 @@
         }
 
         // ============================================================
-        // 1. AUTO-DETECT HOME PAGE LOGGED-IN NUMBER
+        // 1. AUTO-DETECT HOME PAGE LOGGED IN PHONE
         // ============================================================
         function detectHomePageLoggedInPhone() {
-            // 1. Check direct keys
+            // Direct keys
             const directKeys = [
                 'cartprime_user_phone', 'cartprime_phone', 'user_phone', 'userPhone', 
                 'customerPhone', 'phone', 'userMobile', 'cartprime_mobile', 'user'
@@ -950,7 +944,7 @@
                 }
             }
 
-            // 2. Check JSON objects in localStorage (cartprime_user, user, profile, currentUser)
+            // JSON user objects (cartprime_user, user, profile)
             const objKeys = ['cartprime_user', 'user', 'currentUser', 'authUser', 'profile', 'cartprimeUser'];
             for (const key of objKeys) {
                 try {
@@ -967,7 +961,7 @@
                 } catch(e) {}
             }
 
-            // 3. Check Firebase Auth session cached by index.html in localStorage
+            // Firebase Auth session in localStorage
             for (let i = 0; i < localStorage.length; i++) {
                 const k = localStorage.key(i);
                 if (k && k.startsWith('firebase:authUser:')) {
@@ -1046,7 +1040,9 @@
                    d1.getDate() === d2.getDate();
         }
 
-        // Check if Admin set "Today Arriving" / "Arriving Today" / "Out for Delivery"
+        // ============================================================
+        // 2. OUT FOR DELIVERY (Today Arriving / Today's Delivery Date)
+        // ============================================================
         function checkIsOutForDelivery(order) {
             if (!order) return false;
             const textPool = [
@@ -1073,6 +1069,7 @@
                 return true;
             }
 
+            // If delivery date matches today's date
             if (order.deliveryDate || order.expectedDelivery) {
                 const d = parseDateSafe(order.deliveryDate || order.expectedDelivery);
                 if (d && isSameCalendarDay(d, new Date())) {
@@ -1103,7 +1100,9 @@
             return raw || 'placed';
         }
 
-        // Return Eligibility Check: Automatically HIDES button if period expired
+        // ============================================================
+        // 3. RETURN ELIGIBILITY (Auto-hide if 7 days expired)
+        // ============================================================
         function getReturnEligibility(order) {
             if (!order) return { eligible: false, hasPolicy: false, isExpired: true, daysLeft: 0 };
 
@@ -1158,7 +1157,7 @@
             if (loggedInPhone) {
                 el.innerHTML = `+91 ${loggedInPhone} <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified</span>`;
             } else {
-                el.innerHTML = `<span style="color: var(--accent-dark);">Not Logged In (Click Switch)</span>`;
+                el.innerHTML = `<span style="color: var(--accent-dark);">No Login Detected (Click Switch)</span>`;
             }
         }
 
@@ -1166,10 +1165,10 @@
         window.promptSwitchNumber = function() {
             Swal.fire({
                 title: 'Enter Mobile Number',
-                text: 'Enter the mobile number you logged in with on the Home page:',
+                text: 'Enter the 10-digit mobile number you used for orders:',
                 input: 'tel',
                 inputValue: loggedInPhone || '',
-                inputPlaceholder: '10-digit mobile number',
+                inputPlaceholder: 'e.g. 7356587790',
                 showCancelButton: true,
                 confirmButtonText: 'View Orders',
                 confirmButtonColor: '#0b0b0f',
@@ -1185,18 +1184,123 @@
                     loggedInPhone = normalizePhone(result.value);
                     localStorage.setItem('cartprime_user_phone', loggedInPhone);
                     updateAccountStripUI();
-                    filterAndRenderOrders();
+                    fetchOrders();
                 }
             });
         };
 
-        // Filter Database Orders by Logged In Phone
-        function filterAndRenderOrders() {
+        // ============================================================
+        // 4. EXTRACT ORDERS FROM DATABASE STRUCTURE (orders -> phone -> orderId)
+        // ============================================================
+        function parseOrdersFromDatabase(data) {
+            const orders = [];
+            if (!data || typeof data !== 'object') return orders;
+
+            Object.keys(data).forEach(key => {
+                const val = data[key];
+                if (!val || typeof val !== 'object') return;
+
+                // Check if val is an order directly
+                if (val.customerPhone || val.address || val.createdAt || val.date || val.deliveryDate) {
+                    orders.push({
+                        ...val,
+                        id: val.id || key
+                    });
+                } else {
+                    // val is an object of orders under a phone number (e.g. orders/7356587790/{orderId})
+                    const phoneKey = normalizePhone(key);
+                    Object.keys(val).forEach(orderId => {
+                        const order = val[orderId];
+                        if (order && typeof order === 'object') {
+                            orders.push({
+                                ...order,
+                                id: order.id || orderId,
+                                customerPhone: order.customerPhone || phoneKey
+                            });
+                        }
+                    });
+                }
+            });
+
+            return orders;
+        }
+
+        // ============================================================
+        // 5. FETCH ORDERS FROM FIREBASE (REST + REALTIME)
+        // ============================================================
+        async function fetchOrders() {
+            const loader = document.getElementById('loadingIndicator');
+
+            // 1. Instant REST Fetch (Loads in ~200ms)
+            try {
+                // If phone is available, try direct orders/${phone}.json first
+                let fetchedData = null;
+                if (loggedInPhone) {
+                    const resDirect = await fetch(`${FIREBASE_RTDB_URL}/orders/${loggedInPhone}.json`);
+                    if (resDirect.ok) {
+                        fetchedData = await resDirect.json();
+                        if (fetchedData) {
+                            // Container of orders for this phone
+                            const list = [];
+                            Object.keys(fetchedData).forEach(oId => {
+                                const ord = fetchedData[oId];
+                                if (ord && typeof ord === 'object') {
+                                    list.push({ ...ord, id: ord.id || oId, customerPhone: ord.customerPhone || loggedInPhone });
+                                }
+                            });
+                            if (list.length > 0) {
+                                dbAllOrders = list;
+                                renderMatchingOrders();
+                            }
+                        }
+                    }
+                }
+
+                // If not found or general fetch, fetch full orders.json
+                if (!dbAllOrders.length) {
+                    const resAll = await fetch(`${FIREBASE_RTDB_URL}/orders.json`);
+                    if (resAll.ok) {
+                        const allData = await resAll.json();
+                        if (allData) {
+                            dbAllOrders = parseOrdersFromDatabase(allData);
+                            renderMatchingOrders();
+                        }
+                    }
+                }
+            } catch (err) {
+                console.log("REST fetch note:", err.message);
+            }
+
+            // 2. Realtime Listener via Firebase SDK
+            if (db) {
+                try {
+                    const ordersRef = ref(db, 'orders');
+                    onValue(ordersRef, (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            dbAllOrders = parseOrdersFromDatabase(data);
+                            renderMatchingOrders();
+                        }
+                    }, (e) => {
+                        console.warn("RTDB listener note:", e.message);
+                    });
+                } catch(e) {}
+            }
+
+            // Dismiss Loader
+            setTimeout(() => {
+                if (loader) loader.style.display = 'none';
+                renderMatchingOrders();
+            }, 600);
+        }
+
+        // Filter by Logged In Phone & Render
+        function renderMatchingOrders() {
             const loader = document.getElementById('loadingIndicator');
             if (loader) loader.style.display = 'none';
 
-            if (loggedInPhone && dbOrdersList.length) {
-                displayedOrders = dbOrdersList.filter(ord => {
+            if (loggedInPhone && dbAllOrders.length) {
+                displayedOrders = dbAllOrders.filter(ord => {
                     const p1 = normalizePhone(ord.customerPhone);
                     const p2 = normalizePhone(ord.phone);
                     const p3 = normalizePhone(ord.customerMobile);
@@ -1204,16 +1308,11 @@
                     const p5 = normalizePhone(ord.shippingAddress && (ord.shippingAddress.phone || ord.shippingAddress.mobile));
                     const p6 = normalizePhone(ord.address && (ord.address.phone || ord.address.mobile));
 
-                    return (p1 && p1 === loggedInPhone) ||
-                           (p2 && p2 === loggedInPhone) ||
-                           (p3 && p3 === loggedInPhone) ||
-                           (p4 && p4 === loggedInPhone) ||
-                           (p5 && p5 === loggedInPhone) ||
-                           (p6 && p6 === loggedInPhone);
+                    return p1 === loggedInPhone || p2 === loggedInPhone || p3 === loggedInPhone || 
+                           p4 === loggedInPhone || p5 === loggedInPhone || p6 === loggedInPhone;
                 });
             } else {
-                // If not logged in or no match, show all orders
-                displayedOrders = dbOrdersList;
+                displayedOrders = dbAllOrders;
             }
 
             // Sort newest first
@@ -1244,7 +1343,7 @@
             document.getElementById('count-cancelled').textContent = counts.cancelled;
         }
 
-        // Apply Filter & Search
+        // Apply Filters & Search
         function applyFilters() {
             filteredOrders = displayedOrders.filter(ord => {
                 const effStatus = getEffectiveStatus(ord);
@@ -1258,11 +1357,11 @@
                 return oid.includes(q) || title.includes(q);
             });
 
-            renderOrders();
+            renderOrdersList();
         }
 
-        // Render Orders
-        function renderOrders() {
+        // Render Cards List
+        function renderOrdersList() {
             const container = document.getElementById('ordersList');
 
             if (!filteredOrders.length) {
@@ -1272,7 +1371,7 @@
                             <i class="fa-solid fa-box-open"></i>
                         </div>
                         <h3>No Orders Found</h3>
-                        <p>${loggedInPhone ? `No orders found for <strong>+91 ${loggedInPhone}</strong>. If your orders are under another number, click Switch Account.` : 'Please log in on the Home page or switch account to view orders.'}</p>
+                        <p>${loggedInPhone ? `No orders found for <strong>+91 ${loggedInPhone}</strong>. If your orders are under another number, click Switch.` : 'Please log in on the Home page or switch account to view orders.'}</p>
                         <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                             <button type="button" class="meesho-btn meesho-btn-outline" onclick="promptSwitchNumber()">
                                 <i class="fa-solid fa-arrow-right-arrow-left"></i> Switch Number
@@ -1291,7 +1390,7 @@
                 const effStatus = getEffectiveStatus(order);
                 const firstItem = (order.items && order.items.length) ? order.items[0] : order;
                 const imgUrl = extractItemImage(firstItem, order);
-                const title = firstItem.title || firstItem.productTitle || order.productTitle || 'CartPrime Product';
+                const title = firstItem.title || firstItem.productTitle || order.productTitle || 'CartPrime Order Item';
                 const price = order.totalAmount || order.total || order.price || (firstItem.price * (firstItem.quantity || 1)) || 0;
                 const qty = firstItem.quantity || firstItem.qty || 1;
                 const formattedDate = formatDatePretty(order.date || order.createdAt);
@@ -1322,7 +1421,7 @@
                     progressWidth = '0%';
                 }
 
-                // Return Eligibility Check: Automatically HIDES if period expired
+                // Return Eligibility Check: Automatically HIDES button if period expired
                 const returnInfo = getReturnEligibility(order);
                 const canReturn = (effStatus === 'delivered' && returnInfo.hasPolicy && !returnInfo.isExpired);
 
@@ -1410,7 +1509,7 @@
                                 </button>
                             ` : ''}
 
-                            <!-- Return button automatically hides when 7 days expire -->
+                            <!-- Return button hides automatically after 7 days -->
                             ${canReturn ? `
                                 <button type="button" class="meesho-return-btn" onclick="window.requestReturnOrder('${orderId}')">
                                     <i class="fa-solid fa-rotate-left"></i> Return
@@ -1428,7 +1527,7 @@
             container.innerHTML = html;
         }
 
-        // View Order Details
+        // View Order Details Modal
         window.viewOrderDetails = function(orderId) {
             const order = displayedOrders.find(o => String(o.id || o.orderId) === String(orderId));
             if (!order) return;
@@ -1460,7 +1559,7 @@
                 `;
             });
 
-            const addr = order.shippingAddress || order.address || {};
+            const addr = order.address || order.shippingAddress || {};
             const addressString = typeof addr === 'string' ? addr : `
                 <strong>${addr.name || order.customerName || 'Customer'}</strong><br>
                 ${addr.house || addr.addressLine1 || addr.street || ''} ${addr.area || addr.landmark ? '<br>' + (addr.area || addr.landmark) : ''}<br>
@@ -1577,8 +1676,9 @@
                 if (result.isConfirmed) {
                     const { reason, comment } = result.value;
                     try {
+                        const phonePath = order.customerPhone ? `${order.customerPhone}/${orderId}` : orderId;
                         if (db) {
-                            const ordRef = ref(db, `orders/${orderId}`);
+                            const ordRef = ref(db, `orders/${phonePath}`);
                             await update(ordRef, {
                                 status: 'return_requested',
                                 returnReason: reason,
@@ -1621,15 +1721,16 @@
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
+                        const ord = displayedOrders.find(o => String(o.id || o.orderId) === String(orderId));
+                        const phonePath = (ord && ord.customerPhone) ? `${ord.customerPhone}/${orderId}` : orderId;
                         if (db) {
-                            const ordRef = ref(db, `orders/${orderId}`);
+                            const ordRef = ref(db, `orders/${phonePath}`);
                             await update(ordRef, {
                                 status: 'cancelled',
                                 cancelledAt: new Date().toISOString()
                             });
                         }
 
-                        const ord = displayedOrders.find(o => String(o.id || o.orderId) === String(orderId));
                         if (ord) ord.status = 'cancelled';
 
                         Swal.fire({
@@ -1649,78 +1750,23 @@
             });
         };
 
-        // ============================================================
-        // 2. FETCH FROM DATABASE 'orders' NODE
-        // ============================================================
-        function listenToDatabaseOrders() {
-            if (!db) {
-                fallbackLocalOrders();
-                return;
-            }
-
+        // Preload Products Cache
+        async function preloadProductsCache() {
             try {
-                const ordersRef = ref(db, 'orders');
-                onValue(ordersRef, (snapshot) => {
-                    const data = snapshot.val();
+                const res = await fetch(`${FIREBASE_RTDB_URL}/products.json`);
+                if (res.ok) {
+                    const data = await res.json();
                     if (data) {
-                        const list = [];
                         Object.keys(data).forEach(k => {
-                            const o = data[k];
-                            if (o) {
-                                o.id = o.id || k;
-                                list.push(o);
+                            const p = data[k];
+                            if (p) {
+                                productsCache[k] = p;
+                                if (p.id) productsCache[p.id] = p;
+                                if (p.name) productsCache[p.name.toLowerCase().trim()] = p;
+                                if (p.title) productsCache[p.title.toLowerCase().trim()] = p;
                             }
                         });
-                        dbOrdersList = list;
-                    } else {
-                        dbOrdersList = [];
                     }
-                    filterAndRenderOrders();
-                }, (error) => {
-                    console.warn("DB read note:", error.message);
-                    fallbackLocalOrders();
-                });
-            } catch (err) {
-                console.warn("DB listener error:", err.message);
-                fallbackLocalOrders();
-            }
-        }
-
-        function fallbackLocalOrders() {
-            const keys = ['cartprime_orders', 'orders', 'my_orders', 'user_orders'];
-            for (const k of keys) {
-                try {
-                    const raw = localStorage.getItem(k);
-                    if (raw) {
-                        const parsed = JSON.parse(raw);
-                        const arr = Array.isArray(parsed) ? parsed : Object.values(parsed);
-                        if (arr && arr.length) {
-                            dbOrdersList = arr;
-                            break;
-                        }
-                    }
-                } catch(e) {}
-            }
-            filterAndRenderOrders();
-        }
-
-        // Preload Products Cache (Images)
-        async function preloadProductsCache() {
-            if (!db) return;
-            try {
-                const prodRef = ref(db, 'products');
-                const snap = await get(prodRef);
-                if (snap.exists()) {
-                    const data = snap.val();
-                    Object.keys(data).forEach(k => {
-                        const p = data[k];
-                        if (p) {
-                            productsCache[k] = p;
-                            if (p.id) productsCache[p.id] = p;
-                            if (p.name) productsCache[p.name.toLowerCase().trim()] = p;
-                            if (p.title) productsCache[p.title.toLowerCase().trim()] = p;
-                        }
-                    });
                 }
             } catch(e) {}
         }
@@ -1729,35 +1775,15 @@
         // INITIALIZATION
         // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Auto-detect Logged In Number from Home Page
+            // 1. Auto-detect Home Page Logged-in Number
             loggedInPhone = detectHomePageLoggedInPhone();
             updateAccountStripUI();
 
-            // 2. Firebase Auth listener (if home page uses Firebase Auth)
-            if (auth) {
-                onAuthStateChanged(auth, (user) => {
-                    if (user && user.phoneNumber) {
-                        const p = normalizePhone(user.phoneNumber);
-                        if (p) {
-                            loggedInPhone = p;
-                            updateAccountStripUI();
-                            if (dbOrdersList.length) filterAndRenderOrders();
-                        }
-                    }
-                });
-            }
-
-            // 3. Start reading database node 'orders'
+            // 2. Preload products cache
             preloadProductsCache();
-            listenToDatabaseOrders();
 
-            // Safety timeout: Never stay stuck on spinner
-            setTimeout(() => {
-                const loader = document.getElementById('loadingIndicator');
-                if (loader && loader.style.display !== 'none') {
-                    filterAndRenderOrders();
-                }
-            }, 1000);
+            // 3. Fetch from Realtime Database
+            fetchOrders();
 
             // Filter chips
             document.querySelectorAll('.filter-chip').forEach(btn => {
