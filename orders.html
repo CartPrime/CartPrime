@@ -334,6 +334,19 @@
         }
         .meesho-return-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
 
+        .return-expired-badge {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .meesho-cancel-btn {
             background: #fee2e2;
             color: #ef4444;
@@ -731,7 +744,7 @@
     function isReturnExpired(order) {
         const baseDateStr = order.deliveredDate || order.deliveryDate || order.deliveredAt || order.date || order.timestamp || order.createdAt;
         const baseDate = parseDateStrict(baseDateStr);
-        if (!baseDate) return false; // If no date found, default to non-expired or handle safely
+        if (!baseDate) return false;
         
         const diffTime = new Date() - baseDate;
         const diffDays = diffTime / (1000 * 60 * 60 * 24);
@@ -941,7 +954,15 @@
             
             const hasReturnPolicy = isOrderReturnable(order);
             const expired = isReturnExpired(order);
-            const showReturnBtn = hasReturnPolicy && !expired && (checkStatus === 'delivered');
+            
+            let returnActionHtml = '';
+            if (hasReturnPolicy && (checkStatus === 'delivered')) {
+                if (expired) {
+                    returnActionHtml = `<span class="return-expired-badge"><i class="fa-solid fa-circle-xmark"></i> Return Expired</span>`;
+                } else {
+                    returnActionHtml = `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>`;
+                }
+            }
 
             if (Array.isArray(order.items) && order.items.length > 0) {
                 const first = order.items[0];
@@ -993,15 +1014,13 @@
 
             let actionStripHtml = '';
             if (checkStatus === 'delivered') {
-                const returnButtonHtml = showReturnBtn ? `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>` : '';
-
                 if (order.reviewed) {
                     actionStripHtml = `
                         <div class="meesho-action-strip">
                             <span style="font-size:0.72rem; font-weight:800; color:#16a34a; display:flex; align-items:center; gap:4px;">
                                 <i class="fa-solid fa-star" style="color:var(--accent);"></i> Rated (${order.reviewRating || 5}/5)
                             </span>
-                            ${returnButtonHtml}
+                            ${returnActionHtml}
                             <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
                         </div>`;
                 } else {
@@ -1010,7 +1029,7 @@
                             <button type="button" onclick="event.stopPropagation(); window.openReviewModal('${order.id}')" class="meesho-review-btn">
                                 <i class="fa-regular fa-star"></i> Rate & Review
                             </button>
-                            ${returnButtonHtml}
+                            ${returnActionHtml}
                             <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
                         </div>`;
                 }
