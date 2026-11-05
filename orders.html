@@ -716,7 +716,6 @@
         return isItemReturnable(order);
     }
 
-    // Check if 7 days have passed since delivery
     function isReturnExpired(order) {
         const baseDateStr = order.deliveredDate || order.deliveryDate || order.date || order.timestamp;
         const baseDate = parseDateSafe(baseDateStr);
