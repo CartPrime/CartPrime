@@ -679,7 +679,7 @@
             .replace(/'/g, '&#039;');
     }
 
-    // Robust Date Parser to parse string formats like "28 Oct 2026", "28/10/2026", timestamps, ISO strings
+    // Robust Date Parser to parse string formats like "2026-11-04", "28 Oct 2026", "28/10/2026", timestamps, ISO strings
     function parseDateStrict(dateVal) {
         if (!dateVal) return null;
         if (typeof dateVal === 'number') return new Date(dateVal);
@@ -688,20 +688,25 @@
 
         const parts = String(dateVal).trim().split(/[\s\/\-\,]+/);
         if (parts.length >= 3) {
-            let day = parseInt(parts[0], 10);
-            let year = parseInt(parts[parts.length - 1], 10);
-            let month = 0;
-            if (isNaN(day)) day = parseInt(parts[1], 10);
+            let year = parseInt(parts[0], 10);
+            let month = parseInt(parts[1], 10) - 1;
+            let day = parseInt(parts[2], 10);
             
+            // Check if format is DD-MM-YYYY or MM-DD-YYYY
+            if (year < 1000) {
+                day = parseInt(parts[0], 10);
+                month = parseInt(parts[1], 10) - 1;
+                year = parseInt(parts[2], 10);
+            }
+
             const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
             let mStr = parts.find(p => isNaN(parseInt(p, 10)));
             if (mStr) {
                 let mIdx = monthNames.findIndex(m => mStr.toLowerCase().startsWith(m));
                 if (mIdx !== -1) month = mIdx;
-            } else {
-                month = parseInt(parts[1], 10) - 1;
             }
-            if (!isNaN(day) && !isNaN(year)) {
+
+            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
                 d = new Date(year, month, day);
                 if (!isNaN(d.getTime())) return d;
             }
@@ -740,7 +745,7 @@
         return isItemReturnable(order);
     }
 
-    // Strict 7-day return expiration check with strict parsing
+    // Strict 7-day return expiration check (Fixing precedence to properly evaluate delivery date)
     function isReturnExpired(order) {
         const baseDateStr = order.deliveredDate || order.deliveryDate || order.deliveredAt || order.date || order.timestamp || order.createdAt;
         const baseDate = parseDateStrict(baseDateStr);
