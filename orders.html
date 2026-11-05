@@ -716,10 +716,13 @@
         return isItemReturnable(order);
     }
 
+    // Strict 7-day return expiration check
     function isReturnExpired(order) {
-        const baseDateStr = order.deliveredDate || order.deliveryDate || order.date || order.timestamp;
+        // Look for delivery date first, fallback to order placement date
+        const baseDateStr = order.deliveredDate || order.deliveryDate || order.date || order.timestamp || order.createdAt;
         const baseDate = parseDateSafe(baseDateStr);
         if (!baseDate) return false;
+        
         const diffTime = new Date() - baseDate;
         const diffDays = diffTime / (1000 * 60 * 60 * 24);
         return diffDays > 7;
@@ -928,7 +931,7 @@
             
             const hasReturnPolicy = isOrderReturnable(order);
             const expired = isReturnExpired(order);
-            const showReturnBtn = hasReturnPolicy && !expired;
+            const showReturnBtn = hasReturnPolicy && !expired && (checkStatus === 'delivered');
 
             if (Array.isArray(order.items) && order.items.length > 0) {
                 const first = order.items[0];
@@ -949,31 +952,31 @@
                 trackerHtml = `
                 <div class="meesho-tracker-wrap">
                     <div class="meesho-tracker">
-                        <div class="tracker-step completed"><div class="tracker-dot"><i class="fa-solid fa-check"></i></div><span class="tracker-label">Placed</span></div>
+                        <div class="tracker-step completed"><div class="tracker-dot"><i class="fa-solid fa-receipt"></i></div><span class="tracker-label">Placed</span></div>
                         <div class="tracker-line" style="background:#ef4444;"></div>
-                        <div class="tracker-step cancelled"><div class="tracker-dot"><i class="fa-solid fa-xmark"></i></div><span class="tracker-label" style="color:#ef4444;">Cancelled</span></div>
+                        <div class="tracker-step cancelled"><div class="tracker-dot"><i class="fa-solid fa-ban"></i></div><span class="tracker-label" style="color:#ef4444;">Cancelled</span></div>
                     </div>
                 </div>`;
             } else if (step === 5) {
                 trackerHtml = `
                 <div class="meesho-tracker-wrap">
                     <div class="meesho-tracker">
-                        <div class="tracker-step completed"><div class="tracker-dot"><i class="fa-solid fa-check"></i></div><span class="tracker-label">Delivered</span></div>
+                        <div class="tracker-step completed"><div class="tracker-dot"><i class="fa-solid fa-box-open"></i></div><span class="tracker-label">Delivered</span></div>
                         <div class="tracker-line completed"></div>
-                        <div class="tracker-step active"><div class="tracker-dot"><i class="fa-solid fa-rotate-left"></i></div><span class="tracker-label">${checkStatus === 'returned' ? 'Returned' : 'Return Process'}</span></div>
+                        <div class="tracker-step active"><div class="tracker-dot"><i class="fa-solid fa-rotate-left"></i></div><span class="tracker-label">${checkStatus === 'returned' ? 'Returned' : 'Return'}</span></div>
                     </div>
                 </div>`;
             } else {
                 trackerHtml = `
                 <div class="meesho-tracker-wrap">
                     <div class="meesho-tracker">
-                        <div class="tracker-step ${step >= 1 ? 'completed' : ''}"><div class="tracker-dot"><i class="fa-solid fa-check"></i></div><span class="tracker-label">Placed</span></div>
+                        <div class="tracker-step ${step >= 1 ? 'completed' : ''}"><div class="tracker-dot"><i class="fa-solid fa-receipt"></i></div><span class="tracker-label">Placed</span></div>
                         <div class="tracker-line ${step >= 2 ? 'completed' : ''}"></div>
-                        <div class="tracker-step ${step >= 2 ? (step === 2 ? 'active' : 'completed') : ''}"><div class="tracker-dot"><i class="fa-solid ${step > 2 ? 'fa-check' : 'fa-truck-fast'}"></i></div><span class="tracker-label">Shipped</span></div>
+                        <div class="tracker-step ${step >= 2 ? (step === 2 ? 'active' : 'completed') : ''}"><div class="tracker-dot"><i class="fa-solid fa-box"></i></div><span class="tracker-label">Packed</span></div>
                         <div class="tracker-line ${step >= 3 ? 'completed' : ''}"></div>
-                        <div class="tracker-step ${step >= 3 ? (step === 3 ? 'active' : 'completed') : ''}"><div class="tracker-dot"><i class="fa-solid ${step > 3 ? 'fa-check' : 'fa-box-open'}"></i></div><span class="tracker-label">Out</span></div>
+                        <div class="tracker-step ${step >= 3 ? (step === 3 ? 'active' : 'completed') : ''}"><div class="tracker-dot"><i class="fa-solid fa-truck-fast"></i></div><span class="tracker-label">Shipped</span></div>
                         <div class="tracker-line ${step >= 4 ? 'completed' : ''}"></div>
-                        <div class="tracker-step ${step >= 4 ? 'completed' : ''}"><div class="tracker-dot"><i class="fa-solid fa-house-chimney"></i></div><span class="tracker-label">Delivered</span></div>
+                        <div class="tracker-step ${step >= 4 ? 'completed' : ''}"><div class="tracker-dot"><i class="fa-solid fa-box-open"></i></div><span class="tracker-label">Delivered</span></div>
                     </div>
                 </div>`;
             }
