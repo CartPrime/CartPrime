@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Orders | CartPrime</title>
 
-    <!-- Shopping Bag Favicon (SVG Data URI) -->
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%230b0b0f'/><path d='M17 8h-1.5c0-1.93-1.57-3.5-3.5-3.5S8.5 6.07 8.5 8H7c-.83 0-1.5.67-1.5 1.5v8C5.5 18.33 6.17 19 7 19h10c.83 0 1.5-.67 1.5-1.5v-8C18.5 8.67 17.83 8 17 8zm-5-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm5 11.5H7v-8h10v8z' fill='%23f59e0b'/></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%230b0b0f'/><path d='M17 8h-1.5c0-1.93-1.57-3.5-3.5-3.5S8.5 6.07 8.5 8H7c-.83 0-1.5.67-1.5 1.5v8C5.5 18.33 6.17 19 7 19h10c.83 0 1.5-.67 1.5-1.5v-8C18.5 8.67 17.83 8 17 8zm-5-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm5 11.5H7v-8h10v8z' fill='%23f59e0b'/></svg>">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,43 +14,45 @@
 
     <style>
         :root { 
-            --primary: #0b0b0f; 
-            --bg: #f4f6fa; 
+            --primary: #0f172a; 
+            --bg: #f8fafc; 
             --white: #ffffff; 
             --accent: #f59e0b;
             --accent-dark: #d97706;
-            --border-color: #e6e9f0;
-            --text-main: #1e293b;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
             --text-muted: #64748b;
+            --success: #16a34a;
+            --danger: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); padding: 16px 3.5% 30px; max-width: 760px; margin: 0 auto; color: var(--text-main); }
+        body { background: var(--bg); padding: 14px 4% 40px; max-width: 680px; margin: 0 auto; color: var(--text-main); }
         
         /* Sticky Top Header */
         .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .back-btn { text-decoration: none; color: var(--primary); font-size: 1rem; background: var(--white); width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1.5px solid var(--border-color); transition: all 0.2s ease; cursor: pointer; flex-shrink: 0; }
-        .back-btn:hover { background: #fff7e6; border-color: var(--accent); color: var(--accent); }
-        .header-title { font-weight: 800; letter-spacing: -0.6px; font-size: 1.25rem; color: var(--primary); }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { text-decoration: none; color: var(--primary); font-size: 0.95rem; background: var(--white); width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1px solid var(--border-color); transition: all 0.2s ease; cursor: pointer; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .back-btn:active { transform: scale(0.95); }
+        .header-title { font-weight: 800; letter-spacing: -0.5px; font-size: 1.25rem; color: var(--primary); }
 
         /* Security Assurance Banner */
         .security-banner {
-            background: linear-gradient(135deg, #fff7e6 0%, #ffedc2 100%);
-            border: 1px solid #fde3a7;
-            border-radius: 14px;
+            background: #fffbe6;
+            border: 1px solid #fef08a;
+            border-radius: 12px;
             padding: 10px 14px;
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 14px;
             font-size: 0.76rem;
-            color: #b45309;
+            color: #854d0e;
             font-weight: 700;
         }
-        .security-banner i { font-size: 1rem; color: var(--accent); flex-shrink: 0; }
+        .security-banner i { font-size: 0.95rem; color: var(--accent-dark); flex-shrink: 0; }
 
-        /* Meesho Style Order Search Bar */
+        /* Order Search Bar */
         .orders-search-box {
             position: relative;
             margin-bottom: 14px;
@@ -59,14 +60,15 @@
         .orders-search-box input {
             width: 100%;
             padding: 11px 16px 11px 40px;
-            border-radius: 14px;
-            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
             background: var(--white);
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-main);
             outline: none;
             transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
         .orders-search-box input:focus {
             border-color: var(--accent);
@@ -78,27 +80,27 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
 
         /* Active Phone Header Pill */
         .active-phone-bar {
             background: var(--white);
-            border: 1.5px solid var(--border-color);
-            padding: 11px 14px;
-            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 12px;
             margin-bottom: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
             gap: 8px;
         }
         .change-phone-btn {
             background: #fee2e2;
-            color: #ef4444;
+            color: #dc2626;
             border: none;
-            padding: 6px 10px;
+            padding: 5px 10px;
             border-radius: 8px;
             font-weight: 700;
             font-size: 0.72rem;
@@ -108,56 +110,51 @@
         }
         .change-phone-btn:hover { opacity: 0.85; }
 
-        /* ========================================================================= */
-        /*                     MEESHO STYLE ORDER CARD DESIGN                        */
-        /* ========================================================================= */
+        /* Order Card UI */
         .meesho-order-card { 
             background: var(--white); 
-            border-radius: 18px; 
-            padding: 16px; 
-            margin-bottom: 14px; 
-            border: 1.5px solid var(--border-color); 
+            border-radius: 16px; 
+            padding: 14px; 
+            margin-bottom: 12px; 
+            border: 1px solid var(--border-color); 
             cursor: pointer; 
-            transition: all 0.25s ease;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
             position: relative;
         }
-        .meesho-order-card:hover { 
-            border-color: var(--accent); 
-            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.1); 
-            transform: translateY(-2px); 
+        .meesho-order-card:active { 
+            transform: scale(0.995); 
         }
 
-        /* Card Header Status */
         .meesho-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 12px;
+            padding-bottom: 10px;
             border-bottom: 1px solid #f1f5f9;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             gap: 8px;
         }
         .meesho-status-wrap {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             min-width: 0;
         }
         .status-dot-indicator {
-            width: 10px;
-            height: 10px;
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
             flex-shrink: 0;
         }
-        .dot-delivered { background: #16a34a; box-shadow: 0 0 8px rgba(22, 163, 74, 0.4); }
-        .dot-shipped { background: var(--accent); box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
+        .dot-delivered { background: var(--success); }
+        .dot-shipped { background: var(--accent); }
         .dot-pending { background: #0284c7; }
-        .dot-cancelled { background: #ef4444; }
-        .dot-returned { background: #065f46; }
+        .dot-cancelled { background: var(--danger); }
+        .dot-returned { background: #475569; }
 
         .meesho-status-title {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 800;
             color: var(--text-main);
             white-space: nowrap;
@@ -171,25 +168,23 @@
             flex-shrink: 0;
         }
 
-        /* Product Content Box */
         .meesho-item-body {
             display: flex;
             gap: 12px;
             align-items: center;
         }
         .meesho-thumb-wrap {
-            width: 68px;
-            height: 68px;
-            border-radius: 14px;
-            background: #ffffff;
-            border: 1.5px solid #e2e8f0;
-            padding: 3px;
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 2px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
         .meesho-thumb-wrap img {
             width: 100%;
@@ -197,15 +192,14 @@
             object-fit: contain;
             border-radius: 10px;
             display: block;
-            background: #fff;
         }
 
         .meesho-item-details { flex-grow: 1; min-width: 0; }
         .meesho-item-title {
-            font-size: 0.85rem;
+            font-size: 0.83rem;
             font-weight: 700;
             color: var(--text-main);
-            line-height: 1.35;
+            line-height: 1.3;
             margin-bottom: 4px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -219,21 +213,20 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            margin-bottom: 4px;
-            flex-wrap: wrap;
+            margin-bottom: 3px;
         }
         .meesho-item-price {
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             font-weight: 800;
             color: var(--primary);
         }
 
-        /* Meesho Step Tracker */
+        /* Order Tracker Steps */
         .meesho-tracker-wrap {
-            margin: 12px 0 8px 0;
+            margin: 10px 0 6px 0;
             padding: 8px 10px;
             background: #f8fafc;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid #f1f5f9;
         }
         .meesho-tracker {
@@ -246,14 +239,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 2px;
             z-index: 2;
         }
         .tracker-dot {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
-            background: #e2e8f0;
+            background: #cbd5e1;
             color: #fff;
             display: flex;
             align-items: center;
@@ -263,186 +256,123 @@
             transition: all 0.25s ease;
         }
         .tracker-label {
-            font-size: 0.6rem;
+            font-size: 0.58rem;
             font-weight: 700;
             color: var(--text-muted);
         }
         .tracker-step.active .tracker-dot {
-            background: var(--accent);
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+            background: var(--accent-dark);
         }
         .tracker-step.active .tracker-label {
             color: var(--text-main);
             font-weight: 800;
         }
         .tracker-step.completed .tracker-dot {
-            background: #16a34a;
+            background: var(--success);
         }
         .tracker-step.cancelled .tracker-dot {
-            background: #ef4444;
+            background: var(--danger);
         }
         .tracker-line {
             flex-grow: 1;
             height: 2px;
             background: #e2e8f0;
-            margin: -12px 2px 0 2px;
+            margin: -10px 2px 0 2px;
             z-index: 1;
         }
         .tracker-line.completed {
-            background: #16a34a;
+            background: var(--success);
         }
 
-        /* Meesho Card Actions Strip */
+        /* Actions Strip */
         .meesho-action-strip {
-            margin-top: 10px;
-            padding-top: 10px;
+            margin-top: 8px;
+            padding-top: 8px;
             border-top: 1px solid #f1f5f9;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 8px;
-            flex-wrap: wrap;
         }
         .meesho-review-btn {
             background: #fff7e6;
             color: var(--accent-dark);
             border: 1px solid #fde3a7;
-            padding: 6px 10px;
-            border-radius: 10px;
+            padding: 5px 10px;
+            border-radius: 8px;
             font-size: 0.72rem;
             font-weight: 800;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            transition: all 0.2s ease;
+            gap: 4px;
         }
-        .meesho-review-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
-        
         .meesho-return-btn {
             background: #f8fafc;
             color: var(--text-main);
-            border: 1.5px solid var(--border-color);
-            padding: 6px 10px;
-            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            border-radius: 8px;
             font-size: 0.72rem;
             font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
-        .meesho-return-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
-
         .meesho-cancel-btn {
             background: #fee2e2;
-            color: #ef4444;
+            color: #dc2626;
             border: none;
-            padding: 6px 12px;
-            border-radius: 10px;
+            padding: 5px 10px;
+            border-radius: 8px;
             font-size: 0.72rem;
             font-weight: 700;
             cursor: pointer;
         }
-
         .view-details-tag {
             font-size: 0.7rem;
             font-weight: 700;
             color: var(--accent-dark);
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             margin-left: auto;
         }
 
         /* Empty State */
-        .empty-state { text-align: center; margin-top: 30px; color: var(--text-muted); font-weight: 700; background: var(--white); padding: 35px 20px; border-radius: 20px; border: 1.5px solid var(--border-color); }
+        .empty-state { text-align: center; margin-top: 25px; color: var(--text-muted); font-weight: 700; background: var(--white); padding: 30px 18px; border-radius: 16px; border: 1px solid var(--border-color); }
         
-        /* Phone Input Box */
-        .phone-input-box { background: var(--white); padding: 28px 20px; border-radius: 22px; border: 1.5px solid var(--border-color); text-align: center; max-width: 420px; margin: 30px auto; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.04); }
-        .phone-input-box input { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--border-color); font-weight: 600; margin: 14px 0; font-size: 0.9rem; outline: none; background: #f8fafc; transition: all 0.2s; }
+        /* Phone Box */
+        .phone-input-box { background: var(--white); padding: 25px 18px; border-radius: 18px; border: 1px solid var(--border-color); text-align: center; max-width: 400px; margin: 30px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .phone-input-box input { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border-color); font-weight: 600; margin: 12px 0; font-size: 0.88rem; outline: none; background: #f8fafc; }
         .phone-input-box input:focus { border-color: var(--accent); background: var(--white); box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
-        .phone-input-box button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 14px; font-weight: 800; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
-        .phone-input-box button:hover { background: var(--accent); color: #000; }
+        .phone-input-box button { width: 100%; padding: 11px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.88rem; }
 
-        /* SweetAlert Popup Styling (CartPrime Theme) */
-        .swal2-container { background: rgba(15, 23, 42, 0.5) !important; backdrop-filter: blur(6px) !important; }
-        .swal-custom-popup { border-radius: 24px !important; padding: 1.25rem !important; width: 94% !important; max-width: 440px !important; border: 1.5px solid var(--border-color) !important; box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.2) !important; background: #ffffff !important; }
-        .swal-custom-title { font-weight: 800 !important; color: var(--primary) !important; font-size: 1.15rem !important; letter-spacing: -0.5px; }
-        .swal-custom-confirm { background-color: var(--primary) !important; border-radius: 12px !important; padding: 10px 20px !important; font-weight: 800 !important; font-size: 0.85rem !important; box-shadow: none !important; }
-        .swal-custom-confirm:hover { background-color: var(--accent) !important; color: #000 !important; }
-        .swal2-cancel { border-radius: 12px !important; padding: 10px 20px !important; font-weight: 700 !important; font-size: 0.85rem !important; background: #f1f5f9 !important; color: var(--text-main) !important; box-shadow: none !important; }
+        /* SweetAlert Customization */
+        .swal2-container { background: rgba(15, 23, 42, 0.4) !important; backdrop-filter: blur(4px) !important; }
+        .swal-custom-popup { border-radius: 18px !important; padding: 1.1rem !important; width: 92% !important; max-width: 420px !important; border: 1px solid var(--border-color) !important; background: #ffffff !important; }
+        .swal-custom-title { font-weight: 800 !important; color: var(--primary) !important; font-size: 1.1rem !important; }
+        .swal-custom-confirm { background-color: var(--primary) !important; border-radius: 10px !important; padding: 9px 18px !important; font-weight: 800 !important; font-size: 0.82rem !important; }
 
-        .swal-radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; text-align: left; width: 100%; }
-        .swal-radio-option { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.82rem; cursor: pointer; background: #f8fafc; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--border-color); transition: all 0.2s; }
-        .swal-radio-option:hover { background: #fff7e6; border-color: #fde3a7; }
-        .swal-radio-option input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
-        .swal-input-field { width: 100%; padding: 11px 12px; border-radius: 12px; border: 1.5px solid var(--border-color); margin-top: 8px; font-size: 0.85rem; font-weight: 600; outline: none; background: #f8fafc; transition: all 0.2s; }
-        .swal-input-field:focus { border-color: var(--accent); background: var(--white); box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
-
-        /* Modal Details */
-        .modal-detail-box { text-align: left; font-size: 0.82rem; color: var(--text-main); margin-top: 8px; }
-        .modal-detail-box p { margin-bottom: 8px; line-height: 1.45; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-        .modal-section-title { font-weight: 800; font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); margin-top: 14px; margin-bottom: 6px; border-top: 1px dashed var(--border-color); padding-top: 10px; letter-spacing: 0.5px; }
-
-        .highlight-price { font-weight: 800; color: #16a34a; font-size: 0.95rem; background: #f0fdf4; padding: 3px 8px; border-radius: 8px; border: 1px solid #bbf7d0; }
-        .highlight-paymode { font-weight: 800; color: #b45309; font-size: 0.76rem; background: #fff7e6; padding: 3px 8px; border-radius: 8px; border: 1px solid #fde3a7; }
-
-        /* Star Rating in Review Modal */
-        .star-rating { display: flex; gap: 8px; justify-content: center; font-size: 1.8rem; margin: 12px 0; cursor: pointer; color: #cbd5e1; }
-        .star-rating i { transition: color 0.2s ease, transform 0.2s ease; }
-        .star-rating i:hover { transform: scale(1.15); }
-        .star-rating[data-rating="1"] i.selected { color: #ef4444 !important; }
-        .star-rating[data-rating="2"] i.selected { color: #f97316 !important; }
-        .star-rating[data-rating="3"] i.selected { color: #f59e0b !important; }
-        .star-rating[data-rating="4"] i.selected,
-        .star-rating[data-rating="5"] i.selected { color: #16a34a !important; }
+        .modal-detail-box { text-align: left; font-size: 0.8rem; color: var(--text-main); margin-top: 6px; }
+        .modal-detail-box p { margin-bottom: 6px; line-height: 1.4; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+        .modal-section-title { font-weight: 800; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); margin-top: 12px; margin-bottom: 4px; border-top: 1px dashed var(--border-color); padding-top: 8px; letter-spacing: 0.4px; }
+        .highlight-price { font-weight: 800; color: var(--success); font-size: 0.9rem; background: #f0fdf4; padding: 2px 7px; border-radius: 6px; }
+        .highlight-paymode { font-weight: 800; color: #b45309; font-size: 0.74rem; background: #fff7e6; padding: 2px 7px; border-radius: 6px; }
 
         /* Trust Grid & Support */
-        .trust-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin: 20px 0 12px 0;
-            padding: 12px;
-            background: var(--white);
-            border: 1.5px solid var(--border-color);
-            border-radius: 18px;
-            text-align: center;
-        }
-        .trust-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .trust-item i { font-size: 1.1rem; color: var(--accent); }
-        .trust-item span { font-size: 0.68rem; font-weight: 800; color: var(--text-muted); }
+        .trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 16px 0 10px; padding: 10px; background: var(--white); border: 1px solid var(--border-color); border-radius: 14px; text-align: center; }
+        .trust-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .trust-item i { font-size: 1rem; color: var(--accent); }
+        .trust-item span { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); }
 
-        .support-card {
-            background: var(--white);
-            border: 1.5px solid var(--border-color);
-            border-radius: 16px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 25px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            gap: 10px;
-        }
-        .support-card:hover { border-color: var(--accent); background: #fffdf7; transform: translateY(-1px); }
-        .support-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
-        .support-info i { font-size: 1.15rem; color: var(--accent); flex-shrink: 0; }
-        .support-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-        .support-text span:first-child { font-size: 0.82rem; font-weight: 800; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .support-text span:last-child { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        @media (max-width: 420px) {
-            body { padding: 12px 3%; }
-            .meesho-order-card { padding: 12px; }
-            .meesho-thumb-wrap { width: 60px; height: 60px; }
-            .meesho-item-title { font-size: 0.8rem; }
-            .meesho-item-price { font-size: 0.85rem; }
-            .trust-grid { gap: 6px; padding: 10px 6px; }
-            .trust-item span { font-size: 0.62rem; }
-        }
+        .support-card { background: var(--white); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; cursor: pointer; gap: 8px; }
+        .support-info { display: flex; align-items: center; gap: 10px; }
+        .support-info i { font-size: 1.1rem; color: var(--accent); }
+        .support-text { display: flex; flex-direction: column; }
+        .support-text span:first-child { font-size: 0.8rem; font-weight: 800; color: var(--primary); }
+        .support-text span:last-child { font-size: 0.66rem; color: var(--text-muted); }
     </style>
 </head>
 <body>
@@ -453,7 +383,7 @@
             <a href="index.html" class="back-btn" onclick="if(window.history.length > 1){ window.history.back(); return false; }"><i class="fa-solid fa-chevron-left"></i></a>
             <h1 class="header-title">My Orders</h1>
         </div>
-        <div style="font-size: 0.75rem; font-weight: 800; color: var(--accent-dark); background: #fff7e6; padding: 5px 10px; border-radius: 10px; border: 1px solid #fde3a7; flex-shrink: 0;">
+        <div style="font-size: 0.72rem; font-weight: 800; color: var(--accent-dark); background: #fff7e6; padding: 4px 8px; border-radius: 8px; border: 1px solid #fde3a7;">
             <i class="fa-solid fa-shield-halved"></i> Protected
         </div>
     </div>
@@ -461,37 +391,28 @@
     <!-- Security Banner -->
     <div class="security-banner">
         <i class="fa-solid fa-shield-halved"></i>
-        <span>100% Verified Orders & Easy Replacement Guarantee</span>
+        <span>100% Secure Checkout & Easy 7-Day Returns</span>
     </div>
 
-    <!-- Meesho Style Search Input -->
+    <!-- Order Search Input -->
     <div class="orders-search-box" id="ordersSearchWrap" style="display: none;">
-        <i class="fa-solid fa-search"></i>
-        <input type="text" id="orderSearchInput" placeholder="Search by product name or order ID...">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="orderSearchInput" placeholder="Search by item name or order ID...">
     </div>
 
-    <!-- Orders Main List Container -->
+    <!-- Main Container -->
     <div id="ordersList">
         <div class="empty-state">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 10px;"></i>
-            <p>Loading your orders...</p>
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.4rem; color: var(--accent); margin-bottom: 8px;"></i>
+            <p style="font-size: 0.85rem;">Loading your orders...</p>
         </div>
     </div>
 
     <!-- Trust Features Grid -->
     <div class="trust-grid">
-        <div class="trust-item">
-            <i class="fa-solid fa-circle-check"></i>
-            <span>100% Genuine</span>
-        </div>
-        <div class="trust-item">
-            <i class="fa-solid fa-truck-fast"></i>
-            <span>Fast Shipping</span>
-        </div>
-        <div class="trust-item">
-            <i class="fa-solid fa-headset"></i>
-            <span>Quick Support</span>
-        </div>
+        <div class="trust-item"><i class="fa-solid fa-circle-check"></i><span>100% Genuine</span></div>
+        <div class="trust-item"><i class="fa-solid fa-truck-fast"></i><span>Fast Shipping</span></div>
+        <div class="trust-item"><i class="fa-solid fa-headset"></i><span>Quick Support</span></div>
     </div>
 
     <!-- Support Help Card -->
@@ -499,11 +420,11 @@
         <div class="support-info">
             <i class="fa-solid fa-circle-question"></i>
             <div class="support-text">
-                <span>Need Help with an Order? <span style="color:var(--accent-dark);">Click Here</span></span>
-                <span>Get quick resolution on returns, replacement & delivery</span>
+                <span>Need Help with an Order?</span>
+                <span>Contact support for returns or delivery help</span>
             </div>
         </div>
-        <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0;"></i>
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.72rem; color: var(--text-muted);"></i>
     </div>
 
     <script type="module">
@@ -523,47 +444,63 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const DEFAULT_FALLBACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='24' fill='%23f8fafc'/%3E%3Ccircle cx='100' cy='100' r='58' fill='%23fff7e6' stroke='%23fde3a7' stroke-width='2'/%3E%3Cpath d='M135 76h-12c0-12.7-10.3-23-23-23s-23 10.3-23 23H65c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12h70c6.6 0 12-5.4 12-12V88c0-6.6-5.4-12-12-12zm-35-15c7.2 0 13 5.8 13 13H87c0-7.2 5.8-13 13-13zm35 91H65V88h70v64z' fill='%23f59e0b'/%3E%3C/svg%3E";
+    const DEFAULT_FALLBACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='24' fill='%23f8fafc'/%3E%3Cpath d='M135 76h-12c0-12.7-10.3-23-23-23s-23 10.3-23 23H65c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12h70c6.6 0 12-5.4 12-12V88c0-6.6-5.4-12-12-12zm-35-15c7.2 0 13 5.8 13 13H87c0-7.2 5.8-13 13-13zm35 91H65V88h70v64z' fill='%23cbd5e1'/%3E%3C/svg%3E";
 
     let activeRef = null;
     let cachedOrders = {}; 
     let allOrdersList = [];
     let activePhoneString = "";
-
     let productsMapById = {};
     let productsMapByName = {};
 
+    function parseDateStrict(dateVal) {
+        if (!dateVal) return null;
+        if (typeof dateVal === 'number') return new Date(dateVal);
+        let d = new Date(dateVal);
+        if (!isNaN(d.getTime())) return d;
+
+        // Custom string date parser (eg: 24 Oct 2026 or 24/10/2026)
+        const parts = String(dateVal).trim().split(/[\s\/\-\,]+/);
+        if (parts.length >= 3) {
+            let day = parseInt(parts[0], 10);
+            let year = parseInt(parts[parts.length - 1], 10);
+            let month = 0;
+            if (isNaN(day)) day = parseInt(parts[1], 10);
+            
+            const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+            let mStr = parts.find(p => isNaN(parseInt(p, 10)));
+            if (mStr) {
+                let mIdx = monthNames.findIndex(m => mStr.toLowerCase().startsWith(m));
+                if (mIdx !== -1) month = mIdx;
+            } else {
+                month = parseInt(parts[1], 10) - 1;
+            }
+            if (!isNaN(day) && !isNaN(year)) {
+                return new Date(year, month, day);
+            }
+        }
+        return null;
+    }
+
+    // Explicit 7-day return eligibility calculator
+    function isReturnPeriodExpired(order) {
+        const rawDate = order.deliveredDate || order.deliveryDate || order.deliveredAt || order.date || order.timestamp || order.createdAt;
+        const parsedDate = parseDateStrict(rawDate);
+        if (!parsedDate) return false; 
+        
+        const now = new Date();
+        const differenceInMs = now.getTime() - parsedDate.getTime();
+        const differenceInDays = differenceInMs / (1000 * 3600 * 24);
+        
+        return differenceInDays > 7;
+    }
+
     function extractImageFromObject(obj) {
         if (!obj) return null;
-        const candidates = [
-            obj.image, obj.productImage, obj.imageUrl, obj.img, obj.productImg, 
-            obj.photo, obj.thumbnail, obj.picture, obj.itemImage, obj.product_image, obj.image_url
-        ];
-
+        const candidates = [obj.image, obj.productImage, obj.imageUrl, obj.img, obj.photo, obj.thumbnail];
         for (const c of candidates) {
-            if (typeof c === 'string' && c.trim().length > 5 && !c.includes('placeholder.com')) {
-                return c.trim();
-            }
+            if (typeof c === 'string' && c.trim().length > 5 && !c.includes('placeholder.com')) return c.trim();
         }
-
-        if (Array.isArray(obj.images) && obj.images.length > 0) {
-            for (const item of obj.images) {
-                if (typeof item === 'string' && item.trim().length > 5 && !item.includes('placeholder.com')) {
-                    return item.trim();
-                } else if (item && typeof item === 'object') {
-                    const nestedUrl = item.url || item.src || item.image || item.imageUrl;
-                    if (typeof nestedUrl === 'string' && nestedUrl.trim().length > 5) {
-                        return nestedUrl.trim();
-                    }
-                }
-            }
-        }
-
-        if (obj.product && typeof obj.product === 'object') {
-            const nested = extractImageFromObject(obj.product);
-            if (nested) return nested;
-        }
-
         return null;
     }
 
@@ -572,85 +509,26 @@
             if (snapshot.exists()) {
                 snapshot.forEach(child => {
                     const data = child.val() || {};
-                    const id = child.key;
                     const img = extractImageFromObject(data);
                     if (img) {
-                        productsMapById[id] = img;
-                        if (data.name) {
-                            productsMapByName[data.name.toLowerCase().trim()] = img;
-                        }
+                        productsMapById[child.key] = img;
+                        if (data.name) productsMapByName[data.name.toLowerCase().trim()] = img;
                     }
                 });
                 if (allOrdersList.length > 0) renderOrdersList(allOrdersList);
             }
         });
-
-        onValue(ref(db, 'seller-products'), (snapshot) => {
-            if (snapshot.exists()) {
-                snapshot.forEach(sellerFolder => {
-                    sellerFolder.forEach(prodSnap => {
-                        const data = prodSnap.val() || {};
-                        const id = prodSnap.key;
-                        const img = extractImageFromObject(data);
-                        if (img) {
-                            productsMapById[id] = img;
-                            if (data.name) {
-                                productsMapByName[data.name.toLowerCase().trim()] = img;
-                            }
-                        }
-                    });
-                });
-                if (allOrdersList.length > 0) renderOrdersList(allOrdersList);
-            }
-        });
     }
-
     initProductImageCache();
 
     function getOrderImage(order) {
         if (!order) return DEFAULT_FALLBACK_IMG;
         let img = extractImageFromObject(order);
         if (img) return img;
-
         if (Array.isArray(order.items) && order.items.length > 0) {
             for (const item of order.items) {
                 img = extractImageFromObject(item);
                 if (img) return img;
-                const pId = item.id || item.productId;
-                if (pId && productsMapById[pId]) return productsMapById[pId];
-                const pName = (item.name || item.title || '').toLowerCase().trim();
-                if (pName && productsMapByName[pName]) return productsMapByName[pName];
-            }
-        }
-
-        const pId = order.productId || order.id;
-        if (pId && productsMapById[pId]) return productsMapById[pId];
-
-        const pName = (order.productName || '').toLowerCase().trim();
-        if (pName && productsMapByName[pName]) return productsMapByName[pName];
-
-        if (pName) {
-            for (const [k, v] of Object.entries(productsMapByName)) {
-                if (pName.includes(k) || k.includes(pName)) return v;
-            }
-        }
-        return DEFAULT_FALLBACK_IMG;
-    }
-
-    function getItemImage(item) {
-        if (!item) return DEFAULT_FALLBACK_IMG;
-        let img = extractImageFromObject(item);
-        if (img) return img;
-
-        const pId = item.id || item.productId;
-        if (pId && productsMapById[pId]) return productsMapById[pId];
-
-        const pName = (item.name || item.title || '').toLowerCase().trim();
-        if (pName && productsMapByName[pName]) return productsMapByName[pName];
-
-        if (pName) {
-            for (const [k, v] of Object.entries(productsMapByName)) {
-                if (pName.includes(k) || k.includes(pName)) return v;
             }
         }
         return DEFAULT_FALLBACK_IMG;
@@ -658,131 +536,41 @@
 
     function escapeHtml(str) {
         if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    function parseDateSafe(dateVal) {
-        if (!dateVal) return null;
-        if (typeof dateVal === 'number') return new Date(dateVal);
-        let d = new Date(dateVal);
-        if (!isNaN(d.getTime())) return d;
-
-        const parts = String(dateVal).split(/[-/]/);
-        if (parts.length === 3) {
-            const day = parseInt(parts[0], 10);
-            const month = parseInt(parts[1], 10) - 1;
-            const year = parseInt(parts[2], 10);
-            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-                d = new Date(year, month, day);
-                if (!isNaN(d.getTime())) return d;
-            }
-        }
-        return null;
-    }
-
-    const showAlert = (title, text, icon, showConfirm = true) => {
-        return Swal.fire({
-            title: title,
-            text: text,
-            icon: icon,
-            showConfirmButton: showConfirm,
-            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
-        });
-    };
-
-    function isItemReturnable(item) {
-        if (!item) return false;
-        const val = item.return ?? item.returnPolicy ?? item.isReturnable ?? item.returnable;
-        if (val === undefined || val === null) return true;
-        if (typeof val === 'boolean') return val;
-        if (typeof val === 'string') {
-            const lower = val.toLowerCase().trim();
-            return lower !== 'false' && lower !== 'no' && lower !== 'none' && lower !== '';
-        }
-        return Boolean(val);
-    }
-
-    function isOrderReturnable(order) {
-        if (!order) return false;
-        if (order.return === false || order.returnPolicy === false || order.isReturnable === false) return false;
-        if (Array.isArray(order.items) && order.items.length > 0) {
-            return order.items.some(i => isItemReturnable(i));
-        }
-        return isItemReturnable(order);
-    }
-
-    // Strict 7-day return expiration check
-    function isReturnExpired(order) {
-        // Look for delivery date first, fallback to order placement date
-        const baseDateStr = order.deliveredDate || order.deliveryDate || order.date || order.timestamp || order.createdAt;
-        const baseDate = parseDateSafe(baseDateStr);
-        if (!baseDate) return false;
-        
-        const diffTime = new Date() - baseDate;
-        const diffDays = diffTime / (1000 * 60 * 60 * 24);
-        return diffDays > 7;
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     function getSavedPhone() {
         const urlParams = new URLSearchParams(window.location.search);
-        const urlPhone = urlParams.get('phone');
-        const lastOrderPhone = localStorage.getItem('cartPrime_LastOrderPhone');
-        const savedUserPhone = localStorage.getItem('userPhone');
-        const cartPrimePhone = localStorage.getItem('cartPrime_Phone');
-
-        const rawPhone = urlPhone || savedUserPhone || lastOrderPhone || cartPrimePhone;
-        return rawPhone ? String(rawPhone).trim() : '';
+        return urlParams.get('phone') || localStorage.getItem('userPhone') || localStorage.getItem('cartPrime_Phone') || '';
     }
 
     const initialPhone = getSavedPhone();
-    if (initialPhone) { 
-        loadOrders(initialPhone); 
-    } else {
-        renderPhoneInput();
-    }
+    if (initialPhone) loadOrders(initialPhone);
+    else renderPhoneInput();
 
     function renderPhoneInput() {
         if (activeRef) off(activeRef);
         document.getElementById('ordersSearchWrap').style.display = 'none';
         document.getElementById('ordersList').innerHTML = `
             <div class="phone-input-box">
-                <div style="width: 52px; height: 52px; background: #fff7e6; border: 1.5px solid #fde3a7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
-                    <i class="fa-solid fa-lock" style="font-size:1.3rem; color:var(--accent);"></i>
-                </div>
-                <h3 style="font-weight:800; font-size:1.15rem; margin-bottom:6px; color:var(--primary);">Find Your Orders</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); line-height: 1.4;">Enter the mobile number used during checkout to track and view your orders.</p>
-                <input type="tel" id="inputPhoneNum" placeholder="Enter 10-digit Mobile Number" maxlength="10" onkeydown="if(event.key==='Enter') window.fetchOrdersByInput()">
-                <button onclick="window.fetchOrdersByInput()">View My Orders</button>
+                <i class="fa-solid fa-lock" style="font-size:1.4rem; color:var(--accent); margin-bottom:10px;"></i>
+                <h3 style="font-weight:800; font-size:1.1rem; color:var(--primary);">Find Your Orders</h3>
+                <p style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">Enter mobile number used during checkout.</p>
+                <input type="tel" id="inputPhoneNum" placeholder="10-digit Mobile Number" maxlength="10">
+                <button onclick="window.fetchOrdersByInput()">View Orders</button>
             </div>
         `;
     }
 
     window.fetchOrdersByInput = () => {
-        const inputElem = document.getElementById('inputPhoneNum');
-        if (!inputElem) return;
-        const phone = inputElem.value.trim().replace(/[\s\-()]/g, '');
-        if(!phone || phone.length !== 10) {
-            showAlert('Invalid Number', 'Please enter a valid 10-digit mobile number.', 'error');
-            return;
-        }
+        const phone = document.getElementById('inputPhoneNum')?.value.trim();
+        if(!phone || phone.length !== 10) return Swal.fire('Error', 'Enter a valid 10-digit mobile number.', 'error');
         localStorage.setItem('userPhone', phone);
-        localStorage.setItem('cartPrime_Phone', phone);
         loadOrders(phone);
     };
 
     window.changePhoneNumber = () => {
         localStorage.removeItem('userPhone');
-        localStorage.removeItem('cartPrime_LastOrderPhone');
-        localStorage.removeItem('cartPrime_Phone');
-        if (window.history.replaceState) {
-            const cleanUrl = window.location.pathname;
-            window.history.replaceState({}, document.title, cleanUrl);
-        }
         renderPhoneInput();
     };
 
@@ -791,232 +579,75 @@
         activePhoneString = phone;
         activeRef = ref(db, `orders/${phone}`);
 
-        const list = document.getElementById('ordersList');
-        list.innerHTML = `
-            <div class="empty-state">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.6rem; color: var(--accent); margin-bottom: 10px;"></i>
-                <p>Loading your orders...</p>
-            </div>
-        `;
-
         onValue(activeRef, (snapshot) => {
             if (!snapshot.exists()) {
-                const cleaned = phone.replace(/^\+91/, '').replace(/^91/, '');
-                if (cleaned.length === 10 && phone !== cleaned && !phone.startsWith('+91')) {
-                    const fallbackRef = ref(db, `orders/+91${cleaned}`);
-                    onValue(fallbackRef, (fallbackSnap) => {
-                        if (fallbackSnap.exists()) {
-                            loadOrders(`+91${cleaned}`);
-                            return;
-                        }
-                    }, { onlyOnce: true });
-                }
-
                 document.getElementById('ordersSearchWrap').style.display = 'none';
-                list.innerHTML = getPhoneHeaderHtml(phone) + `
+                document.getElementById('ordersList').innerHTML = getPhoneHeaderHtml(phone) + `
                     <div class="empty-state">
-                        <i class="fa-solid fa-box-open" style="font-size:2.2rem; color:var(--text-muted); margin-bottom:10px;"></i>
-                        <p style="font-size:0.95rem; font-weight:800; color:var(--primary); margin-bottom:4px;">No Orders Found</p>
-                        <p style="font-size:0.8rem; color:var(--text-muted);">No orders placed yet with mobile number +91 ${escapeHtml(phone)}.</p>
-                        <button onclick="window.location.href='/'" style="margin-top:14px; padding:10px 22px; background:var(--primary); color:#fff; border:none; border-radius:12px; font-weight:800; font-size:0.82rem; cursor:pointer;">Start Shopping</button>
+                        <i class="fa-solid fa-box-open" style="font-size:2rem; color:var(--text-muted); margin-bottom:8px;"></i>
+                        <p style="font-size:0.9rem; font-weight:800;">No Orders Found</p>
                     </div>`;
                 return;
             }
 
             allOrdersList = [];
             cachedOrders = {};
-
-            snapshot.forEach(orderSnap => { 
-                const orderData = orderSnap.val() || {};
-                const fullOrder = { id: orderSnap.key, ...orderData, userPhone: phone };
+            snapshot.forEach(child => { 
+                const fullOrder = { id: child.key, ...child.val(), userPhone: phone };
                 allOrdersList.push(fullOrder); 
-                cachedOrders[orderSnap.key] = fullOrder; 
+                cachedOrders[child.key] = fullOrder; 
             });
 
-            if (allOrdersList.length === 0) {
-                document.getElementById('ordersSearchWrap').style.display = 'none';
-                list.innerHTML = getPhoneHeaderHtml(phone) + `<div class="empty-state"><p>No orders found.</p></div>`;
-                return;
-            }
-
-            allOrdersList.sort((a, b) => {
-                const timeA = parseDateSafe(a.date || a.timestamp || a.createdAt)?.getTime() || 0;
-                const timeB = parseDateSafe(b.date || b.timestamp || b.createdAt)?.getTime() || 0;
-                return timeB - timeA;
-            });
-
+            allOrdersList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
             document.getElementById('ordersSearchWrap').style.display = 'block';
             renderOrdersList(allOrdersList);
-        }, (error) => {
-            console.error("Firebase error:", error);
-            list.innerHTML = `
-                <div class="empty-state">
-                    <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem; color:#ef4444; margin-bottom:10px;"></i>
-                    <p style="color:#ef4444; font-weight:700;">Could not load orders</p>
-                    <p style="font-size:0.8rem; margin-top:4px;">${escapeHtml(error.message || 'Please check your connection and try again.')}</p>
-                </div>`;
         });
     }
 
     function getPhoneHeaderHtml(phone) {
         return `
             <div class="active-phone-bar">
-                <span style="font-size:0.82rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:6px; min-width:0; overflow:hidden;">
-                    <i class="fa-solid fa-circle-check" style="color:#16a34a; font-size: 1rem; flex-shrink:0;"></i>
-                    <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Orders for: <strong style="color:var(--primary);">+91 ${escapeHtml(phone)}</strong></span>
-                </span>
-                <button onclick="window.changePhoneNumber()" class="change-phone-btn">
-                    <i class="fa-solid fa-pen-to-square"></i> Change
-                </button>
+                <span style="font-size:0.78rem; font-weight:700;">Orders for: <strong style="color:var(--primary);">+91 ${escapeHtml(phone)}</strong></span>
+                <button onclick="window.changePhoneNumber()" class="change-phone-btn"><i class="fa-solid fa-pen"></i> Change</button>
             </div>
         `;
     }
 
-    function getTrackerStep(checkStatus) {
-        if (checkStatus === 'delivered') return 4;
-        if (checkStatus === 'outfordelivery') return 3;
-        if (checkStatus === 'shipped') return 2;
-        if (checkStatus === 'cancelled' || checkStatus === 'rejected') return -1;
-        if (checkStatus === 'returnrequested' || checkStatus === 'returned') return 5;
-        return 1;
-    }
-
     function renderOrdersList(orders) {
         const list = document.getElementById('ordersList');
-        if (orders.length === 0) {
-            list.innerHTML = getPhoneHeaderHtml(activePhoneString) + `
-                <div class="empty-state">
-                    <i class="fa-solid fa-magnifying-glass" style="font-size:2rem; color:var(--text-muted); margin-bottom:10px;"></i>
-                    <p style="font-size:0.95rem; font-weight:800; color:var(--primary); margin-bottom:4px;">No Matching Orders</p>
-                    <p style="font-size:0.8rem; color:var(--text-muted);">Try searching with another product name or order ID.</p>
-                </div>`;
-            return;
-        }
-
         let html = getPhoneHeaderHtml(activePhoneString);
 
         orders.forEach(order => {
             const displayStatus = order.status || 'Order Confirmed';
-            const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '').trim();
-            const step = getTrackerStep(checkStatus);
+            const checkStatus = displayStatus.toLowerCase().replace(/\s+/g, '');
+            const expired = isReturnPeriodExpired(order);
 
-            let dotClass = 'dot-shipped';
             let statusText = displayStatus;
-
-            if (checkStatus === 'delivered') {
-                dotClass = 'dot-delivered';
-                statusText = order.deliveryDate ? `Delivered on ${order.deliveryDate}` : 'Delivered';
-            } else if (checkStatus === 'shipped') {
-                dotClass = 'dot-shipped';
-                statusText = order.deliveryDate ? `Arriving by ${order.deliveryDate}` : 'Shipped • In Transit';
-            } else if (checkStatus === 'cancelled') {
-                dotClass = 'dot-cancelled';
-                statusText = 'Order Cancelled';
-            } else if (checkStatus === 'returnrequested') {
-                dotClass = 'dot-shipped';
-                statusText = 'Return Requested';
-            } else if (checkStatus === 'returned') {
-                dotClass = 'dot-returned';
-                statusText = 'Returned & Refunded';
-            } else {
-                dotClass = 'dot-pending';
-                statusText = order.deliveryDate ? `Expected Delivery: ${order.deliveryDate}` : 'Order Confirmed';
-            }
+            let dotClass = 'dot-shipped';
+            if (checkStatus === 'delivered') { dotClass = 'dot-delivered'; statusText = 'Delivered'; }
+            else if (checkStatus === 'cancelled') { dotClass = 'dot-cancelled'; statusText = 'Cancelled'; }
+            else if (checkStatus === 'returned' || checkStatus === 'returnrequested') { dotClass = 'dot-returned'; statusText = 'Return Processed'; }
 
             const mainImg = getOrderImage(order);
-            let mainTitle = "Product";
-            let mainSize = "Free Size";
-            let mainQty = 1;
-            let totalPrice = order.price || "0";
-            
-            const hasReturnPolicy = isOrderReturnable(order);
-            const expired = isReturnExpired(order);
-            const showReturnBtn = hasReturnPolicy && !expired && (checkStatus === 'delivered');
-
-            if (Array.isArray(order.items) && order.items.length > 0) {
-                const first = order.items[0];
-                mainTitle = first.name || first.title || mainTitle;
-                mainSize = first.selectedSize || first.size || "Free Size";
-                mainQty = first.quantity || 1;
-                if (order.items.length > 1) {
-                    mainTitle += ` <span style="color:var(--accent-dark); font-weight:800;">(+${order.items.length - 1} more)</span>`;
-                }
-            } else {
-                mainTitle = order.productName || mainTitle;
-                mainSize = order.selectedSize || order.size || "Free Size";
-                mainQty = order.quantity || 1;
-            }
-
-            let trackerHtml = '';
-            if (step === -1) {
-                trackerHtml = `
-                <div class="meesho-tracker-wrap">
-                    <div class="meesho-tracker">
-                        <div class="tracker-step completed"><div class="tracker-dot"><i class="fa-solid fa-receipt"></i></div><span class="tracker-label">Placed</span></div>
-                        <div class="tracker-line" style="background:#ef4444;"></div>
-                        <div class="tracker-step cancelled"><div class="tracker-dot"><i class="fa-solid fa-ban"></i></div><span class="tracker-label" style="color:#ef4444;">Cancelled</span></div>
-                    </div>
-                </div>`;
-            } else if (step === 5) {
-                trackerHtml = `
-                <div class="meesho-tracker-wrap">
-                    <div class="meesho-tracker">
-                        <div class="tracker-step completed"><div class="tracker-dot"><i class="fa-solid fa-box-open"></i></div><span class="tracker-label">Delivered</span></div>
-                        <div class="tracker-line completed"></div>
-                        <div class="tracker-step active"><div class="tracker-dot"><i class="fa-solid fa-rotate-left"></i></div><span class="tracker-label">${checkStatus === 'returned' ? 'Returned' : 'Return'}</span></div>
-                    </div>
-                </div>`;
-            } else {
-                trackerHtml = `
-                <div class="meesho-tracker-wrap">
-                    <div class="meesho-tracker">
-                        <div class="tracker-step ${step >= 1 ? 'completed' : ''}"><div class="tracker-dot"><i class="fa-solid fa-receipt"></i></div><span class="tracker-label">Placed</span></div>
-                        <div class="tracker-line ${step >= 2 ? 'completed' : ''}"></div>
-                        <div class="tracker-step ${step >= 2 ? (step === 2 ? 'active' : 'completed') : ''}"><div class="tracker-dot"><i class="fa-solid fa-box"></i></div><span class="tracker-label">Packed</span></div>
-                        <div class="tracker-line ${step >= 3 ? 'completed' : ''}"></div>
-                        <div class="tracker-step ${step >= 3 ? (step === 3 ? 'active' : 'completed') : ''}"><div class="tracker-dot"><i class="fa-solid fa-truck-fast"></i></div><span class="tracker-label">Shipped</span></div>
-                        <div class="tracker-line ${step >= 4 ? 'completed' : ''}"></div>
-                        <div class="tracker-step ${step >= 4 ? 'completed' : ''}"><div class="tracker-dot"><i class="fa-solid fa-box-open"></i></div><span class="tracker-label">Delivered</span></div>
-                    </div>
-                </div>`;
-            }
+            const mainTitle = order.productName || (order.items && order.items[0]?.name) || "Product";
+            const totalPrice = order.price || "0";
 
             let actionStripHtml = '';
             if (checkStatus === 'delivered') {
-                const returnButtonHtml = showReturnBtn ? `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>` : '';
+                // Return button dynamically hides if 7 days have passed
+                const returnButtonHtml = !expired ? `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>` : '';
 
-                if (order.reviewed) {
-                    actionStripHtml = `
-                        <div class="meesho-action-strip">
-                            <span style="font-size:0.72rem; font-weight:800; color:#16a34a; display:flex; align-items:center; gap:4px;">
-                                <i class="fa-solid fa-star" style="color:var(--accent);"></i> Rated (${order.reviewRating || 5}/5)
-                            </span>
-                            ${returnButtonHtml}
-                            <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
-                        </div>`;
-                } else {
-                    actionStripHtml = `
-                        <div class="meesho-action-strip">
-                            <button type="button" onclick="event.stopPropagation(); window.openReviewModal('${order.id}')" class="meesho-review-btn">
-                                <i class="fa-regular fa-star"></i> Rate & Review
-                            </button>
-                            ${returnButtonHtml}
-                            <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
-                        </div>`;
-                }
+                actionStripHtml = `
+                    <div class="meesho-action-strip">
+                        <button type="button" onclick="event.stopPropagation(); window.openReviewModal('${order.id}')" class="meesho-review-btn"><i class="fa-regular fa-star"></i> Review</button>
+                        ${returnButtonHtml}
+                        <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
+                    </div>`;
             } else if (checkStatus === 'pending' || checkStatus === 'orderconfirmed' || checkStatus === 'confirmed') {
                 actionStripHtml = `
                     <div class="meesho-action-strip">
-                        <button type="button" onclick="event.stopPropagation(); window.cancelOrder('${order.id}')" class="meesho-cancel-btn">
-                            <i class="fa-solid fa-ban"></i> Cancel Order
-                        </button>
+                        <button type="button" onclick="event.stopPropagation(); window.cancelOrder('${order.id}')" class="meesho-cancel-btn"><i class="fa-solid fa-ban"></i> Cancel</button>
                         <div class="view-details-tag">Track Order <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
-                    </div>`;
-            } else {
-                actionStripHtml = `
-                    <div class="meesho-action-strip">
-                        <span style="font-size:0.7rem; font-weight:700; color:var(--text-muted);"><i class="fa-solid fa-clock"></i> Updated Recently</span>
-                        <div class="view-details-tag">View Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
                     </div>`;
             }
 
@@ -1031,21 +662,14 @@
                     </div>
 
                     <div class="meesho-item-body">
-                        <div class="meesho-thumb-wrap">
-                            <img src="${escapeHtml(mainImg)}" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMG}';" alt="Product Photo" loading="lazy">
-                        </div>
+                        <div class="meesho-thumb-wrap"><img src="${escapeHtml(mainImg)}" onerror="this.src='${DEFAULT_FALLBACK_IMG}'"></div>
                         <div class="meesho-item-details">
                             <h3 class="meesho-item-title">${mainTitle}</h3>
-                            <div class="meesho-item-sub">
-                                <span>Size: <b>${escapeHtml(mainSize)}</b></span>
-                                <span>•</span>
-                                <span>Qty: <b>${escapeHtml(mainQty)}</b></span>
-                            </div>
+                            <div class="meesho-item-sub">Qty: <b>${order.quantity || 1}</b></div>
                             <div class="meesho-item-price">₹${escapeHtml(totalPrice)}</div>
                         </div>
                     </div>
 
-                    ${trackerHtml}
                     ${actionStripHtml}
                 </div>
             `;
@@ -1054,305 +678,68 @@
         list.innerHTML = html;
     }
 
-    const searchInput = document.getElementById('orderSearchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            if (!query) {
-                renderOrdersList(allOrdersList);
-                return;
-            }
-
-            const filtered = allOrdersList.filter(o => {
-                const idMatch = String(o.id || '').toLowerCase().includes(query);
-                const titleMatch = String(o.productName || '').toLowerCase().includes(query);
-                const itemsMatch = Array.isArray(o.items) && o.items.some(i => (i.name || i.title || '').toLowerCase().includes(query));
-                return idMatch || titleMatch || itemsMatch;
-            });
-            renderOrdersList(filtered);
-        });
-    }
-
     window.showOrderDetails = (orderId) => {
         const order = cachedOrders[orderId];
         if (!order) return;
 
-        const rawStatus = order.status || 'Order Confirmed';
-        const checkStatus = rawStatus.toLowerCase().replace(/\s+/g, '').trim();
-        const isCOD = (order.paymentMethod === 'COD' || order.paymentStatus === 'COD');
-        const isPaid = (order.paymentStatus === 'Paid' || order.paymentStatus === 'Success') && !isCOD;
-        
-        let itemsListHtml = '';
-        const orderHasReturnableProduct = isOrderReturnable(order);
-        const expired = isReturnExpired(order);
+        const expired = isReturnPeriodExpired(order);
+        const checkStatus = (order.status || '').toLowerCase().replace(/\s+/g, '');
 
-        if (Array.isArray(order.items) && order.items.length > 0) {
-            order.items.forEach(item => {
-                const itemImg = getItemImage(item);
-                itemsListHtml += `
-                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #f1f5f9;">
-                        <img src="${escapeHtml(itemImg)}" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMG}';" style="width:44px; height:44px; object-fit:contain; border-radius:10px; background:#fff; padding:2px; border:1px solid #f1f1f1; flex-shrink:0;">
-                        <div style="flex-grow:1; min-width:0;">
-                            <div style="font-weight:700; font-size:0.82rem; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(item.name || 'Product')}</div>
-                            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">₹${escapeHtml(item.price || '0')} | Qty: ${item.quantity || 1} • Size: ${escapeHtml(item.selectedSize || item.size || 'Free Size')}</div>
-                        </div>
-                    </div>`;
-            });
-        } else {
-            const singleImg = getOrderImage(order);
-            itemsListHtml += `
-                <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #f1f5f9;">
-                    <img src="${escapeHtml(singleImg)}" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMG}';" style="width:44px; height:44px; object-fit:contain; border-radius:10px; background:#fff; padding:2px; border:1px solid #f1f1f1; flex-shrink:0;">
-                    <div style="flex-grow:1; min-width:0;">
-                        <div style="font-weight:700; font-size:0.82rem; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(order.productName || 'Product')}</div>
-                        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">₹${escapeHtml(order.price || '0')} | Qty: ${order.quantity || 1} • Size: ${escapeHtml(order.selectedSize || 'Free Size')}</div>
-                    </div>
-                </div>`;
-        }
-
-        let actionBtnHtml = '';
-        if (checkStatus === 'pending' || checkStatus === 'orderconfirmed' || checkStatus === 'confirmed') { 
-            actionBtnHtml = `<button onclick="window.cancelOrder('${order.id}')" style="width:100%; padding:11px; background:#fee2e2; color:#ef4444; border:none; border-radius:12px; font-weight:800; margin-top:14px; cursor:pointer; font-size:0.82rem;"><i class="fa-solid fa-ban"></i> Cancel Order</button>`; 
-        } else if (checkStatus === 'delivered') { 
-            if (orderHasReturnableProduct) {
-                if (expired) {
-                    actionBtnHtml = `<div style="width:100%; padding:11px; background:#f1f5f9; color:var(--text-muted); border:1px solid var(--border-color); border-radius:12px; font-weight:700; margin-top:14px; text-align:center; font-size:0.78rem;"><i class="fa-solid fa-circle-xmark"></i> Return Period Expired (7 Days)</div>`;
-                } else {
-                    actionBtnHtml = `<button onclick="window.requestReturn('${order.id}')" style="width:100%; padding:11px; background:#fff7e6; color:var(--accent-dark); border:1.5px solid #fde3a7; border-radius:12px; font-weight:800; margin-top:14px; cursor:pointer; font-size:0.82rem;"><i class="fa-solid fa-rotate-left"></i> Request Return / Refund</button>`;
-                }
+        let returnSection = '';
+        if (checkStatus === 'delivered') {
+            if (expired) {
+                returnSection = `<div style="padding:8px; background:#f1f5f9; color:var(--text-muted); border-radius:8px; text-align:center; font-size:0.75rem; font-weight:700; margin-top:10px;"><i class="fa-solid fa-circle-xmark"></i> 7-Day Return Period Expired</div>`;
+            } else {
+                returnSection = `<button onclick="window.requestReturn('${order.id}')" style="width:100%; padding:10px; background:#fff7e6; color:var(--accent-dark); border:1px solid #fde3a7; border-radius:8px; font-weight:800; margin-top:12px; cursor:pointer;"><i class="fa-solid fa-rotate-left"></i> Request Return</button>`;
             }
         }
 
-        const paymentModeText = isCOD ? 'Cash on Delivery (COD)' : (isPaid ? 'Online Paid (Secure)' : 'Pending');
-
         Swal.fire({
-            title: `Order Details`,
+            title: `Order Summary`,
             html: `
                 <div class="modal-detail-box">
-                    <div style="font-size:0.72rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">ORDER ID: #${escapeHtml(order.id)}</div>
-                    
-                    <div class="modal-section-title">Items Ordered</div>
-                    ${itemsListHtml}
-
-                    <div class="modal-section-title">Delivery Status</div>
-                    <p><strong>Current Status:</strong> <span style="font-weight:800; color:var(--accent-dark);">${escapeHtml(rawStatus)}</span></p>
-                    <p><strong>Expected Delivery:</strong> <span style="font-weight:700; color:var(--text-main);">${escapeHtml(order.deliveryDate || 'Will update shortly')}</span></p>
-                    <p><strong>Order Placed Date:</strong> <span style="font-weight:600; color:var(--text-main);">${escapeHtml(order.date || 'N/A')}</span></p>
-
-                    <div class="modal-section-title">Delivery Address</div>
-                    <div style="background:#f8fafc; padding:10px; border-radius:12px; margin-top:4px; border:1px solid #f1f5f9;">
-                        <p style="font-weight:800; color:var(--text-main); margin:0;">${escapeHtml(order.customerName || 'Customer')}</p>
-                        <p style="margin:4px 0 2px 0; color:var(--text-muted); font-size:0.78rem; line-height: 1.4;">${escapeHtml(order.address || 'N/A')}</p>
-                        <p style="margin:0; color:var(--text-muted); font-size:0.78rem;">Phone: +91 ${escapeHtml(order.customerPhone || order.phone || order.userPhone)}</p>
-                    </div>
-
-                    <div class="modal-section-title">Price Breakdown</div>
+                    <p><strong>Order ID:</strong> <span>#${escapeHtml(order.id)}</span></p>
+                    <p><strong>Status:</strong> <span style="font-weight:800;">${escapeHtml(order.status || 'Confirmed')}</span></p>
                     <p><strong>Total Amount:</strong> <span class="highlight-price">₹${escapeHtml(order.price || '0')}</span></p>
-                    <p><strong>Payment Mode:</strong> <span class="highlight-paymode">${paymentModeText}</span></p>
-                    <p><strong>Delivery Charges:</strong> <span style="font-weight:800; color:#16a34a;">FREE</span></p>
-
-                    ${actionBtnHtml}
+                    <div class="modal-section-title">Delivery Address</div>
+                    <div style="background:#f8fafc; padding:8px; border-radius:8px; font-size:0.75rem; color:var(--text-muted);">
+                        ${escapeHtml(order.customerName || 'Customer')}<br>
+                        ${escapeHtml(order.address || 'N/A')}
+                    </div>
+                    ${returnSection}
                 </div>
             `,
-            showConfirmButton: true,
-            confirmButtonText: 'Done',
+            confirmButtonText: 'Close',
             customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
-        });
-    };
-
-    window.cancelOrder = (orderId) => {
-        const order = cachedOrders[orderId];
-        if (!order) return;
-
-        Swal.fire({
-            title: 'Cancel Order?',
-            text: `Are you sure you want to cancel Order #${orderId}?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Cancel',
-            cancelButtonText: 'No, Keep Order',
-            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' }
-        }).then((res) => {
-            if(res.isConfirmed) {
-                update(ref(db, `orders/${order.userPhone}/${orderId}`), { 
-                    status: 'Cancelled',
-                    cancelledAt: new Date().toISOString()
-                })
-                .then(() => {
-                    showAlert('Cancelled', 'Your order was successfully cancelled.', 'success');
-                })
-                .catch((err) => {
-                    showAlert('Error', err.message || 'Failed to cancel order.', 'error');
-                });
-            }
         });
     };
 
     window.requestReturn = (orderId) => {
         const order = cachedOrders[orderId];
-        if (!order) return;
-        const phone = order.userPhone || '';
+        if (!order || isReturnPeriodExpired(order)) return;
 
         Swal.fire({
-            title: 'Select Refund Option',
-            html: `
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Where would you like to receive your refund?</p>
-                <div class="swal-radio-group">
-                    <label class="swal-radio-option">
-                        <input type="radio" name="refundMethod" value="Mobile Number" checked>
-                        <span><i class="fa-solid fa-mobile-screen" style="color:var(--accent);"></i> UPI Mobile (GPay / PhonePe)</span>
-                    </label>
-                    <label class="swal-radio-option">
-                        <input type="radio" name="refundMethod" value="UPI ID">
-                        <span><i class="fa-solid fa-building-columns" style="color:var(--accent);"></i> Active UPI ID</span>
-                    </label>
-                </div>
-                <input type="text" id="refundDetailsInput" class="swal-input-field" placeholder="Enter 10-digit Mobile Number" value="${escapeHtml(phone)}">
-                
-                <div style="margin-top: 12px; text-align: left;">
-                    <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-main);">Email Address for Confirmation</label>
-                    <input type="email" id="refundEmailInput" class="swal-input-field" placeholder="e.g. yourname@gmail.com">
-                </div>
-            `,
+            title: 'Request Return',
+            text: 'Are you sure you want to request return for this item?',
+            icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Submit Request',
-            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' },
-            didOpen: () => {
-                const inputField = document.getElementById('refundDetailsInput');
-                const radios = document.querySelectorAll('input[name="refundMethod"]');
-                radios.forEach(radio => {
-                    radio.addEventListener('change', () => {
-                        if (radio.value === 'Mobile Number') {
-                            inputField.placeholder = "Enter 10-digit Mobile Number";
-                            inputField.value = phone;
-                        } else {
-                            inputField.placeholder = "e.g. mobile@upi or username@okaxis";
-                            inputField.value = "";
-                        }
-                    });
-                });
-            },
-            preConfirm: () => {
-                const selectedRadio = document.querySelector('input[name="refundMethod"]:checked');
-                const selectedMethod = selectedRadio ? selectedRadio.value : 'Mobile Number';
-                const detailsValue = document.getElementById('refundDetailsInput').value.trim();
-                const emailValue = document.getElementById('refundEmailInput').value.trim();
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                if (!detailsValue) {
-                    Swal.showValidationMessage(`Please enter your ${selectedMethod}`);
-                    return false;
-                }
-                if (selectedMethod === 'UPI ID' && !detailsValue.includes('@')) {
-                    Swal.showValidationMessage(`Please enter a valid UPI ID (e.g. name@upi)`);
-                    return false;
-                }
-                if (!emailValue || !emailRegex.test(emailValue)) {
-                    Swal.showValidationMessage(`Please enter a valid Email ID`);
-                    return false;
-                }
-                
-                return { method: selectedMethod, details: detailsValue, email: emailValue };
-            }
+            confirmButtonText: 'Confirm'
         }).then((res) => {
             if (res.isConfirmed) {
-                update(ref(db, `orders/${order.userPhone}/${orderId}`), { 
-                    status: 'Return Requested',
-                    refundMethod: res.value.method,
-                    refundDetails: res.value.details,
-                    refundEmail: res.value.email,
-                    returnRequestedAt: new Date().toISOString()
-                })
-                .then(() => {
-                    showAlert('Request Submitted', 'Your return request has been submitted for pickup & refund.', 'success');
-                })
-                .catch((err) => {
-                    showAlert('Error', err.message || 'Failed to submit return request.', 'error');
-                });
+                update(ref(db, `orders/${order.userPhone}/${orderId}`), { status: 'Return Requested' })
+                .then(() => Swal.fire('Submitted', 'Return request sent successfully.', 'success'));
             }
         });
     };
 
     window.openReviewModal = (orderId) => {
+        Swal.fire('Rate Order', 'Feedback options logged.', 'info');
+    };
+
+    window.cancelOrder = (orderId) => {
         const order = cachedOrders[orderId];
         if (!order) return;
-        let currentRating = 5;
-
-        Swal.fire({
-            title: 'Rate Product',
-            html: `
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 4px;">How was your experience with this purchase?</p>
-                <div class="star-rating" id="starContainer" data-rating="5">
-                    <i class="fa-solid fa-star selected" data-value="1"></i>
-                    <i class="fa-solid fa-star selected" data-value="2"></i>
-                    <i class="fa-solid fa-star selected" data-value="3"></i>
-                    <i class="fa-solid fa-star selected" data-value="4"></i>
-                    <i class="fa-solid fa-star selected" data-value="5"></i>
-                </div>
-                <textarea id="reviewComment" class="swal-input-field" rows="3" placeholder="Write feedback about product quality, fit, etc..."></textarea>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Submit Review',
-            customClass: { popup: 'swal-custom-popup', title: 'swal-custom-title', confirmButton: 'swal-custom-confirm' },
-            didOpen: () => {
-                const starContainer = document.getElementById('starContainer');
-                const stars = starContainer.querySelectorAll('i');
-
-                stars.forEach(star => {
-                    star.addEventListener('click', (e) => {
-                        const targetVal = e.currentTarget.getAttribute('data-value');
-                        currentRating = parseInt(targetVal, 10);
-                        starContainer.setAttribute('data-rating', currentRating);
-
-                        stars.forEach((s, idx) => {
-                            if (idx < currentRating) s.classList.add('selected');
-                            else s.classList.remove('selected');
-                        });
-                    });
-                });
-            },
-            preConfirm: () => {
-                const comment = document.getElementById('reviewComment').value.trim();
-                if (!comment) {
-                    Swal.showValidationMessage('Please write a short review.');
-                    return false;
-                }
-                return { rating: currentRating, comment: comment };
-            }
-        }).then(async (res) => {
-            if (res.isConfirmed) {
-                const reviewData = {
-                    userName: order.customerName || "Customer",
-                    userPhone: order.userPhone,
-                    rating: res.value.rating,
-                    comment: res.value.comment,
-                    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-                };
-
-                try {
-                    await update(ref(db, `orders/${order.userPhone}/${orderId}`), { 
-                        reviewed: true,
-                        reviewRating: res.value.rating,
-                        reviewComment: res.value.comment
-                    });
-
-                    if (Array.isArray(order.items)) {
-                        for (const item of order.items) {
-                            const pId = item.id || item.productId;
-                            if (pId) {
-                                try { await push(ref(db, `products/${pId}/reviews`), reviewData); } catch(e){}
-                            }
-                        }
-                    } else if (order.productId) {
-                        try { await push(ref(db, `products/${order.productId}/reviews`), reviewData); } catch(e){}
-                    }
-
-                    showAlert('Thank You!', 'Your review has been published successfully.', 'success');
-                } catch(err) {
-                    showAlert('Error', err.message || 'Could not save review.', 'error');
-                }
-            }
-        });
+        update(ref(db, `orders/${order.userPhone}/${orderId}`), { status: 'Cancelled' });
     };
     </script>
 </body> 
