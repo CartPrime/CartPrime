@@ -26,14 +26,14 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); padding: 16px 4% 30px; max-width: 760px; margin: 0 auto; color: var(--text-main); }
+        body { background: var(--bg); padding: 16px 3.5% 30px; max-width: 760px; margin: 0 auto; color: var(--text-main); }
         
         /* Sticky Top Header */
         .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .back-btn { text-decoration: none; color: var(--primary); font-size: 1rem; background: var(--white); width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1.5px solid var(--border-color); transition: all 0.2s ease; cursor: pointer; }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .back-btn { text-decoration: none; color: var(--primary); font-size: 1rem; background: var(--white); width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1.5px solid var(--border-color); transition: all 0.2s ease; cursor: pointer; flex-shrink: 0; }
         .back-btn:hover { background: #fff7e6; border-color: var(--accent); color: var(--accent); }
-        .header-title { font-weight: 800; letter-spacing: -0.6px; font-size: 1.35rem; color: var(--primary); }
+        .header-title { font-weight: 800; letter-spacing: -0.6px; font-size: 1.25rem; color: var(--primary); }
 
         /* Security Assurance Banner */
         .security-banner {
@@ -45,7 +45,7 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 14px;
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             color: #b45309;
             font-weight: 700;
         }
@@ -85,23 +85,25 @@
         .active-phone-bar {
             background: var(--white);
             border: 1.5px solid var(--border-color);
-            padding: 11px 16px;
+            padding: 11px 14px;
             border-radius: 14px;
             margin-bottom: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            gap: 8px;
         }
         .change-phone-btn {
             background: #fee2e2;
             color: #ef4444;
             border: none;
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 8px;
             font-weight: 700;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             cursor: pointer;
+            flex-shrink: 0;
             transition: opacity 0.2s;
         }
         .change-phone-btn:hover { opacity: 0.85; }
@@ -134,11 +136,13 @@
             padding-bottom: 12px;
             border-bottom: 1px solid #f1f5f9;
             margin-bottom: 12px;
+            gap: 8px;
         }
         .meesho-status-wrap {
             display: flex;
             align-items: center;
             gap: 8px;
+            min-width: 0;
         }
         .status-dot-indicator {
             width: 10px;
@@ -153,25 +157,29 @@
         .dot-returned { background: #065f46; }
 
         .meesho-status-title {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 800;
             color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .meesho-order-id {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 700;
             color: var(--text-muted);
+            flex-shrink: 0;
         }
 
         /* Product Content Box */
         .meesho-item-body {
             display: flex;
-            gap: 14px;
+            gap: 12px;
             align-items: center;
         }
         .meesho-thumb-wrap {
-            width: 72px;
-            height: 72px;
+            width: 68px;
+            height: 68px;
             border-radius: 14px;
             background: #ffffff;
             border: 1.5px solid #e2e8f0;
@@ -194,7 +202,7 @@
 
         .meesho-item-details { flex-grow: 1; min-width: 0; }
         .meesho-item-title {
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--text-main);
             line-height: 1.35;
@@ -205,24 +213,25 @@
             overflow: hidden;
         }
         .meesho-item-sub {
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             color: var(--text-muted);
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 4px;
+            flex-wrap: wrap;
         }
         .meesho-item-price {
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-weight: 800;
             color: var(--primary);
         }
 
         /* Meesho Step Tracker */
         .meesho-tracker-wrap {
-            margin: 14px 0 10px 0;
-            padding: 10px 12px;
+            margin: 12px 0 8px 0;
+            padding: 8px 10px;
             background: #f8fafc;
             border-radius: 12px;
             border: 1px solid #f1f5f9;
@@ -237,24 +246,24 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             z-index: 2;
         }
         .tracker-dot {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: #e2e8f0;
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 800;
             transition: all 0.25s ease;
         }
         .tracker-label {
-            font-size: 0.64rem;
+            font-size: 0.6rem;
             font-weight: 700;
             color: var(--text-muted);
         }
@@ -276,7 +285,7 @@
             flex-grow: 1;
             height: 2px;
             background: #e2e8f0;
-            margin: -14px 4px 0 4px;
+            margin: -12px 2px 0 2px;
             z-index: 1;
         }
         .tracker-line.completed {
@@ -285,27 +294,27 @@
 
         /* Meesho Card Actions Strip */
         .meesho-action-strip {
-            margin-top: 12px;
+            margin-top: 10px;
             padding-top: 10px;
             border-top: 1px solid #f1f5f9;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
         .meesho-review-btn {
             background: #fff7e6;
             color: var(--accent-dark);
             border: 1px solid #fde3a7;
-            padding: 7px 12px;
+            padding: 6px 10px;
             border-radius: 10px;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             font-weight: 800;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             transition: all 0.2s ease;
         }
         .meesho-review-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
@@ -314,14 +323,14 @@
             background: #f8fafc;
             color: var(--text-main);
             border: 1.5px solid var(--border-color);
-            padding: 7px 12px;
+            padding: 6px 10px;
             border-radius: 10px;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .meesho-return-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
 
@@ -329,15 +338,15 @@
             background: #fee2e2;
             color: #ef4444;
             border: none;
-            padding: 7px 14px;
+            padding: 6px 12px;
             border-radius: 10px;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             font-weight: 700;
             cursor: pointer;
         }
 
         .view-details-tag {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 700;
             color: var(--accent-dark);
             display: flex;
@@ -350,37 +359,37 @@
         .empty-state { text-align: center; margin-top: 30px; color: var(--text-muted); font-weight: 700; background: var(--white); padding: 35px 20px; border-radius: 20px; border: 1.5px solid var(--border-color); }
         
         /* Phone Input Box */
-        .phone-input-box { background: var(--white); padding: 32px 24px; border-radius: 22px; border: 1.5px solid var(--border-color); text-align: center; max-width: 420px; margin: 40px auto; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.04); }
-        .phone-input-box input { width: 100%; padding: 13px 16px; border-radius: 14px; border: 1.5px solid var(--border-color); font-weight: 600; margin: 15px 0; font-size: 0.92rem; outline: none; background: #f8fafc; transition: all 0.2s; }
+        .phone-input-box { background: var(--white); padding: 28px 20px; border-radius: 22px; border: 1.5px solid var(--border-color); text-align: center; max-width: 420px; margin: 30px auto; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.04); }
+        .phone-input-box input { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--border-color); font-weight: 600; margin: 14px 0; font-size: 0.9rem; outline: none; background: #f8fafc; transition: all 0.2s; }
         .phone-input-box input:focus { border-color: var(--accent); background: var(--white); box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
-        .phone-input-box button { width: 100%; padding: 13px; background: var(--primary); color: #fff; border: none; border-radius: 14px; font-weight: 800; cursor: pointer; transition: all 0.2s; font-size: 0.92rem; }
+        .phone-input-box button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 14px; font-weight: 800; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
         .phone-input-box button:hover { background: var(--accent); color: #000; }
 
         /* SweetAlert Popup Styling (CartPrime Theme) */
         .swal2-container { background: rgba(15, 23, 42, 0.5) !important; backdrop-filter: blur(6px) !important; }
-        .swal-custom-popup { border-radius: 24px !important; padding: 1.5rem !important; width: 92% !important; max-width: 460px !important; border: 1.5px solid var(--border-color) !important; box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.2) !important; background: #ffffff !important; }
-        .swal-custom-title { font-weight: 800 !important; color: var(--primary) !important; font-size: 1.25rem !important; letter-spacing: -0.5px; }
-        .swal-custom-confirm { background-color: var(--primary) !important; border-radius: 12px !important; padding: 11px 24px !important; font-weight: 800 !important; font-size: 0.88rem !important; box-shadow: none !important; }
+        .swal-custom-popup { border-radius: 24px !important; padding: 1.25rem !important; width: 94% !important; max-width: 440px !important; border: 1.5px solid var(--border-color) !important; box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.2) !important; background: #ffffff !important; }
+        .swal-custom-title { font-weight: 800 !important; color: var(--primary) !important; font-size: 1.15rem !important; letter-spacing: -0.5px; }
+        .swal-custom-confirm { background-color: var(--primary) !important; border-radius: 12px !important; padding: 10px 20px !important; font-weight: 800 !important; font-size: 0.85rem !important; box-shadow: none !important; }
         .swal-custom-confirm:hover { background-color: var(--accent) !important; color: #000 !important; }
-        .swal2-cancel { border-radius: 12px !important; padding: 11px 24px !important; font-weight: 700 !important; font-size: 0.88rem !important; background: #f1f5f9 !important; color: var(--text-main) !important; box-shadow: none !important; }
+        .swal2-cancel { border-radius: 12px !important; padding: 10px 20px !important; font-weight: 700 !important; font-size: 0.85rem !important; background: #f1f5f9 !important; color: var(--text-main) !important; box-shadow: none !important; }
 
-        .swal-radio-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; text-align: left; width: 100%; }
-        .swal-radio-option { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 0.84rem; cursor: pointer; background: #f8fafc; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--border-color); transition: all 0.2s; }
+        .swal-radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; text-align: left; width: 100%; }
+        .swal-radio-option { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.82rem; cursor: pointer; background: #f8fafc; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--border-color); transition: all 0.2s; }
         .swal-radio-option:hover { background: #fff7e6; border-color: #fde3a7; }
-        .swal-radio-option input { accent-color: var(--accent); width: 17px; height: 17px; cursor: pointer; }
-        .swal-input-field { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--border-color); margin-top: 10px; font-size: 0.88rem; font-weight: 600; outline: none; background: #f8fafc; transition: all 0.2s; }
+        .swal-radio-option input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+        .swal-input-field { width: 100%; padding: 11px 12px; border-radius: 12px; border: 1.5px solid var(--border-color); margin-top: 8px; font-size: 0.85rem; font-weight: 600; outline: none; background: #f8fafc; transition: all 0.2s; }
         .swal-input-field:focus { border-color: var(--accent); background: var(--white); box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
 
         /* Modal Details */
-        .modal-detail-box { text-align: left; font-size: 0.85rem; color: var(--text-main); margin-top: 10px; }
-        .modal-detail-box p { margin-bottom: 9px; line-height: 1.5; display: flex; align-items: center; justify-content: space-between; }
-        .modal-section-title { font-weight: 800; font-size: 0.74rem; text-transform: uppercase; color: var(--text-muted); margin-top: 16px; margin-bottom: 8px; border-top: 1px dashed var(--border-color); padding-top: 12px; letter-spacing: 0.5px; }
+        .modal-detail-box { text-align: left; font-size: 0.82rem; color: var(--text-main); margin-top: 8px; }
+        .modal-detail-box p { margin-bottom: 8px; line-height: 1.45; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+        .modal-section-title { font-weight: 800; font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); margin-top: 14px; margin-bottom: 6px; border-top: 1px dashed var(--border-color); padding-top: 10px; letter-spacing: 0.5px; }
 
-        .highlight-price { font-weight: 800; color: #16a34a; font-size: 1rem; background: #f0fdf4; padding: 4px 10px; border-radius: 8px; border: 1px solid #bbf7d0; }
-        .highlight-paymode { font-weight: 800; color: #b45309; font-size: 0.8rem; background: #fff7e6; padding: 4px 10px; border-radius: 8px; border: 1px solid #fde3a7; }
+        .highlight-price { font-weight: 800; color: #16a34a; font-size: 0.95rem; background: #f0fdf4; padding: 3px 8px; border-radius: 8px; border: 1px solid #bbf7d0; }
+        .highlight-paymode { font-weight: 800; color: #b45309; font-size: 0.76rem; background: #fff7e6; padding: 3px 8px; border-radius: 8px; border: 1px solid #fde3a7; }
 
         /* Star Rating in Review Modal */
-        .star-rating { display: flex; gap: 10px; justify-content: center; font-size: 2rem; margin: 15px 0; cursor: pointer; color: #cbd5e1; }
+        .star-rating { display: flex; gap: 8px; justify-content: center; font-size: 1.8rem; margin: 12px 0; cursor: pointer; color: #cbd5e1; }
         .star-rating i { transition: color 0.2s ease, transform 0.2s ease; }
         .star-rating i:hover { transform: scale(1.15); }
         .star-rating[data-rating="1"] i.selected { color: #ef4444 !important; }
@@ -393,45 +402,46 @@
         .trust-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 22px 0 14px 0;
-            padding: 14px;
+            gap: 8px;
+            margin: 20px 0 12px 0;
+            padding: 12px;
             background: var(--white);
             border: 1.5px solid var(--border-color);
             border-radius: 18px;
             text-align: center;
         }
-        .trust-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .trust-item i { font-size: 1.15rem; color: var(--accent); }
-        .trust-item span { font-size: 0.72rem; font-weight: 800; color: var(--text-muted); }
+        .trust-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .trust-item i { font-size: 1.1rem; color: var(--accent); }
+        .trust-item span { font-size: 0.68rem; font-weight: 800; color: var(--text-muted); }
 
         .support-card {
             background: var(--white);
             border: 1.5px solid var(--border-color);
             border-radius: 16px;
-            padding: 14px 18px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 25px;
             cursor: pointer;
             transition: all 0.2s ease;
+            gap: 10px;
         }
         .support-card:hover { border-color: var(--accent); background: #fffdf7; transform: translateY(-1px); }
-        .support-info { display: flex; align-items: center; gap: 12px; }
-        .support-info i { font-size: 1.25rem; color: var(--accent); }
-        .support-text { display: flex; flex-direction: column; gap: 2px; }
-        .support-text span:first-child { font-size: 0.85rem; font-weight: 800; color: var(--primary); }
-        .support-text span:last-child { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
+        .support-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .support-info i { font-size: 1.15rem; color: var(--accent); flex-shrink: 0; }
+        .support-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .support-text span:first-child { font-size: 0.82rem; font-weight: 800; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .support-text span:last-child { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        @media (max-width: 480px) {
-            body { padding: 12px 3.5%; }
-            .meesho-order-card { padding: 14px; }
-            .meesho-thumb-wrap { width: 64px; height: 64px; }
-            .meesho-item-title { font-size: 0.82rem; }
-            .meesho-item-price { font-size: 0.88rem; }
-            .trust-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px 8px; }
-            .trust-item span { font-size: 0.65rem; }
+        @media (max-width: 420px) {
+            body { padding: 12px 3%; }
+            .meesho-order-card { padding: 12px; }
+            .meesho-thumb-wrap { width: 60px; height: 60px; }
+            .meesho-item-title { font-size: 0.8rem; }
+            .meesho-item-price { font-size: 0.85rem; }
+            .trust-grid { gap: 6px; padding: 10px 6px; }
+            .trust-item span { font-size: 0.62rem; }
         }
     </style>
 </head>
@@ -443,7 +453,7 @@
             <a href="index.html" class="back-btn" onclick="if(window.history.length > 1){ window.history.back(); return false; }"><i class="fa-solid fa-chevron-left"></i></a>
             <h1 class="header-title">My Orders</h1>
         </div>
-        <div style="font-size: 0.78rem; font-weight: 800; color: var(--accent-dark); background: #fff7e6; padding: 6px 12px; border-radius: 12px; border: 1px solid #fde3a7;">
+        <div style="font-size: 0.75rem; font-weight: 800; color: var(--accent-dark); background: #fff7e6; padding: 5px 10px; border-radius: 10px; border: 1px solid #fde3a7; flex-shrink: 0;">
             <i class="fa-solid fa-shield-halved"></i> Protected
         </div>
     </div>
@@ -489,11 +499,11 @@
         <div class="support-info">
             <i class="fa-solid fa-circle-question"></i>
             <div class="support-text">
-                <span>Need Help with an Order? <span style="color:var(--accent-dark); text-decoration:none;">Click Here</span></span>
+                <span>Need Help with an Order? <span style="color:var(--accent-dark);">Click Here</span></span>
                 <span>Get quick resolution on returns, replacement & delivery</span>
             </div>
         </div>
-        <i class="fa-solid fa-chevron-right" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0;"></i>
     </div>
 
     <script type="module">
@@ -685,17 +695,29 @@
         });
     };
 
-    // Strict Return Eligibility Checker
+    // Strict Return Eligibility Checker with robust fallbacks
     function isItemReturnable(item) {
         if (!item) return false;
         const val = item.return ?? item.returnPolicy ?? item.isReturnable ?? item.returnable;
-        if (val === undefined || val === null) return false;
+        if (val === undefined || val === null) {
+            // Default fallback to true for general items unless explicitly set false
+            return true;
+        }
         if (typeof val === 'boolean') return val;
         if (typeof val === 'string') {
             const lower = val.toLowerCase().trim();
             return lower !== 'false' && lower !== 'no' && lower !== 'none' && lower !== '';
         }
         return Boolean(val);
+    }
+
+    function isOrderReturnable(order) {
+        if (!order) return false;
+        if (order.return === false || order.returnPolicy === false || order.isReturnable === false) return false;
+        if (Array.isArray(order.items) && order.items.length > 0) {
+            return order.items.some(i => isItemReturnable(i));
+        }
+        return isItemReturnable(order);
     }
 
     function getSavedPhone() {
@@ -831,9 +853,9 @@
     function getPhoneHeaderHtml(phone) {
         return `
             <div class="active-phone-bar">
-                <span style="font-size:0.85rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-circle-check" style="color:#16a34a; font-size: 1.05rem;"></i>
-                    <span>Orders for: <strong style="color:var(--primary);">+91 ${escapeHtml(phone)}</strong></span>
+                <span style="font-size:0.82rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:6px; min-width:0; overflow:hidden;">
+                    <i class="fa-solid fa-circle-check" style="color:#16a34a; font-size: 1rem; flex-shrink:0;"></i>
+                    <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Orders for: <strong style="color:var(--primary);">+91 ${escapeHtml(phone)}</strong></span>
                 </span>
                 <button onclick="window.changePhoneNumber()" class="change-phone-btn">
                     <i class="fa-solid fa-pen-to-square"></i> Change
@@ -898,7 +920,7 @@
             let mainSize = "Free Size";
             let mainQty = 1;
             let totalPrice = order.price || "0";
-            let hasReturnPolicy = false;
+            const hasReturnPolicy = isOrderReturnable(order);
 
             if (Array.isArray(order.items) && order.items.length > 0) {
                 const first = order.items[0];
@@ -908,12 +930,10 @@
                 if (order.items.length > 1) {
                     mainTitle += ` <span style="color:var(--accent-dark); font-weight:800;">(+${order.items.length - 1} more)</span>`;
                 }
-                hasReturnPolicy = order.items.some(i => isItemReturnable(i));
             } else {
                 mainTitle = order.productName || mainTitle;
                 mainSize = order.selectedSize || order.size || "Free Size";
                 mainQty = order.quantity || 1;
-                hasReturnPolicy = isItemReturnable(order);
             }
 
             let trackerHtml = '';
@@ -957,8 +977,8 @@
                 if (order.reviewed) {
                     actionStripHtml = `
                         <div class="meesho-action-strip">
-                            <span style="font-size:0.75rem; font-weight:800; color:#16a34a; display:flex; align-items:center; gap:5px;">
-                                <i class="fa-solid fa-star" style="color:var(--accent);"></i> You rated (${order.reviewRating || 5}/5)
+                            <span style="font-size:0.72rem; font-weight:800; color:#16a34a; display:flex; align-items:center; gap:4px;">
+                                <i class="fa-solid fa-star" style="color:var(--accent);"></i> Rated (${order.reviewRating || 5}/5)
                             </span>
                             ${returnButtonHtml}
                             <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
@@ -984,7 +1004,7 @@
             } else {
                 actionStripHtml = `
                     <div class="meesho-action-strip">
-                        <span style="font-size:0.72rem; font-weight:700; color:var(--text-muted);"><i class="fa-solid fa-clock"></i> Updated Recently</span>
+                        <span style="font-size:0.7rem; font-weight:700; color:var(--text-muted);"><i class="fa-solid fa-clock"></i> Updated Recently</span>
                         <div class="view-details-tag">View Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
                     </div>`;
             }
@@ -1052,30 +1072,28 @@
         const isPaid = (order.paymentStatus === 'Paid' || order.paymentStatus === 'Success') && !isCOD;
         
         let itemsListHtml = '';
-        let orderHasReturnableProduct = false;
+        const orderHasReturnableProduct = isOrderReturnable(order);
 
         if (Array.isArray(order.items) && order.items.length > 0) {
             order.items.forEach(item => {
-                if (isItemReturnable(item)) orderHasReturnableProduct = true;
                 const itemImg = getItemImage(item);
                 itemsListHtml += `
-                    <div style="display:flex; gap:12px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #f1f5f9;">
-                        <img src="${escapeHtml(itemImg)}" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMG}';" style="width:48px; height:48px; object-fit:contain; border-radius:10px; background:#fff; padding:2px; border:1px solid #f1f1f1;">
-                        <div style="flex-grow:1;">
-                            <div style="font-weight:700; font-size:0.84rem; color:var(--text-main);">${escapeHtml(item.name || 'Product')}</div>
-                            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">₹${escapeHtml(item.price || '0')} | Qty: ${item.quantity || 1} • Size: ${escapeHtml(item.selectedSize || item.size || 'Free Size')}</div>
+                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #f1f5f9;">
+                        <img src="${escapeHtml(itemImg)}" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMG}';" style="width:44px; height:44px; object-fit:contain; border-radius:10px; background:#fff; padding:2px; border:1px solid #f1f1f1; flex-shrink:0;">
+                        <div style="flex-grow:1; min-width:0;">
+                            <div style="font-weight:700; font-size:0.82rem; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(item.name || 'Product')}</div>
+                            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">₹${escapeHtml(item.price || '0')} | Qty: ${item.quantity || 1} • Size: ${escapeHtml(item.selectedSize || item.size || 'Free Size')}</div>
                         </div>
                     </div>`;
             });
         } else {
-            if (isItemReturnable(order)) orderHasReturnableProduct = true;
             const singleImg = getOrderImage(order);
             itemsListHtml += `
-                <div style="display:flex; gap:12px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #f1f5f9;">
-                    <img src="${escapeHtml(singleImg)}" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMG}';" style="width:48px; height:48px; object-fit:contain; border-radius:10px; background:#fff; padding:2px; border:1px solid #f1f1f1;">
-                    <div style="flex-grow:1;">
-                        <div style="font-weight:700; font-size:0.84rem; color:var(--text-main);">${escapeHtml(order.productName || 'Product')}</div>
-                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">₹${escapeHtml(order.price || '0')} | Qty: ${order.quantity || 1} • Size: ${escapeHtml(order.selectedSize || 'Free Size')}</div>
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #f1f5f9;">
+                    <img src="${escapeHtml(singleImg)}" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMG}';" style="width:44px; height:44px; object-fit:contain; border-radius:10px; background:#fff; padding:2px; border:1px solid #f1f1f1; flex-shrink:0;">
+                    <div style="flex-grow:1; min-width:0;">
+                        <div style="font-weight:700; font-size:0.82rem; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(order.productName || 'Product')}</div>
+                        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">₹${escapeHtml(order.price || '0')} | Qty: ${order.quantity || 1} • Size: ${escapeHtml(order.selectedSize || 'Free Size')}</div>
                     </div>
                 </div>`;
         }
@@ -1092,13 +1110,13 @@
 
         let actionBtnHtml = '';
         if (checkStatus === 'pending' || checkStatus === 'orderconfirmed' || checkStatus === 'confirmed') { 
-            actionBtnHtml = `<button onclick="window.cancelOrder('${order.id}')" style="width:100%; padding:12px; background:#fee2e2; color:#ef4444; border:none; border-radius:12px; font-weight:800; margin-top:16px; cursor:pointer; font-size:0.85rem;"><i class="fa-solid fa-ban"></i> Cancel Order</button>`; 
+            actionBtnHtml = `<button onclick="window.cancelOrder('${order.id}')" style="width:100%; padding:11px; background:#fee2e2; color:#ef4444; border:none; border-radius:12px; font-weight:800; margin-top:14px; cursor:pointer; font-size:0.82rem;"><i class="fa-solid fa-ban"></i> Cancel Order</button>`; 
         } else if (checkStatus === 'delivered') { 
             if (orderHasReturnableProduct) {
                 if (isReturnExpired) {
-                    actionBtnHtml = `<div style="width:100%; padding:12px; background:#f1f5f9; color:var(--text-muted); border:1px solid var(--border-color); border-radius:12px; font-weight:700; margin-top:16px; text-align:center; font-size:0.8rem;"><i class="fa-solid fa-circle-xmark"></i> Return Period Expired (7 Days)</div>`;
+                    actionBtnHtml = `<div style="width:100%; padding:11px; background:#f1f5f9; color:var(--text-muted); border:1px solid var(--border-color); border-radius:12px; font-weight:700; margin-top:14px; text-align:center; font-size:0.78rem;"><i class="fa-solid fa-circle-xmark"></i> Return Period Expired (7 Days)</div>`;
                 } else {
-                    actionBtnHtml = `<button onclick="window.requestReturn('${order.id}')" style="width:100%; padding:12px; background:#fff7e6; color:var(--accent-dark); border:1.5px solid #fde3a7; border-radius:12px; font-weight:800; margin-top:16px; cursor:pointer; font-size:0.85rem;"><i class="fa-solid fa-rotate-left"></i> Request Return / Refund</button>`;
+                    actionBtnHtml = `<button onclick="window.requestReturn('${order.id}')" style="width:100%; padding:11px; background:#fff7e6; color:var(--accent-dark); border:1.5px solid #fde3a7; border-radius:12px; font-weight:800; margin-top:14px; cursor:pointer; font-size:0.82rem;"><i class="fa-solid fa-rotate-left"></i> Request Return / Refund</button>`;
                 }
             }
         }
@@ -1109,7 +1127,7 @@
             title: `Order Details`,
             html: `
                 <div class="modal-detail-box">
-                    <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">ORDER ID: #${escapeHtml(order.id)}</div>
+                    <div style="font-size:0.72rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">ORDER ID: #${escapeHtml(order.id)}</div>
                     
                     <div class="modal-section-title">Items Ordered</div>
                     ${itemsListHtml}
@@ -1120,10 +1138,10 @@
                     <p><strong>Order Placed Date:</strong> <span style="font-weight:600; color:var(--text-main);">${escapeHtml(order.date || 'N/A')}</span></p>
 
                     <div class="modal-section-title">Delivery Address</div>
-                    <div style="background:#f8fafc; padding:12px; border-radius:12px; margin-top:4px; border:1px solid #f1f5f9;">
+                    <div style="background:#f8fafc; padding:10px; border-radius:12px; margin-top:4px; border:1px solid #f1f5f9;">
                         <p style="font-weight:800; color:var(--text-main); margin:0;">${escapeHtml(order.customerName || 'Customer')}</p>
-                        <p style="margin:4px 0 2px 0; color:var(--text-muted); font-size:0.8rem; line-height: 1.45;">${escapeHtml(order.address || 'N/A')}</p>
-                        <p style="margin:0; color:var(--text-muted); font-size:0.8rem;">Phone: +91 ${escapeHtml(order.customerPhone || order.phone || order.userPhone)}</p>
+                        <p style="margin:4px 0 2px 0; color:var(--text-muted); font-size:0.78rem; line-height: 1.4;">${escapeHtml(order.address || 'N/A')}</p>
+                        <p style="margin:0; color:var(--text-muted); font-size:0.78rem;">Phone: +91 ${escapeHtml(order.customerPhone || order.phone || order.userPhone)}</p>
                     </div>
 
                     <div class="modal-section-title">Price Breakdown</div>
@@ -1176,11 +1194,11 @@
         Swal.fire({
             title: 'Select Refund Option',
             html: `
-                <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:12px;">Where would you like to receive your refund?</p>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Where would you like to receive your refund?</p>
                 <div class="swal-radio-group">
                     <label class="swal-radio-option">
                         <input type="radio" name="refundMethod" value="Mobile Number" checked>
-                        <span><i class="fa-solid fa-mobile-screen" style="color:var(--accent);"></i> UPI Mobile (GPay / PhonePe / Paytm)</span>
+                        <span><i class="fa-solid fa-mobile-screen" style="color:var(--accent);"></i> UPI Mobile (GPay / PhonePe)</span>
                     </label>
                     <label class="swal-radio-option">
                         <input type="radio" name="refundMethod" value="UPI ID">
@@ -1189,8 +1207,8 @@
                 </div>
                 <input type="text" id="refundDetailsInput" class="swal-input-field" placeholder="Enter 10-digit Mobile Number" value="${escapeHtml(phone)}">
                 
-                <div style="margin-top: 14px; text-align: left;">
-                    <label style="font-size: 0.78rem; font-weight: 800; color: var(--text-main);">Email Address for Confirmation</label>
+                <div style="margin-top: 12px; text-align: left;">
+                    <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-main);">Email Address for Confirmation</label>
                     <input type="email" id="refundEmailInput" class="swal-input-field" placeholder="e.g. yourname@gmail.com">
                 </div>
             `,
@@ -1261,7 +1279,7 @@
         Swal.fire({
             title: 'Rate Product',
             html: `
-                <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom: 5px;">How was your experience with this purchase?</p>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 4px;">How was your experience with this purchase?</p>
                 <div class="star-rating" id="starContainer" data-rating="5">
                     <i class="fa-solid fa-star selected" data-value="1"></i>
                     <i class="fa-solid fa-star selected" data-value="2"></i>
@@ -1269,7 +1287,7 @@
                     <i class="fa-solid fa-star selected" data-value="4"></i>
                     <i class="fa-solid fa-star selected" data-value="5"></i>
                 </div>
-                <textarea id="reviewComment" class="swal-input-field" rows="3" placeholder="Write feedback about the product quality, fit, etc..."></textarea>
+                <textarea id="reviewComment" class="swal-input-field" rows="3" placeholder="Write feedback about product quality, fit, etc..."></textarea>
             `,
             showCancelButton: true,
             confirmButtonText: 'Submit Review',
