@@ -513,7 +513,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Guaranteed Non-Failing Clean CartPrime Gold Shopping Bag SVG (Never gets blocked by Indian ISPs)
     const DEFAULT_FALLBACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='24' fill='%23f8fafc'/%3E%3Ccircle cx='100' cy='100' r='58' fill='%23fff7e6' stroke='%23fde3a7' stroke-width='2'/%3E%3Cpath d='M135 76h-12c0-12.7-10.3-23-23-23s-23 10.3-23 23H65c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12h70c6.6 0 12-5.4 12-12V88c0-6.6-5.4-12-12-12zm-35-15c7.2 0 13 5.8 13 13H87c0-7.2 5.8-13 13-13zm35 91H65V88h70v64z' fill='%23f59e0b'/%3E%3C/svg%3E";
 
     let activeRef = null;
@@ -521,26 +520,14 @@
     let allOrdersList = [];
     let activePhoneString = "";
 
-    // Live Product Cache (Allows finding real product images even if order didn't directly store the image URL!)
     let productsMapById = {};
     let productsMapByName = {};
 
     function extractImageFromObject(obj) {
         if (!obj) return null;
-
-        // 1. Direct String Properties
         const candidates = [
-            obj.image,
-            obj.productImage,
-            obj.imageUrl,
-            obj.img,
-            obj.productImg,
-            obj.photo,
-            obj.thumbnail,
-            obj.picture,
-            obj.itemImage,
-            obj.product_image,
-            obj.image_url
+            obj.image, obj.productImage, obj.imageUrl, obj.img, obj.productImg, 
+            obj.photo, obj.thumbnail, obj.picture, obj.itemImage, obj.product_image, obj.image_url
         ];
 
         for (const c of candidates) {
@@ -549,7 +536,6 @@
             }
         }
 
-        // 2. Images Array (e.g. images: ["url1", "url2"])
         if (Array.isArray(obj.images) && obj.images.length > 0) {
             for (const item of obj.images) {
                 if (typeof item === 'string' && item.trim().length > 5 && !item.includes('placeholder.com')) {
@@ -563,7 +549,6 @@
             }
         }
 
-        // 3. Nested Product object
         if (obj.product && typeof obj.product === 'object') {
             const nested = extractImageFromObject(obj.product);
             if (nested) return nested;
@@ -572,7 +557,6 @@
         return null;
     }
 
-    // Preload all products from database to cross-reference images
     function initProductImageCache() {
         onValue(ref(db, 'products'), (snapshot) => {
             if (snapshot.exists()) {
@@ -613,45 +597,33 @@
 
     initProductImageCache();
 
-    // Smart Resolver to get the best working Image URL for any order
     function getOrderImage(order) {
         if (!order) return DEFAULT_FALLBACK_IMG;
-
-        // 1. Direct Order Check
         let img = extractImageFromObject(order);
         if (img) return img;
 
-        // 2. Check Order Items
         if (Array.isArray(order.items) && order.items.length > 0) {
             for (const item of order.items) {
                 img = extractImageFromObject(item);
                 if (img) return img;
-
                 const pId = item.id || item.productId;
                 if (pId && productsMapById[pId]) return productsMapById[pId];
-
                 const pName = (item.name || item.title || '').toLowerCase().trim();
                 if (pName && productsMapByName[pName]) return productsMapByName[pName];
             }
         }
 
-        // 3. Check Order Product ID in Products Map
         const pId = order.productId || order.id;
         if (pId && productsMapById[pId]) return productsMapById[pId];
 
-        // 4. Check Order Product Name in Products Map
         const pName = (order.productName || '').toLowerCase().trim();
         if (pName && productsMapByName[pName]) return productsMapByName[pName];
 
-        // 5. Partial String Match
         if (pName) {
             for (const [k, v] of Object.entries(productsMapByName)) {
-                if (pName.includes(k) || k.includes(pName)) {
-                    return v;
-                }
+                if (pName.includes(k) || k.includes(pName)) return v;
             }
         }
-
         return DEFAULT_FALLBACK_IMG;
     }
 
@@ -668,12 +640,9 @@
 
         if (pName) {
             for (const [k, v] of Object.entries(productsMapByName)) {
-                if (pName.includes(k) || k.includes(pName)) {
-                    return v;
-                }
+                if (pName.includes(k) || k.includes(pName)) return v;
             }
         }
-
         return DEFAULT_FALLBACK_IMG;
     }
 
@@ -690,7 +659,6 @@
     function parseDateSafe(dateVal) {
         if (!dateVal) return null;
         if (typeof dateVal === 'number') return new Date(dateVal);
-        
         let d = new Date(dateVal);
         if (!isNaN(d.getTime())) return d;
 
@@ -732,7 +700,6 @@
     function getSavedPhone() {
         const urlParams = new URLSearchParams(window.location.search);
         const urlPhone = urlParams.get('phone');
-        
         const lastOrderPhone = localStorage.getItem('cartPrime_LastOrderPhone');
         const savedUserPhone = localStorage.getItem('userPhone');
         const cartPrimePhone = localStorage.getItem('cartPrime_Phone');
@@ -742,7 +709,6 @@
     }
 
     const initialPhone = getSavedPhone();
-
     if (initialPhone) { 
         loadOrders(initialPhone); 
     } else {
@@ -926,7 +892,6 @@
                 statusText = order.deliveryDate ? `Expected Delivery: ${order.deliveryDate}` : 'Order Confirmed';
             }
 
-            // Extract Primary Details and Working Image
             const mainImg = getOrderImage(order);
             let mainTitle = "Product";
             let mainSize = "Free Size";
@@ -950,7 +915,6 @@
                 hasReturnPolicy = isItemReturnable(order);
             }
 
-            // Meesho Step Tracker
             let trackerHtml = '';
             if (step === -1) {
                 trackerHtml = `
@@ -985,14 +949,13 @@
                 </div>`;
             }
 
-            // Action Strip
             let actionStripHtml = '';
             if (checkStatus === 'delivered') {
                 if (order.reviewed) {
                     actionStripHtml = `
                         <div class="meesho-action-strip">
                             <span style="font-size:0.75rem; font-weight:800; color:#16a34a; display:flex; align-items:center; gap:5px;">
-                                <i class="fa-solid fa-star" style="color:var(--accent);"></i> You rated this product (${order.reviewRating || 5}/5)
+                                <i class="fa-solid fa-star" style="color:var(--accent);"></i> You rated this (${order.reviewRating || 5}/5)
                             </span>
                             ${hasReturnPolicy ? `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>` : ''}
                             <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
@@ -1001,7 +964,7 @@
                     actionStripHtml = `
                         <div class="meesho-action-strip">
                             <button type="button" onclick="event.stopPropagation(); window.openReviewModal('${order.id}')" class="meesho-review-btn">
-                                <i class="fa-regular fa-star"></i> Rate & Review Product
+                                <i class="fa-regular fa-star"></i> Rate & Review
                             </button>
                             ${hasReturnPolicy ? `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>` : ''}
                             <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
@@ -1025,7 +988,6 @@
 
             html += `
                 <div class="meesho-order-card" onclick="window.showOrderDetails('${order.id}')">
-                    <!-- Top Status Bar -->
                     <div class="meesho-card-header">
                         <div class="meesho-status-wrap">
                             <span class="status-dot-indicator ${dotClass}"></span>
@@ -1034,7 +996,6 @@
                         <span class="meesho-order-id">#${escapeHtml(order.id)}</span>
                     </div>
 
-                    <!-- Middle Product Content -->
                     <div class="meesho-item-body">
                         <div class="meesho-thumb-wrap">
                             <img src="${escapeHtml(mainImg)}" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMG}';" alt="Product Photo" loading="lazy">
@@ -1050,10 +1011,7 @@
                         </div>
                     </div>
 
-                    <!-- Step Tracker -->
                     ${trackerHtml}
-
-                    <!-- Bottom Action Strip -->
                     ${actionStripHtml}
                 </div>
             `;
@@ -1324,11 +1282,8 @@
                         starContainer.setAttribute('data-rating', currentRating);
 
                         stars.forEach((s, idx) => {
-                            if (idx < currentRating) {
-                                s.classList.add('selected');
-                            } else {
-                                s.classList.remove('selected');
-                            }
+                            if (idx < currentRating) s.classList.add('selected');
+                            else s.classList.remove('selected');
                         });
                     });
                 });
