@@ -451,10 +451,10 @@
     <!-- Security Banner -->
     <div class="security-banner">
         <i class="fa-solid fa-shield-halved"></i>
-        <span>100% Verified Orders & 7-Day Easy Replacement Guarantee</span>
+        <span>100% Verified Orders & Easy Replacement Guarantee</span>
     </div>
 
-    <!-- Meesho Style Search Input (Searches orders dynamically) -->
+    <!-- Meesho Style Search Input -->
     <div class="orders-search-box" id="ordersSearchWrap" style="display: none;">
         <i class="fa-solid fa-search"></i>
         <input type="text" id="orderSearchInput" placeholder="Search by product name or order ID...">
@@ -685,6 +685,7 @@
         });
     };
 
+    // Strict Return Eligibility Checker
     function isItemReturnable(item) {
         if (!item) return false;
         const val = item.return ?? item.returnPolicy ?? item.isReturnable ?? item.returnable;
@@ -951,13 +952,15 @@
 
             let actionStripHtml = '';
             if (checkStatus === 'delivered') {
+                const returnButtonHtml = (hasReturnPolicy) ? `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>` : '';
+
                 if (order.reviewed) {
                     actionStripHtml = `
                         <div class="meesho-action-strip">
                             <span style="font-size:0.75rem; font-weight:800; color:#16a34a; display:flex; align-items:center; gap:5px;">
-                                <i class="fa-solid fa-star" style="color:var(--accent);"></i> You rated this (${order.reviewRating || 5}/5)
+                                <i class="fa-solid fa-star" style="color:var(--accent);"></i> You rated (${order.reviewRating || 5}/5)
                             </span>
-                            ${hasReturnPolicy ? `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>` : ''}
+                            ${returnButtonHtml}
                             <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
                         </div>`;
                 } else {
@@ -966,7 +969,7 @@
                             <button type="button" onclick="event.stopPropagation(); window.openReviewModal('${order.id}')" class="meesho-review-btn">
                                 <i class="fa-regular fa-star"></i> Rate & Review
                             </button>
-                            ${hasReturnPolicy ? `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>` : ''}
+                            ${returnButtonHtml}
                             <div class="view-details-tag">Details <i class="fa-solid fa-chevron-right text-[10px]"></i></div>
                         </div>`;
                 }
