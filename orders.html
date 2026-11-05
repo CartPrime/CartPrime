@@ -695,14 +695,10 @@
         });
     };
 
-    // Strict Return Eligibility Checker with robust fallbacks
     function isItemReturnable(item) {
         if (!item) return false;
         const val = item.return ?? item.returnPolicy ?? item.isReturnable ?? item.returnable;
-        if (val === undefined || val === null) {
-            // Default fallback to true for general items unless explicitly set false
-            return true;
-        }
+        if (val === undefined || val === null) return true;
         if (typeof val === 'boolean') return val;
         if (typeof val === 'string') {
             const lower = val.toLowerCase().trim();
@@ -718,6 +714,16 @@
             return order.items.some(i => isItemReturnable(i));
         }
         return isItemReturnable(order);
+    }
+
+    // Check if 7 days have passed since delivery
+    function isReturnExpired(order) {
+        const baseDateStr = order.deliveredDate || order.deliveryDate || order.date || order.timestamp;
+        const baseDate = parseDateSafe(baseDateStr);
+        if (!baseDate) return false;
+        const diffTime = new Date() - baseDate;
+        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+        return diffDays > 7;
     }
 
     function getSavedPhone() {
@@ -920,7 +926,10 @@
             let mainSize = "Free Size";
             let mainQty = 1;
             let totalPrice = order.price || "0";
+            
             const hasReturnPolicy = isOrderReturnable(order);
+            const expired = isReturnExpired(order);
+            const showReturnBtn = hasReturnPolicy && !expired;
 
             if (Array.isArray(order.items) && order.items.length > 0) {
                 const first = order.items[0];
@@ -972,7 +981,7 @@
 
             let actionStripHtml = '';
             if (checkStatus === 'delivered') {
-                const returnButtonHtml = (hasReturnPolicy) ? `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>` : '';
+                const returnButtonHtml = showReturnBtn ? `<button type="button" onclick="event.stopPropagation(); window.requestReturn('${order.id}')" class="meesho-return-btn"><i class="fa-solid fa-rotate-left"></i> Return</button>` : '';
 
                 if (order.reviewed) {
                     actionStripHtml = `
@@ -1073,6 +1082,7 @@
         
         let itemsListHtml = '';
         const orderHasReturnableProduct = isOrderReturnable(order);
+        const expired = isReturnExpired(order);
 
         if (Array.isArray(order.items) && order.items.length > 0) {
             order.items.forEach(item => {
@@ -1098,22 +1108,12 @@
                 </div>`;
         }
 
-        let isReturnExpired = false;
-        if (checkStatus === 'delivered') {
-            const returnDaysLimit = 7;
-            const baseDate = parseDateSafe(order.deliveredDate || order.date);
-            if (baseDate) {
-                const diffDays = (new Date() - baseDate) / (1000 * 60 * 60 * 24);
-                if (diffDays > returnDaysLimit) isReturnExpired = true;
-            }
-        }
-
         let actionBtnHtml = '';
         if (checkStatus === 'pending' || checkStatus === 'orderconfirmed' || checkStatus === 'confirmed') { 
             actionBtnHtml = `<button onclick="window.cancelOrder('${order.id}')" style="width:100%; padding:11px; background:#fee2e2; color:#ef4444; border:none; border-radius:12px; font-weight:800; margin-top:14px; cursor:pointer; font-size:0.82rem;"><i class="fa-solid fa-ban"></i> Cancel Order</button>`; 
         } else if (checkStatus === 'delivered') { 
             if (orderHasReturnableProduct) {
-                if (isReturnExpired) {
+                if (expired) {
                     actionBtnHtml = `<div style="width:100%; padding:11px; background:#f1f5f9; color:var(--text-muted); border:1px solid var(--border-color); border-radius:12px; font-weight:700; margin-top:14px; text-align:center; font-size:0.78rem;"><i class="fa-solid fa-circle-xmark"></i> Return Period Expired (7 Days)</div>`;
                 } else {
                     actionBtnHtml = `<button onclick="window.requestReturn('${order.id}')" style="width:100%; padding:11px; background:#fff7e6; color:var(--accent-dark); border:1.5px solid #fde3a7; border-radius:12px; font-weight:800; margin-top:14px; cursor:pointer; font-size:0.82rem;"><i class="fa-solid fa-rotate-left"></i> Request Return / Refund</button>`;
