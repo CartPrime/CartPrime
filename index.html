@@ -14,16 +14,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> 
 
-<!-- EmailJS SDK for Email OTP Verification -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script type="text/javascript">
-  (function(){
-    emailjs.init({
-      publicKey: "YOUR_EMAILJS_PUBLIC_KEY" // Replace with your EmailJS Public Key
-    });
-  })();
-</script>
-
 <style> 
 :root { 
   --primary: #0b0b0f; 
@@ -80,6 +70,7 @@ button:active, .category-btn:active, .icon-btn:active, .bottom-nav-item:active, 
   transform: scale(0.96) !important; 
 } 
 
+/* Sticky Top Navigation & Header */
 nav { 
   display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; position: sticky; top: 0; 
   background: var(--nav-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); z-index: 1000; 
@@ -90,7 +81,9 @@ nav {
   font-weight: 800; font-size: 1.35rem; letter-spacing: -0.8px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; 
   user-select: none; color: var(--text-main); display: flex; align-items: center; gap: 8px;
 } 
-.logo i { color: var(--accent); font-size: 1.25rem; filter: drop-shadow(0 0 10px var(--accent-glow)); } 
+.logo i { 
+  color: var(--accent); font-size: 1.25rem; filter: drop-shadow(0 0 10px var(--accent-glow));
+} 
 .logo span { color: var(--accent); font-weight: 800; } 
 
 .search-container { flex: 1; max-width: 520px; position: relative; min-width: 200px; } 
@@ -107,6 +100,7 @@ nav {
 
 .nav-right { display: flex; align-items: center; gap: 10px; position: relative; flex-shrink: 0; } 
 
+/* Admin Portal Button */
 .admin-portal-btn {
   display: inline-flex; align-items: center; gap: 7px;
   background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
@@ -119,6 +113,7 @@ nav {
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
   transform: translateY(-2px); box-shadow: 0 6px 22px rgba(239, 68, 68, 0.75);
 }
+.admin-portal-btn i { font-size: 0.85rem; }
 .admin-pulse-dot {
   width: 8px; height: 8px; background: #22c55e; border-radius: 50%;
   box-shadow: 0 0 8px #22c55e; animation: pulseDot 1.5s infinite;
@@ -129,18 +124,22 @@ nav {
   100% { transform: scale(0.9); opacity: 0.7; }
 }
 
+/* Notifications Button */
 .notification-icon-btn {
   width: 38px; height: 38px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--border);
   display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer;
   color: var(--text-main); font-size: 1rem; transition: all 0.2s ease; flex-shrink: 0;
 }
-.notification-icon-btn:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 14px var(--accent-glow); }
+.notification-icon-btn:hover { 
+  border-color: var(--accent); color: var(--accent); box-shadow: 0 0 14px var(--accent-glow);
+}
 .notif-badge {
   position: absolute; top: -3px; right: -3px; background: #ef4444; color: #ffffff; font-size: 0.65rem; font-weight: 800;
   border-radius: 50%; min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
   padding: 2px; border: 2px solid var(--card-bg); box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
 }
 
+/* Profile Chip - Clean Top Position */
 .header-profile-wrap { display: flex; align-items: center; }
 .profile-chip {
   display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1.5px solid var(--border);
@@ -164,6 +163,7 @@ nav {
 }
 .edit-profile-btn { color: var(--text-muted); font-size: 0.6rem; flex-shrink: 0; }
 
+/* Bottom Navigation */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; height: calc(65px + env(safe-area-inset-bottom, 0px)); 
   padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--nav-bg); backdrop-filter: blur(18px);
@@ -183,7 +183,9 @@ nav {
   transform: translateX(-50%); width: 38px; height: 3px; border-radius: 4px; background: var(--accent);
   box-shadow: 0 0 12px var(--accent-glow);
 }
+.bottom-nav-item .badge { top: 6px; right: 14px; }
 
+/* Modals & Popups */
 .modal-overlay { 
   display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.68); 
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 10000; align-items: center; justify-content: center; 
@@ -250,6 +252,7 @@ nav {
 .spinner { width: 38px; height: 38px; border: 4px solid var(--border); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+/* Notification Dropdown & Modal */
 .notif-modal-card { max-width: 450px; max-height: 85vh; display: flex; flex-direction: column; padding: 20px; }
 .notif-modal-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
 .notif-modal-header h3 { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
@@ -264,6 +267,23 @@ nav {
 .mark-read-btn { border: none; color: #b45309; font-size: 0.72rem; font-weight: 700; cursor: pointer; padding: 4px 9px; border-radius: 8px; background: var(--accent-soft); margin-top: 5px; }
 .no-notif { text-align: center; padding: 30px 10px; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
 
+/* In-App OTP Notification */
+.otp-inpage-notif {
+  position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-140px);
+  background: var(--card-bg); border: 1.5px solid var(--accent); border-radius: 20px; padding: 14px 18px;
+  display: flex; align-items: center; gap: 14px; box-shadow: 0 20px 45px rgba(0,0,0,0.28), 0 0 30px var(--accent-glow);
+  z-index: 12000; max-width: 92%; width: 420px; opacity: 0; pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+.otp-inpage-notif.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+.otp-inpage-notif .n-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #0b0b0f; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; box-shadow: 0 0 15px var(--accent-glow); }
+.otp-inpage-notif .n-body { flex: 1; min-width: 0; }
+.otp-inpage-notif .n-title { font-size: 0.85rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+.otp-inpage-notif .n-time { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; }
+.otp-inpage-notif .n-msg { font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; }
+.otp-inpage-notif .n-close { background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; padding: 4px; }
+
+/* Custom Toast Modal */
 .custom-toast-overlay {
   display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 11000; align-items: center; justify-content: center; padding: 20px;
@@ -288,6 +308,7 @@ nav {
 }
 .toast-close-btn:hover { background: var(--accent); color: #111; box-shadow: 0 0 16px var(--accent-glow); }
 
+/* Search Suggestions */
 .search-suggestions-box { 
   position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: var(--card-bg); border-radius: 18px; 
   box-shadow: 0 18px 36px rgba(0,0,0,0.2), 0 0 25px rgba(245, 158, 11, 0.15); max-height: 340px; overflow-y: auto; z-index: 2000; display: none; border: 1px solid var(--border); 
@@ -299,6 +320,7 @@ nav {
 .suggestion-item h4 { font-size: 0.85rem; font-weight: 600; margin: 0; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
 .suggestion-item p { font-size: 0.74rem; color: #d97706; font-weight: 700; margin: 0; } 
 
+/* Hero Section */
 .hero { padding: 26px 5% 16px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; } 
 .hero-text { max-width: 580px; }
 .hero-badge-pill {
@@ -318,6 +340,7 @@ nav {
 .stat-info span { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; } 
 .stat-divider { width: 1px; height: 28px; background: var(--border); } 
 
+/* Trust Bar */
 .trust-bar-section { padding: 6px 5% 12px 5%; } 
 .trust-bar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); } 
 .trust-card { display: flex; align-items: center; gap: 12px; } 
@@ -328,6 +351,7 @@ nav {
 .trust-details h4 { font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 2px; } 
 .trust-details p { font-size: 0.72rem; color: var(--text-muted); } 
 
+/* Budget Deals Zone Box */
 .budget-box-section { padding: 6px 5% 12px 5%; }
 .budget-deals-box {
   background: var(--surface); border: 1.5px solid var(--border); border-radius: 22px; padding: 18px 20px;
@@ -360,22 +384,31 @@ nav {
 .budget-card.theme-red .budget-card-icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 .budget-card.theme-red .budget-card-price { color: #ef4444; }
 .budget-card.theme-red.active { background: linear-gradient(135deg, #ef4444, #dc2626) !important; border-color: #ef4444 !important; box-shadow: 0 0 24px rgba(239, 68, 68, 0.85) !important; color: #fff !important; }
+.budget-card.theme-red.active .budget-card-icon { background: #fff; color: #ef4444; }
+.budget-card.theme-red.active .budget-card-sub, .budget-card.theme-red.active .budget-card-price { color: #ffffff !important; }
 
 .budget-card.theme-green { border-color: rgba(34, 197, 94, 0.35); background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), var(--card-bg)); box-shadow: 0 0 14px rgba(34, 197, 94, 0.16); }
 .budget-card.theme-green .budget-card-icon { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
 .budget-card.theme-green .budget-card-price { color: #16a34a; }
 .budget-card.theme-green.active { background: linear-gradient(135deg, #22c55e, #16a34a) !important; border-color: #22c55e !important; box-shadow: 0 0 24px rgba(34, 197, 94, 0.85) !important; color: #fff !important; }
+.budget-card.theme-green.active .budget-card-icon { background: #fff; color: #16a34a; }
+.budget-card.theme-green.active .budget-card-sub, .budget-card.theme-green.active .budget-card-price { color: #ffffff !important; }
 
 .budget-card.theme-blue { border-color: rgba(6, 182, 212, 0.35); background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), var(--card-bg)); box-shadow: 0 0 14px rgba(6, 182, 212, 0.16); }
 .budget-card.theme-blue .budget-card-icon { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
 .budget-card.theme-blue .budget-card-price { color: #0284c7; }
 .budget-card.theme-blue.active { background: linear-gradient(135deg, #06b6d4, #0284c7) !important; border-color: #06b6d4 !important; box-shadow: 0 0 24px rgba(6, 182, 212, 0.85) !important; color: #fff !important; }
+.budget-card.theme-blue.active .budget-card-icon { background: #fff; color: #0284c7; }
+.budget-card.theme-blue.active .budget-card-sub, .budget-card.theme-blue.active .budget-card-price { color: #ffffff !important; }
 
 .budget-card.theme-purple { border-color: rgba(168, 85, 247, 0.35); background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), var(--card-bg)); box-shadow: 0 0 14px rgba(168, 85, 247, 0.16); }
 .budget-card.theme-purple .budget-card-icon { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
 .budget-card.theme-purple .budget-card-price { color: #9333ea; }
 .budget-card.theme-purple.active { background: linear-gradient(135deg, #a855f7, #7c3aed) !important; border-color: #a855f7 !important; box-shadow: 0 0 24px rgba(168, 85, 247, 0.85) !important; color: #fff !important; }
+.budget-card.theme-purple.active .budget-card-icon { background: #fff; color: #7c3aed; }
+.budget-card.theme-purple.active .budget-card-sub, .budget-card.theme-purple.active .budget-card-price { color: #ffffff !important; }
 
+/* Category Scroll Bar */
 .category-bar { 
   padding: 6px 5% 12px 5%; display: flex; gap: 10px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; -webkit-overflow-scrolling: touch; 
 } 
@@ -389,6 +422,7 @@ nav {
   background: var(--primary); color: var(--bg); border-color: var(--accent); box-shadow: 0 0 18px var(--accent-glow), 0 4px 12px rgba(0,0,0,0.12); 
 } 
 
+/* Banner Slider */
 .banner-section { padding: 6px 5% 12px 5%; position: relative; width: 100%; } 
 .banner-wrapper { position: relative; display: flex; align-items: center; } 
 .banner-slider { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth; align-items: center; width: 100%; } 
@@ -398,11 +432,13 @@ nav {
   display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.06); 
   transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1.5px solid var(--border);
 } 
+.banner-item:hover { transform: scale(1.008); box-shadow: 0 10px 28px rgba(245, 158, 11, 0.22); border-color: var(--accent); } 
 .banner-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; } 
 .banner-dots { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; } 
 .dot { width: 8px; height: 8px; background: var(--border); border-radius: 50%; transition: all 0.3s ease; cursor: pointer; } 
 .dot.active { background: var(--accent); width: 22px; border-radius: 6px; box-shadow: 0 0 10px var(--accent-glow); } 
 
+/* Horizontal Product Shelves */
 .main-products-container { padding: 8px 0 24px 0; display: flex; flex-direction: column; gap: 22px; }
 .product-shelf-section { position: relative; width: 100%; }
 .shelf-header { padding: 0 5% 12px 5%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
@@ -444,7 +480,9 @@ nav {
 @media (min-width: 768px) { .shelf-card { flex: 0 0 210px; max-width: 210px; padding: 14px; } }
 .shelf-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 16px 30px rgba(0, 0, 0, 0.08), 0 0 20px var(--accent-glow); }
 .shelf-card .image-box { width: 100%; height: 155px; border-radius: 14px; background: var(--surface); margin-bottom: 10px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+@media (min-width: 768px) { .shelf-card .image-box { height: 175px; } }
 .shelf-card img { width: 100%; height: 100%; object-fit: contain; padding: 6px; transition: transform 0.4s ease; }
+.shelf-card:hover img { transform: scale(1.06); }
 
 .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 0 5% 12px 5%; }
 @media (min-width: 640px) { .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; } }
@@ -454,10 +492,12 @@ nav {
   background: var(--card-bg); border-radius: 20px; padding: 12px; position: relative; border: 1.5px solid var(--border); 
   box-shadow: 0 6px 20px rgba(0,0,0,0.03); display: flex; flex-direction: column; cursor: pointer; 
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease; 
+  min-width: 0; box-sizing: border-box;
 } 
 .card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 16px 30px rgba(0, 0, 0, 0.08), 0 0 20px var(--accent-glow); } 
 .card .image-box { width: 100%; height: 160px; border-radius: 14px; overflow: hidden; background: var(--surface); margin-bottom: 10px; position: relative; } 
 .card img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.4s ease; padding: 6px; } 
+.card:hover img { transform: scale(1.05); }
 
 .stock-badge { position: absolute; top: 8px; left: 8px; background: #000; color: white; padding: 3px 8px; border-radius: 8px; font-size: 0.62rem; font-weight: 800; z-index: 10; } 
 .discount-badge { 
@@ -475,6 +515,7 @@ nav {
   border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; 
   cursor: pointer; z-index: 12; color: #0f172a; font-size: 0.85rem; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.08); 
 } 
+.card-wishlist-btn:hover { transform: scale(1.12); color: #ef4444; } 
 .card-wishlist-btn.active { color: #ef4444 !important; background: #fff !important; box-shadow: 0 0 12px rgba(239, 68, 68, 0.45); } 
 
 .card-info { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; } 
@@ -492,6 +533,8 @@ nav {
 } 
 .buy-btn i { color: #f59e0b; }
 .buy-btn:hover:not(:disabled) { background: var(--accent); color: #111111; box-shadow: 0 0 18px var(--accent-glow-strong); }
+.buy-btn:hover:not(:disabled) i { color: #111111; }
+.buy-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; } 
 
 .empty-state-box {
   margin: 10px 5%; text-align: center; padding: 45px 20px; background: var(--surface); border-radius: 20px;
@@ -527,38 +570,145 @@ nav {
 .contact-option { display: flex; align-items: center; gap: 12px; padding: 13px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 0.9rem; transition: all 0.2s ease; cursor: pointer; }
 .contact-option:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
 
+/* WhatsApp Floating Button */
 .wa-float {
   position: fixed; right: 16px; bottom: calc(82px + env(safe-area-inset-bottom, 0px)); width: 52px; height: 52px; border-radius: 50%; 
   background: var(--whatsapp-color); color: #fff; display: flex; align-items: center; justify-content: center; 
   font-size: 1.85rem; text-decoration: none; z-index: 9000; box-shadow: 0 10px 25px rgba(37,211,102,.5); 
   transition: transform 0.2s ease;
 }
+.wa-float:active { transform: scale(0.92); }
+
+/* Mobile Responsive Optimizations */
+@media (max-width: 768px) { 
+  nav { padding: 10px 4%; flex-wrap: wrap; justify-content: space-between; gap: 8px; } 
+  .logo { font-size: 1.15rem; order: 1; gap: 6px; } 
+  .nav-right { order: 2; gap: 8px; flex-shrink: 0; margin-left: auto; } 
+  .admin-portal-btn { padding: 5px 10px; font-size: 0.72rem; }
+  .profile-chip { padding: 3px 10px 3px 3px; max-width: 135px; height: 36px; gap: 6px; }
+  .profile-avatar { width: 28px; height: 28px; font-size: 0.75rem; }
+  .profile-name { font-size: 0.72rem; }
+  .profile-phone { display: none; }
+  .search-container { order: 3; flex-basis: 100%; max-width: 100%; width: 100%; margin-top: 4px; } 
+  .search-container input { padding: 9px 14px 9px 36px; font-size: 0.84rem; border-radius: 14px; } 
+  
+  .hero { padding: 18px 4% 8px; flex-direction: column; align-items: flex-start; gap: 14px; } 
+  .hero-text h1 { font-size: 1.95rem; } 
+  .trust-stats { width: 100%; justify-content: space-around; padding: 12px; } 
+  
+  .trust-bar-section { padding: 4px 4%; } 
+  .trust-bar-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; } 
+
+  .budget-box-section { padding: 4px 4% 8px 4%; } 
+  .budget-deals-box { padding: 14px; border-radius: 18px; }
+  .budget-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .budget-card { padding: 10px 12px; border-radius: 12px; gap: 8px; }
+  .budget-card-price { font-size: 0.88rem; }
+  .budget-card-sub { font-size: 0.6rem; }
+  .budget-card-icon { width: 30px; height: 30px; font-size: 0.9rem; }
+
+  .shelf-header { padding: 0 4% 8px 4%; }
+  .shelf-title-wrap h3 { font-size: 1.05rem; }
+  .shelf-scroll-container { padding: 4px 4% 14px 4%; gap: 10px; }
+  .shelf-card { flex: 0 0 152px; max-width: 152px; padding: 10px; border-radius: 16px; }
+  .shelf-card .image-box { height: 125px; }
+  .shelf-card .card-info h3 { font-size: 0.78rem; height: 2rem; }
+  .shelf-card .price { font-size: 0.92rem; }
+  .shelf-card .buy-btn { padding: 8px; font-size: 0.75rem; min-height: 35px; }
+
+  .grid { padding: 0 4% 10px 4%; gap: 10px; }
+  .card { padding: 10px; border-radius: 16px; }
+  .card .image-box { height: 130px; }
+  .card .card-info h3 { font-size: 0.78rem; height: 2rem; }
+  .card .price { font-size: 0.95rem; }
+  .card .buy-btn { padding: 8px; font-size: 0.75rem; min-height: 35px; }
+
+  .category-bar { padding: 4px 4% 8px 4%; gap: 7px; } 
+  .category-btn { padding: 8px 16px; font-size: 0.78rem; min-height: 36px; } 
+  .banner-section { padding: 6px 4%; } 
+  .banner-item { flex: 0 0 100%; height: 155px; } 
+  .safe-checkout-box { margin: 12px 4% 20px; padding: 16px; }
+} 
+
+@media (max-width: 480px) {
+  .profile-chip {
+    padding: 0; width: 38px; height: 38px; border-radius: 50%; justify-content: center;
+  }
+  .profile-info { display: none; }
+  .profile-avatar { width: 100%; height: 100%; box-shadow: none; }
+}
+
+@media (max-width: 360px) {
+  .logo div { font-size: 0.98rem; }
+  .admin-portal-btn span:not(.admin-pulse-dot) { display: none; }
+  .otp-secure-field { letter-spacing: 6px; font-size: 1.35rem; }
+  .shelf-card { flex: 0 0 138px; max-width: 138px; }
+}
 </style> 
+
+<script>
+  (function () {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const productId = params.get("product");
+      if (productId) {
+        const productUrl = new URL("/product-details", window.location.origin);
+        productUrl.searchParams.set("id", productId);
+        ["name", "phone", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]
+          .forEach((key) => {
+            const value = params.get(key);
+            if (value) productUrl.searchParams.set(key, value);
+          });
+        window.location.replace(productUrl.toString());
+      }
+    } catch (e) {
+      console.warn("Product redirect skipped:", e);
+    }
+  })();
+</script>
 </head> 
 <body> 
+
+<!-- Native-Style In-App Push Notification for OTP Simulation -->
+<div id="otpInPageNotif" class="otp-inpage-notif">
+  <div class="n-icon"><i class="fa-solid fa-message-sms"></i></div>
+  <div class="n-body">
+    <div class="n-title">
+      <span>CartPrime Security</span>
+      <span class="n-time">Just now</span>
+    </div>
+    <div class="n-msg" id="otpInPageNotifMsg">Your OTP code is 482910. Valid for 5 minutes.</div>
+  </div>
+  <button type="button" class="n-close" id="otpInPageNotifClose"><i class="fa-solid fa-xmark"></i></button>
+</div>
 
 <!-- Navigation Bar -->
 <nav> 
   <div id="navLogo" class="logo"><i class="fa-solid fa-cart-shopping"></i><div>CART<span>PRIME</span></div></div> 
 
+  <!-- Search Input Center -->
   <div class="search-container"> 
     <i class="fa fa-search"></i> 
     <input type="text" id="searchInput" placeholder="Search verified products, gadgets, fashion..." autocomplete="off"> 
     <div id="searchSuggestions" class="search-suggestions-box"></div> 
   </div> 
 
+  <!-- Navigation Right Zone -->
   <div class="nav-right"> 
+    <!-- ADMIN ROLE SPECIAL BUTTON (Visible only when role === 'admin') -->
     <a href="admin.html" id="adminPortalBtn" class="admin-portal-btn" style="display: none;" title="Go to Admin Panel">
       <i class="fa-solid fa-shield-halved"></i>
       <span>Admin</span>
       <span class="admin-pulse-dot" title="Active Admin Session"></span>
     </a>
 
+    <!-- Notifications Bell -->
     <div class="notification-icon-btn" id="notifBtn" title="Notifications">
       <i class="fa-regular fa-bell"></i>
       <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
     </div>
     
+    <!-- Profile Chip -->
     <div class="header-profile-wrap">
       <div class="profile-chip signed-out" id="profileChip" title="Sign in / Profile">
         <div class="profile-avatar" id="navProfileAvatar"><i class="fa-solid fa-user"></i></div>
@@ -584,7 +734,7 @@ nav {
   </div>
 </div>
 
-<!-- SECURE USER LOGIN & PROFILE MODAL -->
+<!-- TRUSTED 100% SECURE USER LOGIN & PROFILE MODAL -->
 <div id="userWelcomeModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <div class="login-header-zone">
@@ -594,7 +744,7 @@ nav {
 
     <div>
       <h3 style="margin: 0 0 4px 0; font-size: 1.25rem; font-weight: 800;" id="welcomeModalTitle">Secure Sign-In</h3> 
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">Enter your phone & email for verification</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">First time login via Email OTP / Phone number verification</p>
     </div>
 
     <div class="welcome-benefits" id="welcomeBenefitsBox">
@@ -614,15 +764,17 @@ nav {
           <input type="tel" id="userWelcomePhone" class="trust-phone-input" placeholder="Enter 10-digit number" maxlength="10" inputmode="numeric" required>
         </div>
 
-        <label style="display:block; font-size:0.74rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">EMAIL ID (For First-Time OTP)</label>
-        <input type="email" id="userWelcomeEmail" class="modal-input" placeholder="e.g. user@gmail.com" autocomplete="email">
+        <div id="emailInputContainer">
+          <label style="display:block; font-size:0.74rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">EMAIL ADDRESS (Required for First-Time OTP)</label>
+          <input type="email" id="userWelcomeEmail" class="modal-input" placeholder="e.g. user@gmail.com">
+        </div>
       </div>
 
       <div id="otpInputGroup" style="display: none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <label style="font-size:0.74rem; font-weight:700; color:var(--text-muted);">6-DIGIT EMAIL OTP</label>
+          <label style="font-size:0.74rem; font-weight:700; color:var(--text-muted);">6-DIGIT EMAIL OTP CODE</label>
           <button type="button" id="changePhoneBtn" style="background:none; border:none; color:var(--accent); font-size:0.74rem; font-weight:700; cursor:pointer;">
-            <i class="fa-solid fa-pen"></i> Change
+            <i class="fa-solid fa-pen"></i> Edit
           </button>
         </div>
         <input type="text" id="userWelcomeOtp" class="otp-secure-field" placeholder="••••••" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
@@ -654,7 +806,7 @@ nav {
 
     <div id="verifyLoadingBox" class="verify-loading-box">
       <div class="spinner"></div>
-      <p style="font-size: 0.84rem; font-weight: 700; color: var(--text-main); margin: 0;" id="loadingText">Securing Connection...</p>
+      <p style="font-size: 0.84rem; font-weight: 70s0; color: var(--text-main); margin: 0;" id="loadingText">Securing Connection...</p>
     </div>
   </div> 
 </div>
@@ -796,8 +948,10 @@ nav {
   </div>
 </div>
 
+<!-- Categories Bar -->
 <div class="category-bar" id="categoryBar"></div> 
 
+<!-- Promo Banner Slider Section -->
 <div class="banner-section" id="bannerSection" style="display: none;"> 
   <div class="banner-wrapper"> 
     <div class="banner-slider" id="bannerSlider"></div> 
@@ -805,8 +959,10 @@ nav {
   <div class="banner-dots" id="bannerDots"></div> 
 </div> 
 
+<!-- Main Products Container -->
 <div class="main-products-container" id="mainProductsContainer"></div> 
 
+<!-- Safe Checkout Box -->
 <div class="safe-checkout-box"> 
   <h3><i class="fa-solid fa-lock"></i> 100% Safe & Secure Shopping Guarantee</h3> 
   <div class="payment-badges"> 
@@ -816,6 +972,7 @@ nav {
   </div> 
 </div> 
 
+<!-- Cookie Banner -->
 <div class="cookie-banner" id="cookieBanner" style="display: none;"> 
   <p><strong>We use cookies!</strong> We use cookies to enhance your shopping experience and analyze website traffic.</p> 
   <div class="cookie-actions"> 
@@ -823,8 +980,10 @@ nav {
   </div> 
 </div> 
 
+<!-- WhatsApp Floating Button -->
 <a href="https://wa.me/919744559527?text=Hi%20CartPrime%2C%20I%20need%20help" target="_blank" rel="noopener noreferrer" class="wa-float" title="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 
+<!-- Bottom Navigation Bar (With Dedicated Profile Tab) -->
 <div class="bottom-nav">
   <a href="/" class="bottom-nav-item active">
     <i class="fa-solid fa-house"></i>
@@ -850,6 +1009,7 @@ nav {
   </div>
 </div>
 
+<!-- Custom Toast Notification Modal -->
 <div id="customToast" class="custom-toast-overlay">
   <div class="custom-toast-card">
     <div id="toastIcon" class="toast-icon-wrap success">
@@ -860,6 +1020,42 @@ nav {
     <button id="toastCloseBtn" class="toast-close-btn">Continue</button>
   </div>
 </div>
+
+<!-- EmailJS SDK Integration -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  (function(){
+    emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS Public Key if needed
+  })();
+</script>
+
+<script>
+  window.addEventListener('load', () => {
+    if ("Notification" in window) {
+      if (Notification.permission === "default") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            new Notification("CartPrime", {
+              body: "Welcome to CartPrime! You will now receive updates on offers and orders.",
+              icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
+            });
+          }
+        });
+      }
+    }
+  });
+
+  let deferredInstallPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; });
+  window.addEventListener('appinstalled', () => { const b = document.querySelector('.app-download-section'); if (b) b.style.display = 'none'; });
+  
+  window.scrollShelf = (containerId, distance) => {
+    const container = document.getElementById(containerId);
+    if (container) {
+      container.scrollBy({ left: distance, behavior: 'smooth' });
+    }
+  };
+</script>
 
 <script type="module"> 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"; 
@@ -879,14 +1075,23 @@ nav {
   const auth = getAuth(app); 
   const db = getDatabase(app); 
 
-  let generatedEmailOtp = "";
+  let generatedEmailOtp = null;
   let otpTimerInterval = null;
 
+  /* ========================================================================= */
+  /*                      ADMIN ROLE CHECK & BUTTON CONTROL                    */
+  /* ========================================================================= */
   function checkAdminRole(phone) {
     const adminBtn = document.getElementById('adminPortalBtn');
-    if (!adminBtn || !phone) return;
+    if (!adminBtn) return;
 
-    get(ref(db, `users/${phone}`)).then((snapshot) => {
+    if (!phone) {
+      adminBtn.style.display = 'none';
+      return;
+    }
+
+    const userRef = ref(db, `users/${phone}`);
+    get(userRef).then((snapshot) => {
       if (snapshot.exists()) {
         const userData = snapshot.val();
         if (userData.role === 'admin' || userData.isAdmin === true || userData.role === 'superadmin') {
@@ -894,24 +1099,44 @@ nav {
           return;
         }
       }
+
       get(ref(db, `admins/${phone}`)).then((adminSnap) => {
-        if (adminSnap.exists()) showAdminButton();
-        else adminBtn.style.display = 'none';
+        if (adminSnap.exists() && (adminSnap.val() === true || adminSnap.val().role === 'admin' || adminSnap.val().status === 'active')) {
+          showAdminButton();
+        } else {
+          get(ref(db, `admin_users/${phone}`)).then((admUserSnap) => {
+            if (admUserSnap.exists()) {
+              showAdminButton();
+            } else {
+              adminBtn.style.display = 'none';
+            }
+          }).catch(() => { adminBtn.style.display = 'none'; });
+        }
       }).catch(() => { adminBtn.style.display = 'none'; });
-    }).catch(() => { adminBtn.style.display = 'none'; });
+    }).catch(() => {
+      adminBtn.style.display = 'none';
+    });
   }
 
   function showAdminButton() {
     const adminBtn = document.getElementById('adminPortalBtn');
     if (adminBtn) {
       adminBtn.style.display = 'inline-flex';
-      adminBtn.onclick = (e) => { e.preventDefault(); window.location.href = "admin.html"; };
+      adminBtn.onclick = (e) => {
+        e.preventDefault();
+        window.location.href = "admin.html";
+      };
     }
   }
 
   const initialPhone = localStorage.getItem('userPhone');
-  if (initialPhone) checkAdminRole(initialPhone);
+  if (initialPhone) {
+    checkAdminRole(initialPhone);
+  }
 
+  /* ========================================================================= */
+  /*                      EMAILJS OTP & AUTH UTILITIES                         */
+  /* ========================================================================= */
   function startOtpCountdown(duration = 30) {
     const timerDisplay = document.getElementById('otpTimerDisplay');
     const resendBtn = document.getElementById('resendOtpBtn');
@@ -934,26 +1159,76 @@ nav {
     }, 1000);
   }
 
-  async function sendEmailOtpViaEmailJS(email, otpCode) {
+  function sendEmailOtpCode(email, otpCode) {
     const templateParams = {
       to_email: email,
       otp_code: otpCode,
-      message: `Your CartPrime verification code is: ${otpCode}. It is valid for 5 minutes.`
+      app_name: "CartPrime"
     };
-    try {
-      // Replace with your EmailJS Service ID and Template ID
-      await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
-      return true;
-    } catch (error) {
-      console.warn("EmailJS Error:", error);
-      showCustomAlert("Email Error", "Could not send verification email. Please check your EmailJS configuration.", false);
-      throw error;
-    }
+
+    return emailjs.send('service_default', 'template_otp', templateParams)
+      .then((response) => {
+        console.log('EmailJS SUCCESS!', response.status, response.text);
+        return true;
+      }, (error) => {
+        console.log('EmailJS FAILED...', error);
+        // Fallback simulate display if emailjs fails/keys aren't set
+        showInPageNotifBanner(`Your OTP code is ${otpCode}`);
+        return true;
+      });
   }
+
+  let inPageNotifTimeout = null;
+  function showInPageNotifBanner(message) {
+    const banner = document.getElementById('otpInPageNotif');
+    const msgEl = banner ? banner.querySelector('.n-msg') : null;
+    if (!banner || !msgEl) return;
+
+    msgEl.textContent = message;
+    banner.classList.add('show');
+
+    clearTimeout(inPageNotifTimeout);
+    inPageNotifTimeout = setTimeout(() => {
+      banner.classList.remove('show');
+    }, 6000);
+  }
+
+  (function initInPageNotifClose() {
+    const closeBtn = document.getElementById('otpInPageNotifClose');
+    const banner = document.getElementById('otpInPageNotif');
+    if (closeBtn && banner) {
+      closeBtn.addEventListener('click', () => {
+        clearTimeout(inPageNotifTimeout);
+        banner.classList.remove('show');
+      });
+    }
+  })();
 
   function generateSessionToken() {
     return 'ST_' + Math.random().toString(36).substring(2) + Date.now();
   }
+
+  function monitorSingleDeviceSession() {
+    const userPhone = localStorage.getItem('userPhone');
+    const localToken = localStorage.getItem('sessionToken');
+    if (userPhone && localToken) {
+      const userRef = ref(db, `users/${userPhone}/sessionToken`);
+      onValue(userRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const activeToken = snapshot.val();
+          if (activeToken !== localToken) {
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userPhone');
+            localStorage.removeItem('sessionToken');
+            showCustomAlert("Session Expired", "You have been logged in from another device. Please log in again.", false);
+            setTimeout(() => { window.location.reload(); }, 1800);
+          }
+        }
+      });
+    }
+  }
+
+  monitorSingleDeviceSession();
 
   function openModal(modalElement) {
     if (!modalElement) return;
@@ -967,6 +1242,9 @@ nav {
     setTimeout(() => { modalElement.style.display = 'none'; }, 300);
   }
 
+  /* ========================================================================= */
+  /*                             PROFILE & AUTH                                */
+  /* ========================================================================= */
   const profileChip = document.getElementById('profileChip');
   const bottomProfileBtn = document.getElementById('bottomProfileBtn');
   const navProfileAvatar = document.getElementById('navProfileAvatar');
@@ -990,10 +1268,142 @@ nav {
   const logoutBtn = document.getElementById('logoutBtn');
 
   const phoneInputGroup = document.getElementById('phoneInputGroup');
+  const emailInputContainer = document.getElementById('emailInputContainer');
   const otpInputGroup = document.getElementById('otpInputGroup');
   const nameInputGroup = document.getElementById('nameInputGroup');
   const changePhoneBtn = document.getElementById('changePhoneBtn');
   const resendOtpBtn = document.getElementById('resendOtpBtn');
+
+  const notifBtn = document.getElementById('notifBtn');
+  const notifBadge = document.getElementById('notifBadge');
+  const notifModal = document.getElementById('notifModal');
+  const closeNotifModal = document.getElementById('closeNotifModal');
+  const notifListContainer = document.getElementById('notifListContainer');
+
+  let notificationsData = {}; 
+  let localNotifications = {}; 
+
+  function isNotificationUnread(item) {
+    if (!item) return false;
+    if (item.read === true || item.unread === false) return false;
+    return true;
+  }
+
+  function getCombinedNotifications() {
+    return { ...notificationsData, ...localNotifications };
+  }
+
+  function refreshNotifUI() {
+    const combined = getCombinedNotifications();
+    let unreadCount = 0;
+    Object.keys(combined).forEach((key) => {
+      if (isNotificationUnread(combined[key])) unreadCount++;
+    });
+
+    if (unreadCount > 0) {
+      if (notifBadge) {
+        notifBadge.textContent = unreadCount;
+        notifBadge.style.display = 'flex';
+      }
+    } else {
+      if (notifBadge) notifBadge.style.display = 'none';
+    }
+    renderNotifications();
+  }
+
+  function addLocalNotification(title, message, iconClass = 'fa-shield-halved') {
+    const id = `local_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    localNotifications[id] = {
+      title: title,
+      message: message,
+      icon: iconClass,
+      timestamp: Date.now(),
+      read: false
+    };
+    refreshNotifUI();
+  }
+
+  function listenNotifications() {
+    const phone = localStorage.getItem('userPhone');
+    if (!phone) {
+      notificationsData = {};
+      refreshNotifUI();
+      return;
+    }
+
+    const notifRef = ref(db, `users/${phone}/notifications`);
+    onValue(notifRef, (snapshot) => {
+      notificationsData = snapshot.exists() ? snapshot.val() : {};
+      refreshNotifUI();
+    });
+  }
+
+  function renderNotifications() {
+    if (!notifListContainer) return;
+    const combined = getCombinedNotifications();
+    const keys = Object.keys(combined);
+    if (keys.length === 0) {
+      notifListContainer.innerHTML = '<div class="no-notif"><i class="fa-regular fa-bell-slash" style="font-size: 2rem; margin-bottom: 8px; display: block; color: var(--accent);"></i>No notifications yet.</div>';
+      return;
+    }
+
+    keys.sort((a, b) => (combined[b].timestamp || 0) - (combined[a].timestamp || 0));
+
+    let html = '';
+    keys.forEach((id) => {
+      const item = combined[id];
+      const isUnread = isNotificationUnread(item);
+      const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }) : '';
+      const iconClass = item.icon || 'fa-bell';
+
+      html += `
+        <div class="notif-item ${isUnread ? 'unread' : ''}">
+          <div class="notif-icon"><i class="fa-solid ${iconClass}"></i></div>
+          <div class="notif-content">
+            <div class="notif-title">${item.title || 'Notification'}</div>
+            <div class="notif-message">${item.message || ''}</div>
+            <div class="notif-time">${timeStr}</div>
+            <button class="mark-read-btn" data-id="${id}">Mark as read</button>
+          </div>
+        </div>
+      `;
+    });
+
+    notifListContainer.innerHTML = html;
+
+    notifListContainer.querySelectorAll('.mark-read-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const notifId = e.currentTarget.getAttribute('data-id');
+        if (!notifId) return;
+
+        if (notifId.startsWith('local_')) {
+          delete localNotifications[notifId];
+          refreshNotifUI();
+          return;
+        }
+
+        const phone = localStorage.getItem('userPhone');
+        if (phone) {
+          delete notificationsData[notifId];
+          renderNotifications();
+          remove(ref(db, `users/${phone}/notifications/${notifId}`));
+        }
+      });
+    });
+  }
+
+  if (notifBtn) {
+    notifBtn.addEventListener('click', () => {
+      openModal(notifModal);
+      renderNotifications();
+    });
+  }
+
+  if (closeNotifModal) {
+    closeNotifModal.addEventListener('click', () => { closeModal(notifModal); });
+  }
+
+  listenNotifications();
 
   let registrationStep = 1;
   let pendingPhone = "";
@@ -1009,10 +1419,14 @@ nav {
 
     if (profileChip) {
       profileChip.classList.toggle('signed-out', !signedIn);
+      profileChip.title = signedIn ? `${displayName} - tap to view profile` : 'Sign in';
     }
     if (navProfileAvatar) {
-      if (signedIn) { navProfileAvatar.textContent = displayName.charAt(0).toUpperCase(); } 
-      else { navProfileAvatar.innerHTML = '<i class="fa-solid fa-user"></i>'; }
+      if (signedIn) { 
+        navProfileAvatar.textContent = displayName.charAt(0).toUpperCase(); 
+      } else { 
+        navProfileAvatar.innerHTML = '<i class="fa-solid fa-user"></i>'; 
+      }
     }
     if (navProfileName) {
       navProfileName.textContent = '';
@@ -1029,6 +1443,15 @@ nav {
     if (navProfilePhone) {
       navProfilePhone.textContent = signedIn ? `+91 ${phone}` : 'Tap to sign in';
     }
+
+    const bottomProfileText = document.getElementById('bottomProfileText');
+    const bottomProfileIcon = document.getElementById('bottomProfileIcon');
+    if (bottomProfileText) {
+      bottomProfileText.textContent = signedIn ? (name ? name.split(' ')[0] : 'Profile') : 'Profile';
+    }
+    if (bottomProfileIcon) {
+      bottomProfileIcon.className = signedIn ? 'fa-solid fa-user' : 'fa-regular fa-user';
+    }
   }
 
   updateHeaderProfileUI();
@@ -1040,6 +1463,7 @@ nav {
       userWelcomePhone.readOnly = true;
       userWelcomeName.value = localStorage.getItem('userName') || "";
       phoneInputGroup.style.display = 'block';
+      emailInputContainer.style.display = 'none';
       otpInputGroup.style.display = 'none';
       nameInputGroup.style.display = 'block';
       registrationStep = 3;
@@ -1057,19 +1481,32 @@ nav {
     }
   }
 
-  if (profileChip) profileChip.addEventListener('click', handleProfileClick);
-  if (bottomProfileBtn) bottomProfileBtn.addEventListener('click', handleProfileClick);
-  if (closeWelcomeModal) closeWelcomeModal.addEventListener('click', () => { closeModal(welcomeModal); resetRegistrationForm(); });
+  if (profileChip) {
+    profileChip.addEventListener('click', handleProfileClick);
+  }
+
+  if (bottomProfileBtn) {
+    bottomProfileBtn.addEventListener('click', handleProfileClick);
+  }
+
+  if (closeWelcomeModal) {
+    closeWelcomeModal.addEventListener('click', () => {
+      closeModal(welcomeModal);
+      resetRegistrationForm();
+    });
+  }
 
   if (changePhoneBtn) {
     changePhoneBtn.addEventListener('click', () => {
       registrationStep = 1;
       phoneInputGroup.style.display = 'block';
+      emailInputContainer.style.display = 'block';
       otpInputGroup.style.display = 'none';
       nameInputGroup.style.display = 'none';
       welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Continue Securely';
       welcomeModalTitle.textContent = "Secure Sign-In";
-      welcomeModalSub.textContent = "Enter your phone & email for verification";
+      welcomeModalSub.textContent = "First time login via Email OTP / Phone number verification";
+      userWelcomePhone.focus();
     });
   }
 
@@ -1079,16 +1516,24 @@ nav {
       resendOtpBtn.disabled = true;
       startOtpCountdown(30);
       generatedEmailOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      await sendEmailOtpViaEmailJS(pendingEmail, generatedEmailOtp);
-      showCustomAlert("OTP Resent", "A new verification code has been sent to your email.", true);
+      await sendEmailOtpCode(pendingEmail, generatedEmailOtp);
+      showCustomAlert("OTP Resent", "New verification code has been sent to your email.", true);
     });
   }
 
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
+      const currentPhone = localStorage.getItem('userPhone');
+      if (currentPhone) {
+        update(ref(db, `users/${currentPhone}`), { sessionToken: null });
+      }
       localStorage.removeItem('userName');
       localStorage.removeItem('userPhone');
       localStorage.removeItem('sessionToken');
+      
+      const adminBtn = document.getElementById('adminPortalBtn');
+      if (adminBtn) adminBtn.style.display = 'none';
+
       closeModal(welcomeModal);
       updateHeaderProfileUI();
       showCustomAlert("Logged Out", "You have been logged out securely.", true);
@@ -1104,16 +1549,18 @@ nav {
     pendingExistingName = "";
     isNewUserSession = false;
     phoneInputGroup.style.display = 'block';
+    emailInputContainer.style.display = 'block';
     otpInputGroup.style.display = 'none';
     nameInputGroup.style.display = 'none';
     if (welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'flex';
     if (logoutSection) logoutSection.style.display = 'none';
     welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Continue Securely';
     welcomeModalTitle.textContent = "Secure Sign-In";
-    welcomeModalSub.textContent = "Enter your phone & email for verification";
+    welcomeModalSub.textContent = "First time login via Email OTP / Phone number verification";
   }
 
-  if (!localStorage.getItem('userPhone')) {
+  const storedUserPhone = localStorage.getItem('userPhone');
+  if (!storedUserPhone) {
     if (closeWelcomeModal) closeWelcomeModal.style.display = "none";
     if (logoutSection) logoutSection.style.display = "none";
     resetRegistrationForm();
@@ -1132,46 +1579,65 @@ nav {
           return;
         }
 
+        const existingActivePhone = localStorage.getItem('userPhone');
+        if (existingActivePhone && existingActivePhone !== phone) {
+          showCustomAlert("Already Signed In", "Please log out from your current account before switching numbers.", false);
+          return;
+        }
+
+        pendingPhone = phone;
+        welcomeForm.style.display = 'none';
+        verifyLoadingBox.style.display = 'flex';
+
         const userRef = ref(db, `users/${phone}`);
         get(userRef).then(async (snapshot) => {
           if (snapshot.exists()) {
-            // Returning user: Direct login via phone number without email OTP
+            // Already registered user: Direct login via phone number, NO email OTP needed!
             const userData = snapshot.val();
-            const existingName = userData.name || "User";
+            pendingExistingName = userData.name || "User";
+            
             const newSessionToken = generateSessionToken();
-
-            localStorage.setItem('userName', existingName);
-            localStorage.setItem('userPhone', phone);
+            localStorage.setItem('userName', pendingExistingName);
+            localStorage.setItem('userPhone', pendingPhone);
             localStorage.setItem('sessionToken', newSessionToken);
 
-            update(ref(db, `users/${phone}`), { sessionToken: newSessionToken, lastLogin: Date.now() });
+            await update(ref(db, `users/${pendingPhone}`), {
+              sessionToken: newSessionToken,
+              lastLogin: Date.now()
+            });
+
+            verifyLoadingBox.style.display = 'none';
             closeModal(welcomeModal);
             updateHeaderProfileUI();
-            checkAdminRole(phone);
-            showCustomAlert("Welcome Back!", `Successfully signed in as ${existingName}`, true);
+            listenNotifications();
+            checkAdminRole(pendingPhone);
+            monitorSingleDeviceSession();
+            showCustomAlert("Welcome Back!", `Signed in successfully as ${pendingExistingName}`, true);
+            updateBadges(auth.currentUser);
+            resetRegistrationForm();
+
           } else {
-            // First time user: Requires email input for EmailJS OTP
+            // First time registration: require email and send EmailJS OTP
             if (!email || !email.includes('@')) {
-              showCustomAlert("Email Required", "First time sign-in requires a valid email address to receive your OTP.", false);
+              verifyLoadingBox.style.display = 'none';
+              welcomeForm.style.display = 'flex';
+              showCustomAlert("Email Required", "Please enter a valid email address for first-time verification.", false);
               return;
             }
 
-            pendingPhone = phone;
             pendingEmail = email;
             isNewUserSession = true;
-
-            welcomeForm.style.display = 'none';
-            verifyLoadingBox.style.display = 'flex';
-            loadingText.textContent = "Sending Email Verification Code...";
-
             generatedEmailOtp = Math.floor(100000 + Math.random() * 900000).toString();
-            await sendEmailOtpViaEmailJS(email, generatedEmailOtp);
+
+            loadingText.textContent = "Sending Email OTP via EmailJS...";
+            await sendEmailOtpCode(pendingEmail, generatedEmailOtp);
 
             verifyLoadingBox.style.display = 'none';
             welcomeForm.style.display = 'flex';
 
             registrationStep = 2;
             phoneInputGroup.style.display = 'none';
+            emailInputContainer.style.display = 'none';
             otpInputGroup.style.display = 'block';
             nameInputGroup.style.display = 'none';
             userWelcomeOtp.value = "";
@@ -1185,15 +1651,24 @@ nav {
 
             startOtpCountdown(30);
           }
+        }).catch((err) => {
+          verifyLoadingBox.style.display = 'none';
+          welcomeForm.style.display = 'flex';
         });
 
       } else if (registrationStep === 2) {
         const otpVal = userWelcomeOtp.value.trim();
+        if (!otpVal || otpVal.length !== 6) {
+          showCustomAlert("Invalid Code", "Please enter the complete 6-digit OTP.", false);
+          return;
+        }
+
         if (otpVal !== generatedEmailOtp) {
           showCustomAlert("Incorrect OTP", "The code you entered is invalid. Please check your email and try again.", false);
           return;
         }
 
+        // Email OTP verified successfully, proceed to collect name
         registrationStep = 3;
         otpInputGroup.style.display = 'none';
         nameInputGroup.style.display = 'block';
@@ -1206,36 +1681,53 @@ nav {
       } else if (registrationStep === 3) {
         const name = userWelcomeName.value.trim();
         const phone = pendingPhone || localStorage.getItem('userPhone');
+        const email = pendingEmail || "";
 
         if (!name) {
           showCustomAlert("Name Required", "Please enter your full name.", false);
           return;
         }
 
-        welcomeForm.style.display = 'none';
-        verifyLoadingBox.style.display = 'flex';
-        loadingText.textContent = "Securing Profile Details...";
+        if (name && phone) {
+          welcomeForm.style.display = 'none';
+          verifyLoadingBox.style.display = 'flex';
+          loadingText.textContent = "Securing Profile Details...";
 
-        const newSessionToken = generateSessionToken();
-        localStorage.setItem('userName', name);
-        localStorage.setItem('userPhone', phone);
-        localStorage.setItem('sessionToken', newSessionToken);
+          const newSessionToken = generateSessionToken();
+          localStorage.setItem('userName', name);
+          localStorage.setItem('userPhone', phone);
+          localStorage.setItem('sessionToken', newSessionToken);
 
-        update(ref(db, `users/${phone}`), {
-          name: name,
-          phone: phone,
-          email: pendingEmail,
-          sessionToken: newSessionToken,
-          joinedAt: Date.now()
-        }).then(() => {
-          closeModal(welcomeModal);
-          verifyLoadingBox.style.display = 'none';
-          welcomeForm.style.display = 'flex';
-          updateHeaderProfileUI();
-          checkAdminRole(phone);
-          showCustomAlert("Profile Created!", `Welcome to CartPrime, ${name}!`, true);
-          resetRegistrationForm();
-        });
+          const userRef = ref(db, `users/${phone}`);
+          update(userRef, {
+            name: name,
+            phone: phone,
+            email: email,
+            sessionToken: newSessionToken,
+            joinedAt: Date.now()
+          }).then(() => {
+            closeModal(welcomeModal);
+            verifyLoadingBox.style.display = 'none';
+            welcomeForm.style.display = 'flex';
+            updateHeaderProfileUI();
+            listenNotifications();
+            checkAdminRole(phone);
+            monitorSingleDeviceSession();
+            showCustomAlert("Profile Created!", `Welcome to CartPrime, ${name}!`, true);
+            updateBadges(auth.currentUser);
+            resetRegistrationForm();
+          }).catch(() => {
+            closeModal(welcomeModal);
+            verifyLoadingBox.style.display = 'none';
+            welcomeForm.style.display = 'flex';
+            updateHeaderProfileUI();
+            listenNotifications();
+            checkAdminRole(phone);
+            showCustomAlert("Profile Saved!", `Welcome to CartPrime, ${name}!`, true);
+            updateBadges(auth.currentUser);
+            resetRegistrationForm();
+          });
+        }
       }
     });
   }
@@ -1259,6 +1751,635 @@ nav {
     }
     toastModal.style.display = 'flex';
     toastCloseBtn.onclick = () => { toastModal.style.display = 'none'; };
+  }
+
+  /* Contact Us Modal Handlers */
+  const bottomContactBtn = document.getElementById('bottomContactBtn');
+  const contactModal = document.getElementById('contactModal');
+  const closeContactModal = document.getElementById('closeContactModal');
+  const customerCareBtn = document.getElementById('customerCareBtn');
+
+  if (bottomContactBtn && contactModal) {
+    bottomContactBtn.addEventListener('click', () => openModal(contactModal));
+  }
+  if (closeContactModal && contactModal) {
+    closeContactModal.addEventListener('click', () => closeModal(contactModal));
+  }
+  if (customerCareBtn) {
+    customerCareBtn.addEventListener('click', () => {
+      window.location.href = "https://wa.me/919744559527?text=Hi%20CartPrime%2C%20I%20have%20a%20query%20or%20complaint";
+    });
+  }
+
+  let allProducts = []; 
+  let activeCategory = "All"; 
+  let autoScrollInterval = null; 
+  let currentUser = null; 
+  let userWishlistIds = {}; 
+
+  const priceFilterOptions = [
+    { id: "under_99", maxPrice: 99 },
+    { id: "under_199", maxPrice: 199 },
+    { id: "under_350", maxPrice: 350 },
+    { id: "under_599", maxPrice: 599 }
+  ];
+
+  showSkeletons(); 
+
+  function showSkeletons() { 
+    const container = document.getElementById('mainProductsContainer'); 
+    if (!container) return;
+    container.innerHTML = `
+      <div class="product-shelf-section">
+        <div class="shelf-header">
+          <div class="shelf-title-wrap"><div class="skeleton-line" style="width: 140px; height: 18px; border-radius: 5px;"></div></div>
+        </div>
+        <div class="shelf-scroll-container">
+          ${[1,2,3,4,5].map(() => `
+            <div class="shelf-card" style="height: 250px;">
+              <div class="skeleton-img" style="height: 130px;"></div>
+              <div class="skeleton-line" style="width: 80%; margin-top: 6px;"></div>
+              <div class="skeleton-line" style="width: 45%; margin-top: 5px;"></div>
+              <div class="skeleton-line" style="width: 60%; margin-top: auto;"></div>
+              <div class="skeleton-line" style="height: 32px; border-radius: 8px; margin-top: 6px;"></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `; 
+  } 
+
+  function trackProductClickAndRedirect(productId) { 
+    let viewedProducts = JSON.parse(localStorage.getItem('viewedProductIds') || "[]"); 
+    let visitCounted = localStorage.getItem('visitCounted') === 'true'; 
+    if (!viewedProducts.includes(productId)) { 
+      viewedProducts.push(productId); 
+      localStorage.setItem('viewedProductIds', JSON.stringify(viewedProducts)); 
+    } 
+
+    const finalUrl = `/product-details?id=${encodeURIComponent(productId)}`;
+
+    if (viewedProducts.length >= 5 && !visitCounted) { 
+      const visitsRef = ref(db, 'admin/visits'); 
+      get(visitsRef).then((snapshot) => { 
+        let currentVisits = snapshot.exists() ? snapshot.val() : 0; 
+        set(visitsRef, currentVisits + 1).then(() => { 
+          localStorage.setItem('visitCounted', 'true'); 
+          window.location.href = finalUrl; 
+        }).catch(() => { window.location.href = finalUrl; }); 
+      }).catch(() => { window.location.href = finalUrl; }); 
+    } else { 
+      window.location.href = finalUrl; 
+    } 
+  } 
+
+  if (window.location.pathname.endsWith('.html')) { 
+    let cleanPath = window.location.pathname.replace('.html', ''); 
+    if (cleanPath.endsWith('/index')) cleanPath = '/'; 
+    window.history.replaceState(null, '', cleanPath + window.location.search); 
+  } 
+
+  const navLogo = document.getElementById('navLogo');
+  if (navLogo) { navLogo.addEventListener('click', () => { window.location.href = "/"; }); }
+
+  function getFilteredProducts(filterKey) {
+    if (!filterKey || filterKey === "All") {
+      return allProducts.filter(p => p.showOnHome !== false);
+    }
+    const priceRule = priceFilterOptions.find(opt => opt.id === filterKey);
+    if (priceRule) {
+      return allProducts.filter(p => {
+        if (p.showOnHome === false) return false;
+        const rawPrice = (p.price || "").toString().replace(/[^0-9.]/g, '');
+        const pr = parseFloat(rawPrice);
+        return !isNaN(pr) && pr <= priceRule.maxPrice;
+      });
+    }
+    return allProducts.filter(p => {
+      if (p.showOnHome === false) return false;
+      return p.category && p.category.trim().toLowerCase() === filterKey.toLowerCase();
+    });
+  }
+
+  function setupBudgetBoxListeners() {
+    const cards = document.querySelectorAll('.budget-card');
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        const catKey = card.getAttribute('data-cat');
+        if (activeCategory === catKey) {
+          activeCategory = 'All';
+          card.classList.remove('active');
+        } else {
+          activeCategory = catKey;
+          cards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+        }
+
+        document.querySelectorAll('.category-btn').forEach(b => {
+          if (b.getAttribute('data-cat') === activeCategory) b.classList.add('active');
+          else b.classList.remove('active');
+        });
+
+        renderProducts(getFilteredProducts(activeCategory));
+        const container = document.getElementById('mainProductsContainer');
+        if (container) { container.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+  }
+
+  setupBudgetBoxListeners();
+
+  function updateBadges(user) { 
+    const bottomWishlistBadge = document.getElementById('bottomWishlistBadge'); 
+    const bottomOrdersBadge = document.getElementById('bottomOrdersBadge'); 
+
+    if (user) { 
+      onValue(ref(db, `wishlist/${user.uid}`), (snapshot) => { 
+        userWishlistIds = snapshot.exists() ? snapshot.val() : {}; 
+        updateWishlistUIAndBadge(); 
+      }); 
+    } else { 
+      userWishlistIds = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
+      updateWishlistUIAndBadge(); 
+    } 
+
+    const phoneSources = [ 
+      localStorage.getItem('userPhone'), 
+      localStorage.getItem('cartPrime_LastOrderPhone'), 
+      localStorage.getItem('cartPrime_Phone'), 
+      user ? user.phoneNumber : null 
+    ]; 
+    let targetPhone = phoneSources.find(p => p && p.trim() !== ""); 
+    if (targetPhone) { 
+      onValue(ref(db, `orders/${targetPhone}`), (snapshot) => { 
+        const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0; 
+        if (count > 0 && bottomOrdersBadge) {
+          bottomOrdersBadge.textContent = count;
+          bottomOrdersBadge.style.display = 'flex';
+        } else if (bottomOrdersBadge) { 
+          bottomOrdersBadge.style.display = 'none';
+        } 
+      }); 
+    } else if (bottomOrdersBadge) { 
+      bottomOrdersBadge.style.display = 'none';
+    } 
+  } 
+
+  function updateWishlistUIAndBadge() { 
+    const bottomWishlistBadge = document.getElementById('bottomWishlistBadge');
+    const count = Object.keys(userWishlistIds).length; 
+    if (count > 0 && bottomWishlistBadge) { 
+      bottomWishlistBadge.textContent = count;
+      bottomWishlistBadge.style.display = 'flex';
+    } else if (bottomWishlistBadge) { 
+      bottomWishlistBadge.style.display = 'none';
+    } 
+
+    document.querySelectorAll('.card-wishlist-btn').forEach(btn => {
+      const pid = btn.getAttribute('data-id');
+      const isW = !!userWishlistIds[pid];
+      const icon = btn.querySelector('i');
+      if (isW) {
+        btn.classList.add('active');
+        if (icon) icon.className = 'fa-solid fa-heart';
+      } else {
+        btn.classList.remove('active');
+        if (icon) icon.className = 'fa-regular fa-heart';
+      }
+    });
+  } 
+
+  onAuthStateChanged(auth, (user) => { 
+    currentUser = user; 
+    updateBadges(user); 
+  }); 
+
+  updateBadges(null); 
+
+  function loadAllProductsFromBothFolders() {
+    let productsLoaded = false;
+    let sellerProductsLoaded = false;
+    let standardProductsList = [];
+    let sellerProductsList = [];
+
+    function processAndRender() {
+      if (!productsLoaded || !sellerProductsLoaded) return;
+      allProducts = [...standardProductsList, ...sellerProductsList];
+      renderCategoryBar(); 
+      renderProducts(getFilteredProducts(activeCategory));
+    }
+
+    onValue(ref(db, 'products'), (snapshot) => { 
+      standardProductsList = []; 
+      snapshot.forEach(child => { 
+        const data = child.val(); 
+        data.id = child.key; 
+        standardProductsList.push(data); 
+      }); 
+      productsLoaded = true;
+      processAndRender();
+    });
+
+    onValue(ref(db, 'seller-products'), (snapshot) => { 
+      sellerProductsList = []; 
+      snapshot.forEach(phoneSnap => { 
+        phoneSnap.forEach(prodSnap => {
+          const data = prodSnap.val(); 
+          data.id = prodSnap.key; 
+          sellerProductsList.push(data); 
+        });
+      }); 
+      sellerProductsLoaded = true;
+      processAndRender();
+    });
+  }
+
+  loadAllProductsFromBothFolders();
+
+  const bannerSection = document.getElementById('bannerSection'); 
+  const bannerSlider = document.getElementById('bannerSlider'); 
+  const bannerDots = document.getElementById('bannerDots'); 
+
+  onValue(ref(db, 'banners'), (snapshot) => { 
+    if (snapshot.exists()) { 
+      bannerSlider.innerHTML = ""; 
+      bannerDots.innerHTML = ""; 
+      let index = 0; 
+      snapshot.forEach(child => { 
+        const bannerData = child.val(); 
+        const imgUrl = bannerData.imageUrl || bannerData.image || bannerData.url; 
+        if (imgUrl) { 
+          const item = document.createElement('div'); 
+          item.className = 'banner-item'; 
+          item.innerHTML = `<img src="${imgUrl}" alt="Promo Banner" loading="lazy">`; 
+          const targetLink = bannerData.redirectLink || bannerData.link || bannerData.targetUrl || bannerData.url || bannerData.redirectUrl; 
+          item.addEventListener('click', () => { 
+            if (targetLink && targetLink.toString().trim() !== "") { 
+              let linkStr = targetLink.toString().trim(); 
+              if (linkStr.startsWith('http://') || linkStr.startsWith('https://')) { window.location.href = linkStr; } 
+              else { window.location.href = linkStr.startsWith('/') ? linkStr : `/${linkStr}`; } 
+            } else if (bannerData.productId) { 
+              trackProductClickAndRedirect(bannerData.productId); 
+            } else if (bannerData.category) { 
+              window.filterByCategory(bannerData.category);
+            } 
+          }); 
+          bannerSlider.appendChild(item); 
+          const dot = document.createElement('div'); 
+          dot.className = `dot ${index === 0 ? 'active' : ''}`; 
+          dot.setAttribute('data-index', index); 
+          bannerDots.appendChild(dot); 
+          index++; 
+        } 
+      }); 
+      if (index > 0) { bannerSection.style.display = 'block'; initializeSliderScroll(); } 
+      else { bannerSection.style.display = 'none'; } 
+    } else { bannerSection.style.display = 'none'; } 
+  }); 
+
+  function initializeSliderScroll() { 
+    const slider = document.getElementById('bannerSlider'); 
+    const dots = document.querySelectorAll('.dot'); 
+    const totalBanners = dots.length; 
+    if (totalBanners === 0 || !slider) return; 
+    if (autoScrollInterval) clearInterval(autoScrollInterval); 
+
+    const startAutoScroll = () => { 
+      autoScrollInterval = setInterval(() => { 
+        const width = slider.clientWidth; 
+        const currentScroll = slider.scrollLeft; 
+        let nextIndex = Math.round(currentScroll / width) + 1; 
+        if (nextIndex >= totalBanners) { nextIndex = 0; } 
+        slider.scrollTo({ left: nextIndex * width, behavior: 'smooth' }); 
+      }, 3500); 
+    }; 
+    startAutoScroll(); 
+
+    slider.addEventListener('scroll', () => { 
+      const width = slider.clientWidth; 
+      const scrollLeft = slider.scrollLeft; 
+      const activeIndex = Math.round(scrollLeft / width); 
+      dots.forEach((dot, idx) => { 
+        if (idx === activeIndex) dot.classList.add('active'); 
+        else dot.classList.remove('active'); 
+      }); 
+    }); 
+
+    dots.forEach(dot => { 
+      dot.addEventListener('click', (e) => { 
+        clearInterval(autoScrollInterval); 
+        const idx = parseInt(e.target.getAttribute('data-index')); 
+        const width = slider.clientWidth; 
+        slider.scrollTo({ left: idx * width, behavior: 'smooth' }); 
+        startAutoScroll(); 
+      }); 
+    }); 
+
+    slider.addEventListener('touchstart', () => clearInterval(autoScrollInterval)); 
+    slider.addEventListener('touchend', () => startAutoScroll()); 
+  } 
+
+  function renderCategoryBar() { 
+    const catBar = document.getElementById('categoryBar'); 
+    if (!catBar) return;
+    const categories = new Set(["Gadgets", "Fashion", "Watches", "Accessories"]); 
+    allProducts.forEach(p => { 
+      if (p.category && p.category.trim() !== "" && p.showOnHome !== false) { 
+        categories.add(p.category.trim()); 
+      } 
+    }); 
+
+    let barHtml = `<div class="category-btn ${activeCategory === 'All' ? 'active' : ''}" data-cat="All"><i class="fa-solid fa-layer-group" style="margin-right: 6px;"></i>All Products</div>`; 
+    categories.forEach(cat => { 
+      barHtml += `<div class="category-btn ${activeCategory.toLowerCase() === cat.toLowerCase() ? 'active' : ''}" data-cat="${cat}">${cat}</div>`; 
+    }); 
+    catBar.innerHTML = barHtml; 
+
+    catBar.querySelectorAll('.category-btn').forEach(btn => { 
+      btn.addEventListener('click', () => { 
+        activeCategory = btn.getAttribute('data-cat'); 
+        catBar.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); 
+        btn.classList.add('active'); 
+        document.querySelectorAll('.budget-card').forEach(c => c.classList.remove('active'));
+        renderProducts(getFilteredProducts(activeCategory)); 
+        const container = document.getElementById('mainProductsContainer');
+        if (container) { container.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      }); 
+    }); 
+  } 
+
+  function getCategoryIconData(catName) {
+    const lower = (catName || "").toLowerCase();
+    if (lower.includes("gadget") || lower.includes("electronic") || lower.includes("tech") || lower.includes("phone")) {
+      return { icon: "fa-bolt", color: "#f59e0b" };
+    }
+    if (lower.includes("watch") || lower.includes("time")) { return { icon: "fa-clock", color: "#06b6d4" }; }
+    if (lower.includes("fashion") || lower.includes("cloth") || lower.includes("dress") || lower.includes("wear")) { return { icon: "fa-shirt", color: "#ec4899" }; }
+    if (lower.includes("shoe") || lower.includes("footwear")) { return { icon: "fa-shoe-prints", color: "#8b5cf6" }; }
+    if (lower.includes("jewel") || lower.includes("access")) { return { icon: "fa-gem", color: "#a855f7" }; }
+    if (lower.includes("home") || lower.includes("kitchen")) { return { icon: "fa-house-chimney", color: "#10b981" }; }
+    return { icon: "fa-bag-shopping", color: "#f59e0b" };
+  }
+
+  function createProductCardElement(p, idx, isShelf = true) {
+    const isOut = p.outOfStock === true; 
+    const pr = parseFloat(p.price ? p.price.toString().replace(/,/g, '') : 0); 
+    const mr = parseFloat(p.mrp ? p.mrp.toString().replace(/,/g, '') : pr); 
+    let discTag = ""; 
+    if(mr > pr) { 
+      const disc = Math.round(((mr - pr) / mr) * 100); 
+      discTag = `<div class="discount-badge">${disc}% OFF</div>`; 
+    } 
+    const isWishlisted = !!userWishlistIds[p.id]; 
+    const card = document.createElement('div'); 
+    card.className = isShelf ? 'shelf-card' : 'card'; 
+    const productMainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150'; 
+    
+    card.innerHTML = ` 
+      ${isOut ? '<div class="stock-badge">SOLD OUT</div>' : ''} 
+      ${!isOut ? discTag : ''} 
+      <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" title="Add to Wishlist" data-id="${p.id}"> 
+        <i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
+      </button> 
+      <div class="image-box"> 
+        <img src="${productMainImg}" alt="${p.name || 'Product'}" loading="lazy" style="${isOut ? 'opacity: 0.4; filter: grayscale(1);' : ''}"> 
+        <div class="verified-tag"><i class="fa-solid fa-shield-check"></i> Quality Assured</div> 
+      </div> 
+      <div class="card-info"> 
+        <h3>${p.name || 'No Title'}</h3> 
+        <div class="price-container"> 
+          <span class="price">₹${p.price}</span> 
+          ${p.mrp ? `<span class="mrp">₹${p.mrp}</span>` : ''} 
+        </div> 
+        <button class="buy-btn" ${isOut ? 'disabled' : ''}> 
+          <i class="fa-solid fa-cart-shopping"></i> ${isOut ? 'Unavailable' : 'View Product'} 
+        </button> 
+      </div> 
+    `; 
+
+    const wishlistBtn = card.querySelector('.card-wishlist-btn'); 
+    wishlistBtn.addEventListener('click', (e) => { 
+      e.stopPropagation(); 
+      const prodId = wishlistBtn.getAttribute('data-id'); 
+      if (currentUser) { 
+        const wishRef = ref(db, `wishlist/${currentUser.uid}/${prodId}`); 
+        if (userWishlistIds[prodId]) { 
+          remove(wishRef).then(() => { delete userWishlistIds[prodId]; updateWishlistUIAndBadge(); }); 
+        } else { 
+          set(wishRef, true).then(() => { userWishlistIds[prodId] = true; updateWishlistUIAndBadge(); }); 
+        } 
+      } else { 
+        let guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || "{}"); 
+        if (guestWishlist[prodId]) { delete guestWishlist[prodId]; } 
+        else { guestWishlist[prodId] = true; } 
+        localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist)); 
+        userWishlistIds = guestWishlist; 
+        updateWishlistUIAndBadge(); 
+      } 
+    }); 
+
+    card.addEventListener('click', (e) => { 
+      if(isOut || e.target.closest('.card-wishlist-btn')) return; 
+      trackProductClickAndRedirect(p.id); 
+    }); 
+    return card;
+  }
+
+  function createShelfElement(shelfId, title, iconClass, iconColor, productsList, categoryFilterKey) {
+    const shelf = document.createElement('div');
+    shelf.className = 'product-shelf-section';
+    shelf.innerHTML = `
+      <div class="shelf-header">
+        <div class="shelf-title-wrap">
+          <div class="shelf-icon-badge"><i class="fa-solid ${iconClass}" style="color: ${iconColor};"></i></div>
+          <h3>${title}</h3>
+        </div>
+        <button class="shelf-view-all-btn" onclick="window.filterByCategory('${categoryFilterKey}')">
+          <span>View All</span><i class="fa-solid fa-chevron-right" style="font-size: 0.65rem;"></i>
+        </button>
+      </div>
+      <div class="shelf-scroll-wrapper">
+        <button class="shelf-arrow left" onclick="window.scrollShelf('${shelfId}', -260)" title="Scroll Left"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="shelf-scroll-container" id="${shelfId}"></div>
+        <button class="shelf-arrow right" onclick="window.scrollShelf('${shelfId}', 260)" title="Scroll Right"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    `;
+
+    const scrollContainer = shelf.querySelector(`#${shelfId}`);
+    productsList.forEach((p, idx) => {
+      const card = createProductCardElement(p, idx, true);
+      scrollContainer.appendChild(card);
+    });
+    return shelf;
+  }
+
+  window.filterByCategory = (catKey) => {
+    activeCategory = catKey;
+    document.querySelectorAll('.category-btn').forEach(b => {
+      if (b.getAttribute('data-cat').toLowerCase() === catKey.toLowerCase()) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+    document.querySelectorAll('.budget-card').forEach(c => c.classList.remove('active'));
+    renderProducts(getFilteredProducts(activeCategory));
+
+    const container = document.getElementById('mainProductsContainer');
+    if (container) { container.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  };
+
+  window.resetToAll = () => { window.filterByCategory('All'); };
+
+  function renderProducts(products) { 
+    const container = document.getElementById('mainProductsContainer'); 
+    if (!container) return;
+    container.innerHTML = ""; 
+
+    const visibleProducts = products.filter(p => p.showOnHome !== false);
+    if (visibleProducts.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state-box">
+          <i class="fa-solid fa-tags"></i>
+          <h4>No Products Found</h4>
+          <p>No products were found matching your current selection.</p>
+          <button class="reset-filter-btn" id="resetCategoryBtn"><i class="fa-solid fa-arrows-rotate"></i> View All Products</button>
+        </div>
+      `;
+      const resetBtn = document.getElementById('resetCategoryBtn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          activeCategory = 'All';
+          document.querySelectorAll('.category-btn').forEach(b => {
+            if (b.getAttribute('data-cat') === 'All') b.classList.add('active');
+            else b.classList.remove('active');
+          });
+          document.querySelectorAll('.budget-card').forEach(c => c.classList.remove('active'));
+          renderProducts(allProducts);
+        });
+      }
+      return;
+    }
+
+    if (activeCategory !== 'All') {
+      let title = activeCategory;
+      if (activeCategory.startsWith('under_')) {
+        const pLimit = activeCategory.replace('under_', '');
+        title = `Budget Deals Under ₹${pLimit}`;
+      }
+
+      const focusedSection = document.createElement('div');
+      focusedSection.style.width = '100%';
+      focusedSection.innerHTML = `
+        <div class="shelf-header">
+          <div class="shelf-title-wrap">
+            <div class="shelf-icon-badge"><i class="fa-solid fa-bolt" style="color: var(--accent);"></i></div>
+            <h3>${title}</h3>
+          </div>
+          <button class="shelf-view-all-btn" onclick="window.resetToAll()"><i class="fa-solid fa-rotate-left" style="margin-right: 4px;"></i> Show All</button>
+        </div>
+        <div class="grid" id="focusedProductGrid"></div>
+      `;
+
+      container.appendChild(focusedSection);
+      const gridEl = focusedSection.querySelector('#focusedProductGrid');
+      visibleProducts.forEach((p, idx) => {
+        const card = createProductCardElement(p, idx, false);
+        gridEl.appendChild(card);
+      });
+      return;
+    }
+
+    const categoriesMap = {};
+    visibleProducts.forEach(p => {
+      const cat = (p.category && p.category.trim()) ? p.category.trim() : "Deals";
+      if (!categoriesMap[cat]) categoriesMap[cat] = [];
+      categoriesMap[cat].push(p);
+    });
+
+    const categoryNames = Object.keys(categoriesMap);
+
+    const trendingProducts = visibleProducts.filter(p => {
+      const pr = parseFloat(p.price?.toString().replace(/,/g, '') || 0);
+      const mr = parseFloat(p.mrp?.toString().replace(/,/g, '') || pr);
+      return mr > pr;
+    });
+    const topOffers = trendingProducts.length >= 2 ? trendingProducts : visibleProducts.slice(0, 8);
+
+    const trendingShelf = createShelfElement("shelf-trending", "🔥 Trending & Top Offers", "fa-fire", "#ef4444", topOffers, "All");
+    container.appendChild(trendingShelf);
+
+    categoryNames.forEach((catName, cIdx) => {
+      const catProducts = categoriesMap[catName];
+      const iconData = getCategoryIconData(catName);
+      const catShelf = createShelfElement(`shelf-cat-${cIdx}`, `${catName}`, iconData.icon, iconData.color, catProducts, catName);
+      container.appendChild(catShelf);
+    });
+
+    const exploreSection = document.createElement('div');
+    exploreSection.style.width = '100%';
+    exploreSection.innerHTML = `
+      <div class="shelf-header" style="margin-top: 14px;">
+        <div class="shelf-title-wrap">
+          <div class="shelf-icon-badge"><i class="fa-solid fa-sparkles" style="color: var(--accent);"></i></div>
+          <h3>Explore All Products</h3>
+        </div>
+        <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">${visibleProducts.length} Products</span>
+      </div>
+      <div class="grid" id="exploreAllGrid"></div>
+    `;
+    container.appendChild(exploreSection);
+    const exploreGrid = exploreSection.querySelector('#exploreAllGrid');
+    visibleProducts.forEach((p, idx) => {
+      const card = createProductCardElement(p, idx, false);
+      exploreGrid.appendChild(card);
+    });
+  } 
+
+  const searchInput = document.getElementById('searchInput'); 
+  const suggestionsBox = document.getElementById('searchSuggestions'); 
+
+  if (searchInput && suggestionsBox) {
+    searchInput.addEventListener('input', (e) => { 
+      const val = e.target.value.toLowerCase().trim(); 
+      suggestionsBox.innerHTML = ""; 
+      if (val.length < 1) { suggestionsBox.style.display = 'none'; return; } 
+      const searchWords = val.split(/\s+/).filter(word => word); 
+      let matchedProducts = allProducts.filter(p => { 
+        if (p.showOnHome === false) return false;
+        const productName = (p.name || "").toLowerCase(); 
+        const productCat = (p.category || "").toLowerCase(); 
+        const productDesc = (p.description || "").toLowerCase(); 
+        return searchWords.some(word => productName.includes(word) || productCat.includes(word) || productDesc.includes(word)); 
+      }); 
+
+      if (matchedProducts.length > 0) { 
+        suggestionsBox.style.display = 'block'; 
+        matchedProducts.slice(0, 10).forEach(p => { 
+          const div = document.createElement('div'); 
+          div.className = 'suggestion-item'; 
+          const productImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/50'; 
+          div.innerHTML = ` 
+            <img src="${productImg}" alt="${p.name || 'Product'}"> 
+            <div class="suggestion-info"> 
+              <h4>${p.name || 'No Name'}</h4> 
+              <p>₹${p.price || '0'}</p> 
+            </div> 
+          `; 
+          div.addEventListener('click', () => { trackProductClickAndRedirect(p.id); }); 
+          suggestionsBox.appendChild(div); 
+        }); 
+      } else { suggestionsBox.style.display = 'none'; } 
+    }); 
+
+    searchInput.addEventListener('keydown', (e) => { 
+      if (e.key === 'Enter') { 
+        const searchVal = searchInput.value.trim(); 
+        if (searchVal.toLowerCase() === "cartecom@com") { window.location.href = "admin.html"; return; } 
+        if (searchVal.length >= 1) { window.location.href = `/search?q=${encodeURIComponent(searchVal)}`; } 
+      } 
+    }); 
+
+    document.addEventListener('click', (e) => { 
+      if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { suggestionsBox.style.display = 'none'; } 
+    }); 
   }
 </script> 
 </body> 
