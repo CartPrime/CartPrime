@@ -1025,7 +1025,7 @@ nav {
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>
   (function(){
-    emailjs.init("service_uw46e3j"); // Replace with your EmailJS Public Key if needed
+    emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS Public Key if needed
   })();
 </script>
 
@@ -1159,10 +1159,13 @@ nav {
     }, 1000);
   }
 
-  function sendEmailOtpCode(email, otpCode) {
+  function sendEmailOtpCode(email, otpCode, userName = "User") {
     const templateParams = {
       to_email: email,
-      otp_code: otpCode,
+      email: email,
+      user_name: userName,
+      otp: otpCode,
+      expiry_minutes: "5",
       app_name: "CartPrime"
     };
 
@@ -1516,7 +1519,7 @@ nav {
       resendOtpBtn.disabled = true;
       startOtpCountdown(30);
       generatedEmailOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      await sendEmailOtpCode(pendingEmail, generatedEmailOtp);
+      await sendEmailOtpCode(pendingEmail, generatedEmailOtp, pendingExistingName || "User");
       showCustomAlert("OTP Resent", "New verification code has been sent to your email.", true);
     });
   }
@@ -1630,7 +1633,7 @@ nav {
             generatedEmailOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
             loadingText.textContent = "Sending Email OTP via EmailJS...";
-            await sendEmailOtpCode(pendingEmail, generatedEmailOtp);
+            await sendEmailOtpCode(pendingEmail, generatedEmailOtp, "User");
 
             verifyLoadingBox.style.display = 'none';
             welcomeForm.style.display = 'flex';
