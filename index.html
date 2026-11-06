@@ -742,12 +742,12 @@ nav {
   <div class="modal-card"> 
     <div class="login-header-zone">
       <div class="login-shield-badge"><i class="fa-solid fa-shield-halved"></i></div>
-      <div class="ssl-security-pill"><i class="fa-solid fa-lock"></i> 256-Bit SSL Encrypted</div>
+      <div class="ssl-security-pill"><i class="fa-solid fa-lock"></i> Firebase Auth Secured</div>
     </div>
 
     <div>
       <h3 style="margin: 0 0 4px 0; font-size: 1.25rem; font-weight: 800;" id="welcomeModalTitle">Secure Sign-In</h3> 
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">Quick passwordless sign-in with instant OTP</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">Quick phone verification with Firebase OTP</p>
     </div>
 
     <div class="welcome-benefits" id="welcomeBenefitsBox">
@@ -1072,7 +1072,6 @@ nav {
 
   let confirmationResult = null;
   let recaptchaVerifier = null;
-  let generatedFallbackOtp = "";
   let otpTimerInterval = null;
 
   /* ========================================================================= */
@@ -1177,17 +1176,6 @@ nav {
     const title = "CartPrime Verification Code";
     const body = `Your OTP code is ${otpCode}. Valid for 5 minutes.`;
     showInPageNotifBanner(body);
-
-    if ("Notification" in window && Notification.permission === "granted") {
-      try {
-        new Notification(title, {
-          body: body,
-          icon: "https://i.ibb.co/v4rQ6Th6/545404-200-removebg-preview.png"
-        });
-      } catch (err) {
-        console.warn("Native notification note:", err);
-      }
-    }
     addLocalNotification(title, body, 'fa-shield-halved');
   }
 
@@ -1217,10 +1205,18 @@ nav {
     }
   })();
 
+  // Firebase Phone Authentication വഴി ഒറിജിനൽ SMS അയക്കുന്ന ഫങ്ഷൻ
   async function sendFreeOtpPlatform(phoneNumber) {
-    generatedFallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    deliverOtpAsNotification(phoneNumber, generatedFallbackOtp);
-    return true;
+    initRecaptcha();
+    const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+91${phoneNumber}`;
+    try {
+      confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
+      return true;
+    } catch (error) {
+      console.error("Firebase SMS Error:", error);
+      showCustomAlert("SMS Error", "Failed to send SMS OTP via Firebase. Error: " + error.message, false);
+      throw error;
+    }
   }
 
   function generateSessionToken() {
@@ -1247,7 +1243,7 @@ nav {
     }
   }
 
-  monitorSingleDeviceSession();
+   monitorSingleDeviceSession();
 
   function openModal(modalElement) {
     if (!modalElement) return;
@@ -1460,7 +1456,6 @@ nav {
       navProfilePhone.textContent = signedIn ? `+91 ${phone}` : 'Tap to sign in';
     }
 
-    // Update Bottom Navigation Profile Item
     const bottomProfileText = document.getElementById('bottomProfileText');
     const bottomProfileIcon = document.getElementById('bottomProfileIcon');
     if (bottomProfileText) {
@@ -1520,7 +1515,7 @@ nav {
       nameInputGroup.style.display = 'none';
       welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Continue Securely';
       welcomeModalTitle.textContent = "Secure Sign-In";
-      welcomeModalSub.textContent = "Quick passwordless sign-in with instant OTP";
+      welcomeModalSub.textContent = "Quick phone verification with Firebase OTP";
       userWelcomePhone.focus();
     });
   }
@@ -1567,7 +1562,7 @@ nav {
     if (logoutSection) logoutSection.style.display = 'none';
     welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Continue Securely';
     welcomeModalTitle.textContent = "Secure Sign-In";
-    welcomeModalSub.textContent = "Quick passwordless sign-in with instant OTP";
+    welcomeModalSub.textContent = "Quick phone verification with Firebase OTP";
   }
 
   const storedUserPhone = localStorage.getItem('userPhone');
@@ -1596,7 +1591,7 @@ nav {
 
         pendingPhone = phone;
         welcomeForm.style.display = 'none';
-        loadingText.textContent = "Verifying Mobile & Generating OTP...";
+        loadingText.textContent = "Sending Firebase OTP via SMS...";
         verifyLoadingBox.style.display = 'flex';
 
         const userRef = ref(db, `users/${phone}`);
@@ -1631,7 +1626,7 @@ nav {
         }).catch((err) => {
           verifyLoadingBox.style.display = 'none';
           welcomeForm.style.display = 'flex';
-          showCustomAlert("Connection Error", "Could not connect to security servers. Please try again.", false);
+          showCustomAlert("Connection Error", "Could not send OTP. Please check your number or try again later.", false);
         });
 
       } else if (registrationStep === 2) {
@@ -1643,7 +1638,7 @@ nav {
 
         welcomeForm.style.display = 'none';
         verifyLoadingBox.style.display = 'flex';
-        loadingText.textContent = "Validating Security Token...";
+        loadingText.textContent = "Validating OTP Code...";
 
         let isOtpValid = false;
         if (confirmationResult) {
@@ -1654,15 +1649,9 @@ nav {
         }
 
         if (!isOtpValid) {
-          if (otpVal === "146059" || otpVal === generatedFallbackOtp || otpVal === "959894") {
-            isOtpValid = true;
-          }
-        }
-
-        if (!isOtpValid) {
           verifyLoadingBox.style.display = 'none';
           welcomeForm.style.display = 'flex';
-          showCustomAlert("Incorrect OTP", "The code you entered is invalid or has expired. Please check your notifications.", false);
+          showCustomAlert("Incorrect OTP", "The code you entered is invalid or has expired. Please check and try again.", false);
           return;
         }
 
