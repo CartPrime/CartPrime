@@ -1,5 +1,5 @@
 <!DOCTYPE html> 
-<html lang="en">  
+<html lang="en"> 
 <head> 
 <meta charset="UTF-8"> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"> 
@@ -342,7 +342,7 @@ nav {
 
 /* Trust Bar */
 .trust-bar-section { padding: 6px 5% 12px 5%; } 
-.trust-bar-grid { display: grid; grid-late-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); } 
+.trust-bar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); } 
 .trust-card { display: flex; align-items: center; gap: 12px; } 
 .trust-icon { 
   width: 40px; height: 40px; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); display: flex; 
@@ -1159,17 +1159,14 @@ nav {
     }, 1000);
   }
 
-  function sendEmailOtpCode(email, otpCode, userName = "User") {
+  function sendEmailOtpCode(email, otpCode) {
     const templateParams = {
       to_email: email,
-      email: email,
-      user_name: userName,
-      otp: otpCode,
-      expiry_minutes: "5",
+      otp_code: otpCode,
       app_name: "CartPrime"
     };
 
-    return emailjs.send('service_uw46e3j, 'template_o4qtb7i', templateParams)
+    return emailjs.send('service_default', 'template_otp', templateParams)
       .then((response) => {
         console.log('EmailJS SUCCESS!', response.status, response.text);
         return true;
@@ -1519,7 +1516,7 @@ nav {
       resendOtpBtn.disabled = true;
       startOtpCountdown(30);
       generatedEmailOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      await sendEmailOtpCode(pendingEmail, generatedEmailOtp, pendingExistingName || "User");
+      await sendEmailOtpCode(pendingEmail, generatedEmailOtp);
       showCustomAlert("OTP Resent", "New verification code has been sent to your email.", true);
     });
   }
@@ -1633,7 +1630,7 @@ nav {
             generatedEmailOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
             loadingText.textContent = "Sending Email OTP via EmailJS...";
-            await sendEmailOtpCode(pendingEmail, generatedEmailOtp, "User");
+            await sendEmailOtpCode(pendingEmail, generatedEmailOtp);
 
             verifyLoadingBox.style.display = 'none';
             welcomeForm.style.display = 'flex';
