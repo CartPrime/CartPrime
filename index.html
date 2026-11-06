@@ -669,8 +669,8 @@ nav {
 </head> 
 <body> 
 
-<!-- Hidden Container for Firebase reCAPTCHA Invisible Verification -->
-<div id="recaptcha-container"></div>
+<!-- Hidden Container for phone.email or reCAPTCHA -->
+<div id="recaptcha-container" style="display:none;"></div>
 
 <!-- Native-Style In-App Push Notification for OTP Simulation -->
 <div id="otpInPageNotif" class="otp-inpage-notif">
@@ -680,7 +680,7 @@ nav {
       <span>CartPrime Security</span>
       <span class="n-time">Just now</span>
     </div>
-    <div class="n-msg" id="otpInPageNotifMsg">Your OTP code is 482910. Valid for 5 minutes.</div>
+    <div class="n-msg" id="otpInPageNotifMsg">Your OTP code is sent via phone.email / WhatsApp.</div>
   </div>
   <button type="button" class="n-close" id="otpInPageNotifClose"><i class="fa-solid fa-xmark"></i></button>
 </div>
@@ -737,17 +737,17 @@ nav {
   </div>
 </div>
 
-<!-- TRUSTED 100% SECURE USER LOGIN & PROFILE MODAL -->
+<!-- TRUSTED 100% SECURE USER LOGIN & PROFILE MODAL (Integrated with phone.email WhatsApp/Phone Auth) -->
 <div id="userWelcomeModal" class="modal-overlay"> 
   <div class="modal-card"> 
     <div class="login-header-zone">
       <div class="login-shield-badge"><i class="fa-solid fa-shield-halved"></i></div>
-      <div class="ssl-security-pill"><i class="fa-solid fa-lock"></i> Firebase Auth Secured</div>
+      <div class="ssl-security-pill"><i class="fa-solid fa-lock"></i> 100% Free WhatsApp / Phone Auth</div>
     </div>
 
     <div>
       <h3 style="margin: 0 0 4px 0; font-size: 1.25rem; font-weight: 800;" id="welcomeModalTitle">Secure Sign-In</h3> 
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">Quick phone verification with Firebase OTP</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;" id="welcomeModalSub">Instant verification via WhatsApp or phone.email</p>
     </div>
 
     <div class="welcome-benefits" id="welcomeBenefitsBox">
@@ -756,34 +756,14 @@ nav {
       <div class="welcome-benefit-item"><i class="fa-solid fa-circle-check"></i> Cash on Delivery (COD) Available</div>
     </div>
     
-    <form id="userWelcomeForm" class="modal-form" style="margin-top: 10px;"> 
-      <div id="phoneInputGroup">
-        <label style="display:block; font-size:0.74rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">REGISTERED MOBILE NUMBER</label>
-        <div class="trust-phone-wrap">
-          <div class="country-prefix">
-            <img src="https://flagcdn.com/w20/in.png" alt="India Flag">
-            <span>+91</span>
-          </div>
-          <input type="tel" id="userWelcomePhone" class="trust-phone-input" placeholder="Enter 10-digit number" maxlength="10" inputmode="numeric" required>
-        </div>
-      </div>
-
-      <div id="otpInputGroup" style="display: none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <label style="font-size:0.74rem; font-weight:700; color:var(--text-muted);">6-DIGIT VERIFICATION CODE</label>
-          <button type="button" id="changePhoneBtn" style="background:none; border:none; color:var(--accent); font-size:0.74rem; font-weight:700; cursor:pointer;">
-            <i class="fa-solid fa-pen"></i> Change
-          </button>
-        </div>
-        <input type="text" id="userWelcomeOtp" class="otp-secure-field" placeholder="••••••" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
-        
-        <div class="otp-sub-bar">
-          <span>Resend code in: <span id="otpTimerDisplay" class="otp-timer-count">00:30</span></span>
-          <button type="button" id="resendOtpBtn" class="btn-resend-link" disabled>Resend SMS</button>
-        </div>
-      </div>
-
-      <div id="nameInputGroup" style="display: none;">
+    <!-- phone.email Widget / Manual Form Integration -->
+    <div id="phoneEmailWidgetContainer" style="margin: 15px 0; text-align: center;">
+      <!-- phone.email official sign-in button (Client ID configured) -->
+      <div class="pe_signin_button" data-client_id="10168393526978502575"></div>
+    </div>
+    
+    <form id="userWelcomeForm" class="modal-form" style="margin-top: 10px; display: none;"> 
+      <div id="nameInputGroup">
         <label style="display:block; font-size:0.74rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">YOUR FULL NAME</label>
         <input type="text" id="userWelcomeName" class="modal-input" placeholder="e.g. Rahul Sharma" autocomplete="name">
       </div>
@@ -791,7 +771,7 @@ nav {
       <div class="modal-btn-group"> 
         <button type="button" id="closeWelcomeModal" style="display:none; flex:1; padding:12px; border-radius:14px; border:1.5px solid var(--border); background:transparent; color:var(--text-main); font-weight:700; cursor:pointer;">Cancel</button>
         <button type="submit" class="modal-btn-submit" id="welcomeSubmitBtn">
-          <i class="fa-solid fa-shield-check"></i> Continue Securely
+          <i class="fa-solid fa-shield-check"></i> Complete Profile Setup
         </button> 
       </div> 
     </form> 
@@ -804,7 +784,7 @@ nav {
 
     <div id="verifyLoadingBox" class="verify-loading-box">
       <div class="spinner"></div>
-      <p style="font-size: 0.84rem; font-weight: 700; color: var(--text-main); margin: 0;" id="loadingText">Securing Connection...</p>
+      <p style="font-size: 0.84rem; font-weight: 700; color: var(--text-main); margin: 0;" id="loadingText">Authenticating via WhatsApp...</p>
     </div>
   </div> 
 </div>
@@ -1019,6 +999,9 @@ nav {
   </div>
 </div>
 
+<!-- phone.email Widget Script -->
+<script src="https://www.phone.email/sign_in_button_v1.js" async></script>
+
 <script>
   window.addEventListener('load', () => {
     if ("Notification" in window) {
@@ -1051,9 +1034,7 @@ nav {
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"; 
   import { 
     getAuth, 
-    onAuthStateChanged,
-    RecaptchaVerifier,
-    signInWithPhoneNumber 
+    onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"; 
   import { getDatabase, ref, onValue, get, set, remove, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js"; 
 
@@ -1069,10 +1050,6 @@ nav {
   const app = initializeApp(firebaseConfig); 
   const auth = getAuth(app); 
   const db = getDatabase(app); 
-
-  let confirmationResult = null;
-  let recaptchaVerifier = null;
-  let otpTimerInterval = null;
 
   /* ========================================================================= */
   /*                      ADMIN ROLE CHECK & BUTTON CONTROL                    */
@@ -1131,93 +1108,70 @@ nav {
   }
 
   /* ========================================================================= */
-  /*                      OTP & FIREBASE AUTH UTILITIES                        */
+  /*                      phone.email LISTENER & AUTH                          */
   /* ========================================================================= */
-  function initRecaptcha() {
-    if (!recaptchaVerifier) {
-      try {
-        recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-          size: 'invisible',
-          callback: (response) => {},
-          'expired-callback': () => {
-            if (recaptchaVerifier) recaptchaVerifier.clear();
-            recaptchaVerifier = null;
-          }
-        });
-      } catch (err) {
-        console.warn("reCAPTCHA setup note:", err);
-      }
-    }
-  }
-
-  function startOtpCountdown(duration = 30) {
-    const timerDisplay = document.getElementById('otpTimerDisplay');
-    const resendBtn = document.getElementById('resendOtpBtn');
-    if (!timerDisplay || !resendBtn) return;
-
-    resendBtn.disabled = true;
-    let timeLeft = duration;
-
-    clearInterval(otpTimerInterval);
-    otpTimerInterval = setInterval(() => {
-      timeLeft--;
-      const seconds = timeLeft < 10 ? `0${timeLeft}` : timeLeft;
-      timerDisplay.textContent = `00:${seconds}`;
-
-      if (timeLeft <= 0) {
-        clearInterval(otpTimerInterval);
-        timerDisplay.textContent = "00:00";
-        resendBtn.disabled = false;
-      }
-    }, 1000);
-  }
-
-  function deliverOtpAsNotification(phoneNumber, otpCode) {
-    const title = "CartPrime Verification Code";
-    const body = `Your OTP code is ${otpCode}. Valid for 5 minutes.`;
-    showInPageNotifBanner(body);
-    addLocalNotification(title, body, 'fa-shield-halved');
-  }
-
-  let inPageNotifTimeout = null;
-  function showInPageNotifBanner(message) {
-    const banner = document.getElementById('otpInPageNotif');
-    const msgEl = banner ? banner.querySelector('.n-msg') : null;
-    if (!banner || !msgEl) return;
-
-    msgEl.textContent = message;
-    banner.classList.add('show');
-
-    clearTimeout(inPageNotifTimeout);
-    inPageNotifTimeout = setTimeout(() => {
-      banner.classList.remove('show');
-    }, 6000);
-  }
-
-  (function initInPageNotifClose() {
-    const closeBtn = document.getElementById('otpInPageNotifClose');
-    const banner = document.getElementById('otpInPageNotif');
-    if (closeBtn && banner) {
-      closeBtn.addEventListener('click', () => {
-        clearTimeout(inPageNotifTimeout);
-        banner.classList.remove('show');
-      });
-    }
-  })();
-
-  // Firebase Phone Authentication വഴി ഒറിജിനൽ SMS അയക്കുന്ന ഫങ്ഷൻ
-  async function sendFreeOtpPlatform(phoneNumber) {
-    initRecaptcha();
-    const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+91${phoneNumber}`;
+  window.phoneEmailListener = async function(userObj) {
     try {
-      confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
-      return true;
-    } catch (error) {
-      console.error("Firebase SMS Error:", error);
-      showCustomAlert("SMS Error", "Failed to send SMS OTP via Firebase. Error: " + error.message, false);
-      throw error;
+      const user_phone_number = userObj.user_phone_number; // Verified Phone Number
+      if (!user_phone_number) return;
+
+      const verifyLoadingBox = document.getElementById('verifyLoadingBox');
+      const phoneEmailWidgetContainer = document.getElementById('phoneEmailWidgetContainer');
+      const welcomeForm = document.getElementById('userWelcomeForm');
+      const welcomeModalTitle = document.getElementById('welcomeModalTitle');
+      const welcomeModalSub = document.getElementById('welcomeModalSub');
+      const welcomeBenefitsBox = document.getElementById('welcomeBenefitsBox');
+      const userWelcomeName = document.getElementById('userWelcomeName');
+
+      if (phoneEmailWidgetContainer) phoneEmailWidgetContainer.style.display = 'none';
+      if (welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
+      if (verifyLoadingBox) {
+        verifyLoadingBox.style.display = 'flex';
+        const loadingText = document.getElementById('loadingText');
+        if (loadingText) loadingText.textContent = "Verifying WhatsApp / phone.email number...";
+      }
+
+      const userRef = ref(db, `users/${user_phone_number}`);
+      const snapshot = await get(userRef);
+
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        const existingName = userData.name || "User";
+        const newSessionToken = generateSessionToken();
+
+        localStorage.setItem('userName', existingName);
+        localStorage.setItem('userPhone', user_phone_number);
+        localStorage.setItem('sessionToken', newSessionToken);
+
+        await update(userRef, {
+          sessionToken: newSessionToken,
+          lastLogin: Date.now()
+        });
+
+        if (verifyLoadingBox) verifyLoadingBox.style.display = 'none';
+        closeModal(welcomeModal);
+        updateHeaderProfileUI();
+        listenNotifications();
+        checkAdminRole(user_phone_number);
+        monitorSingleDeviceSession();
+        showCustomAlert("Welcome Back!", `Signed in successfully via WhatsApp as ${existingName}`, true);
+        updateBadges(auth.currentUser);
+      } else {
+        // New user - prompt for name
+        if (verifyLoadingBox) verifyLoadingBox.style.display = 'none';
+        pendingPhoneForAuth = user_phone_number;
+        if (welcomeForm) welcomeForm.style.display = 'flex';
+        if (welcomeModalTitle) welcomeModalTitle.textContent = "Create Your Profile";
+        if (welcomeModalSub) welcomeModalSub.textContent = `WhatsApp Verified (+91 ${user_phone_number})! What should we call you?`;
+        if (userWelcomeName) userWelcomeName.focus();
+      }
+    } catch (err) {
+      console.error("phone.email error:", err);
+      showCustomAlert("Authentication Error", "Failed to complete authentication. Please try again.", false);
     }
-  }
+  };
+
+  let pendingPhoneForAuth = "";
 
   function generateSessionToken() {
     return 'ST_' + Math.random().toString(36).substring(2) + Date.now();
@@ -1243,7 +1197,7 @@ nav {
     }
   }
 
-   monitorSingleDeviceSession();
+  monitorSingleDeviceSession();
 
   function openModal(modalElement) {
     if (!modalElement) return;
@@ -1268,8 +1222,6 @@ nav {
 
   const welcomeModal = document.getElementById('userWelcomeModal');
   const welcomeForm = document.getElementById('userWelcomeForm');
-  const userWelcomePhone = document.getElementById('userWelcomePhone');
-  const userWelcomeOtp = document.getElementById('userWelcomeOtp');
   const userWelcomeName = document.getElementById('userWelcomeName');
   const welcomeSubmitBtn = document.getElementById('welcomeSubmitBtn');
   const verifyLoadingBox = document.getElementById('verifyLoadingBox');
@@ -1278,14 +1230,9 @@ nav {
   const welcomeModalTitle = document.getElementById('welcomeModalTitle');
   const welcomeModalSub = document.getElementById('welcomeModalSub');
   const welcomeBenefitsBox = document.getElementById('welcomeBenefitsBox');
+  const phoneEmailWidgetContainer = document.getElementById('phoneEmailWidgetContainer');
   const logoutSection = document.getElementById('logoutSection');
   const logoutBtn = document.getElementById('logoutBtn');
-
-  const phoneInputGroup = document.getElementById('phoneInputGroup');
-  const otpInputGroup = document.getElementById('otpInputGroup');
-  const nameInputGroup = document.getElementById('nameInputGroup');
-  const changePhoneBtn = document.getElementById('changePhoneBtn');
-  const resendOtpBtn = document.getElementById('resendOtpBtn');
 
   const notifBtn = document.getElementById('notifBtn');
   const notifBadge = document.getElementById('notifBadge');
@@ -1418,11 +1365,6 @@ nav {
 
   listenNotifications();
 
-  let registrationStep = 1;
-  let pendingPhone = "";
-  let pendingExistingName = "";
-  let isNewUserSession = false;
-
   function updateHeaderProfileUI() {
     const name = (localStorage.getItem('userName') || '').trim();
     const phone = localStorage.getItem('userPhone') || '';
@@ -1471,17 +1413,13 @@ nav {
   function handleProfileClick() {
     const userPhone = localStorage.getItem('userPhone');
     if (userPhone) {
-      userWelcomePhone.value = userPhone;
-      userWelcomePhone.readOnly = true;
-      userWelcomeName.value = localStorage.getItem('userName') || "";
-      phoneInputGroup.style.display = 'block';
-      otpInputGroup.style.display = 'none';
-      nameInputGroup.style.display = 'block';
-      registrationStep = 3;
-      welcomeModalTitle.textContent = "Your Profile";
-      welcomeModalSub.textContent = "Manage and update your account details";
+      userWelcomeName.value = localStorage.getItem('userName'] || "";
+      if (phoneEmailWidgetContainer) phoneEmailWidgetContainer.style.display = 'none';
+      if (welcomeForm) welcomeForm.style.display = 'flex';
       if (welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
-      welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
+      if (welcomeModalTitle) welcomeModalTitle.textContent = "Your Profile";
+      if (welcomeModalSub) welcomeModalSub.textContent = `Phone: +91 ${userPhone} (Verified)`;
+      if (welcomeSubmitBtn) welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
       if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
       if (logoutSection) logoutSection.style.display = "block";
       openModal(welcomeModal);
@@ -1507,28 +1445,6 @@ nav {
     });
   }
 
-  if (changePhoneBtn) {
-    changePhoneBtn.addEventListener('click', () => {
-      registrationStep = 1;
-      phoneInputGroup.style.display = 'block';
-      otpInputGroup.style.display = 'none';
-      nameInputGroup.style.display = 'none';
-      welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Continue Securely';
-      welcomeModalTitle.textContent = "Secure Sign-In";
-      welcomeModalSub.textContent = "Quick phone verification with Firebase OTP";
-      userWelcomePhone.focus();
-    });
-  }
-
-  if (resendOtpBtn) {
-    resendOtpBtn.addEventListener('click', async () => {
-      if (!pendingPhone) return;
-      resendOtpBtn.disabled = true;
-      startOtpCountdown(30);
-      await sendFreeOtpPlatform(pendingPhone);
-    });
-  }
-
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       const currentPhone = localStorage.getItem('userPhone');
@@ -1550,19 +1466,13 @@ nav {
   }
 
   function resetRegistrationForm() {
-    userWelcomePhone.readOnly = false;
-    registrationStep = 1;
-    pendingPhone = "";
-    pendingExistingName = "";
-    isNewUserSession = false;
-    phoneInputGroup.style.display = 'block';
-    otpInputGroup.style.display = 'none';
-    nameInputGroup.style.display = 'none';
+    pendingPhoneForAuth = "";
+    if (phoneEmailWidgetContainer) phoneEmailWidgetContainer.style.display = 'block';
+    if (welcomeForm) welcomeForm.style.display = 'none';
     if (welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'flex';
     if (logoutSection) logoutSection.style.display = 'none';
-    welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Continue Securely';
-    welcomeModalTitle.textContent = "Secure Sign-In";
-    welcomeModalSub.textContent = "Quick phone verification with Firebase OTP";
+    if (welcomeModalTitle) welcomeModalTitle.textContent = "Secure Sign-In";
+    if (welcomeModalSub) welcomeModalSub.textContent = "Instant verification via WhatsApp or phone.email";
   }
 
   const storedUserPhone = localStorage.getItem('userPhone');
@@ -1576,176 +1486,52 @@ nav {
   if (welcomeForm) {
     welcomeForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (registrationStep === 1) {
-        const phone = userWelcomePhone.value.trim().replace(/[^0-9]/g, '');
-        if (!phone || phone.length !== 10) {
-          showCustomAlert("Invalid Mobile", "Please enter a valid 10-digit mobile number.", false);
-          return;
-        }
+      const name = userWelcomeName.value.trim();
+      const phone = pendingPhoneForAuth || localStorage.getItem('userPhone');
 
-        const existingActivePhone = localStorage.getItem('userPhone');
-        if (existingActivePhone && existingActivePhone !== phone) {
-          showCustomAlert("Already Signed In", "Please log out from your current account before switching numbers.", false);
-          return;
-        }
+      if (!name) {
+        showCustomAlert("Name Required", "Please enter your full name.", false);
+        return;
+      }
 
-        pendingPhone = phone;
+      if (name && phone) {
         welcomeForm.style.display = 'none';
-        loadingText.textContent = "Sending Firebase OTP via SMS...";
-        verifyLoadingBox.style.display = 'flex';
+        if (verifyLoadingBox) verifyLoadingBox.style.display = 'flex';
+        if (loadingText) loadingText.textContent = "Securing Profile Details...";
+
+        const newSessionToken = generateSessionToken();
+        localStorage.setItem('userName', name);
+        localStorage.setItem('userPhone', phone);
+        localStorage.setItem('sessionToken', newSessionToken);
 
         const userRef = ref(db, `users/${phone}`);
-        get(userRef).then(async (snapshot) => {
-          if (snapshot.exists()) {
-            const userData = snapshot.val();
-            pendingExistingName = userData.name || "User";
-            isNewUserSession = false;
-          } else {
-            isNewUserSession = true;
-          }
-
-          await sendFreeOtpPlatform(phone);
-
-          verifyLoadingBox.style.display = 'none';
+        update(userRef, {
+          name: name,
+          phone: phone,
+          sessionToken: newSessionToken,
+          joinedAt: Date.now()
+        }).then(() => {
+          closeModal(welcomeModal);
+          if (verifyLoadingBox) verifyLoadingBox.style.display = 'none';
           welcomeForm.style.display = 'flex';
-
-          registrationStep = 2;
-          phoneInputGroup.style.display = 'none';
-          otpInputGroup.style.display = 'block';
-          nameInputGroup.style.display = 'none';
-          userWelcomeOtp.value = "";
-          userWelcomeOtp.focus();
-
-          welcomeModalTitle.textContent = "Verify Your Number";
-          welcomeModalSub.textContent = `Enter the 6-digit OTP sent to +91 ${phone}`;
-          if (welcomeBenefitsBox) welcomeBenefitsBox.style.display = 'none';
-          welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Verify OTP & Log In';
-          if (closeWelcomeModal) closeWelcomeModal.style.display = "block";
-
-          startOtpCountdown(30);
-        }).catch((err) => {
-          verifyLoadingBox.style.display = 'none';
+          updateHeaderProfileUI();
+          listenNotifications();
+          checkAdminRole(phone);
+          monitorSingleDeviceSession();
+          showCustomAlert("Profile Created!", `Welcome to CartPrime, ${name}!`, true);
+          updateBadges(auth.currentUser);
+          resetRegistrationForm();
+        }).catch(() => {
+          closeModal(welcomeModal);
+          if (verifyLoadingBox) verifyLoadingBox.style.display = 'none';
           welcomeForm.style.display = 'flex';
-          showCustomAlert("Connection Error", "Could not send OTP. Please check your number or try again later.", false);
+          updateHeaderProfileUI();
+          listenNotifications();
+          checkAdminRole(phone);
+          showCustomAlert("Profile Saved!", `Welcome to CartPrime, ${name}!`, true);
+          updateBadges(auth.currentUser);
+          resetRegistrationForm();
         });
-
-      } else if (registrationStep === 2) {
-        const otpVal = userWelcomeOtp.value.trim();
-        if (!otpVal || otpVal.length !== 6) {
-          showCustomAlert("Invalid Code", "Please enter the complete 6-digit OTP.", false);
-          return;
-        }
-
-        welcomeForm.style.display = 'none';
-        verifyLoadingBox.style.display = 'flex';
-        loadingText.textContent = "Validating OTP Code...";
-
-        let isOtpValid = false;
-        if (confirmationResult) {
-          try {
-            const cred = await confirmationResult.confirm(otpVal);
-            if (cred && cred.user) { isOtpValid = true; }
-          } catch (fbOtpErr) { console.warn("Firebase Phone Auth confirmation notice:", fbOtpErr); }
-        }
-
-        if (!isOtpValid) {
-          verifyLoadingBox.style.display = 'none';
-          welcomeForm.style.display = 'flex';
-          showCustomAlert("Incorrect OTP", "The code you entered is invalid or has expired. Please check and try again.", false);
-          return;
-        }
-
-        if (isNewUserSession) {
-          verifyLoadingBox.style.display = 'none';
-          welcomeForm.style.display = 'flex';
-          registrationStep = 3;
-          otpInputGroup.style.display = 'none';
-          nameInputGroup.style.display = 'block';
-          userWelcomeName.value = "";
-          userWelcomeName.focus();
-          welcomeModalTitle.textContent = "Create Your Profile";
-          welcomeModalSub.textContent = "OTP Verified! What should we call you?";
-          welcomeSubmitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Complete Setup';
-        } else {
-          const newSessionToken = generateSessionToken();
-          localStorage.setItem('userName', pendingExistingName);
-          localStorage.setItem('userPhone', pendingPhone);
-          localStorage.setItem('sessionToken', newSessionToken);
-
-          update(ref(db, `users/${pendingPhone}`), {
-            sessionToken: newSessionToken,
-            lastLogin: Date.now()
-          }).then(() => {
-            closeModal(welcomeModal);
-            verifyLoadingBox.style.display = 'none';
-            welcomeForm.style.display = 'flex';
-            updateHeaderProfileUI();
-            listenNotifications();
-            checkAdminRole(pendingPhone);
-            monitorSingleDeviceSession();
-            showCustomAlert("Welcome Back!", `Signed in successfully as ${pendingExistingName}`, true);
-            updateBadges(auth.currentUser);
-            resetRegistrationForm();
-          }).catch(() => {
-            closeModal(welcomeModal);
-            verifyLoadingBox.style.display = 'none';
-            welcomeForm.style.display = 'flex';
-            updateHeaderProfileUI();
-            listenNotifications();
-            checkAdminRole(pendingPhone);
-            showCustomAlert("Welcome Back!", `Signed in successfully as ${pendingExistingName}`, true);
-            updateBadges(auth.currentUser);
-            resetRegistrationForm();
-          });
-        }
-      } else if (registrationStep === 3) {
-        const name = userWelcomeName.value.trim();
-        const phone = pendingPhone || localStorage.getItem('userPhone');
-
-        if (!name) {
-          showCustomAlert("Name Required", "Please enter your full name.", false);
-          return;
-        }
-
-        if (name && phone) {
-          welcomeForm.style.display = 'none';
-          verifyLoadingBox.style.display = 'flex';
-          loadingText.textContent = "Securing Profile Details...";
-
-          const newSessionToken = generateSessionToken();
-          localStorage.setItem('userName', name);
-          localStorage.setItem('userPhone', phone);
-          localStorage.setItem('sessionToken', newSessionToken);
-
-          const userRef = ref(db, `users/${phone}`);
-          update(userRef, {
-            name: name,
-            phone: phone,
-            sessionToken: newSessionToken,
-            joinedAt: Date.now()
-          }).then(() => {
-            closeModal(welcomeModal);
-            verifyLoadingBox.style.display = 'none';
-            welcomeForm.style.display = 'flex';
-            updateHeaderProfileUI();
-            listenNotifications();
-            checkAdminRole(phone);
-            monitorSingleDeviceSession();
-            showCustomAlert("Profile Created!", `Welcome to CartPrime, ${name}!`, true);
-            updateBadges(auth.currentUser);
-            resetRegistrationForm();
-          }).catch(() => {
-            closeModal(welcomeModal);
-            verifyLoadingBox.style.display = 'none';
-            welcomeForm.style.display = 'flex';
-            updateHeaderProfileUI();
-            listenNotifications();
-            checkAdminRole(phone);
-            showCustomAlert("Profile Saved!", `Welcome to CartPrime, ${name}!`, true);
-            updateBadges(auth.currentUser);
-            resetRegistrationForm();
-          });
-        }
       }
     });
   }
